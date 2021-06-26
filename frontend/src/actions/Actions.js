@@ -1,6 +1,8 @@
 import {
   fetchJobDgreeCodes,
-  fetchMainCodes
+  fetchMainCodes,
+  fetchCates,
+  fetchJobByCat
 } from "../actions/ActionTypes";
 import axios from "axios";
 
@@ -25,6 +27,25 @@ export const getMainCodes = (value) => (dispatch) => {
     });
   });
 };
+
+export const getCates = () => (dispatch) => {
+  axios.get(`http://localhost:5000/category`).then((res => {
+    dispatch({
+      type: fetchCates,
+      payload: { data: res.data }
+    })
+  }))
+}
+
+export const getJobDgByCat = (val) => (dispatch) => {
+  console.log("hit");
+  axios.get(`http://localhost:5000/getjobdgbycat/${val}`).then((res => {
+    dispatch({
+      type: fetchJobByCat,
+      payload: { data: res.data }
+    })
+  }))
+}
 
 // export const handlePostType = (e) => (dispatch) => {
 //   dispatch({

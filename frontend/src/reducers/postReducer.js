@@ -1,10 +1,13 @@
 import {
-  fetchJobDgreeCodes, fetchMainCodes
+  fetchCates,
+  fetchJobDgreeCodes, fetchMainCodes, fetchJobByCat
 } from "../actions/ActionTypes";
 
 const initialState = {
   items: [],
-  mainCodes: []
+  mainCodes: [],
+  cates: [],
+  jobdgbycat: []
 };
 
 export default function (state = initialState, action) {
@@ -19,6 +22,17 @@ export default function (state = initialState, action) {
       return {
         ...state,
         mainCodes: action.payload.data
+      }
+
+    case fetchCates:
+      return {
+        ...state,
+        cates: action.payload.data
+      }
+    case fetchJobByCat:
+      return {
+        ...state,
+        jobdgbycat: action.payload.data
       }
 
     default:

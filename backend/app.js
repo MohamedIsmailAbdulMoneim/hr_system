@@ -2,6 +2,7 @@ const express = require("express");
 const app = express()
 const db = require("./src/database/connection")
 const mainCodes = require("./src/routs/mainCodes")
+const planandorg = require("./src/routs/planandorg")
 const cors = require("cors")
 
 
@@ -21,6 +22,7 @@ app.use(
 );
 
 app.use(mainCodes)
+app.use(planandorg)
 
 var port = process.env.PORT || 5000;
 app.listen(port, function () {

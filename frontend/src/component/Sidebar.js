@@ -140,25 +140,43 @@ class Sidebar extends React.Component {
                             </ul>
                         </li>
                         <li>
-                            <a href="#"><i className="fa fa-bar-chart-o fa-fw"></i>الأكواد الرئيسية<span className="fa arrow"></span></a>
+                            <a href="#"><i className="fa fa-bar-chart-o fa-fw"></i>إضافة وتسجيل<span className="fa arrow"></span></a>
                             <ul className="nav nav-first-level">
                                 <li>
-                                    <a href="flot.html">الإدارات</a>
+                                    <a href="flot.html">البيانات الأساسية</a>
                                 </li>
                                 <li>
-                                    <a href="morris.html">مساعد رئيس الشركة</a>
+                                    <a href="morris.html">البيانات الأساسية للعمالة المؤقتة</a>
                                 </li>
                                 <li>
                                     <a href="morris.html">مدير عام</a>
                                 </li>
                                 <li>
-                                    <a href="morris.html">مدير عام مساعد</a>
+                                    <a href="morris.html">تدرج</a>
                                 </li>
                                 <li>
-                                    <a href="morris.html">مدير إدارة</a>
+                                    <a href="morris.html">مؤهلات</a>
                                 </li>
                                 <li>
-                                    <a href="morris.html">رئيس قسم</a>
+                                    <a href="morris.html">خبرات سابقة</a>
+                                </li>
+                                <li>
+                                    <a href="morris.html">تقييمات سنوية</a>
+                                </li>
+                                <li>
+                                    <a href="morris.html">تدريب</a>
+                                </li>
+                                <li>
+                                    <a href="morris.html">سفر</a>
+                                </li>
+                                <li>
+                                    <a href="morris.html">جزاءات</a>
+                                </li>
+                                <li>
+                                    <a href="morris.html">البيانات العائلية</a>
+                                </li>
+                                <li>
+                                    <a href="/orgstructure">الهيكل</a>
                                 </li>
                             </ul>
 

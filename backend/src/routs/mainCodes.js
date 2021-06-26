@@ -18,7 +18,6 @@ function getJobDgreeCodes(req, res) {
 
 function getMainCodes(req, res) {
     const jdId = req.params.jdid
-    console.log('hit');
     const query = `SELECT * FROM a_main_box JOIN a_sup_box ON a_main_box.MAIN_BOX_ID = a_sup_box.MAIN_BOX_ID JOIN a_job_dgree ON a_main_box.J_D_ID = a_job_dgree.J_D_ID WHERE a_job_dgree.J_D_ID = ${jdId};`
     db.query(query, (err, details) => {
         if (err) {
@@ -29,7 +28,17 @@ function getMainCodes(req, res) {
     })
 }
 
-
+function getCates(req, res) {
+    const query = `SELECT CAT_NAME, a_category.CAT_ID FROM a_category JOIN cat_org ON a_category.CAT_ID = cat_org.CAT_ID WHERE ORGANIZATION = 30;`
+    console.log("hit");
+    db.query(query, (err, details) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(details);
+        }
+    })
+}
 
 
 
@@ -38,6 +47,10 @@ router
 
 router
     .get('/getmaincodes/:jdid', getMainCodes)
+
+router
+    .get('/category', getCates)
+
 
 
 module.exports = router;

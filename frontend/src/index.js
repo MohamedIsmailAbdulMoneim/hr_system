@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+
 import './css/rtl/bootstrap.min.css';
 import './css/rtl/bootstrap.rtl.css';
 import './css/rtl/sb-admin-2.css';
