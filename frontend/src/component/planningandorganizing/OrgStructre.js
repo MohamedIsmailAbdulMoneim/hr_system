@@ -67,7 +67,7 @@ class OrgStructre extends React.Component {
                                         <label style={{ display: "block" }} for="pet-select">الوظائف</label>
                                         <select style={styles} multiple name="pets" id="pet-select">
                                             {this.state.clicked === false ? null : this.props.jobdgbycat.map((job) => (
-                                                <option>{job.J_D_NAME}</option>
+                                                <option jdname={job.J_D_ID} >{job.J_D_NAME}</option>
                                             ))}
                                         </select>
                                     </div>
