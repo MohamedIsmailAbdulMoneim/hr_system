@@ -45,10 +45,18 @@ export const getJobDgByCat = (val) => (dispatch) => {
   }))
 }
 
-export const getSupBoxNamesandmanager = (val1, val2) => {
-  axios.get(`http://localhost:5000/getsupboxnames/${val1}/${val2}`).then((res => {
+export const getSupBoxNamesandmanager = (val1,val2) => (dispatch)=> {
+  axios.get(`http://localhost:5000/getmaincode/${val1}/${val2}`).then(res=>{
     console.log(res.data);
-  }))
+    // axios.get(`http://localhost:5000/getboxandmangers/${res.data}`).then((res => {
+      console.log('hit');
+    dispatch({
+      type: fetchSupBoxNamesandmanager,
+      payload: res.data
+    })
+  // }))
+  })
+
 }
 
 // export const handlePostType = (e) => (dispatch) => {

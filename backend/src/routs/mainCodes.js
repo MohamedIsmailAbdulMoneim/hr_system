@@ -30,7 +30,6 @@ function getMainCodes(req, res) {
 
 function getCates(req, res) {
     const query = `SELECT CAT_NAME, a_category.CAT_ID FROM a_category JOIN a_category_org ON a_category.CAT_ID = a_category_org.CAT_ID WHERE ORGANIZATION = 30;`
-    console.log("hit");
     db.query(query, (err, details) => {
         if (err) {
             console.log(err);

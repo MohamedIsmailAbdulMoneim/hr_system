@@ -26,8 +26,9 @@ class OrgStructre extends React.Component {
     }
 
     clickHandler_2 = (e => {
-        console.log(e.target.getAttribute("jdid"), this.state.catid);
-        this.props.getSupBoxNamesandmanager(e.target.getAttribute("jdid"), this.state.catid)
+        console.log(this.state.catid)
+
+        this.props.getSupBoxNamesandmanager(this.state.catid, e.target.getAttribute("jdid"))
     })
 
     render() {
@@ -74,7 +75,7 @@ class OrgStructre extends React.Component {
                                         <label style={{ display: "block" }} for="pet-select">الوظائف</label>
                                         <select style={styles} multiple name="pets" id="pet-select">
                                             {this.state.clicked === false ? null : this.props.jobdgbycat.map((job) => (
-                                                <option jdid={job.J_D_ID}>{job.J_D_NAME}</option>
+                                                <option onClick={this.clickHandler_2} jdid={job.J_D_ID}>{job.J_D_NAME}</option>
                                             ))}
                                         </select>
                                     </div>
@@ -150,7 +151,8 @@ const mapStateToProps = (state) => {
     return {
 
         cates: state.posts.cates,
-        jobdgbycat: state.posts.jobdgbycat
+        jobdgbycat: state.posts.jobdgbycat,
+        supandmang: state.posts.supandmang
 
     };
 };
