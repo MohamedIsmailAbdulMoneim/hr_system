@@ -30,9 +30,8 @@ function getSupBoxNames(req, res) {
 }
 
 function getsupboxmangers(req, res) {
-    const jdid = req.params.jdid
-    const catid = req.params.catid
-    const query = `SELECT * FROM emp_sup_box WHERE MAIN_BOX_ID IN (SELECT MAIN_BOX_ID FROM A_MAIN_BOX WHERE J_D_ID = ${jdid} AND CAT_ID = ${catid})`
+    const query = `SELECT a_sup_box.MAIN_BOX_ID AS manager,emp_sup_box.MAIN_BOX_ID AS emp, emp_sup_box.SUP_BOX_NAME, a_sup_box.SUP_BOX_NAME from a_sup_box JOIN emp_sup_box on emp_sup_box.SUP_BOX_ID_M = a_sup_box.SUP_BOX_ID
+    `
     db.query(query, (err, details) => {
         console.log('hit');
         if (err) {
