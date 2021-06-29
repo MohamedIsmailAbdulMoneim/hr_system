@@ -26,9 +26,9 @@ class OrgStructre extends React.Component {
     }
 
     clickHandler_2 = (e => {
-        console.log(this.state.catid)
+        console.log(this.state.catid, e.target.getAttribute("jdid"))
 
-        this.props.getSupBoxNamesandmanager(this.state.catid, e.target.getAttribute("jdid"))
+        this.props.getSupBoxNamesandmanager(e.target.getAttribute("jdid"), this.state.catid)
     })
 
     render() {
