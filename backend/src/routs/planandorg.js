@@ -30,8 +30,7 @@ function getSupBoxNames(req, res) {
 }
 
 function getsupboxmangers(req, res) {
-    const query = `SELECT a_sup_box.MAIN_BOX_ID AS manager,emp_sup_box.MAIN_BOX_ID AS emp, emp_sup_box.SUP_BOX_NAME, a_sup_box.SUP_BOX_NAME from a_sup_box JOIN emp_sup_box on emp_sup_box.SUP_BOX_ID_M = a_sup_box.SUP_BOX_ID
-    `
+    const query = `SELECT a_sup_box.MAIN_BOX_ID AS manager ,emp_sup_box.MAIN_BOX_ID AS emp, a_sup_box.VAC_NOT, a_sup_box.ACTIV_NOT, emp_sup_box.SUP_BOX_NAME, a_sup_box.SUP_BOX_NAME from a_sup_box JOIN emp_sup_box on emp_sup_box.SUP_BOX_ID_M = a_sup_box.SUP_BOX_ID WHERE emp_sup_box.MAIN_BOX_ID = 23`
     db.query(query, (err, details) => {
         console.log('hit');
         if (err) {
