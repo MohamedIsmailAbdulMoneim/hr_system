@@ -1,7 +1,8 @@
 import React, { Fragment } from "react";
 import {
     getCates,
-    getJobDgByCat
+    getJobDgByCat,
+    getSupBoxNamesandmanager
 } from "../../actions/Actions";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
@@ -10,7 +11,7 @@ import axios from "axios";
 class OrgStructre extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { jobbycat: null || this.props.jobdgbycat };
+        this.state = { jobbycat: null || this.props.jobdgbycat, catid: null };
 
     }
 
@@ -20,8 +21,14 @@ class OrgStructre extends React.Component {
 
     clickHandler = (e) => {
         this.props.getJobDgByCat(e.target.getAttribute("catid"))
+        this.setState({ catid: e.target.getAttribute("catid") })
         this.setState({ clicked: true })
     }
+
+    clickHandler_2 = (e => {
+        console.log(e.target.getAttribute("jdid"), this.state.catid);
+        this.props.getSupBoxNamesandmanager(e.target.getAttribute("jdid"), this.state.catid)
+    })
 
     render() {
 
@@ -67,7 +74,7 @@ class OrgStructre extends React.Component {
                                         <label style={{ display: "block" }} for="pet-select">الوظائف</label>
                                         <select style={styles} multiple name="pets" id="pet-select">
                                             {this.state.clicked === false ? null : this.props.jobdgbycat.map((job) => (
-                                                <option jdname={job.J_D_ID} >{job.J_D_NAME}</option>
+                                                <option onClick={this.clickHandler_2} jdid={job.J_D_ID}>{job.J_D_NAME}</option>
                                             ))}
                                         </select>
                                     </div>
@@ -148,5 +155,5 @@ const mapStateToProps = (state) => {
     };
 };
 export default connect(mapStateToProps, {
-    getCates, getJobDgByCat
+    getCates, getJobDgByCat, getSupBoxNamesandmanager
 })(OrgStructre);

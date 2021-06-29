@@ -2,7 +2,8 @@ import {
   fetchJobDgreeCodes,
   fetchMainCodes,
   fetchCates,
-  fetchJobByCat
+  fetchJobByCat,
+  fetchSupBoxNamesandmanager
 } from "../actions/ActionTypes";
 import axios from "axios";
 
@@ -10,7 +11,6 @@ let outDocsData = [];
 
 export const getJobDgreeCodes = (value) => (dispatch) => {
   axios.get(`http://localhost:5000/getjobdgreecodes/${value}`).then((res) => {
-    console.log(res.data[0].J_D_ID);
     dispatch({
       type: fetchJobDgreeCodes,
       payload: { data: res.data[0].J_D_ID },
@@ -20,7 +20,6 @@ export const getJobDgreeCodes = (value) => (dispatch) => {
 
 export const getMainCodes = (value) => (dispatch) => {
   axios.get(`http://localhost:5000/getmaincodes/${value}`).then((res) => {
-    console.log(res.data);
     dispatch({
       type: fetchMainCodes,
       payload: { data: res.data },
@@ -38,12 +37,17 @@ export const getCates = () => (dispatch) => {
 }
 
 export const getJobDgByCat = (val) => (dispatch) => {
-  console.log("hit");
   axios.get(`http://localhost:5000/getjobdgbycat/${val}`).then((res => {
     dispatch({
       type: fetchJobByCat,
       payload: { data: res.data }
     })
+  }))
+}
+
+export const getSupBoxNamesandmanager = (val1, val2) => {
+  axios.get(`http://localhost:5000/getsupboxnames/${val1}/${val2}`).then((res => {
+    console.log(res.data);
   }))
 }
 
