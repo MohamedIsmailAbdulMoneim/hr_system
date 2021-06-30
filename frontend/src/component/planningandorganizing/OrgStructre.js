@@ -27,7 +27,6 @@ class OrgStructre extends React.Component {
 
     clickHandler_2 = (e => {
         console.log(this.state.catid, e.target.getAttribute("jdid"))
-
         this.props.getSupBoxNamesandmanager(e.target.getAttribute("jdid"), this.state.catid)
     })
 
@@ -47,7 +46,10 @@ class OrgStructre extends React.Component {
             borderRadius: "0.25rem",
             appearance: "none",
             transition: "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out"
+
         }
+        console.log(this.props.supandmang);
+
         return (
             <div id="page-wrapper" >
                 <div className="row">
@@ -95,11 +97,17 @@ class OrgStructre extends React.Component {
                                                                 <th>المسمى الوظيفي</th>
                                                                 <th>اسم شاغل البوكس</th>
                                                                 <th>عدد شاغلي البوكس</th>
-
-
                                                             </tr>
                                                         </thead>
                                                         <tbody>
+                                                        {this.props.supandmang ? this.props.supandmang.map(box => (
+                                                                    <Fragment>
+                                                                        <td>{box.SUP_BOX_ID}</td>
+                                                                        <td>{box.SUP_BOX_NAME}</td>
+                                                                        <td>{box.SUP_BOX_NAME}</td>
+                                                                        <td>{box.vac_not}</td>
+                                                                    </Fragment>
+                                                                )): null}
                                                         </tbody>
                                                     </table>
                                                 </div>

@@ -46,12 +46,24 @@ function getMaincode(req, res) {
 function getsupboxmangers(req, res) {
     const mainid = req.params.mainid
     console.log(mainid);
-    const query = `SELECT a_sup_box.MAIN_BOX_ID AS main_manager ,emp_sup_box.MAIN_BOX_ID AS main_emp, a_sup_box.VAC_NOT, a_sup_box.ACTIV_NOT, emp_sup_box.SUP_BOX_NAME AS emp, a_sup_box.SUP_BOX_NAME AS manager from a_sup_box JOIN emp_sup_box on emp_sup_box.SUP_BOX_ID_M = a_sup_box.SUP_BOX_ID WHERE emp_sup_box.MAIN_BOX_ID = ${mainid}`
+    let query = `SELECT a_sup_box.MAIN_BOX_ID AS main_manager ,emp_sup_box.MAIN_BOX_ID AS main_emp, a_sup_box.VAC_NOT, a_sup_box.ACTIV_NOT, emp_sup_box.SUP_BOX_NAME AS emp, a_sup_box.SUP_BOX_NAME AS manager from a_sup_box JOIN emp_sup_box on emp_sup_box.SUP_BOX_ID_P = a_sup_box.SUP_BOX_ID WHERE emp_sup_box.MAIN_BOX_ID = ${mainid}`
     db.query(query, (err, details) => {
         if (err) {
             console.log(err);
         } else {
-            res.send(details);
+            if(details.length<1){
+                db.query(`SELECT MAIN_BOX_ID , VAC_NOT, ACTIV_NOT, SUP_BOX_NAME FROM a_sup_box WHERE MAIN_BOX_ID = ${mainid}`,(err, anotherdetails)=>{
+                    if(err){
+                        console.log(err);
+                    }else{
+                        res.send(anotherdetails)
+                    }
+                })
+            }else{
+                res.send(details);
+
+            }
+
         }
     })
 }

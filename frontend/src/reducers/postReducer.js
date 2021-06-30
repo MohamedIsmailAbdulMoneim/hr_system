@@ -38,7 +38,7 @@ export default function (state = initialState, action) {
     case fetchSupBoxNamesandmanager:
       return {
         ...state,
-        supandmang: action.payload.data
+        supandmang: action.payload
       }
 
     default:
