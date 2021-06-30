@@ -152,7 +152,7 @@ class Sidebar extends React.Component {
                                     <a href="morris.html">مدير عام</a>
                                 </li>
                                 <li>
-                                    <a href="morris.html">تدرج</a>
+                                    <a href="/appraisal">تدرج</a>
                                 </li>
                                 <li>
                                     <a href="morris.html">مؤهلات</a>

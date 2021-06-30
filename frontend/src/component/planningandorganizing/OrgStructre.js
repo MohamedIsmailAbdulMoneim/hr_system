@@ -100,14 +100,14 @@ class OrgStructre extends React.Component {
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                        {this.props.supandmang ? this.props.supandmang.map(box => (
-                                                                    <Fragment>
-                                                                        <td>{box.SUP_BOX_ID}</td>
-                                                                        <td>{box.SUP_BOX_NAME}</td>
-                                                                        <td>{box.SUP_BOX_NAME}</td>
-                                                                        <td>{box.vac_not}</td>
-                                                                    </Fragment>
-                                                                )): null}
+                                                            {this.props.supandmang ? this.props.supandmang.map(box => (
+                                                                <tr>
+                                                                    <td>{box.emp_box_id}</td>
+                                                                    <td>{box.emp}</td>
+                                                                    <td>{box.emp_box_id}</td>
+                                                                    <td>{box.VAC_NOT}</td>
+                                                                </tr>
+                                                            )) : null}
                                                         </tbody>
                                                     </table>
                                                 </div>
@@ -135,7 +135,17 @@ class OrgStructre extends React.Component {
                                                             </tr>
                                                         </thead>
                                                         <tbody>
+                                                            {this.props.supandmang.map(manag => (
+                                                                <tr>
+                                                                    <th>{manag.manager_box_id}</th>
+                                                                    <th>{manag.manager}</th>
+                                                                    <th></th>
+                                                                    <th></th>
+                                                                    <th></th>
 
+                                                                </tr>
+
+                                                            ))}
                                                         </tbody>
                                                     </table>
                                                 </div>

@@ -11,6 +11,7 @@ import { Provider } from "react-redux";
 import store from "./store";
 import AssisstantGeneralManager from './component/mainCodes/AssisstantGeneralManager';
 import OrgStructre from './component/planningandorganizing/OrgStructre';
+import Appraisal from './component/planningandorganizing/Appraisal'
 
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
@@ -32,6 +33,9 @@ function App() {
             <Route path="/generalmanager" exact component={GeneralManager} />
             <Route path="/assisstantgeneralmanager" exact component={AssisstantGeneralManager} />
             <Route path="/orgstructure" exact component={OrgStructre} />
+            <Route path="/appraisal" exact component={Appraisal} />
+
+            Appraisal
 
 
 
