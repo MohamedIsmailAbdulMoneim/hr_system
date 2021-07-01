@@ -36,7 +36,6 @@ function getMaincode(req, res) {
     const catid = req.params.catid
     const query = `SELECT MAIN_BOX_ID FROM a_main_box WHERE J_D_ID = ${jdid} and CAT_ID = ${catid} `
     db.query(query, (err, details) => {
-        console.log('hit');
         if (err) {
             console.log(err);
         } else {
@@ -53,8 +52,8 @@ function getsupboxmangers(req, res) {
     db.query(query, (err, details) => {
         if (err) {
             console.log(err);
-
         } else {
+            console.log(details);
             res.send(details);
 
         }

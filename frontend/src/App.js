@@ -14,6 +14,7 @@ import OrgStructre from './component/planningandorganizing/OrgStructre';
 import EmpTrans from './component/planningandorganizing/EmpTrans'
 import Employee from './component/reports/Employee';
 import Empbystation from './component/reports/Empbystation';
+import EmpByDeps from './component/reports/Empbydeps'
 
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
@@ -38,9 +39,7 @@ function App() {
             <Route path="/emptrans" exact component={EmpTrans} />
             <Route path="/employee" exact component={Employee} />
             <Route path="/empbystation" exact component={Empbystation} />
-
-
-
+            <Route path="/empbydeps" exact component={EmpByDeps} />
 
             Appraisal
 

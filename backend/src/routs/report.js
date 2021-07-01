@@ -2,6 +2,19 @@ const express = require("express");
 const db = require("../database/connection")
 
 let router = express.Router();
+let query = `SELECT employee.NATIONAL_ID_CARD_NO, a_job_trans.TRANS_DATE, a_job_trans.MAIN_BOX_NAME, a_job_trans.SUP_BOX_NAME, employee.NAME_ARABIC FROM a_job_trans JOIN employee ON a_job_trans.NATIONAL_ID_CARD_NO = employee.NATIONAL_ID_CARD_NO WHERE a_job_trans.INDICATOR = 2`
+
+
+function getDeps(req, res) {
+    const query = `SELECT DISTINCT SUP_BOX_NAME FROM a_job_trans`
+    db.query(query, (err, details) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(details)
+        }
+    })
+}
 
 function getjobgovern(req, res) {
     const query = `select DISTINCT employee.JOB_GOVERNORATE, governorate.GOVERNORATE_ARABIC FROM employee JOIN governorate ON employee.JOB_GOVERNORATE = governorate.GOVERNORATE`
@@ -34,7 +47,7 @@ function getEmpStationAndGovern(req, res) {
     console.log(station, govern);
 
     if (station === "null") {
-        db.query(`SELECT employee.EMPLOYEE_ID, employee.NAME_ARABIC, employee.JOB_LOCATION, governorate.GOVERNORATE_ARABIC FROM employee JOIN governorate ON employee.JOB_GOVERNORATE = governorate.GOVERNORATE WHERE governorate.GOVERNORATE = ${govern} ORDER BY employee.JOB_LOCATION`, (err, details) => {
+        db.query(`SELECT employee.EMPLOYEE_ID, FOUND_ROWS() , employee.NAME_ARABIC, employee.JOB_LOCATION, governorate.GOVERNORATE_ARABIC FROM employee JOIN governorate ON employee.JOB_GOVERNORATE = governorate.GOVERNORATE WHERE governorate.GOVERNORATE = ${govern} ORDER BY employee.JOB_LOCATION`, (err, details) => {
             if (err) {
                 console.log(err);
             } else {
@@ -42,10 +55,14 @@ function getEmpStationAndGovern(req, res) {
             }
         })
     } else if (station !== "null") {
-        db.query(`SELECT employee.EMPLOYEE_ID, employee.NAME_ARABIC, employee.JOB_LOCATION, governorate.GOVERNORATE_ARABIC FROM employee JOIN governorate ON  employee.JOB_GOVERNORATE = governorate.GOVERNORATE WHERE governorate.GOVERNORATE = ${govern} AND JOB_LOCATION = "${station}" ORDER BY employee.JOB_LOCATION`, (err, details) => {
+        db.query(`SELECT employee.EMPLOYEE_ID, FOUND_ROWS(), employee.NAME_ARABIC, employee.JOB_LOCATION, governorate.GOVERNORATE_ARABIC FROM employee JOIN governorate ON  employee.JOB_GOVERNORATE = governorate.GOVERNORATE WHERE governorate.GOVERNORATE = ${govern} AND JOB_LOCATION = "${station}" ORDER BY employee.JOB_LOCATION`, (err, details) => {
             if (err) {
                 console.log(err);
             } else {
+
+                details.length = details.length
+                console.log(details.length);
+
                 res.send(details)
             }
         })
@@ -57,6 +74,7 @@ function getEmpStationAndGovern(req, res) {
 
 
 router
+    .get('/getdeps', getDeps)
     .get('/getjobgovern', getjobgovern)
     .get('/getjobstation/:govern', getjobstation)
     .get('/getempstationandgovern/:govern/:station', getEmpStationAndGovern)

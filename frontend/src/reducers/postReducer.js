@@ -1,6 +1,6 @@
 import {
   fetchCates,
-  fetchJobDgreeCodes, fetchMainCodes, fetchJobByCat, fetchJobGovern, fetchJobStation, fetchEmpStationAndGovern
+  fetchJobDgreeCodes, fetchMainCodes, fetchJobByCat, fetchSupBoxNamesandmanager, fetchJobGovern, fetchJobStation, fetchEmpStationAndGovern, fetchDeps
 
 } from "../actions/ActionTypes";
 
@@ -9,9 +9,11 @@ const initialState = {
   mainCodes: [],
   cates: [],
   jobdgbycat: [],
+  supandmang: [],
   jobgovern: [],
   jobstation: [],
-  empstationandgovern: []
+  empstationandgovern: [],
+  deps: []
 };
 
 export default function (state = initialState, action) {
@@ -38,6 +40,12 @@ export default function (state = initialState, action) {
         ...state,
         jobdgbycat: action.payload.data
       }
+
+    case fetchSupBoxNamesandmanager:
+      return {
+        ...state,
+        supandmang: action.payload
+      }
     case fetchJobGovern:
       return {
         ...state,
@@ -55,6 +63,11 @@ export default function (state = initialState, action) {
         empstationandgovern: action.payload.data
       }
 
+    case fetchDeps:
+      return {
+        ...state,
+        fetchDeps: action.payload.data
+      }
 
     default:
       return state;

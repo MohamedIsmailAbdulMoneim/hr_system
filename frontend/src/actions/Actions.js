@@ -6,7 +6,8 @@ import {
   fetchSupBoxNamesandmanager,
   fetchJobGovern,
   fetchJobStation,
-  fetchEmpStationAndGovern
+  fetchEmpStationAndGovern,
+  fetchDeps
 } from "../actions/ActionTypes";
 import axios from "axios";
 
@@ -60,6 +61,15 @@ export const getSupBoxNamesandmanager = (val1, val2) => (dispatch) => {
     }))
   })
 
+}
+
+export const getDeps = () => (dispatch) => {
+  axios.get("http://localhost:5000/getdeps").then(res => {
+    dispatch({
+      type: fetchDeps,
+      payload: res.data
+    })
+  })
 }
 
 export const getJobGovern = () => (dispatch) => {

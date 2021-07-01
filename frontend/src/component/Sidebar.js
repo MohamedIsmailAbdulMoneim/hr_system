@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import {
-    getJobDgreeCodes, getMainCodes, getJobGovern
+    getJobDgreeCodes, getMainCodes, getJobGovern, getDeps
 } from "../actions/Actions";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
@@ -194,6 +194,16 @@ class Sidebar extends React.Component {
                                     </li>
                                 </Link>
 
+                                <Link to={`/empbydeps`}>
+
+                                    <li>
+                                        <a onClick={this.props.getDeps} href="/empbydeps">الموظفون بالإدارات</a>
+                                    </li>
+                                </Link>
+
+
+
+
                             </ul>
 
                         </li>
@@ -225,5 +235,5 @@ const mapStateToProps = (state) => {
     };
 };
 export default connect(mapStateToProps, {
-    getJobDgreeCodes, getMainCodes, getJobGovern
+    getJobDgreeCodes, getMainCodes, getJobGovern, getDeps
 })(Sidebar);

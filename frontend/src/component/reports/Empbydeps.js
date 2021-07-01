@@ -11,7 +11,7 @@ import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
-class EmpByStation extends React.Component {
+class EmpByDeps extends React.Component {
     constructor(props) {
         super(props);
         this.state = { govern: null, station: null }
@@ -62,28 +62,15 @@ class EmpByStation extends React.Component {
                     </div>
                 </div>
                 <div className="row">
-                    <div className="col-lg-6">
+                    <div className="col-lg-12">
                         <div class="panel panel-default">
                             <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }} class="panel-heading">
-                                المحافظات
+                                الإدارات
                             </div>
-                            <label style={{ display: "block" }} for="pet-select" style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>اضغط للعرض باعتبار المحافظة</label>
+                            <label style={{ display: "block" }} for="pet-select" style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>اضغط للعرض باعتبار الإدارات</label>
                             <select style={styles} multiple name="pets" id="pet-select">
                                 {this.props.governsJob.map((govern) => (
                                     <option style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }} onClick={this.handelClick} governNum={govern.JOB_GOVERNORATE} >{govern.GOVERNORATE_ARABIC}</option>
-                                ))}
-                            </select>
-                        </div>
-                    </div>
-                    <div className="col-lg-6">
-                        <div class="panel panel-default">
-                            <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }} class="panel-heading">
-                                المحطات
-                            </div>
-                            <label style={{ display: "block" }} for="pet-select" style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>اضغط للعرض بالمحطة</label>
-                            <select style={styles} multiple name="pets" id="pet-select">
-                                {this.props.jobstation.map((station) => (
-                                    <option style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }} onClick={this.handelClick} governNum={station.JOB_GOVERNORATE} station={station.JOB_LOCATION} >{station.JOB_LOCATION}</option>
                                 ))}
                             </select>
                         </div>
@@ -152,4 +139,4 @@ const mapStateToProps = (state) => {
 };
 export default connect(mapStateToProps, {
     getCates, getJobDgByCat, getSupBoxNamesandmanager, getJobStation, getEmpStationAndGovern
-})(EmpByStation);
+})(EmpByDeps);

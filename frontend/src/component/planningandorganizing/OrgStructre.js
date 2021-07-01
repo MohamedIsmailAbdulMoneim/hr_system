@@ -105,7 +105,6 @@ class OrgStructre extends React.Component {
                                                                     <td>{box.emp_box_id}</td>
                                                                     <td>{box.emp_box_name}</td>
                                                                     <td>{box.NAME_ARABIC}</td>
-                                                                    <td>{ }</td>
                                                                 </tr>
                                                             )) : null}
                                                         </tbody>
@@ -135,7 +134,7 @@ class OrgStructre extends React.Component {
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            {this.props.supandmang.map(manag => (
+                                                            {this.props.supandmang ? this.props.supandmang.map(manag => (
                                                                 <tr>
                                                                     <th>{manag.manager_box_id}</th>
                                                                     <th>{manag.manager_box_name}</th>
@@ -145,7 +144,7 @@ class OrgStructre extends React.Component {
 
                                                                 </tr>
 
-                                                            ))}
+                                                            )) : null}
                                                         </tbody>
                                                     </table>
                                                 </div>
