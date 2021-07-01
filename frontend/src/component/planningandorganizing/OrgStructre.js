@@ -103,9 +103,9 @@ class OrgStructre extends React.Component {
                                                             {this.props.supandmang ? this.props.supandmang.map(box => (
                                                                 <tr>
                                                                     <td>{box.emp_box_id}</td>
-                                                                    <td>{box.emp}</td>
-                                                                    <td>{box.emp_box_id}</td>
-                                                                    <td>{box.VAC_NOT}</td>
+                                                                    <td>{box.emp_box_name}</td>
+                                                                    <td>{box.NAME_ARABIC}</td>
+                                                                    <td>{ }</td>
                                                                 </tr>
                                                             )) : null}
                                                         </tbody>
@@ -138,7 +138,7 @@ class OrgStructre extends React.Component {
                                                             {this.props.supandmang.map(manag => (
                                                                 <tr>
                                                                     <th>{manag.manager_box_id}</th>
-                                                                    <th>{manag.manager}</th>
+                                                                    <th>{manag.manager_box_name}</th>
                                                                     <th></th>
                                                                     <th></th>
                                                                     <th></th>

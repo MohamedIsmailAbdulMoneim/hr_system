@@ -3,7 +3,10 @@ import {
   fetchMainCodes,
   fetchCates,
   fetchJobByCat,
-  fetchSupBoxNamesandmanager
+  fetchSupBoxNamesandmanager,
+  fetchJobGovern,
+  fetchJobStation,
+  fetchEmpStationAndGovern
 } from "../actions/ActionTypes";
 import axios from "axios";
 
@@ -58,6 +61,40 @@ export const getSupBoxNamesandmanager = (val1, val2) => (dispatch) => {
   })
 
 }
+
+export const getJobGovern = () => (dispatch) => {
+  console.log('hit');
+  axios.get("http://localhost:5000/getjobgovern").then(res => {
+    dispatch({
+      type: fetchJobGovern,
+      payload: { data: res.data }
+    })
+  })
+}
+
+export const getJobStation = (val) => (dispatch) => {
+  console.log('hit');
+  axios.get(`http://localhost:5000/getjobstation/${val}`).then(res => {
+    dispatch({
+      type: fetchJobStation,
+      payload: { data: res.data }
+    })
+  })
+}
+
+
+
+export const getEmpStationAndGovern = (val_1, val_2) => (dispatch) => {
+  console.log('hit');
+  axios.get(`http://localhost:5000/getempstationandgovern/${val_1}/${val_2}`).then(res => {
+    console.log(res.data);
+    dispatch({
+      type: fetchEmpStationAndGovern,
+      payload: { data: res.data }
+    })
+  })
+}
+
 
 // export const handlePostType = (e) => (dispatch) => {
 //   dispatch({

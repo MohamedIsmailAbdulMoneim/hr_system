@@ -8,7 +8,7 @@ import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
-class Appraisal extends React.Component {
+class EmpTrans extends React.Component {
     constructor(props) {
         super(props);
         this.state = { jobbycat: null || this.props.jobdgbycat, catid: null };
@@ -75,12 +75,15 @@ class Appraisal extends React.Component {
                                                 <th>الوظيفة</th>
                                                 <th>المستوى الوظيفي</th>
                                                 <th>كود المسمى الوظيفي</th>
+                                                <th>المسمى الوظيفي</th>
                                                 <th>نوع التخصص</th>
                                                 <th>طريقة شغل الوظيفة</th>
                                                 <th>حالة الوظيفة</th>
                                                 <th>المسمى الغير موجود بالهيكل</th>
+                                                <th>تعديل</th>
+                                                <th>حذف</th>
 
-                                            
+
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -108,4 +111,4 @@ const mapStateToProps = (state) => {
 };
 export default connect(mapStateToProps, {
     getCates, getJobDgByCat, getSupBoxNamesandmanager
-})(Appraisal);
+})(EmpTrans);

@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import {
-    getJobDgreeCodes, getMainCodes
+    getJobDgreeCodes, getMainCodes, getJobGovern
 } from "../actions/Actions";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
@@ -40,7 +40,7 @@ class Sidebar extends React.Component {
                             <a onClick={this.handle} className="active" href="/"><i className="fa fa-dashboard fa-fw"></i> Dashboard</a>
                         </li>
                         <li>
-                            <a href="#"><i className="fa fa-sitemap fa-fw"></i> الأكواد الرئيسية<span className="fa arrow"></span></a>
+                            <a href="#"><i className="fa fa-sitemap fa-fw"></i>  أكواد الوزارة<span className="fa arrow"></span></a>
                             <ul className="nav nav-second-level">
                                 <li>
                                     <a href="#">الإدارة العليا<span className="fa arrow"></span></a>
@@ -140,7 +140,7 @@ class Sidebar extends React.Component {
                             </ul>
                         </li>
                         <li>
-                            <a href="#"><i className="fa fa-bar-chart-o fa-fw"></i>إضافة وتسجيل<span className="fa arrow"></span></a>
+                            <a href="#"><i className="fa fa-bar-chart-o fa-fw"></i>  الحركات<span className="fa arrow"></span></a>
                             <ul className="nav nav-first-level">
                                 <li>
                                     <a href="flot.html">البيانات الأساسية</a>
@@ -152,7 +152,7 @@ class Sidebar extends React.Component {
                                     <a href="morris.html">مدير عام</a>
                                 </li>
                                 <li>
-                                    <a href="/appraisal">تدرج</a>
+                                    <a href="/EmpTrans">تدرج</a>
                                 </li>
                                 <li>
                                     <a href="morris.html">مؤهلات</a>
@@ -182,30 +182,20 @@ class Sidebar extends React.Component {
 
                         </li>
                         <li>
-                            <a href="/table"><i className="fa fa-table fa-fw"></i> Tables</a>
-                        </li>
-                        <li>
-                            <a href="/form"><i className="fa fa-edit fa-fw"></i> Forms</a>
-                        </li>
-                        <li>
-                            <a href="#"><i className="fa fa-wrench fa-fw"></i> UI Elements<span className="fa arrow"></span></a>
-                            <ul className="nav nav-second-level">
+                            <a href="#"><i className="fa fa-bar-chart-o fa-fw"></i> تقارير<span className="fa arrow"></span></a>
+                            <ul className="nav nav-first-level">
                                 <li>
-                                    <a href="panels-wells.html">Panels and Wells</a>
+                                    <a href="/Employee">بيانات الموظفين</a>
                                 </li>
-                                <li>
-                                    <a href="buttons.html">Buttons</a>
-                                </li>
-                                <li>
-                                    <a href="notifications.html">Notifications</a>
-                                </li>
-                                <li>
-                                    <a href="typography.html">Typography</a>
-                                </li>
-                                <li>
-                                    <a href="grid.html">Grid</a>
-                                </li>
+                                <Link to={`/empbystation`}>
+
+                                    <li>
+                                        <a onClick={this.props.getJobGovern} href="/empbystation">الموظفون بالمحطات</a>
+                                    </li>
+                                </Link>
+
                             </ul>
+
                         </li>
                         <li>
                             <a href="#"><i className="fa fa-files-o fa-fw"></i> Sample Pages<span className="fa arrow"></span></a>
@@ -235,5 +225,5 @@ const mapStateToProps = (state) => {
     };
 };
 export default connect(mapStateToProps, {
-    getJobDgreeCodes, getMainCodes
+    getJobDgreeCodes, getMainCodes, getJobGovern
 })(Sidebar);
