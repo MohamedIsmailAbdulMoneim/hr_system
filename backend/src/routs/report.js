@@ -2,12 +2,27 @@ const express = require("express");
 const db = require("../database/connection")
 
 let router = express.Router();
-let query = `SELECT employee.NATIONAL_ID_CARD_NO, a_job_trans.TRANS_DATE, a_job_trans.MAIN_BOX_NAME, a_job_trans.SUP_BOX_NAME, employee.NAME_ARABIC FROM a_job_trans JOIN employee ON a_job_trans.NATIONAL_ID_CARD_NO = employee.NATIONAL_ID_CARD_NO WHERE a_job_trans.INDICATOR = 2`
 
-
+let query_2 = `SELECT * from t
+WHERE id < 5
+ORDER BY id DESC
+LIMIT 1`
 function getDeps(req, res) {
     const query = `SELECT DISTINCT SUP_BOX_NAME FROM a_job_trans`
     db.query(query, (err, details) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(details)
+        }
+    })
+}
+
+function getEmpByDeps(req, res) {
+    const dep = req.params.dep
+    const query = `SELECT employee.NATIONAL_ID_CARD_NO, employee.EMPLOYEE_ID, a_job_trans.MAIN_BOX_NAME, a_job_trans.SUP_BOX_NAME, employee.NAME_ARABIC FROM a_job_trans JOIN employee ON a_job_trans.NATIONAL_ID_CARD_NO = employee.NATIONAL_ID_CARD_NO WHERE a_job_trans.INDICATOR = 2 AND a_job_trans.SUP_BOX_NAME = "${dep}" ORDER BY a_job_trans.MAIN_BOX_NAME`
+    db.query(query, (err, details) => {
+        console.log('hit');
         if (err) {
             console.log(err);
         } else {
@@ -75,6 +90,7 @@ function getEmpStationAndGovern(req, res) {
 
 router
     .get('/getdeps', getDeps)
+    .get('/getempbydeps/:dep', getEmpByDeps)
     .get('/getjobgovern', getjobgovern)
     .get('/getjobstation/:govern', getjobstation)
     .get('/getempstationandgovern/:govern/:station', getEmpStationAndGovern)

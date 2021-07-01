@@ -1,10 +1,7 @@
 import React, { Fragment } from "react";
 import {
-    getCates,
-    getJobDgByCat,
-    getSupBoxNamesandmanager,
-    getJobStation,
-    getEmpStationAndGovern
+
+    getEmpByDeps
 
 } from "../../actions/Actions";
 import { connect } from "react-redux";
@@ -18,25 +15,15 @@ class EmpByDeps extends React.Component {
 
     }
 
-    componentDidMount() {
-        this.props.getCates()
 
-    }
-
-
-    handelClick = (e) => {
-        this.props.getJobStation(e.target.getAttribute("governNum"))
-        this.setState({ station: e.target.getAttribute("station") })
-        this.props.getEmpStationAndGovern(e.target.getAttribute("governNum"), e.target.getAttribute("station"))
-
-
+    handel = (e) => {
+        this.props.getEmpByDeps(e.target.getAttribute('depart'))
     }
 
 
     render() {
 
-        console.log(this.state.station);
-
+        console.log(this.props.empdep);
         const styles = {
             display: "block",
             padding: "0.375rem 2.25rem 0.375rem 0.75rem",
@@ -69,8 +56,8 @@ class EmpByDeps extends React.Component {
                             </div>
                             <label style={{ display: "block" }} for="pet-select" style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>اضغط للعرض باعتبار الإدارات</label>
                             <select style={styles} multiple name="pets" id="pet-select">
-                                {this.props.governsJob.map((govern) => (
-                                    <option style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }} onClick={this.handelClick} governNum={govern.JOB_GOVERNORATE} >{govern.GOVERNORATE_ARABIC}</option>
+                                {this.props.deps.map((dep) => (
+                                    <option depart={dep.SUP_BOX_NAME} style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }} onClick={this.handel}>{dep.SUP_BOX_NAME}</option>
                                 ))}
                             </select>
                         </div>
@@ -89,32 +76,23 @@ class EmpByDeps extends React.Component {
                                             <tr>
                                                 <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>رقم الأداء</th>
                                                 <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>الإسم</th>
-                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>المحطة</th>
-                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>المحافظة</th>
+                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>الوظيفة</th>
+                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>الإدارة</th>
                                             </tr>
                                         </thead>
 
-                                        {this.state.station === null ? this.props.empstationandgovern.map(emp => (
+                                        {this.props.empdep.map(empdep => (
                                             <tbody>
-                                                <td style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>{emp.EMPLOYEE_ID}</td>
-                                                <td style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>{emp.NAME_ARABIC}</td>
-                                                <td style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>{emp.JOB_LOCATION}</td>
-                                                <td style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>{emp.GOVERNORATE_ARABIC}</td>
+                                                <td>{empdep.EMPLOYEE_ID}</td>
+                                                <td>{empdep.NAME_ARABIC}</td>
+                                                <td>{empdep.MAIN_BOX_NAME}</td>
+                                                <td>{empdep.SUP_BOX_NAME}</td>
 
                                             </tbody>
-                                        )) : this.props.empstationandgovern.map(emp => (
-                                            <tbody>
-                                                <td style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>{emp.EMPLOYEE_ID}</td>
-                                                <td style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>{emp.NAME_ARABIC}</td>
-                                                <td style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>{emp.JOB_LOCATION}</td>
-                                                <td style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>{emp.GOVERNORATE_ARABIC}</td>
-
-                                            </tbody>
-
                                         ))}
 
                                     </table>
-                                    <p>{this.props.empstationandgovern.length}</p>
+                                    <p>{this.props.empdep.length}</p>
                                 </div>
                             </div>
                         </div>
@@ -128,15 +106,12 @@ class EmpByDeps extends React.Component {
 const mapStateToProps = (state) => {
     return {
 
-        cates: state.posts.cates,
-        jobdgbycat: state.posts.jobdgbycat,
-        supandmang: state.posts.supandmang,
-        governsJob: state.posts.jobgovern,
-        jobstation: state.posts.jobstation,
-        empstationandgovern: state.posts.empstationandgovern,
+        deps: state.posts.deps,
+        empdep: state.posts.empdep,
+
 
     };
 };
 export default connect(mapStateToProps, {
-    getCates, getJobDgByCat, getSupBoxNamesandmanager, getJobStation, getEmpStationAndGovern
+    getEmpByDeps
 })(EmpByDeps);

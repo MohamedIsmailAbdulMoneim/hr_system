@@ -48,19 +48,22 @@ class Employee extends React.Component {
                                 <div style={{ display: "flex" }}>
                                     <div style={{ marginRight: 20 }}>
                                         <div class="input-group">
-                                            <label class="label">first name</label>
-                                            <input style={{ background: "white", marginBottom: 5, border: "1px dashed black" }} type="text" name="first_name" />
+                                            <span>رقم الأداء :  </span><input style={{ background: "white", marginBottom: 5, marginRight: 35, border: "1px solid black" }} type="text" name="first_name" />
                                         </div>
                                         <div class="input-group">
-                                            <label class="label">first name</label>
-                                            <input style={{ background: "white", marginBottom: 5, border: "1px dashed black" }} type="text" name="first_name" />
+                                            <span>تاريخ العقد :  </span><input style={{ background: "white", marginBottom: 5, marginRight: 31, border: "1px solid black" }} type="text" name="first_name" />
                                         </div>
                                         <div class="input-group">
-                                            <label class="label">first name</label>
-                                            <input style={{ background: "white", marginBottom: 5, border: "1px dashed black" }} type="text" name="first_name" />
-                                        </div>                                        <div class="input-group">
-                                            <label class="label">first name</label>
-                                            <input style={{ background: "white", marginBottom: 5, border: "1px dashed black" }} type="text" name="first_name" />
+                                            <span>تاريخ بداية الخبرة :  </span><input style={{ background: "white", marginBottom: 5, border: "1px solid black" }} type="text" name="first_name" />
+                                        </div>
+                                        <div class="input-group">
+                                            <span>الوظيفة الحالية :  </span><input style={{ background: "white", marginBottom: 5, marginRight: 15, width: 299, border: "1px solid black" }} type="text" name="first_name" />
+                                        </div>
+                                        <div class="input-group">
+                                            <span>المستوى الوظيفي :  </span><input style={{ background: "white", marginBottom: 5, marginRight: 2, width: 300, border: "1px solid black" }} type="text" name="first_name" />
+                                        </div>
+                                        <div class="input-group">
+                                            <span>المسمى الوظيفي :  </span><input style={{ background: "white", marginBottom: 5, marginRight: 7, width: 300, border: "1px solid black" }} type="text" name="first_name" />
                                         </div>
                                     </div>
                                     <div>
