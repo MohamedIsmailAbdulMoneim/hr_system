@@ -10,11 +10,12 @@ import GeneralManager from './component/mainCodes/GeneralManager';
 import { Provider } from "react-redux";
 import store from "./store";
 import AssisstantGeneralManager from './component/mainCodes/AssisstantGeneralManager';
-import OrgStructre from './component/planningandorganizing/OrgStructre';
-import EmpTrans from './component/planningandorganizing/EmpTrans'
+import OrgStructre from './component/transactions/OrgStructre';
+import EmpTrans from './component/transactions/EmpTrans'
 import Employee from './component/reports/Employee';
 import Empbystation from './component/reports/Empbystation';
 import EmpByDeps from './component/reports/Empbydeps'
+import EmpsAppraisal from './component/transactions/EmpsAppraisal';
 
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
@@ -40,6 +41,10 @@ function App() {
             <Route path="/employee" exact component={Employee} />
             <Route path="/empbystation" exact component={Empbystation} />
             <Route path="/empbydeps" exact component={EmpByDeps} />
+            <Route path="/empsappraisal" exact component={EmpsAppraisal} />
+
+
+
 
             Appraisal
 

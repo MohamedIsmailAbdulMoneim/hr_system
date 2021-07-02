@@ -8,7 +8,8 @@ import {
   fetchJobStation,
   fetchEmpStationAndGovern,
   fetchDeps,
-  fetchEmpByDeps
+  fetchEmpByDeps,
+  fetchEmpName
 } from "../actions/ActionTypes";
 import axios from "axios";
 
@@ -114,6 +115,16 @@ export const getEmpStationAndGovern = (val_1, val_2) => (dispatch) => {
     dispatch({
       type: fetchEmpStationAndGovern,
       payload: { data: res.data }
+    })
+  })
+}
+
+export const getEmpName = (val) => (dispatch) => {
+  axios.get(`http://localhost:5000/empname/${val}`).then(res => {
+    console.log(res.data);
+    dispatch({
+      type: fetchEmpName,
+      payload: res.data
     })
   })
 }

@@ -63,6 +63,33 @@ function getsupboxmangers(req, res) {
 }
 
 
+function getEmpApprails(req, res) {
+
+    let query = `SELECT
+    employee.NAME_ARABIC,
+    employee_appraisal.APPRAISAL_DATE,
+    appraisal.APPRAISAL_ARABIC,
+    employee.EMPLOYEE_ID
+FROM
+    employee_appraisal
+JOIN employee ON employee.NATIONAL_ID_CARD_NO = employee_appraisal.NATIONAL_ID_CARD_NO
+JOIN APPRAISAL ON APPRAISAL.APPRAISAL = employee_appraisal.APPRAISAL
+WHERE
+    employee.EMPLOYEE_ID = 701 AND employee_appraisal.APPRAISAL_DATE = 2019 AND appraisal.APPRAISAL_ARABIC = ""
+ORDER BY
+            employee_appraisal.APPRAISAL_DATE`
+
+    db.query(query, (err, details) => {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log(details);
+            res.send(details);
+        }
+    })
+}
+
+
 
 router
     .get('/getjobdgbycat/:catid', getJobDgByCat)

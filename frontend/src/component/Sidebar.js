@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import {
-    getJobDgreeCodes, getMainCodes, getJobGovern, getDeps
+    getJobDgreeCodes, getMainCodes, getJobGovern, getDeps, getEmpName
 } from "../actions/Actions";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
@@ -57,8 +57,7 @@ class Sidebar extends React.Component {
                                             </li>
                                         </Link>
                                         <Link to={`/assisstantgeneralmanager`}>
-
-                                            <li>
+                                            <li style={{ marginTop: 20 }}>
                                                 <a onClick={this.handleSidebarClick} href="assisstantgeneralmanager">مدير عام مساعد</a>
                                             </li>
                                         </Link>
@@ -161,7 +160,7 @@ class Sidebar extends React.Component {
                                     <a href="morris.html">خبرات سابقة</a>
                                 </li>
                                 <li>
-                                    <a href="morris.html">تقييمات سنوية</a>
+                                    <a href="/empsappraisal">تقييمات سنوية</a>
                                 </li>
                                 <li>
                                     <a href="morris.html">تدريب</a>
@@ -235,5 +234,5 @@ const mapStateToProps = (state) => {
     };
 };
 export default connect(mapStateToProps, {
-    getJobDgreeCodes, getMainCodes, getJobGovern, getDeps
+    getJobDgreeCodes, getMainCodes, getJobGovern, getDeps, getEmpName
 })(Sidebar);

@@ -39,16 +39,27 @@ function getCates(req, res) {
     })
 }
 
+function getEmpName(req, res) {
+    const empId = req.params.empid
+    const query = `SELECT NAME_ARABIC FROM employee WHERE EMPLOYEE_ID = ${empId}`
+    console.log("hit");
+    db.query(query, (err, details) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(details);
+        }
+    })
+}
+
 
 
 router
     .get('/getjobdgreecodes/:jDName', getJobDgreeCodes)
-
-router
     .get('/getmaincodes/:jdid', getMainCodes)
-
-router
     .get('/category', getCates)
+    .get('/empname/:empid', getEmpName)
+
 
 
 
