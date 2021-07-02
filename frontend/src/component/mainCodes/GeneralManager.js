@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import {
-    getMainCodes
+    getMainCodes, getJobDgreeCodes
 } from "../../actions/Actions";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
@@ -13,6 +13,9 @@ class GeneralManager extends React.Component {
 
     }
 
+    componentDidMount() {
+        this.props.getJobDgreeCodes("مدير عام")
+    }
 
     clickHandler = (e) => {
         console.log(e.target.getAttribute('name'));
@@ -44,38 +47,46 @@ class GeneralManager extends React.Component {
                     </div>
                 </div>
                 <div className="row">
-                    <div className="col-lg-12">
-                        <div className="panel panel-default">
-                            <div className="panel-heading">
-                                أكواد مديري العموم
-                            </div>
-                            <div className="panel-body">
-                                <div className="row">
-                                    <div className="col-lg-6">
-                                        <form role="form">
-                                            <div className="form-group">
-                                                <label>كود المستوى الوظيفي</label>
-                                                <input className="form-control" placeholder="Enter text" disabled={(this.state.new ? false : true)} />
-                                            </div>
-                                            <div className="form-group">
-                                                <label>كود الوصف الوظيفي</label>
-                                                <input className="form-control" placeholder="Enter text" disabled={(this.state.new ? false : true)} />
-                                            </div>
-                                            <div className="form-group">
-                                                <label>المستوى الوظيفي</label>
-                                                <input className="form-control" placeholder="Enter text" disabled={(this.state.new ? false : true)} />
-                                            </div>
-                                            <div className="form-group">
-                                                <label>الوصف الوظيفي</label>
-                                                <input className="form-control" placeholder="Enter text" disabled={(this.state.new ? false : true)} />
-                                            </div>
-                                            <div className="form-group">
-                                                <label>ملاحظات</label>
-                                                <textarea className="form-control" rows="3" disabled></textarea>
-                                            </div>
-                                        </form>
+                    <div className="row">
+                        <div className="col-lg-12" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                            <div style={{ height: "100%", width: 1000 }} class="panel panel-default">
+                                <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }} class="panel-heading">
+                                    إضافة مسمى وظيفي جديد
+                                </div>
+                                <form role="form">
+                                    <div className="form-group">
+                                        <label>كود المستوى الوظيفي</label>
+                                        <input className="form-control" placeholder="Enter text" disabled={(this.state.new ? false : true)} />
                                     </div>
-                                    <div className="col-lg-6">
+                                    <div className="form-group">
+                                        <label>كود الوصف الوظيفي</label>
+                                        <input className="form-control" placeholder="Enter text" disabled={(this.state.new ? false : true)} />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>المستوى الوظيفي</label>
+                                        <input className="form-control" placeholder="Enter text" disabled={(this.state.new ? false : true)} />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>الوصف الوظيفي</label>
+                                        <input className="form-control" placeholder="Enter text" disabled={(this.state.new ? false : true)} />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>ملاحظات</label>
+                                        <textarea className="form-control" rows="3" disabled></textarea>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-lg-12">
+                            <div className="panel panel-default">
+                                <div className="panel-heading">
+                                    أكواد مديري العموم
+                                </div>
+                                <div className="panel-body">
+
+                                    <div className="col-lg-12">
                                         <div className="panel panel-default">
                                             <div className="panel-heading">
                                                 Striped Rows
@@ -156,5 +167,5 @@ const mapStateToProps = (state) => {
     };
 };
 export default connect(mapStateToProps, {
-    getMainCodes
+    getMainCodes, getJobDgreeCodes
 })(GeneralManager);
