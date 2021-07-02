@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import {
 
-    getEmpByDeps, getEmpName,getEmpAppraisal
+    getEmpByDeps, getEmpName, getEmpAppraisal
 
 } from "../../actions/Actions";
 import { connect } from "react-redux";
@@ -13,15 +13,15 @@ import 'moment-timezone';
 class EmpsAppraisal extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { empName : null }
+        this.state = { empName: "701", empdep: null }
 
     }
 
-    componentDidMount(){
+    componentDidMount() {
     }
     // onSubmit = (e) => {
     //     e.preventDefault();
-    
+
     //     const fd = {
     //       subject: this.state.subject,
     //       type: this.state.type,
@@ -32,7 +32,7 @@ class EmpsAppraisal extends React.Component {
     //       summary: this.state.summary,
     //       bais: this.state.posttype,
     //     };
-    
+
     //     if (this.state.posttype === "outdocs") {
     //       axios({
     //         method: "POST",
@@ -61,15 +61,15 @@ class EmpsAppraisal extends React.Component {
     //           const img = new FormData();
     //           img.append("data", data);
     //           console.log(data);
-    
+
     //           // for(let i = 0; i < this.state.imageSelected; i++){
     //           //   img.append(`image`, this.state.imageSelected, `default`);
-    
+
     //           // }
     //           for (let i = 0; i < this.state.imageSelected.length; i++) {
     //             img.append("image", this.state.imageSelected[i], `default${i}`);
     //           }
-    
+
     //           axios({
     //             method: "POST",
     //             data: img,
@@ -115,7 +115,7 @@ class EmpsAppraisal extends React.Component {
     //             headers: { "Content-Type": "multipart/form-data" },
     //           }).then((res) => {});
     //           this.componentDidMount()
-    
+
     //         });
     //     }
     //     this.componentDidMount();
@@ -124,8 +124,8 @@ class EmpsAppraisal extends React.Component {
 
     handel22 = (e) => {
         this.props.getEmpName(e.target.value)
-        if(this.props.empname){
-            if(this.props.empname.length >= 1){
+        if (this.props.empname) {
+            if (this.props.empname.length >= 1) {
                 this.setState({
                     empName: this.props.empname[0].NAME_ARABIC
                 })
@@ -135,7 +135,8 @@ class EmpsAppraisal extends React.Component {
 
 
     render() {
-        this.props.getEmpAppraisal(701)
+        this.props.getEmpAppraisal(this.state.empName, this.state.empdep, "null")
+        console.log(this.state.empName);
 
 
         var dates = [];
@@ -296,5 +297,5 @@ const mapStateToProps = (state) => {
     };
 };
 export default connect(mapStateToProps, {
-    getEmpByDeps, getEmpName,getEmpAppraisal
+    getEmpByDeps, getEmpName, getEmpAppraisal
 })(EmpsAppraisal);

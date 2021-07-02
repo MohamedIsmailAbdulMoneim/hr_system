@@ -64,93 +64,34 @@ function getsupboxmangers(req, res) {
 
 
 function getEmpApprails(req, res) {
+    let query;
     const empid = req.params.empid
     const appraisal = req.params.appraisal
     const year = req.params.year
-    if (empid === "null") {
-        db.query(`SELECT
-        employee.NAME_ARABIC,
-        employee_appraisal.APPRAISAL_DATE,
-        appraisal.APPRAISAL_ARABIC,
+
+    console.log(empid, appraisal, year);
+
+    if (empid === "null" && appraisal === "null") {
+        console.log('empid and appraisal null');
+        db.query(`SELECT employee.NAME_ARABIC, employee_appraisal.APPRAISAL_DATE, appraisal.APPRAISAL_ARABIC,
         employee.EMPLOYEE_ID
-    FROM
+        FROM
         employee_appraisal
-    JOIN employee ON employee.NATIONAL_ID_CARD_NO = employee_appraisal.NATIONAL_ID_CARD_NO
-    JOIN APPRAISAL ON APPRAISAL.APPRAISAL = employee_appraisal.APPRAISAL
-    WHERE
-        employee_appraisal.APPRAISAL_DATE = ${year} AND appraisal.APPRAISAL_ARABIC = ${appraisal}
-    ORDER BY
-                employee_appraisal.APPRAISAL_DATE`, (err, details) => {
+        JOIN employee ON employee.NATIONAL_ID_CARD_NO = employee_appraisal.NATIONAL_ID_CARD_NO
+        JOIN APPRAISAL ON APPRAISAL.APPRAISAL = employee_appraisal.APPRAISAL
+        WHERE
+        employee_appraisal.APPRAISAL_DATE = ${year}
+        ORDER BY
+        appraisal.APPRAISAL_ARABIC`, (err, details) => {
             if (err) {
                 console.log(err);
             } else {
-                console.log(details);
-                res.send(details);
-            }
-        })
-    } else if (appraisal === "null") {
-        db.query(`SELECT
-        employee.NAME_ARABIC,
-        employee_appraisal.APPRAISAL_DATE,
-        appraisal.APPRAISAL_ARABIC,
-        employee.EMPLOYEE_ID
-    FROM
-        employee_appraisal
-    JOIN employee ON employee.NATIONAL_ID_CARD_NO = employee_appraisal.NATIONAL_ID_CARD_NO
-    JOIN APPRAISAL ON APPRAISAL.APPRAISAL = employee_appraisal.APPRAISAL
-    WHERE
-    employee.EMPLOYEE_ID = ${empid} AND employee_appraisal.APPRAISAL_DATE = ${year}
-    ORDER BY
-                employee_appraisal.APPRAISAL_DATE`, (err, details) => {
-            if (err) {
-                console.log(err);
-            } else {
-                console.log(details);
-                res.send(details);
-            }
-        })
-    } else if (year === "null") {
-        db.query(`SELECT
-        employee.NAME_ARABIC,
-        employee_appraisal.APPRAISAL_DATE,
-        appraisal.APPRAISAL_ARABIC,
-        employee.EMPLOYEE_ID
-    FROM
-        employee_appraisal
-    JOIN employee ON employee.NATIONAL_ID_CARD_NO = employee_appraisal.NATIONAL_ID_CARD_NO
-    JOIN APPRAISAL ON APPRAISAL.APPRAISAL = employee_appraisal.APPRAISAL
-    WHERE
-    employee.EMPLOYEE_ID = ${empid} AND employee_appraisal.APPRAISAL = ${appraisal}
-    ORDER BY
-                employee_appraisal.APPRAISAL_DATE`, (err, details) => {
-            if (err) {
-                console.log(err);
-            } else {
-                console.log(details);
                 res.send(details);
             }
         })
     } else if (appraisal === "null" && year === "null") {
-        db.query(db.query(`SELECT
-        employee.NAME_ARABIC,
-        employee_appraisal.APPRAISAL_DATE,
-        appraisal.APPRAISAL_ARABIC,
-        employee.EMPLOYEE_ID
-    FROM
-        employee_appraisal
-    JOIN employee ON employee.NATIONAL_ID_CARD_NO = employee_appraisal.NATIONAL_ID_CARD_NO
-    JOIN APPRAISAL ON APPRAISAL.APPRAISAL = employee_appraisal.APPRAISAL
-    WHERE
-    employee.EMPLOYEE_ID = ${empid}
-    ORDER BY
-                employee_appraisal.APPRAISAL_DATE`, (err, details) => {
-            if (err) {
-                console.log(err);
-            } else {
-                console.log(details);
-                res.send(details);
-            }
-        }), (err, details) => {
+        console.log('appraisal and year null');
+        db.query(`SELECT employee.NAME_ARABIC,employee_appraisal.APPRAISAL_DATE,appraisal.APPRAISAL_ARABIC,employee.EMPLOYEE_ID FROM employee_appraisal JOIN employee ON employee.NATIONAL_ID_CARD_NO = employee_appraisal.NATIONAL_ID_CARD_NO JOIN APPRAISAL ON APPRAISAL.APPRAISAL = employee_appraisal.APPRAISAL WHERE employee.EMPLOYEE_ID = ${empid} ORDER BY employee_appraisal.APPRAISAL_DATE`, (err, details) => {
             if (err) {
                 console.log(err);
             } else {
@@ -158,7 +99,10 @@ function getEmpApprails(req, res) {
                 res.send(details);
             }
         })
-    }else if (empid === "null" && year === "null") {
+    }
+    else if (empid === "null" && year === "null") {
+        console.log('empid and year null');
+
         db.query(db.query(`SELECT
         employee.NAME_ARABIC,
         employee_appraisal.APPRAISAL_DATE,
@@ -175,39 +119,71 @@ function getEmpApprails(req, res) {
             if (err) {
                 console.log(err);
             } else {
-                console.log(details);
                 res.send(details);
             }
-        }), (err, details) => {
+        }))
+    } else if (empid === "empid null") {
+        console.log('hit');
+        db.query(`SELECT employee.NAME_ARABIC,
+        employee_appraisal.APPRAISAL_DATE,
+        appraisal.APPRAISAL_ARABIC,
+        employee.EMPLOYEE_ID
+    FROM
+        employee_appraisal
+    JOIN employee ON employee.NATIONAL_ID_CARD_NO = employee_appraisal.NATIONAL_ID_CARD_NO
+    JOIN APPRAISAL ON APPRAISAL.APPRAISAL = employee_appraisal.APPRAISAL
+    WHERE
+        employee_appraisal.APPRAISAL_DATE = ${year} AND appraisal.APPRAISAL_ARABIC = ${appraisal}
+    ORDER BY employee_appraisal.APPRAISAL_DATE`, (err, details) => {
             if (err) {
                 console.log(err);
             } else {
-                console.log(details);
                 res.send(details);
             }
         })
-    }else if (empid === "null" && appraisal === "null") {
+    } else if (appraisal === "null") {
+        console.log('appraisal null');
         db.query(`SELECT
         employee.NAME_ARABIC,
         employee_appraisal.APPRAISAL_DATE,
         appraisal.APPRAISAL_ARABIC,
         employee.EMPLOYEE_ID
-        FROM
+    FROM
         employee_appraisal
-        JOIN employee ON employee.NATIONAL_ID_CARD_NO = employee_appraisal.NATIONAL_ID_CARD_NO
-        JOIN APPRAISAL ON APPRAISAL.APPRAISAL = employee_appraisal.APPRAISAL
-        WHERE
-        employee_appraisal.APPRAISAL_DATE = ${year}
-        ORDER BY
-        appraisal.APPRAISAL_ARABIC`, (err, details) => {
+    JOIN employee ON employee.NATIONAL_ID_CARD_NO = employee_appraisal.NATIONAL_ID_CARD_NO
+    JOIN APPRAISAL ON APPRAISAL.APPRAISAL = employee_appraisal.APPRAISAL
+    WHERE
+        employee.EMPLOYEE_ID = ${empid} AND employee_appraisal.APPRAISAL_DATE = ${year}
+    ORDER BY
+        employee_appraisal.APPRAISAL_DATE`, (err, details) => {
             if (err) {
                 console.log(err);
             } else {
-                console.log(details);
                 res.send(details);
             }
         })
-        }
+    } else if (year === "null") {
+        console.log('year null');
+        db.query(`SELECT
+        employee.NAME_ARABIC,
+        employee_appraisal.APPRAISAL_DATE,
+        appraisal.APPRAISAL_ARABIC,
+        employee.EMPLOYEE_ID
+    FROM
+        employee_appraisal
+    JOIN employee ON employee.NATIONAL_ID_CARD_NO = employee_appraisal.NATIONAL_ID_CARD_NO
+    JOIN APPRAISAL ON APPRAISAL.APPRAISAL = employee_appraisal.APPRAISAL
+    WHERE
+    employee.EMPLOYEE_ID = ${empid} AND employee_appraisal.APPRAISAL = ${appraisal}
+    ORDER BY
+                employee_appraisal.APPRAISAL_DATE`, (err, details) => {
+            if (err) {
+                console.log(err);
+            } else {
+                res.send(details);
+            }
+        })
+    }
 
 }
 

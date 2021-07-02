@@ -130,7 +130,7 @@ export const getEmpName = (val) => (dispatch) => {
   })
 }
 
-export const getEmpAppraisal = (empid,appraisal,year) => (dispatch) => {
+export const getEmpAppraisal = (empid, appraisal, year) => (dispatch) => {
   axios.get(`http://localhost:5000/getempappraisal/${empid}/${appraisal}/${year}`).then(res => {
     console.log('hit');
     dispatch({
