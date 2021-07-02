@@ -9,7 +9,8 @@ import {
   fetchEmpStationAndGovern,
   fetchDeps,
   fetchEmpByDeps,
-  fetchEmpName
+  fetchEmpName,
+  fetchEmpAppraisal
 } from "../actions/ActionTypes";
 import axios from "axios";
 
@@ -128,6 +129,18 @@ export const getEmpName = (val) => (dispatch) => {
     })
   })
 }
+
+export const getEmpAppraisal = (empid,appraisal,year) => (dispatch) => {
+  axios.get(`http://localhost:5000/getempappraisal/${empid}/${appraisal}/${year}`).then(res => {
+    console.log('hit');
+    dispatch({
+      type: fetchEmpAppraisal,
+      payload: res.data
+    })
+  })
+}
+
+
 
 
 // export const handlePostType = (e) => (dispatch) => {

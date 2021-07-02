@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import {
 
-    getEmpByDeps, getEmpName
+    getEmpByDeps, getEmpName,getEmpAppraisal
 
 } from "../../actions/Actions";
 import { connect } from "react-redux";
@@ -13,17 +13,130 @@ import 'moment-timezone';
 class EmpsAppraisal extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { govern: null, station: null }
+        this.state = { empName : null }
 
     }
+
+    componentDidMount(){
+    }
+    // onSubmit = (e) => {
+    //     e.preventDefault();
+    
+    //     const fd = {
+    //       subject: this.state.subject,
+    //       type: this.state.type,
+    //       giver: this.state.giver,
+    //       state: this.state.status,
+    //       creationdate: this.state.doc,
+    //       required: this.state.required,
+    //       summary: this.state.summary,
+    //       bais: this.state.posttype,
+    //     };
+    
+    //     if (this.state.posttype === "outdocs") {
+    //       axios({
+    //         method: "POST",
+    //         data: fd,
+    //         withCredentials: true,
+    //         url: "http://localhost:3000/outdocspost",
+    //         headers: { "Content-Type": "application/json" },
+    //       })
+    //         .then((res) => {
+    //           axios
+    //           .get(`http://localhost:3000/newCreatedpost/${res.data.insertId}/${this.state.posttype}`)
+    //           .then((data) => {
+    //             let newdata;
+    //             data.data[0].length > 0 ? newdata = data.data[0] : newdata = data.data[1]
+    //             console.log(newdata);
+    //             this.setState({
+    //               newCreatedData: newdata[0]
+    //             })
+    //           });
+    //           return res.data.insertId;
+    //         })
+    //         .then((data) => {
+    //           this.setState({
+    //             newpostid: data,
+    //           });
+    //           const img = new FormData();
+    //           img.append("data", data);
+    //           console.log(data);
+    
+    //           // for(let i = 0; i < this.state.imageSelected; i++){
+    //           //   img.append(`image`, this.state.imageSelected, `default`);
+    
+    //           // }
+    //           for (let i = 0; i < this.state.imageSelected.length; i++) {
+    //             img.append("image", this.state.imageSelected[i], `default${i}`);
+    //           }
+    
+    //           axios({
+    //             method: "POST",
+    //             data: img,
+    //             url: "http://localhost:3000/outdocsimage",
+    //             headers: { "Content-Type": "multipart/form-data" },
+    //             cancelToken: source.token,
+    //           }).then((res) => {
+    //             console.log(res);
+    //             this.componentDidMount()
+    //           });
+    //         });
+    //     } else if (this.state.posttype === "intdocs") {
+    //       axios({
+    //         method: "POST",
+    //         data: fd,
+    //         withCredentials: true,
+    //         url: "http://localhost:3000/intdocspost",
+    //         headers: { "Content-Type": "application/json" },
+    //       })
+    //         .then((res) => {
+    //           axios
+    //             .get(`http://localhost:3000/newCreatedpost/${res.data.insertId}/${this.state.posttype}`)
+    //             .then((data) => {
+    //               let newdata;
+    //               data.data[0].length > 0 ? newdata = data.data[0] : newdata = data.data[1]
+    //               console.log(newdata);
+    //               this.setState({
+    //                 newCreatedData: newdata[0]
+    //               })
+    //             });
+    //           return res.data.insertId;
+    //         })
+    //         .then((data) => {
+    //           const img = new FormData();
+    //           img.append("data", data);
+    //           for (let i = 0; i < this.state.imageSelected.length; i++) {
+    //             img.append("image", this.state.imageSelected[i], `default${i}`);
+    //           }
+    //           axios({
+    //             method: "POST",
+    //             data: img,
+    //             url: "http://localhost:3000/intdocsimage",
+    //             headers: { "Content-Type": "multipart/form-data" },
+    //           }).then((res) => {});
+    //           this.componentDidMount()
+    
+    //         });
+    //     }
+    //     this.componentDidMount();
+    //   };
 
 
     handel22 = (e) => {
         this.props.getEmpName(e.target.value)
+        if(this.props.empname){
+            if(this.props.empname.length >= 1){
+                this.setState({
+                    empName: this.props.empname[0].NAME_ARABIC
+                })
+            }
+        }
     }
 
 
     render() {
+        this.props.getEmpAppraisal(701)
+
 
         var dates = [];
         let start = 1996;
@@ -33,6 +146,7 @@ class EmpsAppraisal extends React.Component {
             dates.push(start);
             start++;
         }
+
 
         let appraisals = ["ممتاز بجدارة", "ممتاز", "جيد جدا بجدارة", "جيد جدا", "جيد", "مقبول", "ضعيف", "جيد حكمي", "جيد جدا حكمي", "ممتاز حكمي"]
 
@@ -105,7 +219,7 @@ class EmpsAppraisal extends React.Component {
                                     <span>رقم الأداء  </span><input style={{ background: "white", width: 20, marginBottom: 5, marginRight: 5, border: "1px solid black", width: 120 }} onClick={this.handel22} type="text" name="first_name" />
                                 </div>
                                 <div style={{ marginTop: 20 }} class="input-group">
-                                    <span>الإسم</span><input style={{ background: "white", width: 20, marginBottom: 5, marginRight: 5, border: "1px solid black", width: 120 }} type="text" disabled={true} name="first_name" value={this.props.empname ? this.props.empname[0].NAME_ARABIC : null} />
+                                    <span>الإسم</span><input style={{ background: "white", width: 20, marginBottom: 5, marginRight: 5, border: "1px solid black", width: 120 }} type="text" disabled={true} name="first_name" value={this.state.empName ? this.state.empName : null} />
                                 </div>
                                 <div style={{ marginRight: 5, marginTop: 20 }} class="input-group">
                                     <span>التقدير</span>
@@ -182,5 +296,5 @@ const mapStateToProps = (state) => {
     };
 };
 export default connect(mapStateToProps, {
-    getEmpByDeps, getEmpName
+    getEmpByDeps, getEmpName,getEmpAppraisal
 })(EmpsAppraisal);
