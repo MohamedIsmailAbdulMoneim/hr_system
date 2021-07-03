@@ -153,9 +153,16 @@ class Sidebar extends React.Component {
                                 <li>
                                     <a href="/EmpTrans">تدرج</a>
                                 </li>
-                                <li>
-                                    <a href="morris.html">مؤهلات</a>
-                                </li>
+                                <Link to={`/empedudeg`}>
+                                    <li>
+                                        <a onClick={this.props.getJobGovern} href="/empedudeg">مؤهلات الموظفين</a>
+                                    </li>
+                                </Link>
+                                <Link to={`/emptraining`}>
+                                    <li>
+                                        <a href="/emptraining">تدريب</a>
+                                    </li>
+                                </Link>
                                 <li>
                                     <a href="morris.html">خبرات سابقة</a>
                                 </li>

@@ -16,6 +16,10 @@ import Employee from './component/reports/Employee';
 import Empbystation from './component/reports/Empbystation';
 import EmpByDeps from './component/reports/Empbydeps'
 import EmpsAppraisal from './component/transactions/EmpsAppraisal';
+import EmpEdu from './component/transactions/EmpEduDeg';
+import EmpTraining from './component/transactions/EmpTraining';
+
+
 
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
@@ -42,11 +46,8 @@ function App() {
             <Route path="/empbystation" exact component={Empbystation} />
             <Route path="/empbydeps" exact component={EmpByDeps} />
             <Route path="/empsappraisal" exact component={EmpsAppraisal} />
-
-
-
-
-            Appraisal
+            <Route path="/empedudeg" exact component={EmpEdu} />
+            <Route path="/EmpTraining" exact component={EmpTraining} />
 
 
 

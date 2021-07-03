@@ -13,132 +13,73 @@ import 'moment-timezone';
 class EmpsAppraisal extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { empName: "701", empdep: null }
+        this.state = { empId: "null", empName: null, empAppraisal: "null", appraisalYear: "null", edit: false, empNat: null }
 
     }
 
     componentDidMount() {
     }
-    // onSubmit = (e) => {
-    //     e.preventDefault();
-
-    //     const fd = {
-    //       subject: this.state.subject,
-    //       type: this.state.type,
-    //       giver: this.state.giver,
-    //       state: this.state.status,
-    //       creationdate: this.state.doc,
-    //       required: this.state.required,
-    //       summary: this.state.summary,
-    //       bais: this.state.posttype,
-    //     };
-
-    //     if (this.state.posttype === "outdocs") {
-    //       axios({
-    //         method: "POST",
-    //         data: fd,
-    //         withCredentials: true,
-    //         url: "http://localhost:3000/outdocspost",
-    //         headers: { "Content-Type": "application/json" },
-    //       })
-    //         .then((res) => {
-    //           axios
-    //           .get(`http://localhost:3000/newCreatedpost/${res.data.insertId}/${this.state.posttype}`)
-    //           .then((data) => {
-    //             let newdata;
-    //             data.data[0].length > 0 ? newdata = data.data[0] : newdata = data.data[1]
-    //             console.log(newdata);
-    //             this.setState({
-    //               newCreatedData: newdata[0]
-    //             })
-    //           });
-    //           return res.data.insertId;
-    //         })
-    //         .then((data) => {
-    //           this.setState({
-    //             newpostid: data,
-    //           });
-    //           const img = new FormData();
-    //           img.append("data", data);
-    //           console.log(data);
-
-    //           // for(let i = 0; i < this.state.imageSelected; i++){
-    //           //   img.append(`image`, this.state.imageSelected, `default`);
-
-    //           // }
-    //           for (let i = 0; i < this.state.imageSelected.length; i++) {
-    //             img.append("image", this.state.imageSelected[i], `default${i}`);
-    //           }
-
-    //           axios({
-    //             method: "POST",
-    //             data: img,
-    //             url: "http://localhost:3000/outdocsimage",
-    //             headers: { "Content-Type": "multipart/form-data" },
-    //             cancelToken: source.token,
-    //           }).then((res) => {
-    //             console.log(res);
-    //             this.componentDidMount()
-    //           });
-    //         });
-    //     } else if (this.state.posttype === "intdocs") {
-    //       axios({
-    //         method: "POST",
-    //         data: fd,
-    //         withCredentials: true,
-    //         url: "http://localhost:3000/intdocspost",
-    //         headers: { "Content-Type": "application/json" },
-    //       })
-    //         .then((res) => {
-    //           axios
-    //             .get(`http://localhost:3000/newCreatedpost/${res.data.insertId}/${this.state.posttype}`)
-    //             .then((data) => {
-    //               let newdata;
-    //               data.data[0].length > 0 ? newdata = data.data[0] : newdata = data.data[1]
-    //               console.log(newdata);
-    //               this.setState({
-    //                 newCreatedData: newdata[0]
-    //               })
-    //             });
-    //           return res.data.insertId;
-    //         })
-    //         .then((data) => {
-    //           const img = new FormData();
-    //           img.append("data", data);
-    //           for (let i = 0; i < this.state.imageSelected.length; i++) {
-    //             img.append("image", this.state.imageSelected[i], `default${i}`);
-    //           }
-    //           axios({
-    //             method: "POST",
-    //             data: img,
-    //             url: "http://localhost:3000/intdocsimage",
-    //             headers: { "Content-Type": "multipart/form-data" },
-    //           }).then((res) => {});
-    //           this.componentDidMount()
-
-    //         });
-    //     }
-    //     this.componentDidMount();
-    //   };
 
 
-    handel22 = (e) => {
+
+    handelName = (e) => {
+        e.preventDefault()
         this.props.getEmpName(e.target.value)
+        this.setState({ empId: e.target.value })
         if (this.props.empname) {
             if (this.props.empname.length >= 1) {
                 this.setState({
                     empName: this.props.empname[0].NAME_ARABIC
                 })
+            } else {
+                this.setState({ empName: "لا توجد بيانات" })
             }
         }
+
+
     }
 
+    handelAppraisal = (e) => {
+        e.preventDefault()
+        this.setState({ empAppraisal: e.target.value })
+    }
+
+    handelYear = (e) => {
+        e.preventDefault()
+        console.log("hit");
+        this.setState({ appraisalYear: e.target.value })
+    }
+
+    handelSearch = () => {
+        this.setState({ edit: false })
+        this.props.getEmpAppraisal(document.getElementById("empid").value, document.getElementById("empapp").value, document.getElementById("year1").value)
+    }
+
+    handelEdit_1 = async (e) => {
+        this.setState({ edit: true, empAppraisal: e.target.getAttribute("empApp"), appraisalYear: e.target.getAttribute("empDate"), empName: e.target.getAttribute("empName"), empNat: e.target.getAttribute("empnatid") })
+
+
+    }
+
+    handelEdit_2 = (e) => {
+
+        let data = { empNat: this.state.empNat, appraisal: this.refs.newAppraisal.value, year: document.getElementById("year").placeholder }
+        axios({
+            method: "PUT",
+            data: data,
+            url: 'http://localhost:5000/appraisalupdate',
+            headers: { "Content-Type": "application/json" },
+        }).then(data => {
+            console.log(data);
+        })
+
+        window.location.reload();
+
+
+    }
 
     render() {
-        this.props.getEmpAppraisal(this.state.empName, this.state.empdep, "null")
-        console.log(this.state.empName);
-
-
+        console.log(document.getElementById("year1") ? document.getElementById("year1").value : null, document.getElementById("empid") ? document.getElementById("empid").value : null)
         var dates = [];
         let start = 1996;
         let end = 2021;
@@ -217,29 +158,33 @@ class EmpsAppraisal extends React.Component {
                             </div>
                             <div style={{ marginRight: 20, display: "flex", justifyContent: "center", alignItems: "center", marginLeft: 40 }}>
                                 <div style={{ marginTop: 20 }} class="input-group">
-                                    <span>رقم الأداء  </span><input style={{ background: "white", width: 20, marginBottom: 5, marginRight: 5, border: "1px solid black", width: 120 }} onClick={this.handel22} type="text" name="first_name" />
+                                    <span>رقم الأداء  </span><input style={{ background: "white", width: 20, marginBottom: 5, marginRight: 5, border: "1px solid black", width: 120 }} onDoubleClick={this.handelName} id="empid" type="text" name="first_name" />
                                 </div>
                                 <div style={{ marginTop: 20 }} class="input-group">
-                                    <span>الإسم</span><input style={{ background: "white", width: 20, marginBottom: 5, marginRight: 5, border: "1px solid black", width: 120 }} type="text" disabled={true} name="first_name" value={this.state.empName ? this.state.empName : null} />
+                                    <span>الإسم</span><input style={{ background: "white", width: 20, marginBottom: 5, marginRight: 5, border: "1px solid black", width: 120 }} type="text" disabled={true} id="name" value={this.state.empName ? this.state.empName : null} />
                                 </div>
                                 <div style={{ marginRight: 5, marginTop: 20 }} class="input-group">
                                     <span>التقدير</span>
-                                    <select style={{ width: 120, height: 27.5, marginBottom: 5, marginRight: 2 }}>
+                                    <select id="empapp" onChange={this.handelAppraisal} style={{ width: 120, height: 27.5, marginBottom: 5, marginRight: 2 }}>
                                         {appraisals.map(apprsl => (
-                                            <option>{apprsl}</option>
+                                            <option appraisl={apprsl}>{apprsl}</option>
                                         ))}
                                         <option selected>اختر التقييم</option>
-                                    </select>                                </div>
+                                    </select>
+                                </div>
                                 <div style={{ marginRight: 5, marginTop: 20, }} class="input-group">
                                     <span style={{ marginTop: 3, marginLeft: 1 }}> السنة</span>
-                                    <select style={{ width: 120, height: 27.5, marginBottom: 5, marginRight: 2 }}>
+                                    <select id="year1" onChange={this.handelYear} style={{ width: 120, height: 27.5, marginBottom: 5, marginRight: 2 }}>
                                         {dates.map(year => (
-                                            <option>{year}</option>
+                                            <option year={year} >{year}</option>
                                         ))}
                                         <option selected>اختر السنة</option>
                                     </select>
                                 </div>
-                                <button style={{ position: "relative", right: 30, top: 15 }} type="button" class="btn btn-success">إضافة تقييم جديد</button>
+                                <button onClick={this.handelSearch} style={{ position: "relative", right: 5, top: 18 }} type="button" class="btn btn-primary">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                                <button style={{ position: "relative", right: 20, top: 18 }} type="button" class="btn btn-primary">إضافة تقييم جديد</button>
 
 
                             </div>
@@ -261,18 +206,37 @@ class EmpsAppraisal extends React.Component {
                                                 <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>الإسم</th>
                                                 <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>التقدير</th>
                                                 <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>السنة</th>
+                                                <th>تعديل</th>
+                                                <th>حذف</th>
                                             </tr>
                                         </thead>
-
-                                        {this.props.empdep.map(empdep => (
+                                        {!this.state.edit ? this.props.empApp.map(emp => (
                                             <tbody>
-                                                <td>{empdep.EMPLOYEE_ID}</td>
-                                                <td>{empdep.NAME_ARABIC}</td>
-                                                <td>{empdep.MAIN_BOX_NAME}</td>
-                                                <td>{empdep.SUP_BOX_NAME}</td>
-
+                                                <tr>
+                                                    <td>{emp.NAME_ARABIC}</td>
+                                                    <td>{emp.APPRAISAL_ARABIC}</td>
+                                                    <td>{emp.APPRAISAL_DATE}</td>
+                                                    <td onClick={this.handelEdit_1}><i empName={emp.NAME_ARABIC} empApp={emp.APPRAISAL_ARABIC} empDate={emp.APPRAISAL_DATE} empnatid={emp.NATIONAL_ID_CARD_NO} onClick={this.editHandler} class="fas fa-edit"></i></td>
+                                                    <td><i class="fas fa-backspace"></i></td>
+                                                </tr>
                                             </tbody>
-                                        ))}
+                                        )) :
+                                            <tbody>
+                                                <tr style={{ marginTop: 5, marginBottom: 5 }}>
+                                                    <td><input type="text" placeholder={this.state.empName} disabled /></td>
+                                                    <td><select ref="newAppraisal" onChange={this.handelAppraisal} style={{ width: 120, height: 27.5, marginBottom: 5, marginRight: 2 }}>
+                                                        {appraisals.map(apprsl => (
+                                                            <option id="appraisal" appraisl={apprsl}>{apprsl}</option>
+                                                        ))}
+                                                        <option selected>{this.state.empAppraisal}</option>
+                                                    </select></td>
+                                                    <td><input id="year" type="text" placeholder={this.state.appraisalYear} disabled /></td>
+                                                    <td><button onClick={this.handelEdit_2} type="button" class="btn btn-success">Success</button></td>
+                                                    <td><i class="fas fa-backspace"></i></td>
+                                                </tr>
+                                            </tbody>
+
+                                        }
 
                                     </table>
                                     <p>{this.props.empdep.length}</p>
@@ -281,7 +245,7 @@ class EmpsAppraisal extends React.Component {
                         </div>
                     </div>
                 </div>
-            </div>)
+            </div >)
     }
 }
 
@@ -291,7 +255,8 @@ const mapStateToProps = (state) => {
 
         deps: state.posts.deps,
         empdep: state.posts.empdep,
-        empname: state.posts.empname
+        empname: state.posts.empname,
+        empApp: state.posts.empApp
 
 
     };

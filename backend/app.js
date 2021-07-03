@@ -5,7 +5,7 @@ const mainCodes = require("./src/routs/mainCodes")
 const planandorg = require("./src/routs/planandorg")
 const report = require("./src/routs/report")
 const cors = require("cors")
-
+const bodyParser = require("body-parser")
 
 db.connect(function (err) {
     if (err) {
@@ -21,6 +21,11 @@ app.use(
         credentials: true,
     })
 );
+
+app.use(bodyParser.urlencoded());
+
+app.use(bodyParser.json());
+
 
 app.use(mainCodes)
 app.use(planandorg)

@@ -10,5 +10,6 @@ export const fetchDeps = "FETCH-DEPS"
 export const fetchEmpByDeps = "FETCH-EMP-DEPS"
 export const fetchEmpName = "FETCH-EMP-NAME"
 export const fetchEmpAppraisal = "FETCH-EMP-APPRAISAL"
-
+export const fetchEmpTrans = "FETCH-EMP-TRANS"
+export const fetchEmpEdu = "FETCH-EMP-EDU"
 

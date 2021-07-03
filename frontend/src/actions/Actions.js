@@ -10,7 +10,9 @@ import {
   fetchDeps,
   fetchEmpByDeps,
   fetchEmpName,
-  fetchEmpAppraisal
+  fetchEmpAppraisal,
+  fetchEmpTrans,
+  fetchEmpEdu
 } from "../actions/ActionTypes";
 import axios from "axios";
 
@@ -132,9 +134,28 @@ export const getEmpName = (val) => (dispatch) => {
 
 export const getEmpAppraisal = (empid, appraisal, year) => (dispatch) => {
   axios.get(`http://localhost:5000/getempappraisal/${empid}/${appraisal}/${year}`).then(res => {
-    console.log('hit');
+    console.log(res.data);
     dispatch({
       type: fetchEmpAppraisal,
+      payload: res.data
+    })
+  })
+}
+
+export const getEmpTrans = (empid) => (dispatch) => {
+  axios.get(`http://localhost:5000/getemptrans/${empid}`).then(res => {
+    console.log(res.data);
+    dispatch({
+      type: fetchEmpTrans,
+      payload: res.data
+    })
+  })
+}
+
+export const getEmpEdu = (empid) => (dispatch) => {
+  axios.get(`http://localhost:5000/getempedu/${empid}`).then(res => {
+    dispatch({
+      type: fetchEmpEdu,
       payload: res.data
     })
   })

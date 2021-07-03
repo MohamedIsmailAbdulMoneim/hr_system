@@ -92,58 +92,59 @@ class GeneralManager extends React.Component {
                                                 Striped Rows
                                             </div>
                                             <div className="panel-body">
-                                                {!this.state.edit ? <div style={{ overflow: "scroll", height: 320 }} className="table-responsive">
-                                                    <table className="table table-striped">
-                                                        <thead style={{ textAlign: "center" }}>
-                                                            <tr>
-                                                                <th>كود المستوى الوظيفي</th>
-                                                                <th>كود الوصف الوظيفي</th>
-                                                                <th>المستوى الوظيفي</th>
-                                                                <th>الوصف الوظيفي</th>
-                                                                <th>تعديل</th>
-                                                                <th>حذف</th>
-
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            {this.props.posts.map((gm) => (
+                                                {!this.state.edit ?
+                                                    <div style={{ overflow: "scroll", height: 320 }} className="table-responsive">
+                                                        <table className="table table-striped">
+                                                            <thead style={{ textAlign: "center" }}>
                                                                 <tr>
-                                                                    <td>{gm.J_D_ID}</td>
-                                                                    <td>{gm.SUP_BOX_ID}</td>
-                                                                    <td>{gm.J_D_NAME}</td>
-                                                                    <td>{gm.SUP_BOX_NAME}</td>
-                                                                    <td><i jDId={gm.J_D_ID} mainBoxName={gm.J_D_NAME} supBoxId={gm.SUP_BOX_ID} supBoxName={gm.SUP_BOX_NAME} onClick={this.editHandler} class="fas fa-edit"></i></td>
-                                                                    <td><i class="fas fa-backspace"></i></td>
+                                                                    <th>كود المستوى الوظيفي</th>
+                                                                    <th>كود الوصف الوظيفي</th>
+                                                                    <th>المستوى الوظيفي</th>
+                                                                    <th>الوصف الوظيفي</th>
+                                                                    <th>تعديل</th>
+                                                                    <th>حذف</th>
+
                                                                 </tr>
-                                                            ))
-                                                            }
-                                                        </tbody>
-                                                    </table>
-                                                </div> : <div style={{ height: 200 }} className="table-responsive">
-                                                    <table className="table table-striped">
-                                                        <thead style={{ textAlign: "center" }}>
-                                                            <tr>
-                                                                <th>كود المستوى الوظيفي</th>
-                                                                <th>كود الوصف الوظيفي</th>
-                                                                <th>المستوى الوظيفي</th>
-                                                                <th>الوصف الوظيفي</th>
+                                                            </thead>
+                                                            <tbody>
+                                                                {this.props.posts.map((gm) => (
+                                                                    <tr>
+                                                                        <td>{gm.J_D_ID}</td>
+                                                                        <td>{gm.SUP_BOX_ID}</td>
+                                                                        <td>{gm.J_D_NAME}</td>
+                                                                        <td>{gm.SUP_BOX_NAME}</td>
+                                                                        <td><i jDId={gm.J_D_ID} mainBoxName={gm.J_D_NAME} supBoxId={gm.SUP_BOX_ID} supBoxName={gm.SUP_BOX_NAME} onClick={this.editHandler} class="fas fa-edit"></i></td>
+                                                                        <td><i class="fas fa-backspace"></i></td>
+                                                                    </tr>
+                                                                ))
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    </div> : <div style={{ height: 200 }} className="table-responsive">
+                                                        <table className="table table-striped">
+                                                            <thead style={{ textAlign: "center" }}>
+                                                                <tr>
+                                                                    <th>كود المستوى الوظيفي</th>
+                                                                    <th>كود الوصف الوظيفي</th>
+                                                                    <th>المستوى الوظيفي</th>
+                                                                    <th>الوصف الوظيفي</th>
 
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <td><input style={{ width: 50 }} type="text" placeholder={this.state.jDId} /></td>
-                                                                <td><input style={{ width: 50 }} type="text" placeholder={this.state.supBoxId} /></td>
-                                                                <td><input type="text" placeholder={this.state.mainBoxName} /></td>
-                                                                <td><input type="text" placeholder={this.state.supBoxName} /></td>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td><input style={{ width: 50 }} type="text" placeholder={this.state.jDId} /></td>
+                                                                    <td><input style={{ width: 50 }} type="text" placeholder={this.state.supBoxId} /></td>
+                                                                    <td><input type="text" placeholder={this.state.mainBoxName} /></td>
+                                                                    <td><input type="text" placeholder={this.state.supBoxName} /></td>
 
-                                                            </tr>
-                                                        </tbody>
+                                                                </tr>
+                                                            </tbody>
 
-                                                    </table>
-                                                    <p><button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button></p>
+                                                        </table>
+                                                        <p><button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button></p>
 
-                                                </div>}
+                                                    </div>}
 
                                             </div>
                                         </div>
