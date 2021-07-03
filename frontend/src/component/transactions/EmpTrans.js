@@ -95,7 +95,7 @@ class EmpTrans extends React.Component {
 
                                             </tr>
                                         </thead>
-                                        {this.props.empTrans.map(trans => (
+                                        {this.props.empTrans.length > 1 ? this.props.empTrans.map(trans => (
                                             <tbody>
                                                 <tr>
 
@@ -112,20 +112,14 @@ class EmpTrans extends React.Component {
                                                     {/* <td onClick={this.handelEdit_1}><i empName={emp.NAME_ARABIC} empApp={emp.APPRAISAL_ARABIC} empDate={emp.APPRAISAL_DATE} empnatid={emp.NATIONAL_ID_CARD_NO} onClick={this.editHandler} class="fas fa-edit"></i></td> */}
                                                     <td onClick={this.handelEdit_1}><i class="fas fa-edit"></i></td>
                                                     <td><i class="fas fa-backspace"></i></td>
-
-
-
-
-
-
-
-
-
-
-
                                                 </tr>
                                             </tbody>
-                                        ))}
+
+                                        )):   
+                                        <tbody>
+                                         <h1 style={{textAlign: "center"}}>عفواً لا توجد بيانات</h1> 
+
+                                        </tbody>}
 
                                     </table>
                                 </div>
