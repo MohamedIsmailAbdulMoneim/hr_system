@@ -38,7 +38,7 @@ class GeneralManager extends React.Component {
 
     render() {
 
-
+        console.log(this.props.posts);
         return (
             <div id="page-wrapper">
                 <div className="row">

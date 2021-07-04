@@ -12,7 +12,11 @@ import {
   fetchEmpName,
   fetchEmpAppraisal,
   fetchEmpTrans,
-  fetchEmpEdu
+  fetchEmpEdu,
+  fetchEmpNameByName,
+  fetchCurrentjd,
+  fetchavailjd,
+  fetchavailsupbox
 } from "../actions/ActionTypes";
 import axios from "axios";
 
@@ -132,6 +136,18 @@ export const getEmpName = (val) => (dispatch) => {
   })
 }
 
+export const getEmpNameByName = (val) => (dispatch) => {
+  axios.get(`http://localhost:5000/empnamebyName/${val}`).then(res => {
+    console.log(res.data);
+    dispatch({
+      type: fetchEmpNameByName,
+      payload: res.data
+    })
+  })
+}
+
+
+
 export const getEmpAppraisal = (empid, appraisal, year) => (dispatch) => {
   axios.get(`http://localhost:5000/getempappraisal/${empid}/${appraisal}/${year}`).then(res => {
     console.log(res.data);
@@ -160,6 +176,35 @@ export const getEmpEdu = (empid) => (dispatch) => {
     })
   })
 }
+
+export const getCurrentJd = (empid) =>(dispatch) => {
+  axios.get(`http://localhost:5000/currentjd/${empid}`).then(res => {
+    dispatch({
+      type: fetchCurrentjd,
+      payload: res.data
+    })
+  })
+}
+
+export const getavailJd =  (catname,jdname) => (dispatch)  =>{
+  axios.get(`http://localhost:5000/availjd/${catname}/${jdname}`).then(res => {
+    dispatch({
+      type: fetchavailjd,
+      payload: res.data
+    })
+  })
+}
+
+export const getAvailSupBox =  (catname,jdname) => (dispatch)  =>{
+  console.log(catname,jdname);
+  axios.get(`http://localhost:5000/getavailsupbox/${catname}/${jdname}`).then(res => {
+    dispatch({
+      type: fetchavailsupbox,
+      payload: res.data
+    })
+  })
+}
+
 
 
 

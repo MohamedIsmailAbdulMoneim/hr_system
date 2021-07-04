@@ -162,7 +162,7 @@ class EmpsAppraisal extends React.Component {
                                     <span>رقم الأداء  </span><input style={{ background: "white", width: 20, marginBottom: 5, marginRight: 5, border: "1px solid black", width: 120 }} onDoubleClick={this.handelName} id="empid" type="text" name="first_name" />
                                 </div>
                                 <div style={{ marginTop: 20 }} class="input-group">
-                                    <span>الإسم</span><input style={{ background: "white", width: 20, marginBottom: 5, marginRight: 5, border: "1px solid black", width: 120 }} type="text" disabled={true} id="name" value={this.state.empName ? this.state.empName : null} />
+                                    {/* <span>الإسم</span><input style={{ background: "white", width: 20, marginBottom: 5, marginRight: 5, border: "1px solid black", width: 120 }} type="text" disabled={true} id="name" value={this.props.empname.length >= 0 ? this.props.empname[0].NAME_ARABIC : null} /> */}
                                 </div>
                                 <div style={{ marginRight: 5, marginTop: 20 }} class="input-group">
                                     <span>التقدير</span>
@@ -240,7 +240,7 @@ class EmpsAppraisal extends React.Component {
                                         }
 
                                     </table>
-                                    <p>{this.props.empdep.length}</p>
+                                    {/* <p>{this.props.empdep.length}</p> */}
                                 </div>
                             </div>
                         </div>

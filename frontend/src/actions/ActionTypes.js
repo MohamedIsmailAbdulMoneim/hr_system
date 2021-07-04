@@ -12,4 +12,8 @@ export const fetchEmpName = "FETCH-EMP-NAME"
 export const fetchEmpAppraisal = "FETCH-EMP-APPRAISAL"
 export const fetchEmpTrans = "FETCH-EMP-TRANS"
 export const fetchEmpEdu = "FETCH-EMP-EDU"
+export const fetchEmpNameByName = "FETCH-EMP-BY-NAME"
+export const fetchavailjd = "FETCH-AVAIL-JD"
+export const fetchCurrentjd = "FETCH-CURRENT-JD"
+export const fetchavailsupbox = "FETCH-AVAIL-SUPBOX"
 

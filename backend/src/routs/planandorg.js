@@ -11,15 +11,74 @@ let query3 = `SELECT * FROM a_job_trans JOIN employee JOIN job_assignment_form J
 let query4 = `SELECT * FROM employee_education_degree JOIN education_degree JOIN dgree_speciality JOIN dgree_speciality_detail JOIN UNIVERSITY_SCHOOL JOIN GRADUATION_GRADE JOIN employee ON employee_education_degree.DEGREE = education_degree.DEGREE AND employee_education_degree.SPECIALITY = dgree_speciality.SPECIALITY AND employee_education_degree.SPECIALITY_DETAIL = dgree_speciality_detail.SPECIALITY_DETAIL AND employee_education_degree.UNIVERSITY_SCHOOL = university_school.UNIVERSITY_SCHOOL AND employee_education_degree.GRADUATION_GRADE = graduation_grade.GRADUATION_GRADE AND employee_education_degree.NATIONAL_ID_CARD_NO = employee.NATIONAL_ID_CARD_NO`
 let query5 = `UPDATE a_job_trans JOIN job_assignment_form JOIN employee JOIN indicators JOIN a_sup_box join a_category JOIN a_job_groups SET a_job_trans.JOB_ASSIGNMENT_FORM = job_assignment_form.JOB_ASSIGNMENT_FORM, a_job_trans.INDICATOR = indicators.INDICATOR , a_job_trans.SUP_BOX_ID = a_sup_box.SUP_BOX_ID, a_job_trans.CAT_ID = a_category.CAT_ID WHERE job_assignment_form.JOB_ASSIGNMENT_FORM_ARABIC = "أخرى" AND indicators.INDICATOR_NAME = "أصلية" AND a_sup_box.SUP_BOX_NAME = "مدير عام مساعد لشئون العاملين و علاقات العمل" AND a_category.CAT_NAME = "تنمية الموارد البشرية" and employee.NAME_ARABIC = "محمد محمد محمد الديب" AND a_job_trans.TRANS_DATE = "2021-01-01"`
 
-let query6 = `INSERT INTO a_job_trans (CAT_ID) VALUES ((SELECT CAT_ID FROM a_category WHERE CAT_NAME ='تنمية الموارد البشرية'))
-`
+let query6 = `INSERT INTO a_job_trans(
+    NATIONAL_ID_CARD_NO,
+    TRANS_DATE,
+    SUP_BOX_NAME,
+    G_ID,
+    JOB_ASSIGNMENT_FORM,
+    INDICATOR,
+    CAT_ID
+)
+VALUES(
+    (
+    SELECT
+        NATIONAL_ID_CARD_NO
+    FROM
+        employee
+    WHERE
+        EMPLOYEE_ID = 701
+),
+"1-1-2022",
+"مدير عام مساعد",
+(
+    SELECT
+        G_ID
+    FROM
+        a_job_groups
+    WHERE
+        G_NAME = "إداري"
+),
+(
+    SELECT
+        JOB_ASSIGNMENT_FORM
+    FROM
+        job_assignment_form
+    WHERE
+        JOB_ASSIGNMENT_FORM_ARABIC = "أخرى"
+),
+(
+    SELECT
+        INDICATOR
+    FROM
+        indicators
+    WHERE
+        INDICATOR_NAME = "حالية"
+),
+(
+    SELECT
+        CAT_ID
+    FROM
+        a_category
+    WHERE
+        CAT_NAME = "تنمية الموارد البشرية"
+)
+)`
 
+let query7 = `SELECT * FROM a_job_dgree JOIN( SELECT a_main_box.CAT_ID, a_main_box.J_D_ID, a_category.CAT_NAME FROM a_main_box JOIN a_category ON a_category.CAT_ID = a_main_box.CAT_ID ) AS maincate ON a_job_dgree.J_D_ID = maincate.J_D_ID WHERE maincate.CAT_NAME = "تنمية الموارد البشرية" AND a_job_dgree.J_D_ID > 172 ORDER BY a_job_dgree.J_D_ID LIMIT 1`
+let query8 =`SELECT * FROM a_main_box JOIN a_job_dgree JOIN a_category ON a_main_box.J_D_ID = a_job_dgree.J_D_ID AND a_main_box.CAT_ID = a_category.CAT_ID`
 function getJobDgByCat(req, res) {
     const catId = req.params.catid
     const query = `SELECT * FROM a_job_dgree JOIN a_main_box ON a_job_dgree.J_D_ID = a_main_box.J_D_ID WHERE a_main_box.CAT_ID = ${catId};`
     db.query(query, (err, details) => {
         if (err) {
-            console.log(err);
+            db.query(`SELECT * FROM a_job_dgree JOIN( SELECT a_main_box.CAT_ID, a_main_box.J_D_ID, a_category.CAT_NAME FROM a_main_box JOIN a_category ON a_category.CAT_ID = a_main_box.CAT_ID ) AS maincate ON a_job_dgree.J_D_ID = maincate.J_D_ID WHERE maincate.CAT_NAME = "${catId}"`, (err, details) => {
+                if (err) {
+                  console.log(err);  
+                } else {
+                    res.send(details);
+                }
+            })
         } else {
             res.send(details);
         }
@@ -213,6 +272,51 @@ function getEmpTrans(req, res) {
     })
 }
 
+function getEmpAvljd (req,res){
+    const catname = req.params.catname;
+    const mainboxid = req.params.mainboxid
+
+    let query1 = `SELECT SUP_BOX_NAME from a_sup_box WHERE MAIN_BOX_ID IN (SELECT a_main_box.MAIN_BOX_ID FROM a_main_box JOIN a_job_dgree JOIN a_category ON a_main_box.J_D_ID = a_job_dgree.J_D_ID AND a_main_box.CAT_ID = a_category.CAT_ID WHERE a_category.CAT_NAME = "${catname}" AND a_job_dgree.J_D_NAME = "${jdname}")`
+
+    let query = `SELECT * FROM a_job_dgree JOIN( SELECT a_main_box.CAT_ID, a_main_box.J_D_ID, a_category.CAT_NAME FROM a_main_box JOIN a_category ON a_category.CAT_ID = a_main_box.CAT_ID ) AS maincate ON a_job_dgree.J_D_ID = maincate.J_D_ID WHERE maincate.CAT_NAME = "${catname}" AND a_job_dgree.J_D_ID = ${mainboxid} ORDER BY a_job_dgree.J_D_ID LIMIT 1`
+    db.query(query, (err, details) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(details);
+        }
+    })
+}
+
+function getCurrentJD(req,res){
+    let empid = req.params.empid
+    let query = `SELECT
+    *
+FROM
+    a_job_trans
+JOIN employee JOIN(
+    SELECT
+        a_main_box.J_D_ID,
+        a_job_dgree.J_D_NAME,
+        a_main_box.MAIN_BOX_ID
+    FROM
+        a_main_box
+    JOIN a_job_dgree ON a_job_dgree.J_D_ID = a_main_box.J_D_ID
+) AS latestjobdg
+ON
+    a_job_trans.NATIONAL_ID_CARD_NO = employee.NATIONAL_ID_CARD_NO AND latestjobdg.MAIN_BOX_ID = a_job_trans.MAIN_BOX_ID
+WHERE
+    employee.EMPLOYEE_ID = ${empid} AND a_job_trans.INDICATOR = 2`
+    db.query(query, (err, details) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(details);
+        }
+    })
+}
+
+
 function getEmpEdu(req, res) {
     const empid = req.params.empid
     let query = `SELECT * FROM employee_education_degree JOIN education_degree JOIN dgree_speciality JOIN dgree_speciality_detail JOIN UNIVERSITY_SCHOOL JOIN GRADUATION_GRADE JOIN employee ON employee_education_degree.DEGREE = education_degree.DEGREE AND employee_education_degree.SPECIALITY = dgree_speciality.SPECIALITY AND employee_education_degree.SPECIALITY_DETAIL = dgree_speciality_detail.SPECIALITY_DETAIL AND employee_education_degree.UNIVERSITY_SCHOOL = university_school.UNIVERSITY_SCHOOL AND employee_education_degree.GRADUATION_GRADE = graduation_grade.GRADUATION_GRADE AND employee_education_degree.NATIONAL_ID_CARD_NO = employee.NATIONAL_ID_CARD_NO WHERE employee.EMPLOYEE_ID = ${empid}`
@@ -231,6 +335,40 @@ function updateEmpTrans(req, res) {
     console.log(req.body, 'hit');
 }
 
+function getAvailSupBox(req, res){
+    const catname = req.params.catname
+    const jdname = req.params.jdname
+
+    console.log(catname, jdname);
+    let query =`SELECT SUP_BOX_NAME from a_sup_box WHERE MAIN_BOX_ID IN (SELECT a_main_box.MAIN_BOX_ID FROM a_main_box JOIN a_job_dgree JOIN a_category ON a_main_box.J_D_ID = a_job_dgree.J_D_ID AND a_main_box.CAT_ID = a_category.CAT_ID WHERE a_category.CAT_NAME = "${catname}" AND a_job_dgree.J_D_NAME = "${jdname}")`
+    db.query(query, (err, details) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(details);
+        }
+    })
+}
+
+// function getAvailSupBox(req, res){
+//     const catname = req.params.catname
+//     const jdname = req.params.jdname
+
+//     console.log(catname, jdname);
+//     let query =`SELECT SUP_BOX_NAME from a_sup_box WHERE MAIN_BOX_ID IN (SELECT a_main_box.MAIN_BOX_ID FROM a_main_box JOIN a_job_dgree JOIN a_category ON a_main_box.J_D_ID = a_job_dgree.J_D_ID AND a_main_box.CAT_ID = a_category.CAT_ID WHERE a_category.CAT_NAME = "${catname}" AND a_job_dgree.J_D_NAME = "${jdname}")`
+//     db.query(query, (err, details) => {
+//         if (err) {
+//             console.log(err);
+//         } else {
+//             res.send(details);
+//         }
+//     })
+// }
+
+function postnewtrans(req, res){
+
+    console.log(req.body);
+}
 
 router
     .get('/getjobdgbycat/:catid', getJobDgByCat)
@@ -248,6 +386,13 @@ router
     .put('/updateemptrans', updateEmpTrans)
 
     .get('/getempedu/:empid', getEmpEdu)
+
+    .get('/currentjd/:empid',getCurrentJD)
+    
+
+    .get('/availjd/:catname/:jdname',getEmpAvljd)
+    .get('/getavailsupbox/:catname/:jdname',getAvailSupBox)
+    .post('/postnewtrans', postnewtrans)
 
 
 

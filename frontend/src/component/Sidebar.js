@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import {
-    getJobDgreeCodes, getMainCodes, getJobGovern, getDeps, getEmpName
+    getJobDgreeCodes, getMainCodes, getJobGovern, getDeps, getEmpName,getCates
 } from "../actions/Actions";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
@@ -11,7 +11,9 @@ class Sidebar extends React.Component {
         super(props);
         this.state = { mainName: null }
     }
-
+    componentDidMount(){
+        this.props.getCates()
+    }
 
     handleSidebarClick = (e) => {
         console.log();
@@ -45,26 +47,26 @@ class Sidebar extends React.Component {
                                 <li>
                                     <a href="#">الإدارة العليا<span className="fa arrow"></span></a>
                                     <ul className="nav nav-third-level">
-                                        <li>
+                                        {/* <li>
                                             <a href="#">رئيس مجلس الإدارة والعضو المنتدب</a>
                                         </li>
                                         <li>
                                             <a href="/assisstantchairman">مساعد رئيس الشركة</a>
-                                        </li>
+                                        </li> */}
                                         <Link to={`/generalmanager`}>
                                             <li>
                                                 <a onClick={this.handleSidebarClick} href="/generalmanager">مدير عام</a>
                                             </li>
                                         </Link>
                                         <Link to={`/assisstantgeneralmanager`}>
-                                            <li style={{ marginTop: 20 }}>
+                                            <li>
                                                 <a onClick={this.handleSidebarClick} href="assisstantgeneralmanager">مدير عام مساعد</a>
                                             </li>
                                         </Link>
 
                                     </ul>
                                 </li>
-                                <li>
+                                {/* <li>
                                     <a href="#">المستوى الأول<span className="fa arrow"></span></a>
                                     <ul className="nav nav-third-level">
                                         <li>
@@ -135,50 +137,44 @@ class Sidebar extends React.Component {
                                             <a href="#">Third Level Item</a>
                                         </li>
                                     </ul>
-                                </li>
+                                </li> */}
                             </ul>
                         </li>
                         <li>
                             <a href="#"><i className="fa fa-bar-chart-o fa-fw"></i>  الحركات<span className="fa arrow"></span></a>
                             <ul className="nav nav-first-level">
-                                <li>
-                                    <a href="flot.html">البيانات الأساسية</a>
-                                </li>
-                                <li>
+                                {/* <li>
                                     <a href="morris.html">البيانات الأساسية للعمالة المؤقتة</a>
-                                </li>
+                                </li> */}
 
                                 <li>
                                     <a href="/EmpTrans">تدرج</a>
                                 </li>
-                                <Link to={`/empedudeg`}>
+                                {/* <Link to={`/empedudeg`}>
                                     <li>
                                         <a onClick={this.props.getJobGovern} href="/empedudeg">مؤهلات الموظفين</a>
                                     </li>
-                                </Link>
-                                <Link to={`/emptraining`}>
+                                </Link> */}
+                                {/* <Link to={`/emptraining`}>
                                     <li>
                                         <a href="/emptraining">تدريب</a>
                                     </li>
-                                </Link>
-                                <li>
+                                </Link> */}
+                                {/* <li>
                                     <a href="morris.html">خبرات سابقة</a>
-                                </li>
+                                </li> */}
                                 <li>
                                     <a href="/empsappraisal">تقييمات سنوية</a>
                                 </li>
-                                <li>
-                                    <a href="morris.html">تدريب</a>
-                                </li>
-                                <li>
+                                {/* <li>
                                     <a href="morris.html">سفر</a>
-                                </li>
-                                <li>
+                                </li> */}
+                                {/* <li>
                                     <a href="morris.html">جزاءات</a>
-                                </li>
-                                <li>
+                                </li> */}
+                                {/* <li>
                                     <a href="morris.html">البيانات العائلية</a>
-                                </li>
+                                </li> */}
                                 <li>
                                     <a href="/orgstructure">الهيكل</a>
                                 </li>
@@ -239,5 +235,5 @@ const mapStateToProps = (state) => {
     };
 };
 export default connect(mapStateToProps, {
-    getJobDgreeCodes, getMainCodes, getJobGovern, getDeps, getEmpName
+    getJobDgreeCodes, getMainCodes, getJobGovern, getDeps, getEmpName, getCates
 })(Sidebar);

@@ -46,7 +46,7 @@ class Employee extends React.Component {
                             <div style={{ background: "#f3f1f1", boxShadow: "0 10px 6px -6px #777", borderRadius: 5, height: 500, width: "100%" }} >
                                 <h2 style={{ marginRight: 20, marginTop: 3, textAlign: "right", fontFamily: 'Markazi Text ,serif', fontWeight: 700 }}>البيانات الأساسية</h2>
                                 <div style={{ display: "flex" }}>
-                                    <div style={{ marginRight: 20 }}>
+                                    <div className="col-lg-8" style={{ marginRight: 20 } }>
                                         <div class="input-group">
                                             <span>رقم الأداء :  </span><input style={{ background: "white", marginBottom: 5, marginRight: 35, border: "1px solid black" }} type="text" name="first_name" />
                                         </div>
@@ -57,13 +57,44 @@ class Employee extends React.Component {
                                             <span>تاريخ بداية الخبرة :  </span><input style={{ background: "white", marginBottom: 5, border: "1px solid black" }} type="text" name="first_name" />
                                         </div>
                                         <div class="input-group">
-                                            <span>الوظيفة الحالية :  </span><input style={{ background: "white", marginBottom: 5, marginRight: 15, width: 299, border: "1px solid black" }} type="text" name="first_name" />
+                                            <span>الوظيفة الحالية :  </span><input style={{ background: "white", marginBottom: 5, marginRight: 15,  border: "1px solid black" }} type="text" name="first_name" />
                                         </div>
                                         <div class="input-group">
-                                            <span>المستوى الوظيفي :  </span><input style={{ background: "white", marginBottom: 5, marginRight: 2, width: 300, border: "1px solid black" }} type="text" name="first_name" />
+                                            <span>المستوى الوظيفي :  </span><input style={{ background: "white", marginBottom: 5, marginRight: 2,  border: "1px solid black" }} type="text" name="first_name" />
                                         </div>
                                         <div class="input-group">
-                                            <span>المسمى الوظيفي :  </span><input style={{ background: "white", marginBottom: 5, marginRight: 7, width: 300, border: "1px solid black" }} type="text" name="first_name" />
+                                            <span>المسمى الوظيفي :  </span><input style={{ background: "white", marginBottom: 5, marginRight: 7,  border: "1px solid black" }} type="text" name="first_name" />
+                                        </div>
+                                        <div class="input-group">
+                                            <span>المحطة :  </span><input style={{ background: "white", marginBottom: 5, marginRight: 46, border: "1px solid black" }} type="text" name="first_name" />
+                                        </div>
+                                        <div class="input-group">
+                                            <span>الرقم التأميني :  </span><input style={{ background: "white", marginBottom: 5, marginRight: 20, border: "1px solid black" }} type="text" name="first_name" />
+                                        </div>
+                                    </div>
+                                    <div className="col-lg-8">
+                                        <div class="input-group">
+                                            <span>الإسم :  </span><input style={{ background: "white", marginBottom: 5, marginRight: 55, border: "1px solid black", width: 180 }} type="text" name="first_name" />
+                                        </div>
+                                        <div class="input-group">
+                                            <span>تاريخ التعيين :  </span><input type="date" style={{ background: "white", marginBottom: 5, marginRight: 20, border: "1px solid black", width: 60 }} type="text" name="first_name" /><span>تاريخ التقاعد :  </span><input type="date" style={{ background: "white", marginBottom: 5, border: "1px solid black", width: 60 }} type="text" name="first_name" />
+                                        </div>
+                                        <div class="input-group">
+                                        </div>
+                                        <div class="input-group">
+                                            <span>جهة الخبرة :  </span><input style={{ background: "white", marginBottom: 5, marginRight: 15, border: "1px solid black" }} type="text" name="first_name" />
+                                        </div>
+                                        <div class="input-group">
+                                            <span>تاريخ شغلها :  </span><input style={{ background: "white", marginBottom: 5, marginRight: 2, border: "1px solid black" }} type="text" name="first_name" />
+                                        </div>
+                                        <div class="input-group">
+                                            <span>نوع التعاقد :  </span><input style={{ background: "white", marginBottom: 5, marginRight: 7, border: "1px solid black" }} type="text" name="first_name" />
+                                        </div>
+                                        <div class="input-group">
+                                        <input type="radio" id="huey" name="drone" value="huey"checked/> <label for="huey">إداري</label> <input type="radio" id="huey" name="drone" value="huey"checked/> <label for="huey">فني</label>   
+                                        </div>
+                                        <div class="input-group">
+                                            <span>الرقم التأميني :  </span><input style={{ background: "white", marginBottom: 5, marginRight: 20, border: "1px solid black" }} type="text" name="first_name" />
                                         </div>
                                     </div>
                                     <div>

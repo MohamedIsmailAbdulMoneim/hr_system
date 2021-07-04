@@ -83,10 +83,10 @@ class EmpByDeps extends React.Component {
 
                                         {this.props.empdep.map(empdep => (
                                             <tbody>
-                                                <td>{empdep.EMPLOYEE_ID}</td>
-                                                <td>{empdep.NAME_ARABIC}</td>
-                                                <td>{empdep.MAIN_BOX_NAME}</td>
-                                                <td>{empdep.SUP_BOX_NAME}</td>
+                                                <td style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>{empdep.EMPLOYEE_ID}</td>
+                                                <td style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>{empdep.NAME_ARABIC}</td>
+                                                <td style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>{empdep.MAIN_BOX_NAME}</td>
+                                                <td style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>{empdep.SUP_BOX_NAME}</td>
 
                                             </tbody>
                                         ))}
