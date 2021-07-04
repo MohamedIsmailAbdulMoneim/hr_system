@@ -79,7 +79,8 @@ class EmpsAppraisal extends React.Component {
     }
 
     render() {
-        console.log(document.getElementById("year1") ? document.getElementById("year1").value : null, document.getElementById("empid") ? document.getElementById("empid").value : null)
+
+        console.log(this.props.empApp);
         var dates = [];
         let start = 1996;
         let end = 2021;
@@ -216,7 +217,7 @@ class EmpsAppraisal extends React.Component {
                                                     <td>{emp.NAME_ARABIC}</td>
                                                     <td>{emp.APPRAISAL_ARABIC}</td>
                                                     <td>{emp.APPRAISAL_DATE}</td>
-                                                    <td onClick={this.handelEdit_1}><i empName={emp.NAME_ARABIC} empApp={emp.APPRAISAL_ARABIC} empDate={emp.APPRAISAL_DATE} empnatid={emp.NATIONAL_ID_CARD_NO} onClick={this.editHandler} class="fas fa-edit"></i></td>
+                                                    <td onClick={this.handelEdit_1}><i style={{ fontSize: 20 }} empName={emp.NAME_ARABIC} empApp={emp.APPRAISAL_ARABIC} empDate={emp.APPRAISAL_DATE} empnatid={emp.NATIONAL_ID_CARD_NO} onClick={this.editHandler} class="fas fa-edit"></i></td>
                                                     <td><i class="fas fa-backspace"></i></td>
                                                 </tr>
                                             </tbody>

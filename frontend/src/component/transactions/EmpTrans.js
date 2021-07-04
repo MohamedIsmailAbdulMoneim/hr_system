@@ -7,19 +7,48 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import Reactmoment from "react-moment"
 
+
 class EmpTrans extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { jobbycat: null || this.props.jobdgbycat, catid: null };
+        this.state = { edit: false, name: null, date: null, catname: null, maninboxname: null, supboxname: null, gname: null, jasi: null, indname: null };
 
     }
 
 
     clickHandler = (e) => {
         e.preventDefault()
+        this.setState({ edit: false })
         this.props.getEmpTrans(e.target.value)
+
     }
 
+    handelEdit_1 = (e) => {
+        var myCurrentDate = e.target.getAttribute("transdate").slice(0, 10);
+        var myFutureDate = new Date(myCurrentDate);
+        myFutureDate.setDate(myFutureDate.getDate() + 1);//myFutureDate is now 8 days in the future
+        let newDate = myFutureDate.getUTCFullYear() + "-" + (myFutureDate.getUTCMonth() + 1) + "-" + myFutureDate.getUTCDate()
+        this.setState({ edit: true, date: newDate, catname: e.target.getAttribute("catname"), mainboxname: e.target.getAttribute("mainboxname"), supboxname: e.target.getAttribute("supboxname"), gname: e.target.getAttribute("jobgroup"), jasi: e.target.getAttribute("jasform"), indname: e.target.getAttribute("indname") })
+        console.log(e.target.getAttribute("transdate"));
+    }
+
+    handelEdit_2 = (e) => {
+        e.preventDefault()
+        // let data = { empNat: this.state.empNat, appraisal: this.refs.newAppraisal.value, year: document.getElementById("year").placeholder }
+
+        let data = { data: document.getElementById("date") ? document.getElementById("date").value : null }
+        axios({
+            method: "PUT",
+            data: data,
+            url: `http://localhost:5000/updateemptrans`,
+            headers: { "Content-Type": "application/json" },
+        }).then(data => {
+            console.log(data);
+        })
+
+
+
+    }
 
 
     render() {
@@ -40,7 +69,7 @@ class EmpTrans extends React.Component {
             transition: "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out"
 
         }
-        console.log(this.props.empTrans);
+        console.log(this.refs.date ? this.refs.date.innerHTML : null);
 
         return (
             <div id="page-wrapper" >
@@ -77,57 +106,93 @@ class EmpTrans extends React.Component {
                             <div class="panel-body">
                                 <div class="table-responsive">
                                     <table class="table table-striped table-bordered table-hover" id="dataTables-example">
-                                        <thead>
-                                            <tr>
-                                                <th>تاريخ الحركة</th>
-                                                <th>كود الإدارة</th>
-                                                <th>الإدارة</th>
-                                                <th>كود الوظيفة</th>
-                                                <th>الوظيفة</th>
-                                                <th>كود المسمى الوظيفي</th>
-                                                <th>المسمى الوظيفي</th>
-                                                <th>نوع التخصص</th>
-                                                <th>طريقة شغل الوظيفة</th>
-                                                <th>حالة الوظيفة</th>
-                                                <th>تعديل</th>
-                                                <th>حذف</th>
+                                        {!this.state.edit ?
+                                            <Fragment>
+                                                <thead>
+                                                    <tr>
+                                                        <th>الإسم</th>
+                                                        <th>تاريخ الحركة</th>
+                                                        <th>كود الإدارة</th>
+                                                        <th>الإدارة</th>
+                                                        <th>كود الوظيفة</th>
+                                                        <th>الوظيفة</th>
+                                                        <th>كود المسمى الوظيفي</th>
+                                                        <th>المسمى الوظيفي</th>
+                                                        <th>نوع التخصص</th>
+                                                        <th>طريقة شغل الوظيفة</th>
+                                                        <th>حالة الوظيفة</th>
+                                                        <th>تعديل</th>
+                                                        <th>حذف</th>
 
 
-                                            </tr>
-                                        </thead>
-                                        {this.props.empTrans.length > 1 ? this.props.empTrans.map(trans => (
-                                            <tbody>
-                                                <tr>
+                                                    </tr>
+                                                </thead>
+                                                {this.props.empTrans.map(trans => (
+                                                    <tbody>
+                                                        <tr>
+                                                            <td ref="name">{trans.NAME_ARABIC}</td>
+                                                            <td >{trans.TRANS_DATE}</td>
+                                                            <td ref="catid">{trans.CAT_ID}</td>
+                                                            <td ref="catname">{trans.CAT_NAME}</td>
+                                                            <td ref="mainboxid">{trans.MAIN_BOX_ID}</td>
+                                                            <td ref="mainboxname1">{trans.MAIN_BOX_NAME}</td>
+                                                            <td ref="supboxid">{trans.SUP_BOX_ID}</td>
+                                                            <td ref="supboxname">{trans.SUP_BOX_NAME}</td>
+                                                            <td ref="gname">{trans.G_NAME}</td>
+                                                            <td ref="jasi">{trans.JOB_ASSIGNMENT_FORM_ARABIC}</td>
+                                                            <td ref="indname">{trans.INDICATOR_NAME}</td>
+                                                            <td onClick={this.handelEdit_1}><i empname={trans.NAME_ARABIC} transdate={trans.TRANS_DATE} catid={trans.CAT_ID} catname={trans.CAT_NAME} mainboxid={trans.MAIN_BOX_ID} mainboxname={trans.MAIN_BOX_NAME} supboxid={trans.SUP_BOX_ID} supboxname={trans.SUP_BOX_NAME} jobgroup={trans.G_NAME} onClick={this.editHandler} jasform={trans.JOB_ASSIGNMENT_FORM_ARABIC} indname={trans.INDICATOR_NAME} class="fas fa-edit"></i></td>
+                                                            <td><i class="fas fa-backspace"></i></td>
+                                                        </tr>
+                                                    </tbody>
+                                                ))}
+                                            </Fragment>
 
-                                                    <td><Reactmoment format="YYYY/MM/DD">{trans.TRANS_DATE}</Reactmoment></td>
-                                                    <td>{trans.CAT_ID}</td>
-                                                    <td>{trans.CAT_NAME}</td>
-                                                    <td>{trans.MAIN_BOX_ID}</td>
-                                                    <td>{trans.MAIN_BOX_NAME}</td>
-                                                    <td>{trans.SUP_BOX_ID}</td>
-                                                    <td>{trans.SUP_BOX_NAME}</td>
-                                                    <td>{trans.G_NAME}</td>
-                                                    <td>{trans.JOB_ASSIGNMENT_FORM_ARABIC}</td>
-                                                    <td>{trans.INDICATOR_NAME}</td>
-                                                    {/* <td onClick={this.handelEdit_1}><i empName={emp.NAME_ARABIC} empApp={emp.APPRAISAL_ARABIC} empDate={emp.APPRAISAL_DATE} empnatid={emp.NATIONAL_ID_CARD_NO} onClick={this.editHandler} class="fas fa-edit"></i></td> */}
-                                                    <td onClick={this.handelEdit_1}><i class="fas fa-edit"></i></td>
-                                                    <td><i class="fas fa-backspace"></i></td>
-                                                </tr>
-                                            </tbody>
+                                            :
+                                            <Fragment>
 
-                                        )):   
-                                        <tbody>
-                                         <h1 style={{textAlign: "center"}}>عفواً لا توجد بيانات</h1> 
+                                                <thead>
+                                                    <tr>
+                                                        <th>الإسم</th>
+                                                        <th>تاريخ الحركة</th>
+                                                        <th>الإدارة</th>
+                                                        <th>الوظيفة</th>
+                                                        <th>المسمى الوظيفي</th>
+                                                        <th>نوع التخصص</th>
+                                                        <th>طريقة شغل الوظيفة</th>
+                                                        <th>حالة الوظيفة</th>
+                                                        <th>تعديل</th>
+                                                        <th>حذف</th>
 
-                                        </tbody>}
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>{this.refs.name ? this.refs.name.innerHTML : null}</td>
+                                                        <td><input id="date" ref onClick={this.handelEdit_2} value={this.state.date ? this.state.date : null} style={{ display: "inline" }} /><i class="fas fa-edit" /></td>
+                                                        <td><input placeholder={this.state.catname} /></td>
+                                                        <td><input placeholder={this.state.mainboxname} /></td>
+                                                        <td><input placeholder={this.state.supboxname} /></td>
+                                                        <td><input placeholder={this.state.gname} /></td>
+                                                        <td><input placeholder={this.state.jasi} /></td>
+                                                        <td><input placeholder={this.state.indname} /></td>
+                                                        <td><i class="fas fa-edit"></i></td>
+                                                        <td><i class="fas fa-backspace"></i></td>
+                                                    </tr>
+                                                </tbody>
+                                            </Fragment>
+                                        }
 
                                     </table>
+                                    {this.props.empTrans.length < 1 ? <h1>عفواً لا توجد بييانات</h1> : null}
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>)
+            </div >
+        )
     }
 }
 

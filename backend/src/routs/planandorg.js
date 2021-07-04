@@ -9,6 +9,10 @@ let query2 = `SELECT t1.* FROM a_job_trans t1 WHERE t1.TRANS_DATE =( SELECT MAX(
 let query3 = `SELECT * FROM a_job_trans JOIN employee JOIN job_assignment_form JOIN indicators JOIN a_sup_box JOIN a_category JOIN( SELECT job_level.JOB_LEVEL_NAME, a_job_dgree.J_D_NAME FROM a_job_dgree JOIN job_level ON a_job_dgree.JOB_LEVEL = job_level.JOB_LEVEL ) AS emp_level ON emp_level.J_D_NAME = a_job_trans.MAIN_BOX_NAME AND a_category.CAT_ID = a_job_trans.CAT_ID AND a_sup_box.SUP_BOX_ID = a_job_trans.SUP_BOX_ID AND a_job_trans.NATIONAL_ID_CARD_NO = employee.NATIONAL_ID_CARD_NO AND a_job_trans.JOB_ASSIGNMENT_FORM = JOB_ASSIGNMENT_FORM.JOB_ASSIGNMENT_FORM AND a_job_trans.INDICATOR = indicators.INDICATOR WHERE employee.EMPLOYEE_ID = 701 ORDER BY a_job_trans.TRANS_DATE`
 
 let query4 = `SELECT * FROM employee_education_degree JOIN education_degree JOIN dgree_speciality JOIN dgree_speciality_detail JOIN UNIVERSITY_SCHOOL JOIN GRADUATION_GRADE JOIN employee ON employee_education_degree.DEGREE = education_degree.DEGREE AND employee_education_degree.SPECIALITY = dgree_speciality.SPECIALITY AND employee_education_degree.SPECIALITY_DETAIL = dgree_speciality_detail.SPECIALITY_DETAIL AND employee_education_degree.UNIVERSITY_SCHOOL = university_school.UNIVERSITY_SCHOOL AND employee_education_degree.GRADUATION_GRADE = graduation_grade.GRADUATION_GRADE AND employee_education_degree.NATIONAL_ID_CARD_NO = employee.NATIONAL_ID_CARD_NO`
+let query5 = `UPDATE a_job_trans JOIN job_assignment_form JOIN employee JOIN indicators JOIN a_sup_box join a_category JOIN a_job_groups SET a_job_trans.JOB_ASSIGNMENT_FORM = job_assignment_form.JOB_ASSIGNMENT_FORM, a_job_trans.INDICATOR = indicators.INDICATOR , a_job_trans.SUP_BOX_ID = a_sup_box.SUP_BOX_ID, a_job_trans.CAT_ID = a_category.CAT_ID WHERE job_assignment_form.JOB_ASSIGNMENT_FORM_ARABIC = "أخرى" AND indicators.INDICATOR_NAME = "أصلية" AND a_sup_box.SUP_BOX_NAME = "مدير عام مساعد لشئون العاملين و علاقات العمل" AND a_category.CAT_NAME = "تنمية الموارد البشرية" and employee.NAME_ARABIC = "محمد محمد محمد الديب" AND a_job_trans.TRANS_DATE = "2021-01-01"`
+
+let query6 = `INSERT INTO a_job_trans (CAT_ID) VALUES ((SELECT CAT_ID FROM a_category WHERE CAT_NAME ='تنمية الموارد البشرية'))
+`
 
 function getJobDgByCat(req, res) {
     const catId = req.params.catid
@@ -221,6 +225,11 @@ function getEmpEdu(req, res) {
     })
 }
 
+function updateEmpTrans(req, res) {
+    let empid = req.params
+    let query = `UPDATE a_job_trans JOIN job_assignment_form JOIN employee JOIN indicators JOIN a_sup_box join a_category JOIN a_job_groups SET a_job_trans.JOB_ASSIGNMENT_FORM = job_assignment_form.JOB_ASSIGNMENT_FORM, a_job_trans.INDICATOR = indicators.INDICATOR , a_job_trans.SUP_BOX_ID = a_sup_box.SUP_BOX_ID, a_job_trans.CAT_ID = a_category.CAT_ID WHERE job_assignment_form.JOB_ASSIGNMENT_FORM_ARABIC = "أخرى" AND indicators.INDICATOR_NAME = "أصلية" AND a_sup_box.SUP_BOX_NAME = "مدير عام مساعد لشئون العاملين و علاقات العمل" AND a_category.CAT_NAME = "تنمية الموارد البشرية" and employee.NATIONAL_ID_CARD_NO = ${empid} AND a_job_trans.TRANS_DATE = "2021-01-01"`
+    console.log(req.body, 'hit');
+}
 
 
 router
@@ -236,6 +245,7 @@ router
     .put('/appraisalupdate', updateAppraisal)
 
     .get('/getemptrans/:empid', getEmpTrans)
+    .put('/updateemptrans', updateEmpTrans)
 
     .get('/getempedu/:empid', getEmpEdu)
 

@@ -6,7 +6,7 @@ function Home() {
                     <h1 className="page-header">سيستم إدارة الموارد البشرية</h1>
                 </div>
             </div>
-            <div className="row">
+            {/* <div className="row">
                 <div className="col-lg-3 col-md-6">
                     <div className="panel panel-primary">
                         <div className="panel-heading">
@@ -95,7 +95,7 @@ function Home() {
                         </a>
                     </div>
                 </div>
-            </div>
+            </div> */}
         </div>
     )
 }
