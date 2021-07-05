@@ -134,6 +134,7 @@ function getEmpApprails(req, res) {
     const appraisal = req.params.appraisal
     const year = req.params.year
 
+    console.log("hit");
     if (empid === "null" && (appraisal === "null" || appraisal === "اختر التقييم")) {
         db.query(`SELECT employee.NAME_ARABIC, employee_appraisal.APPRAISAL_DATE, appraisal.APPRAISAL_ARABIC,
         employee.EMPLOYEE_ID, employee_appraisal.NATIONAL_ID_CARD_NO
@@ -275,7 +276,9 @@ function getEmpTrans(req, res) {
 function getEmpAvljd (req,res){
     const catname = req.params.catname;
     const mainboxid = req.params.mainboxid
-
+let d = `WHERE id < 5
+ORDER BY id DESC
+LIMIT 1`
     let query1 = `SELECT SUP_BOX_NAME from a_sup_box WHERE MAIN_BOX_ID IN (SELECT a_main_box.MAIN_BOX_ID FROM a_main_box JOIN a_job_dgree JOIN a_category ON a_main_box.J_D_ID = a_job_dgree.J_D_ID AND a_main_box.CAT_ID = a_category.CAT_ID WHERE a_category.CAT_NAME = "${catname}" AND a_job_dgree.J_D_NAME = "${jdname}")`
 
     let query = `SELECT * FROM a_job_dgree JOIN( SELECT a_main_box.CAT_ID, a_main_box.J_D_ID, a_category.CAT_NAME FROM a_main_box JOIN a_category ON a_category.CAT_ID = a_main_box.CAT_ID ) AS maincate ON a_job_dgree.J_D_ID = maincate.J_D_ID WHERE maincate.CAT_NAME = "${catname}" AND a_job_dgree.J_D_ID = ${mainboxid} ORDER BY a_job_dgree.J_D_ID LIMIT 1`
@@ -330,9 +333,15 @@ function getEmpEdu(req, res) {
 }
 
 function updateEmpTrans(req, res) {
-    let empid = req.params
-    let query = `UPDATE a_job_trans JOIN job_assignment_form JOIN employee JOIN indicators JOIN a_sup_box join a_category JOIN a_job_groups SET a_job_trans.JOB_ASSIGNMENT_FORM = job_assignment_form.JOB_ASSIGNMENT_FORM, a_job_trans.INDICATOR = indicators.INDICATOR , a_job_trans.SUP_BOX_ID = a_sup_box.SUP_BOX_ID, a_job_trans.CAT_ID = a_category.CAT_ID WHERE job_assignment_form.JOB_ASSIGNMENT_FORM_ARABIC = "أخرى" AND indicators.INDICATOR_NAME = "أصلية" AND a_sup_box.SUP_BOX_NAME = "مدير عام مساعد لشئون العاملين و علاقات العمل" AND a_category.CAT_NAME = "تنمية الموارد البشرية" and employee.NATIONAL_ID_CARD_NO = ${empid} AND a_job_trans.TRANS_DATE = "2021-01-01"`
-    console.log(req.body, 'hit');
+    console.log(req.body);
+    let query = `UPDATE a_job_trans SET SUP_BOX_NAME = "${req.body.catname}", MAIN_BOX_NAME = "${req.body.jdname}", SUP_BOX_ID = (SELECT SUP_BOX_ID FROM a_sup_box WHERE SUP_BOX_NAME = "${req.body.supboxname}"), G_ID = (SELECT G_ID FROM a_job_groups WHERE G_NAME = "${req.body.gname}"), job_assignment_form = (SELECT JOB_ASSIGNMENT_FORM FROM job_assignment_form WHERE JOB_ASSIGNMENT_FORM_ARABIC = "${req.body.jasi}"), INDICATOR = (SELECT INDICATOR FROM indicators WHERE INDICATOR_NAME = "${req.body.indname}" ) WHERE NATIONAL_ID_CARD_NO = (SELECT NATIONAL_ID_CARD_NO FROM employee WHERE EMPLOYEE_ID  = ${req.body.empid} ) `
+    db.query(query, (err, details) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(details);
+        }
+    })
 }
 
 function getAvailSupBox(req, res){

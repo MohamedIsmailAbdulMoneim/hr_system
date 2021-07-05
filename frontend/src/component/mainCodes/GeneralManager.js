@@ -17,6 +17,10 @@ class GeneralManager extends React.Component {
         this.props.getJobDgreeCodes("مدير عام")
     }
 
+    editFalseHandeler = (e) => {
+        this.setState({edit:false})
+    }
+
     clickHandler = (e) => {
         console.log(e.target.getAttribute('name'));
     }
@@ -34,6 +38,10 @@ class GeneralManager extends React.Component {
         this.setState({ supBoxName: e.target.getAttribute("supBoxName") })
         this.setState({ edit: true })
 
+    }
+
+    editFalseHandeler = (e) => {
+        this.setState({edit:false})
     }
 
     render() {
@@ -89,7 +97,9 @@ class GeneralManager extends React.Component {
                                     <div className="col-lg-12">
                                         <div className="panel panel-default">
                                             <div className="panel-heading">
-                                                Striped Rows
+                                                أكواد مستوى مدير عام
+                                                {this.state.edit ? <i onClick={this.editFalseHandeler} style={{fontSize: 15 ,position: "relative", left:530}} class="fas fa-times-circle"></i> : null } 
+
                                             </div>
                                             <div className="panel-body">
                                                 {!this.state.edit ?
@@ -137,12 +147,12 @@ class GeneralManager extends React.Component {
                                                                     <td><input style={{ width: 50 }} type="text" placeholder={this.state.supBoxId} /></td>
                                                                     <td><input type="text" placeholder={this.state.mainBoxName} /></td>
                                                                     <td><input type="text" placeholder={this.state.supBoxName} /></td>
-
+                                                                    <td><button type="button" class="btn btn-primary">تعديل</button></td>
                                                                 </tr>
                                                             </tbody>
 
                                                         </table>
-                                                        <p><button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button></p>
+                                                        
 
                                                     </div>}
 

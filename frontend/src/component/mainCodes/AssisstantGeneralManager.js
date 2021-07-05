@@ -1,14 +1,24 @@
 import React, { Fragment } from "react";
+import {
 
+    getEmpByDeps, getEmpName, getJobDgreeCodes
+
+} from "../../actions/Actions";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import moment from 'react-moment';
+import 'moment-timezone';
 
 class GeneralManager extends React.Component {
     constructor(props) {
         super(props);
         this.state = { new: false, edit: false, delete: false, jDId: null, mainBoxName: null, supBoxId: null, supBoxName: null };
 
+    }
+
+    componentDidMount(){
+        this.props.getJobDgreeCodes("مدير عام مساعد")
     }
 
     clickHandler = (e) => {
@@ -33,6 +43,10 @@ class GeneralManager extends React.Component {
 
     }
 
+    editFalseHandeler = (e) => {
+        this.setState({edit:false})
+    }
+
     render() {
         return (
             <div id="page-wrapper">
@@ -49,7 +63,7 @@ class GeneralManager extends React.Component {
                             </div>
                             <div className="panel-body">
                                 <div className="row">
-                                    <div className="col-lg-6">
+                                    <div className="col-lg-12">
                                         <form role="form">
                                             <div className="form-group">
                                                 <label>كود المستوى الوظيفي</label>
@@ -73,10 +87,13 @@ class GeneralManager extends React.Component {
                                             </div>
                                         </form>
                                     </div>
-                                    <div className="col-lg-6">
+                                    </div>
+                                    <div className="row">
+                                    <div className="col-lg-12">
                                         <div className="panel panel-default">
                                             <div className="panel-heading">
-                                                Striped Rows
+                                               أكواد مستوى مدير عام مساعد
+                                              {this.state.edit ? <i onClick={this.editFalseHandeler} style={{fontSize: 15 ,position: "relative", left:530}} class="fas fa-times-circle"></i> : null } 
                                             </div>
                                             <div className="panel-body">
                                                 {!this.state.edit ? <div style={{ overflow: "scroll", height: 320 }} className="table-responsive">
@@ -123,12 +140,12 @@ class GeneralManager extends React.Component {
                                                                 <td><input style={{ width: 50 }} type="text" placeholder={this.state.supBoxId} /></td>
                                                                 <td><input type="text" placeholder={this.state.mainBoxName} /></td>
                                                                 <td><input type="text" placeholder={this.state.supBoxName} /></td>
+                                                                <td><button type="button" class="btn btn-primary ">تعديل</button></td>
 
                                                             </tr>
                                                         </tbody>
 
                                                     </table>
-                                                    <p><button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button></p>
 
                                                 </div>}
 
@@ -153,4 +170,5 @@ const mapStateToProps = (state) => {
     };
 };
 export default connect(mapStateToProps, {
+    getJobDgreeCodes
 })(GeneralManager);
