@@ -16,4 +16,5 @@ export const fetchEmpNameByName = "FETCH-EMP-BY-NAME"
 export const fetchavailjd = "FETCH-AVAIL-JD"
 export const fetchCurrentjd = "FETCH-CURRENT-JD"
 export const fetchavailsupbox = "FETCH-AVAIL-SUPBOX"
+export const fetchupjd = "FETCH-UP-JD"
 

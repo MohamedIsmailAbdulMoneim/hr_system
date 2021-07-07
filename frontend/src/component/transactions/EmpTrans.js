@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import {
-    getEmpTrans, getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox
+    getEmpTrans, getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox, getUpJd
 } from "../../actions/Actions";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
@@ -13,7 +13,7 @@ import Reactmoment from "react-moment"
 class EmpTrans extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { add: false, edit: false, empid: null, empname: null, transdate: null, jdname: null, supboxname: null, gname: null, jasi: null, indname: null, catname: null, catid: null };
+        this.state = { add: false, edit: false, empid: null, empname: null, transdate: null, jdname: null, supboxname: null, gname: null, jasi: null, indname: null, catname: null, catid: null, supboxid: null,levels: null };
 
     }
 
@@ -21,8 +21,9 @@ class EmpTrans extends React.Component {
     clickHandler = (e) => {
         e.preventDefault()
         this.setState({ edit: false })
+        this.props.getEmpName(e.target.value)
         this.props.getEmpTrans(e.target.value)
-        this.setState({ catname: e.target.value })
+        this.setState({ catname: e.target.value})
 
     }
     addFalseHandeler = (e) => {
@@ -35,7 +36,7 @@ class EmpTrans extends React.Component {
 
     addButtonClickHandeler = () => {
         this.setState({ add: true })
-        this.setState({ transdate: null, catname: null, jdname : null, supboxname: null,gname: null,jasi:null, indname: null})
+        this.setState({ empid: null, empname: null, transdate: null, catname: null, jdname : null, supboxname: null,gname: null,jasi:null, indname: null})
         
 
     }
@@ -58,7 +59,6 @@ class EmpTrans extends React.Component {
             url: "http://localhost:5000/postnewtrans",
             headers: { "Content-Type": "application/json" },
         }).then((res) => {
-            console.log(res);
         })
     }
     getNameAndCurrent = (e) => {
@@ -70,7 +70,6 @@ class EmpTrans extends React.Component {
     }
 
     handelDateClick = (e) => {
-        console.log(e.target.value)
         this.setState({ transdate: e.target.value })
     }
 
@@ -81,14 +80,14 @@ class EmpTrans extends React.Component {
     }
 
     catClickHandeler = (e) => {
-        console.log('hit');
-        this.props.getJobDgByCat(e.target.value)
-        this.setState({ catname: e.target.value })
+        this.props.getJobDgByCat(e.target.value, this.props.empcurrentjd ? this.props.empcurrentjd.length ? this.props.empcurrentjd[0].J_D_ID_P: null : null)
+        this.setState({ catname: e.target.value})
+        this.refs.selected.options.selectedIndex = 2
 
     }
 
     jdNameClickHandeler = (e) => {
-        this.setState({ jdname: e.target.value })
+        this.setState({ jdname: e.target.value, levels: this.props.jobdgbycat ? this.props.jobdgbycat.length ? this.props.jobdgbycat[0].levels : null : null })
         this.props.getAvailSupBox(this.state.catname, e.target.value)
 
     }
@@ -97,28 +96,25 @@ class EmpTrans extends React.Component {
         this.setState({
             supboxname: e.target.value
         })
-        console.log(e.target.value);
+        this.props.getUpJd(this.state.levels, e.target.value)
+        console.log(this.state.levels, e.target.value);
     }
-
     gNameClickeHandeler = (e) => {
         this.setState({
             gname: e.target.value
         })
-        console.log(e.target.value);
     }
 
     jasiClickeHandeler = (e) => {
         this.setState({
             jasi: e.target.value
         })
-        console.log(e.target.value);
     }
 
     indClickeHandeler = (e) => {
         this.setState({
             indname: e.target.value
         })
-        console.log(e.target.value);
     }
 
 
@@ -130,7 +126,6 @@ class EmpTrans extends React.Component {
         myFutureDate.setDate(myFutureDate.getDate() + 1);//myFutureDate is now 8 days in the future
         let newDate = myFutureDate.getUTCFullYear() + "-" + (myFutureDate.getUTCMonth() + 1) + "-" + myFutureDate.getUTCDate()
         this.setState({ edit: true, empname: e.target.getAttribute("empname"), transdate: newDate, catname: e.target.getAttribute("catname"), catid: e.target.getAttribute("catid"), jdname: e.target.getAttribute("jdname"), supboxname: e.target.getAttribute("supboxname"), gname: e.target.getAttribute("jobgroup"), jasi: e.target.getAttribute("jasform"), indname: e.target.getAttribute("indname") })
-        console.log(e.target.getAttribute("transdate"));
     }
 
     handelEdit_2 = (e) => {
@@ -144,7 +139,6 @@ class EmpTrans extends React.Component {
             url: `http://localhost:5000/updateemptrans`,
             headers: { "Content-Type": "application/json" },
         }).then(data => {
-            console.log(data);
         })
 
 
@@ -153,7 +147,7 @@ class EmpTrans extends React.Component {
 
 
     render() {
-        console.log(this.props.transdate);
+        console.log(this.props.upjd ? this.props.upjd.length ? this.props.upjd[0] ? this.props.upjd[0][0] : null : null : null);
         const styles = {
             display: "block",
             padding: "0.375rem 2.25rem 0.375rem 0.75rem",
@@ -173,7 +167,7 @@ class EmpTrans extends React.Component {
 
         return (
             <div id="page-wrapper" >
-                {this.state.add ? <form> <div class="row">
+                {this.state.add ? <div> <form> <div class="row">
                     <div className="col-lg-12" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                         <div style={{ height: "100%", width: 750 }} class="panel panel-default">
                             <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }} class="panel-heading">
@@ -188,10 +182,10 @@ class EmpTrans extends React.Component {
                                 <div style={{ marginRight: 20, marginTop: 5 }}>
                                     <div className="col-lg-4">
                                         <div class="input-group">
-                                            <span >رقم الأداء :  </span><input type="number"  onClick={this.getNameAndCurrent} style={{ background: "white", marginTop: 5, marginRight: 5, height: 25, width: 188, border: "1px solid black" }} type="text" name="first_name" />
+                                            <span >رقم الأداء :  </span><input type="number" onKeyUp={this.getNameAndCurrent} style={{ background: "white", marginTop: 5, marginRight: 5, height: 25, width: 188, border: "1px solid black" }} type="text" name="first_name" />
                                         </div>
                                         <div class="input-group">
-                                            <span>الإسم :  </span><input required style={{ background: "white", marginTop: 5, marginRight: 5, height: 25, width: 188, border: "1px solid black" }} type="text" name="first_name" value={this.props.empname ? this.props.empname[0].NAME_ARABIC : this.props.empNameByName ? this.props.empNameByName[0].NAME_ARABIC : null} />
+                                            <span>الإسم :  </span><input required style={{ background: "white", marginTop: 5, marginRight: 5, height: 25, width: 188, border: "1px solid black" }} type="text" name="first_name" value={this.props.empname ? this.props.empname.length >= 1 ? this.props.empname[0].NAME_ARABIC : this.props.empNameByName ? this.props.empNameByName[0].NAME_ARABIC : null : null} />
                                         </div>
 
                                         <div class="input-group">
@@ -217,13 +211,12 @@ class EmpTrans extends React.Component {
 
                                         <div class="input-group">
                                             <span>الوظيفة :  </span>
-                                            <select required style={{ marginTop: 5, marginRight: 5, height: 25, width: 188 }} onChange={this.jdNameClickHandeler}>
-                                                {this.props.jobdgbycat.map(job => (
+                                            <select required ref="selected" style={{ marginTop: 5, marginRight: 5, height: 25, width: 188 }} onChange={this.jdNameClickHandeler}>
                                                     <option>
-                                                        {job.J_D_NAME}
+                                                        {this.props.jobdgbycat ? this.props.jobdgbycat.length ? this.props.jobdgbycat[0].J_D_NAME: null:null}
                                                     </option>
-                                                ))}
-                                                <option selected>{this.props.empcurrentjd.length >= 1 ? this.props.empcurrentjd[0].J_D_NAME : null}</option>
+                                                <option>{this.props.empcurrentjd.length >= 1 ? this.props.empcurrentjd[0].J_D_NAME : null}</option>
+                                                <option selected>اختر الوظيفة</option>
 
                                             </select>
                                         </div>
@@ -231,7 +224,7 @@ class EmpTrans extends React.Component {
                                             <span>المسمى الوظيفي :  </span>
                                             <select required style={{ marginTop: 5, marginRight: 5, height: 25, width: 188 }} onChange={this.supboxClickHandeler}>
                                                 {this.props.empavailsup.map(job => (
-                                                    <option>
+                                                    <option supboxid={job.SUP_BOX_ID}>
                                                         {job.SUP_BOX_NAME}
                                                     </option>
                                                 ))}
@@ -299,7 +292,29 @@ class EmpTrans extends React.Component {
 
                     </div>
 
-                </div> </form> : null}
+                </div>
+                
+                 </form>
+                
+                
+
+                {this.props.upjd.map(up=> (
+                    <Fragment>
+                        {up.length ?
+                        <div style={{height : 50, width: "100%", background: "gray", margin: 10}}>
+                            <h1>{up[0].boxname}</h1>
+                        </div>
+                         : null}
+                    </Fragment>
+                ))}
+                
+
+
+                </div>
+                
+                
+                
+                : null}
 
                 <div class="row">
                     <div class="col-lg-12">
@@ -313,10 +328,10 @@ class EmpTrans extends React.Component {
                             </div>
                             <div style={{ marginRight: 20, display: "flex", justifyContent: "center", alignItems: "center", marginLeft: 40 }}>
                                 <div style={{ marginTop: 20 }} class="input-group">
-                                    <span>رقم الأداء : </span><input onClick={this.getNameAndCurrent} style={{ background: "white", width: 20, marginBottom: 5, marginRight: 5, border: "1px solid black", width: 120 }} onDoubleClick={this.clickHandler} type="text" name="first_name" />
+                                    <span>رقم الأداء : </span><input onKeyUp={this.clickHandler} style={{ background: "white", width: 20, marginBottom: 5, marginRight: 5, border: "1px solid black", width: 120 }} type="text" name="first_name" />
                                 </div>
                                 <div style={{ marginTop: 20 }} class="input-group">
-                                    <span style={{ marginRight: 20 }}>الإسم : </span><input placeholder={this.props.empname && !this.state.edit ? this.props.empname[0].NAME_ARABIC : null} style={{ background: "white", width: 20, marginBottom: 5, marginRight: 5, border: "1px solid black", width: 120 }} onDoubleClick={this.clickHandler} type="text" name="first_name" />
+                                    <span style={{ marginRight: 20 }}>الإسم : </span><input placeholder={this.props.empname && !this.state.edit ? this.props.empname.length >= 1 ? this.props.empname[0].NAME_ARABIC : null : null} style={{ background: "white", width: 20, marginBottom: 5, marginRight: 5, border: "1px solid black", width: 120 }}  type="text" name="first_name" />
                                 </div>
                                 <button onClick={this.handelSubmit} style={{ position: "relative", right: 10, top: 8 }} type="button" class="btn btn-primary">
                                     <i class="fas fa-search"></i>
@@ -506,9 +521,10 @@ const mapStateToProps = (state) => {
         empname: state.posts.empname,
         empNameByName: state.posts.empNameByName,
         empcurrentjd: state.posts.empcurrentjd,
-        empavailsup: state.posts.empavailsup
+        empavailsup: state.posts.empavailsup,
+        upjd: state.posts.upjd
     };
 };
 export default connect(mapStateToProps, {
-    getEmpTrans, getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox
+    getEmpTrans, getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox, getUpJd
 })(EmpTrans);

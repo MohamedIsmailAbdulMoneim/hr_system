@@ -69,13 +69,16 @@ let query7 = `SELECT * FROM a_job_dgree JOIN( SELECT a_main_box.CAT_ID, a_main_b
 let query8 =`SELECT * FROM a_main_box JOIN a_job_dgree JOIN a_category ON a_main_box.J_D_ID = a_job_dgree.J_D_ID AND a_main_box.CAT_ID = a_category.CAT_ID`
 function getJobDgByCat(req, res) {
     const catId = req.params.catid
+    const jdidp = req.params.jdidp
+    console.log(jdidp);
     const query = `SELECT * FROM a_job_dgree JOIN a_main_box ON a_job_dgree.J_D_ID = a_main_box.J_D_ID WHERE a_main_box.CAT_ID = ${catId};`
     db.query(query, (err, details) => {
         if (err) {
-            db.query(`SELECT * FROM a_job_dgree JOIN( SELECT a_main_box.CAT_ID, a_main_box.J_D_ID, a_category.CAT_NAME FROM a_main_box JOIN a_category ON a_category.CAT_ID = a_main_box.CAT_ID ) AS maincate ON a_job_dgree.J_D_ID = maincate.J_D_ID WHERE maincate.CAT_NAME = "${catId}"`, (err, details) => {
+            db.query(`SELECT *, count(J_D_ID_P) + 1 AS levels FROM a_job_dgree JOIN( SELECT a_main_box.CAT_ID, a_main_box.J_D_ID, a_category.CAT_NAME FROM a_main_box JOIN a_category ON a_category.CAT_ID = a_main_box.CAT_ID ) AS maincate ON a_job_dgree.J_D_ID = maincate.J_D_ID WHERE maincate.CAT_NAME = "${catId}" AND a_job_dgree.J_D_ID_P < ${jdidp}  `, (err, details) => {
                 if (err) {
                   console.log(err);  
                 } else {
+                    console.log(details);
                     res.send(details);
                 }
             })
@@ -125,6 +128,11 @@ function getsupboxmangers(req, res) {
 
 
     })
+}
+
+function getStructure(req,res){
+    const supboxid =  req.body.supboxid;
+    let query = `CALL GTT(433,10)`
 }
 
 
@@ -301,6 +309,7 @@ JOIN employee JOIN(
     SELECT
         a_main_box.J_D_ID,
         a_job_dgree.J_D_NAME,
+        a_job_dgree.J_D_ID_P,
         a_main_box.MAIN_BOX_ID
     FROM
         a_main_box
@@ -349,12 +358,26 @@ function getAvailSupBox(req, res){
     const jdname = req.params.jdname
 
     console.log(catname, jdname);
-    let query =`SELECT SUP_BOX_NAME from a_sup_box WHERE MAIN_BOX_ID IN (SELECT a_main_box.MAIN_BOX_ID FROM a_main_box JOIN a_job_dgree JOIN a_category ON a_main_box.J_D_ID = a_job_dgree.J_D_ID AND a_main_box.CAT_ID = a_category.CAT_ID WHERE a_category.CAT_NAME = "${catname}" AND a_job_dgree.J_D_NAME = "${jdname}")`
+    let query =`SELECT SUP_BOX_NAME, SUP_BOX_ID from a_sup_box WHERE MAIN_BOX_ID IN (SELECT a_main_box.MAIN_BOX_ID FROM a_main_box JOIN a_job_dgree JOIN a_category ON a_main_box.J_D_ID = a_job_dgree.J_D_ID AND a_main_box.CAT_ID = a_category.CAT_ID WHERE a_category.CAT_NAME = "${catname}" AND a_job_dgree.J_D_NAME = "${jdname}")`
     db.query(query, (err, details) => {
         if (err) {
             console.log(err);
         } else {
             res.send(details);
+        }
+    })
+}
+
+function getUpJd(req,res){
+    const len = req.params.len
+    const supboxname = req.params.supboxname
+    let query = `CALL GTT(${len},(SELECT SUP_BOX_ID FROM a_sup_box WHERE SUP_BOX_NAME = "${supboxname}"))`
+    console.log(len,supboxname);
+    db.query(query, (err, details) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(details.reverse());
         }
     })
 }
@@ -380,7 +403,7 @@ function postnewtrans(req, res){
 }
 
 router
-    .get('/getjobdgbycat/:catid', getJobDgByCat)
+    .get('/getjobdgbycat/:catid/:jdidp', getJobDgByCat)
 
     .get(`/getsupboxnames/:jdid/:catid`, getSupBoxNames)
 
@@ -402,6 +425,8 @@ router
     .get('/availjd/:catname/:jdname',getEmpAvljd)
     .get('/getavailsupbox/:catname/:jdname',getAvailSupBox)
     .post('/postnewtrans', postnewtrans)
+
+    .get('/getUpJd/:len/:supboxname', getUpJd)
 
 
 
