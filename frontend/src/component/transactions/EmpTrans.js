@@ -302,13 +302,15 @@ class EmpTrans extends React.Component {
                         {this.props.upjd.map(up => (
                             <Fragment>
                                 {up.length ?
-                                    <div style={{ width: "50%", background: "gray", margin: 10 }}>
+                                    <div style={{ width: "50%", background: "#c3c3c3", borderRadius: 10, margin: 10 }}>
                                         {up[0].boxname && up[0].boxname !== "null" ? <h3>{up[0].boxname}</h3> : null}
                                     </div>
                                     : null}
+                                <span style={{ fontSize: 30 }}>&#8593;</span>
+
                             </Fragment>
                         ))}
-                        <div style={{ width: "50%", background: "gray", margin: 10 }}>
+                        <div style={{ width: "50%", background: "#c3c3c3", borderRadius: 10, margin: 10 }}>
                             <h3>{this.state.supboxname}</h3>
                         </div>
                     </div> : null : null : null}

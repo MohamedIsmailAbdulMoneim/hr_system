@@ -15,6 +15,8 @@ let query_2 = `SELECT * from t
 WHERE id < 5
 ORDER BY id DESC
 LIMIT 1`
+let query2 = `SELECT * FROM employee JOIN( SELECT a_sup_box.sup_box_id, a_sup_box.sup_box_name, a_job_trans.NATIONAL_ID_CARD_NO FROM a_sup_box JOIN a_job_trans ON a_job_trans.SUP_BOX_ID = a_sup_box.SUP_BOX_ID WHERE a_job_trans.INDICATOR = 2 ) AS emp_box JOIN employee_appraisal ON employee.NATIONAL_ID_CARD_NO = emp_box.NATIONAL_ID_CARD_NO AND employee.NATIONAL_ID_CARD_NO = employee_appraisal.NATIONAL_ID_CARD_NO
+`
 function getDeps(req, res) {
     const query = `SELECT DISTINCT SUP_BOX_NAME FROM a_job_trans`
     db.query(query, (err, details) => {
