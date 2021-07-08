@@ -13,19 +13,9 @@ import Reactmoment from "react-moment"
 class EmpTrans extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { showStruct: false, add: false, edit: false, empid: null, empname: null, transdate: null, jdname: null, supboxname: null, gname: null, jasi: null, indname: null, catname: null, catid: null, supboxid: null, levels: null };
+        this.state = { add: false, edit: false, empid: null, empname: null, transdate: null, jdname: null, supboxname: null, gname: null, jasi: null, indname: null, catname: null, catid: null, supboxid: null, levels: null, show: false };
 
     }
-
-
-    testFunc = () => {
-        if (this.props.empcurrentjd) {
-            if (this.props.empcurrentjd.length) {
-                console.log('hii im fired')
-            }
-        }
-    }
-
 
 
     clickHandler = (e) => {
@@ -33,10 +23,11 @@ class EmpTrans extends React.Component {
         this.setState({ edit: false })
         this.props.getEmpName(e.target.value)
         this.props.getEmpTrans(e.target.value)
-        this.props.getCurrentJd(e.target.value)
+        this.setState({ catname: e.target.value })
+
     }
     addFalseHandeler = (e) => {
-        this.setState({ add: false, showStruct:false })
+        this.setState({ add: false, show: false })
     }
 
     editFalseHandeler = (e) => {
@@ -45,7 +36,7 @@ class EmpTrans extends React.Component {
 
     addButtonClickHandeler = () => {
         this.setState({ add: true })
-        this.setState({ empid: null, empname: null, transdate: null, catname: null, jdname: null, supboxname: null, gname: null, jasi: null, indname: null,showStruct:false })
+        this.setState({ empid: null, empname: null, transdate: null, catname: null, jdname: null, supboxname: null, gname: null, jasi: null, indname: null, show: false })
 
 
     }
@@ -89,23 +80,23 @@ class EmpTrans extends React.Component {
     }
 
     catClickHandeler = (e) => {
-        this.props.getJobDgByCat(e.target.value, this.props.empcurrentjd ? this.props.empcurrentjd.length ? this.props.empcurrentjd[0].MAIN_BOX_ID : null : null)
+        this.props.getJobDgByCat(e.target.value, this.props.empcurrentjd ? this.props.empcurrentjd.length ? this.props.empcurrentjd[0].J_D_ID_P : null : null)
         this.setState({ catname: e.target.value })
         this.refs.selected.options.selectedIndex = 2
 
     }
 
     jdNameClickHandeler = (e) => {
-        this.setState({ jdname: e.target.value, levels: this.props.jobdgbycat ? this.props.jobdgbycat.length ? this.props.jobdgbycat[0].levels : null : null })
+        this.setState({ jdname: e.target.value, levels: this.props.jobdgbycat ? this.props.jobdgbycat.length ? this.props.jobdgbycat[0].levels : null : null, show: false })
         this.props.getAvailSupBox(this.state.catname, e.target.value)
-
-        // this.refs.selected.options.selectedIndex = 
+        this.refs.sps.options.selectedIndex = this.refs.sps.options.length - 1
 
     }
 
     supboxClickHandeler = (e) => {
         this.setState({
-            supboxname: e.target.value, showStruct:true
+            supboxname: e.target.value,
+            show: true
         })
         this.props.getUpJd(10, e.target.value)
         console.log(this.state.levels, e.target.value);
@@ -158,8 +149,7 @@ class EmpTrans extends React.Component {
 
 
     render() {
-        this.testFunc()
-        console.log(this.props.jobdgbycat)
+        console.log(this.props.upjd);
         const styles = {
             display: "block",
             padding: "0.375rem 2.25rem 0.375rem 0.75rem",
@@ -183,7 +173,7 @@ class EmpTrans extends React.Component {
                     <div className="col-lg-12" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                         <div style={{ height: "100%", width: 750 }} class="panel panel-default">
                             <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }} class="panel-heading">
-                                <span style={{ position: "relative", right: 50 }}>إضافة تدرج جديد</span>                                               {this.state.edit ? <i onClick={this.editFalseHandeler} style={{ fontSize: 15, position: "relative", left: 530 }} class="fas fa-times-circle"></i> : null}
+                                <span style={{ position: "relative", right: 50 }}>إضافة تدرج جديد</span> {this.state.edit ? <i onClick={this.editFalseHandeler} style={{ fontSize: 15, position: "relative", left: 530 }} class="fas fa-times-circle"></i> : null}
                                 {this.state.add ? <i onClick={this.addFalseHandeler} style={{ fontSize: 15, position: "relative", top: 5, left: 380 }} class="fas fa-times-circle"></i> : null}
 
                                 <input style={{ position: "relative", right: 250, fontSize: 20 }} type="submit" class="btn btn-primary" onSubmit={this.handelInsert} value="Add" />
@@ -233,7 +223,7 @@ class EmpTrans extends React.Component {
                                         </div>
                                         <div class="input-group">
                                             <span>المسمى الوظيفي :  </span>
-                                            <select required ref="selbox" style={{ marginTop: 5, marginRight: 5, height: 25, width: 188 }} onChange={this.supboxClickHandeler}>
+                                            <select required ref="sps" style={{ marginTop: 5, marginRight: 5, height: 25, width: 188 }} onChange={this.supboxClickHandeler}>
                                                 {this.props.empavailsup.map(job => (
                                                     <option supboxid={job.SUP_BOX_ID}>
                                                         {job.SUP_BOX_NAME}
@@ -308,21 +298,20 @@ class EmpTrans extends React.Component {
                 </form>
 
 
-
-                    {this.state.showStruct ?
-                        <div style={{display: "flex", flexDirection: "column", alignItems:"center", width: "100%"}}>
+                    {this.props.upjd && this.state.show ? this.props.upjd.length ? this.props.upjd.length >= 1 ?
+                        <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
                             {this.props.upjd.map(up => (
                                 <Fragment>
-                                    {up.length ? up[0].boxname ? up[0].boxname != "null" ?
-                                           <div style={{ height: 50, width: "30%", background: "gray", margin: 10 }}>
-                                           <h1>{up[0].boxname}</h1>
-                                           </div> : null : null: null}
+                                    {up.length ? up[0].boxname && up[0].boxname !== "null" ?
+                                        <Fragment><div style={{ width: "50%", background: "#c3c3c3", borderRadius: 10, margin: 10 }}>
+                                            <h3>{up[0].boxname}</h3></div><span style={{ fontSize: 30 }}>&#8593;</span></Fragment>
+                                        : null : null}
                                 </Fragment>
                             ))}
-                            <h1>{this.state.supboxname}</h1>
-                        </div>
-                        : null}
-
+                            <div style={{ width: "50%", background: "#c3c3c3", borderRadius: 10, margin: 10 }}>
+                                <h3>{this.state.supboxname}</h3>
+                            </div>
+                        </div> : null : null : null}
 
 
                 </div>
