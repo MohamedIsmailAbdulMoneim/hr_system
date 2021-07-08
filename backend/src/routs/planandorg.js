@@ -69,17 +69,16 @@ let query7 = `SELECT * FROM a_job_dgree JOIN( SELECT a_main_box.CAT_ID, a_main_b
 let query8 =`SELECT * FROM a_main_box JOIN a_job_dgree JOIN a_category ON a_main_box.J_D_ID = a_job_dgree.J_D_ID AND a_main_box.CAT_ID = a_category.CAT_ID`
 function getJobDgByCat(req, res) {
     const catId = req.params.catid
-    const jdidp = req.params.jdidp
-    console.log(jdidp);
+    const mainboxid = req.params.mainboxid
     const query = `SELECT * FROM a_job_dgree JOIN a_main_box ON a_job_dgree.J_D_ID = a_main_box.J_D_ID WHERE a_main_box.CAT_ID = ${catId};`
     db.query(query, (err, details) => {
         if (err) {
-            db.query(`SELECT *, count(J_D_ID_P) + 1 AS levels FROM a_job_dgree JOIN( SELECT a_main_box.CAT_ID, a_main_box.J_D_ID, a_category.CAT_NAME FROM a_main_box JOIN a_category ON a_category.CAT_ID = a_main_box.CAT_ID ) AS maincate ON a_job_dgree.J_D_ID = maincate.J_D_ID WHERE maincate.CAT_NAME = "${catId}" AND a_job_dgree.J_D_ID_P < ${jdidp}  `, (err, details) => {
+            db.query(`SELECT * ,maincate.MAIN_BOX_ID  FROM a_job_dgree JOIN( SELECT a_main_box.CAT_ID, a_main_box.MAIN_BOX_ID, a_main_box.J_D_ID, a_category.CAT_NAME FROM a_main_box JOIN a_category ON a_category.CAT_ID = a_main_box.CAT_ID ) AS maincate ON a_job_dgree.J_D_ID = maincate.J_D_ID WHERE maincate.CAT_NAME = "${catId}" AND maincate.MAIN_BOX_ID  < ${mainboxid} `, (err, details) => {
                 if (err) {
                   console.log(err);  
                 } else {
                     console.log(details);
-                    res.send(details);
+                    res.send(details.reverse());
                 }
             })
         } else {
@@ -130,10 +129,6 @@ function getsupboxmangers(req, res) {
     })
 }
 
-function getStructure(req,res){
-    const supboxid =  req.body.supboxid;
-    let query = `CALL GTT(433,10)`
-}
 
 
 function getEmpApprails(req, res) {
@@ -313,12 +308,12 @@ JOIN employee JOIN(
         a_main_box.MAIN_BOX_ID
     FROM
         a_main_box
-    JOIN a_job_dgree ON a_job_dgree.J_D_ID = a_main_box.J_D_ID
-) AS latestjobdg
+    JOIN a_job_dgree ON a_job_dgree.J_D_ID = a_main_box.J_D_ID 
+) AS latestjobdg JOIN a_sup_box 
 ON
-    a_job_trans.NATIONAL_ID_CARD_NO = employee.NATIONAL_ID_CARD_NO AND latestjobdg.MAIN_BOX_ID = a_job_trans.MAIN_BOX_ID
+    a_job_trans.NATIONAL_ID_CARD_NO = employee.NATIONAL_ID_CARD_NO AND latestjobdg.MAIN_BOX_ID = a_job_trans.MAIN_BOX_ID AND a_sup_box.SUP_BOX_ID = a_job_trans.SUP_BOX_ID 
 WHERE
-    employee.EMPLOYEE_ID = ${empid} AND a_job_trans.INDICATOR = 2`
+    employee.EMPLOYEE_ID = ${empid} AND a_job_trans.INDICATOR = 2 `
     db.query(query, (err, details) => {
         if (err) {
             console.log(err);
@@ -403,7 +398,7 @@ function postnewtrans(req, res){
 }
 
 router
-    .get('/getjobdgbycat/:catid/:jdidp', getJobDgByCat)
+    .get('/getjobdgbycat/:catid/:mainboxid', getJobDgByCat)
 
     .get(`/getsupboxnames/:jdid/:catid`, getSupBoxNames)
 

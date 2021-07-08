@@ -50,8 +50,8 @@ export const getCates = () => (dispatch) => {
   }))
 }
 
-export const getJobDgByCat = (val,jdidp) => (dispatch) => {
-  axios.get(`http://localhost:5000/getjobdgbycat/${val}/${jdidp}`).then((res => {
+export const getJobDgByCat = (val,mainboxid) => (dispatch) => {
+  axios.get(`http://localhost:5000/getjobdgbycat/${val}/${mainboxid}`).then((res => {
     dispatch({
       type: fetchJobByCat,
       payload: { data: res.data }
