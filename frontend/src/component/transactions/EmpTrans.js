@@ -13,21 +13,20 @@ import Reactmoment from "react-moment"
 class EmpTrans extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { add: false, edit: false, empid: null, empname: null, transdate: null, jdname: null, supboxname: null, gname: null, jasi: null, indname: null, catname: null, catid: null, supboxid: null, levels: null, show: false };
+        this.state = { add: false, edit: false, empid: null, empname: null, transdate: null, jdname: null, supboxname: null, gname: null, jasi: null, indname: null, catname: null, catid: null, supboxid: null, levels: null, showStructWAdd: false, showStruct: false };
 
     }
-
 
     clickHandler = (e) => {
         e.preventDefault()
         this.setState({ edit: false })
         this.props.getEmpName(e.target.value)
         this.props.getEmpTrans(e.target.value)
-        this.setState({ catname: e.target.value })
+        this.setState({ showStruct: false, showStructWAdd: false })
 
     }
     addFalseHandeler = (e) => {
-        this.setState({ add: false, show: false })
+        this.setState({ add: false, showStructWAdd: false })
     }
 
     editFalseHandeler = (e) => {
@@ -36,9 +35,7 @@ class EmpTrans extends React.Component {
 
     addButtonClickHandeler = () => {
         this.setState({ add: true })
-        this.setState({ empid: null, empname: null, transdate: null, catname: null, jdname: null, supboxname: null, gname: null, jasi: null, indname: null, show: false })
-
-
+        this.setState({ empid: null, empname: null, transdate: null, catname: null, jdname: null, supboxname: null, gname: null, jasi: null, indname: null, shoshowStructWAddw: false, showStruct: false })
     }
     handelInsert = (e) => {
         e.preventDefault()
@@ -63,7 +60,7 @@ class EmpTrans extends React.Component {
     }
     getNameAndCurrent = (e) => {
         this.setState({
-            empid: e.target.value
+            empid: e.target.value, showStruct: false, showStructWAdd: false
         })
         this.props.getEmpName(e.target.value)
         this.props.getCurrentJd(e.target.value)
@@ -87,19 +84,20 @@ class EmpTrans extends React.Component {
     }
 
     jdNameClickHandeler = (e) => {
-        this.setState({ jdname: e.target.value, levels: this.props.jobdgbycat ? this.props.jobdgbycat.length ? this.props.jobdgbycat[0].levels : null : null, show: false })
+        this.setState({ showStructWAdd: false, jdname: e.target.value, levels: this.props.jobdgbycat ? this.props.jobdgbycat.length ? this.props.jobdgbycat[0].levels : null : null })
         this.props.getAvailSupBox(this.state.catname, e.target.value)
         this.refs.sps.options.selectedIndex = this.refs.sps.options.length - 1
+        console.log(this.state.showStructWAdd);
 
     }
 
     supboxClickHandeler = (e) => {
         this.setState({
             supboxname: e.target.value,
-            show: true
+            showStructWAdd: true
         })
+        // this.props.getUpJd(10, this.props.empname ? this.props.empname.length ? this.props.empname[0].SUP_BOX_ID : null : null))
         this.props.getUpJd(10, e.target.value)
-        console.log(this.state.levels, e.target.value);
     }
     gNameClickeHandeler = (e) => {
         this.setState({
@@ -128,6 +126,8 @@ class EmpTrans extends React.Component {
         myFutureDate.setDate(myFutureDate.getDate() + 1);//myFutureDate is now 8 days in the future
         let newDate = myFutureDate.getUTCFullYear() + "-" + (myFutureDate.getUTCMonth() + 1) + "-" + myFutureDate.getUTCDate()
         this.setState({ edit: true, empname: e.target.getAttribute("empname"), transdate: newDate, catname: e.target.getAttribute("catname"), catid: e.target.getAttribute("catid"), jdname: e.target.getAttribute("jdname"), supboxname: e.target.getAttribute("supboxname"), gname: e.target.getAttribute("jobgroup"), jasi: e.target.getAttribute("jasform"), indname: e.target.getAttribute("indname") })
+        // new Date(this.props.empdetails[0].SECTOR_JOIN_DATE.slice(0, 10)).setDate(this.props.empdetails[0].SECTOR_JOIN_DATE.slice(0, 10).getDate() + 1).getUTCFullYear() + "-" + (this.props.empdetails[0].SECTOR_JOIN_DATE.slice(0, 10).getUTCMonth() + 1) + "-" + this.props.empdetails[0].SECTOR_JOIN_DATE.slice(0, 10).getUTCDate()
+
     }
 
     handelEdit_2 = (e) => {
@@ -142,13 +142,17 @@ class EmpTrans extends React.Component {
             headers: { "Content-Type": "application/json" },
         }).then(data => {
         })
+    }
 
-
+    showStruct = () => {
+        this.setState({ showStruct: true })
+        this.props.getUpJd(10, this.props.empTrans ? this.props.empTrans.length >= 1 ? this.props.empTrans[this.props.empTrans.length - 1].SUP_BOX_NAME : null : null)
 
     }
 
 
     render() {
+
         console.log(this.props.upjd);
         const styles = {
             display: "block",
@@ -296,9 +300,7 @@ class EmpTrans extends React.Component {
                 </div>
 
                 </form>
-
-
-                    {this.props.upjd && this.state.show ? this.props.upjd.length ? this.props.upjd.length >= 1 ?
+                    {this.props.upjd && this.state.showStructWAdd ? this.props.upjd.length ? this.props.upjd.length >= 1 ?
                         <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
                             {this.props.upjd.map(up => (
                                 <Fragment>
@@ -312,8 +314,6 @@ class EmpTrans extends React.Component {
                                 <h3>{this.state.supboxname}</h3>
                             </div>
                         </div> : null : null : null}
-
-
                 </div>
 
 
@@ -342,15 +342,32 @@ class EmpTrans extends React.Component {
                                 </button>
                                 <button onClick={this.addButtonClickHandeler} style={{ position: "relative", right: 20, top: 8 }} type="button" class="btn btn-primary">إضافة تدرج جديد</button>
                             </div>
-
                         </div>
                     </div>
+
+                    {
+                        this.props.upjd ? this.props.upjd.length && this.state.showStruct ? this.props.upjd.length >= 1 ?
+                            <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
+                                {this.props.upjd.map(up => (
+                                    <Fragment>
+                                        {up.length >= 1 ? up[0].boxname ?
+                                            <Fragment><div style={{ width: "50%", background: "#c3c3c3", borderRadius: 10, margin: 10 }}>
+                                                <h3>{up[0].boxname}</h3></div><span style={{ fontSize: 30 }}>&#8593;</span></Fragment>
+                                            : null : null}
+                                    </Fragment>
+                                ))}
+                                <div style={{ width: "50%", background: "#c3c3c3", borderRadius: 10, margin: 10 }}>
+                                    <h3>{this.props.empTrans ? this.props.empTrans.length >= 1 ? this.props.empTrans[this.props.empTrans.length - 1].SUP_BOX_NAME : null : null}</h3>
+                                </div>
+                            </div> : null : null : null
+                    }
                 </div>
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 بيان بحركة العاملين
+                                <button onClick={this.showStruct} style={{ position: "relative", left: "45%" }} type="button" class="btn btn-primary">عرض الهيكل الخاص بالموظف</button>
                                 {this.state.edit ? <i onClick={this.editFalseHandeler} style={{ fontSize: 15, position: "relative", bottom: 10, left: 550 }} class="fas fa-times-circle"></i> : null}
                                 <i style={{ fontSize: 40, position: "relative", right: 450 }} class="fas fa-file-excel"></i>
                             </div>
@@ -395,7 +412,9 @@ class EmpTrans extends React.Component {
                                                             <td><i class="fas fa-backspace"></i></td>
                                                         </tr>
                                                     </tbody>
+
                                                 ))}
+
                                             </Fragment>
 
                                             : !this.state.add ?

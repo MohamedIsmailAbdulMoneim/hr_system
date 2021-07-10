@@ -1,6 +1,6 @@
 import {
   fetchCates,
-  fetchJobDgreeCodes, fetchMainCodes, fetchJobByCat, fetchSupBoxNamesandmanager, fetchJobGovern, fetchJobStation, fetchEmpStationAndGovern, fetchDeps, fetchEmpByDeps, fetchEmpName, fetchEmpAppraisal, fetchEmpTrans, fetchEmpEdu,fetchEmpNameByName,fetchCurrentjd,fetchavailjd, fetchavailsupbox, fetchupjd
+  fetchJobDgreeCodes, fetchMainCodes, fetchJobByCat, fetchSupBoxNamesandmanager, fetchJobGovern, fetchJobStation, fetchEmpStationAndGovern, fetchDeps, fetchEmpByDeps, fetchEmpName, fetchEmpAppraisal, fetchEmpTrans, fetchEmpEdu, fetchEmpNameByName, fetchCurrentjd, fetchavailjd, fetchavailsupbox, fetchupjd, fetchEmpDetails
 
 } from "../actions/ActionTypes";
 
@@ -21,8 +21,9 @@ const initialState = {
   empavailjd: [],
   empavailsup: [],
   empcurrentjd: [],
-  upjd: []
-  
+  upjd: [],
+  empdetails: []
+
 };
 
 export default function (state = initialState, action) {
@@ -105,11 +106,11 @@ export default function (state = initialState, action) {
         ...state,
         empEdu: action.payload
       }
-      case fetchCurrentjd:
-        return {
-          ...state,
-          empcurrentjd: action.payload
-        }
+    case fetchCurrentjd:
+      return {
+        ...state,
+        empcurrentjd: action.payload
+      }
     case fetchEmpNameByName:
       return {
         ...state,
@@ -117,23 +118,28 @@ export default function (state = initialState, action) {
       }
 
 
-     case fetchavailjd:
-       return {
-         ...state,
-         empavailjd: action.payload
-       }
+    case fetchavailjd:
+      return {
+        ...state,
+        empavailjd: action.payload
+      }
 
-       case fetchavailsupbox:
-         return {
-           ...state,
-           empavailsup: action.payload
-         }
+    case fetchavailsupbox:
+      return {
+        ...state,
+        empavailsup: action.payload
+      }
 
-        case fetchupjd:
-          return {
-            ...state,
-            upjd: action.payload
-          }
+    case fetchupjd:
+      return {
+        ...state,
+        upjd: action.payload
+      }
+    case fetchEmpDetails:
+      return {
+        ...state,
+        empdetails: action.payload.data
+      }
 
     default:
       return state;

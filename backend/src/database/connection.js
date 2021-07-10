@@ -6,12 +6,13 @@
 var mysql = require("mysql");
 
 const db = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "hr_database",
-    multipleStatements: true,
-  });
+  host: "localhost",
+  user: "root",
+  password: "",
+  database: "hr_database",
+  multipleStatements: true,
+  dateStrings: 'date'
+});
 
-  
-  module.exports = db
+
+module.exports = db

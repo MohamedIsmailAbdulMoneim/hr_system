@@ -66,7 +66,7 @@ VALUES(
 )`
 
 let query7 = `SELECT * FROM a_job_dgree JOIN( SELECT a_main_box.CAT_ID, a_main_box.J_D_ID, a_category.CAT_NAME FROM a_main_box JOIN a_category ON a_category.CAT_ID = a_main_box.CAT_ID ) AS maincate ON a_job_dgree.J_D_ID = maincate.J_D_ID WHERE maincate.CAT_NAME = "تنمية الموارد البشرية" AND a_job_dgree.J_D_ID > 172 ORDER BY a_job_dgree.J_D_ID LIMIT 1`
-let query8 =`SELECT * FROM a_main_box JOIN a_job_dgree JOIN a_category ON a_main_box.J_D_ID = a_job_dgree.J_D_ID AND a_main_box.CAT_ID = a_category.CAT_ID`
+let query8 = `SELECT * FROM a_main_box JOIN a_job_dgree JOIN a_category ON a_main_box.J_D_ID = a_job_dgree.J_D_ID AND a_main_box.CAT_ID = a_category.CAT_ID`
 function getJobDgByCat(req, res) {
     const catId = req.params.catid
     const mainboxid = req.params.mainboxid
@@ -75,7 +75,7 @@ function getJobDgByCat(req, res) {
         if (err) {
             db.query(`SELECT * ,maincate.MAIN_BOX_ID  FROM a_job_dgree JOIN( SELECT a_main_box.CAT_ID, a_main_box.MAIN_BOX_ID, a_main_box.J_D_ID, a_category.CAT_NAME FROM a_main_box JOIN a_category ON a_category.CAT_ID = a_main_box.CAT_ID ) AS maincate ON a_job_dgree.J_D_ID = maincate.J_D_ID WHERE maincate.CAT_NAME = "${catId}" AND maincate.MAIN_BOX_ID  < ${mainboxid} `, (err, details) => {
                 if (err) {
-                  console.log(err);  
+                    console.log(err);
                 } else {
                     console.log(details);
                     res.send(details.reverse());
@@ -132,13 +132,12 @@ function getsupboxmangers(req, res) {
 
 
 function getEmpApprails(req, res) {
-    let query;
-    const empid = req.params.empid
-    const appraisal = req.params.appraisal
-    const year = req.params.year
+    const empid = req.query.empid
+    const appraisal = req.query.appraisal
+    const year = req.query.year
 
-    console.log("hit");
-    if (empid === "null" && (appraisal === "null" || appraisal === "اختر التقييم")) {
+    console.log(req.query.id);
+    if (!empid && (!appraisal || appraisal === "اختر التقييم")) {
         db.query(`SELECT employee.NAME_ARABIC, employee_appraisal.APPRAISAL_DATE, appraisal.APPRAISAL_ARABIC,
         employee.EMPLOYEE_ID, employee_appraisal.NATIONAL_ID_CARD_NO
         FROM
@@ -155,7 +154,7 @@ function getEmpApprails(req, res) {
                 res.send(details);
             }
         })
-    } else if ((appraisal === "null" || appraisal === "اختر التقييم") && (year === "null" || year === "اختر السنة")) {
+    } else if ((!appraisal || appraisal === "اختر التقييم") && (!year || year === "اختر السنة")) {
         db.query(`SELECT employee.NAME_ARABIC, employee_appraisal.APPRAISAL_DATE ,appraisal.APPRAISAL_ARABIC , employee.EMPLOYEE_ID, employee_appraisal.NATIONAL_ID_CARD_NO FROM employee_appraisal JOIN employee ON employee.NATIONAL_ID_CARD_NO = employee_appraisal.NATIONAL_ID_CARD_NO JOIN APPRAISAL ON APPRAISAL.APPRAISAL = employee_appraisal.APPRAISAL WHERE employee.EMPLOYEE_ID = ${empid} ORDER BY employee_appraisal.APPRAISAL_DATE`, (err, details) => {
             if (err) {
                 console.log(err);
@@ -165,7 +164,7 @@ function getEmpApprails(req, res) {
             }
         })
     }
-    else if (empid === "null" && (year === "null" || year === "اختر السنة")) {
+    else if (!empid && (!year || year === "اختر السنة")) {
 
         db.query(db.query(`SELECT
         employee.NAME_ARABIC,
@@ -187,7 +186,7 @@ function getEmpApprails(req, res) {
                 res.send(details);
             }
         }))
-    } else if (empid === "null") {
+    } else if (!empid) {
         db.query(`SELECT employee.NAME_ARABIC,
         employee_appraisal.APPRAISAL_DATE,
         appraisal.APPRAISAL_ARABIC,
@@ -206,7 +205,7 @@ function getEmpApprails(req, res) {
                 res.send(details);
             }
         })
-    } else if (appraisal === "null" || appraisal === "اختر التقييم") {
+    } else if (!appraisal || appraisal === "اختر التقييم") {
         db.query(`SELECT
         employee.NAME_ARABIC,
         employee_appraisal.APPRAISAL_DATE,
@@ -227,7 +226,7 @@ function getEmpApprails(req, res) {
                 res.send(details);
             }
         })
-    } else if (year === "null" || year === "اختر السنة") {
+    } else if (!year || year === "اختر السنة") {
         db.query(`SELECT
         employee.NAME_ARABIC,
         employee_appraisal.APPRAISAL_DATE,
@@ -276,10 +275,10 @@ function getEmpTrans(req, res) {
     })
 }
 
-function getEmpAvljd (req,res){
+function getEmpAvljd(req, res) {
     const catname = req.params.catname;
     const mainboxid = req.params.mainboxid
-let d = `WHERE id < 5
+    let d = `WHERE id < 5
 ORDER BY id DESC
 LIMIT 1`
     let query1 = `SELECT SUP_BOX_NAME from a_sup_box WHERE MAIN_BOX_ID IN (SELECT a_main_box.MAIN_BOX_ID FROM a_main_box JOIN a_job_dgree JOIN a_category ON a_main_box.J_D_ID = a_job_dgree.J_D_ID AND a_main_box.CAT_ID = a_category.CAT_ID WHERE a_category.CAT_NAME = "${catname}" AND a_job_dgree.J_D_NAME = "${jdname}")`
@@ -294,7 +293,7 @@ LIMIT 1`
     })
 }
 
-function getCurrentJD(req,res){
+function getCurrentJD(req, res) {
     let empid = req.params.empid
     let query = `SELECT
     *
@@ -348,12 +347,12 @@ function updateEmpTrans(req, res) {
     })
 }
 
-function getAvailSupBox(req, res){
+function getAvailSupBox(req, res) {
     const catname = req.params.catname
     const jdname = req.params.jdname
 
     console.log(catname, jdname);
-    let query =`SELECT SUP_BOX_NAME, SUP_BOX_ID from a_sup_box WHERE MAIN_BOX_ID IN (SELECT a_main_box.MAIN_BOX_ID FROM a_main_box JOIN a_job_dgree JOIN a_category ON a_main_box.J_D_ID = a_job_dgree.J_D_ID AND a_main_box.CAT_ID = a_category.CAT_ID WHERE a_category.CAT_NAME = "${catname}" AND a_job_dgree.J_D_NAME = "${jdname}")`
+    let query = `SELECT SUP_BOX_NAME, SUP_BOX_ID from a_sup_box WHERE MAIN_BOX_ID IN (SELECT a_main_box.MAIN_BOX_ID FROM a_main_box JOIN a_job_dgree JOIN a_category ON a_main_box.J_D_ID = a_job_dgree.J_D_ID AND a_main_box.CAT_ID = a_category.CAT_ID WHERE a_category.CAT_NAME = "${catname}" AND a_job_dgree.J_D_NAME = "${jdname}")`
     db.query(query, (err, details) => {
         if (err) {
             console.log(err);
@@ -363,11 +362,11 @@ function getAvailSupBox(req, res){
     })
 }
 
-function getUpJd(req,res){
+function getUpJd(req, res) {
     const len = req.params.len
     const supboxname = req.params.supboxname
     let query = `CALL GTT(${len},(SELECT SUP_BOX_ID FROM a_sup_box WHERE SUP_BOX_NAME = "${supboxname}"))`
-    console.log(len,supboxname);
+    console.log(len, supboxname);
     db.query(query, (err, details) => {
         if (err) {
             console.log(err);
@@ -392,7 +391,7 @@ function getUpJd(req,res){
 //     })
 // }
 
-function postnewtrans(req, res){
+function postnewtrans(req, res) {
 
     console.log(req.body);
 }
@@ -406,7 +405,9 @@ router
 
     .get(`/getmaincode/:jdid/:catid`, getMaincode)
 
-    .get('/getempappraisal/:empid/:appraisal/:year', getEmpApprails)
+    // .get('/getempappraisal/:empid/:appraisal/:year', getEmpApprails)
+    .get('/getempappraisal', getEmpApprails)
+
     .put('/appraisalupdate', updateAppraisal)
 
     .get('/getemptrans/:empid', getEmpTrans)
@@ -414,11 +415,11 @@ router
 
     .get('/getempedu/:empid', getEmpEdu)
 
-    .get('/currentjd/:empid',getCurrentJD)
-    
+    .get('/currentjd/:empid', getCurrentJD)
 
-    .get('/availjd/:catname/:jdname',getEmpAvljd)
-    .get('/getavailsupbox/:catname/:jdname',getAvailSupBox)
+
+    .get('/availjd/:catname/:jdname', getEmpAvljd)
+    .get('/getavailsupbox/:catname/:jdname', getAvailSupBox)
     .post('/postnewtrans', postnewtrans)
 
     .get('/getUpJd/:len/:supboxname', getUpJd)

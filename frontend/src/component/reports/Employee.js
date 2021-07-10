@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import {
-    getMainCodes
+    getEmpDetails, getEmpTrans, getUpJd
 } from "../../actions/Actions";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
@@ -15,27 +15,18 @@ class Employee extends React.Component {
     }
 
 
-    clickHandler = (e) => {
-        console.log(e.target.getAttribute('name'));
+    empidHandler = (e) => {
+        this.props.getEmpDetails(e.target.value)
     }
 
-    deleteHandler = (e) => {
-        console.log(e.target.getAttribute('name'));
-        const nameVal = e.target.getAttribute("name") // getting the J_D_ID from name attr
-
-    }
-
-    editHandler = (e) => {
-        this.setState({ jDId: e.target.getAttribute("jDID") }) // getting the element details come from database
-        this.setState({ mainBoxName: e.target.getAttribute("mainBoxName") })
-        this.setState({ supBoxId: e.target.getAttribute("supBoxId") })
-        this.setState({ supBoxName: e.target.getAttribute("supBoxName") })
-        this.setState({ edit: true })
+    empTransButtonHandeler = (e) => {
+        this.props.getEmpTrans(this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].EMPLOYEE_ID : null : null)
+        this.props.getUpJd(10, this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].SUP_BOX_NAME : null : null)
 
     }
 
     render() {
-
+        console.log(this.props.empdetails);
 
         return (
             <div id="page-wrapper">
@@ -44,96 +35,96 @@ class Employee extends React.Component {
                         <h1 className="page-header">Forms</h1>
                         <div style={{ display: "flex" }} className="col-lg-8">
                             <div style={{ background: "#f3f1f1", boxShadow: "0 10px 6px -6px #777", borderRadius: 5, height: "100%", width: "100%" }} >
-                                <h3 style={{ marginRight: 20,  marginTop: 3, textAlign: "right", fontFamily: 'Markazi Text ,serif', fontWeight: 700 }}>البيانات الوظيفية</h3>
+                                <h3 style={{ marginRight: 20, marginTop: 3, textAlign: "right", fontFamily: 'Markazi Text ,serif', fontWeight: 700 }}>البيانات الوظيفية</h3>
                                 <div style={{ display: "flex" }}>
                                     <label style={{ marginLeft: "5%", marginRight: 20 }} for="payroll"> رقم الأداء :</label>
-                                    <input style={{ width: "10%", marginRight: "5%" }} type="text" id="payroll"></input>
+                                    <input onChange={this.empidHandler} style={{ width: "10%", marginRight: "5%" }} type="text" id="payroll"></input>
                                     <label style={{ marginRight: "5%", marginLeft: "5%" }} for="name">الإسم :</label>
-                                    <input style={{ width: "50%" }} type="text" id="name"></input>
+                                    <input style={{ width: "50%" }} type="text" id="name" value={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].NAME_ARABIC : null : null} />
                                 </div>
                                 <div style={{ display: "flex", marginTop: 15 }}>
                                     <label style={{ marginLeft: "5%" }} for="doa">تاريخ العقد  :</label>
-                                    <input style={{ width: "20%" }} type="text" id="doa"></input>
+                                    <input style={{ width: "20%" }} type="text" id="doa" value={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].SECTOR_JOIN_DATE : null : null}></input>
                                     <label style={{ marginRight: "5%", marginLeft: "5%" }} for="doj">تاريخ التعيين :</label>
-                                    <input type="text" id="doj"></input>
+                                    <input type="text" id="doj" value={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].TRANS_DATE : null : null}></input>
                                 </div>
                                 <div style={{ display: "flex", marginTop: 15 }}>
                                     <label style={{ marginRight: "5%" }} for="cj">الوظيفة الحالية  :</label>
-                                    <input type="text" id="cj"></input>
+                                    <input type="text" id="cj" value={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].SUP_BOX_NAME : null : null}></input>
                                     <label style={{ marginLeft: "5%" }} for="js">طريقة شغلها :</label>
-                                    <input type="text" id="js"></input>
+                                    <input type="text" id="js" value={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].WOG : null : null}></input>
                                 </div>
                                 <div style={{ display: "flex", marginTop: 15 }}>
                                     <label style={{ marginRight: "1%", marginLeft: "1%" }} for="dep">الإدارة  :</label>
-                                    <input style={{ width: "80%" }} type="text" id="dep"></input>
+                                    <input style={{ width: "80%" }} type="text" id="dep" value={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].cat_name : null : null}></input>
                                 </div>
                                 <div style={{ display: "flex", marginTop: 15 }}>
                                     <label for="m">النطاق الإشرافي  :</label>
                                     <input style={{ width: "80%" }} type="text" id="m"></input>
                                 </div>
                                 <div style={{ display: "flex", marginTop: 15 }}>
-                                    <label  for="station">المحطة  :</label>
-                                    <input type="text" id="station" style={{width:"20%" }}></input>
-                                    <label style={{ marginLeft: "1%"}} for="area">المنطقة  :</label>
-                                    <input type="text" id="area" style={{width:"20%" }}></input>
-                                    <label style={{ marginLeft: "1%"}} for="city">المحافظة  :</label>
-                                    <input type="text" id="city" style={{width:"20%" }}></input>
+                                    <label for="station">المحطة  :</label>
+                                    <input type="text" id="station" style={{ width: "20%" }} value={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].JOB_LOCATION : null : null} ></input>
+                                    <label style={{ marginLeft: "1%" }} for="area">المنطقة  :</label>
+                                    <input type="text" id="area" style={{ width: "20%" }}></input>
+                                    <label style={{ marginLeft: "1%" }} for="city">المحافظة  :</label>
+                                    <input type="text" id="city" style={{ width: "20%" }}></input>
                                 </div>
                                 <div style={{ display: "flex", marginTop: 15 }}>
                                     <label style={{ marginLeft: "1%" }} for="js">الحالة الوظيفية  :</label>
-                                    <input type="text" id="js" style={{width: "30%"}}></input>
+                                    <input type="text" id="js" style={{ width: "30%" }}></input>
                                     <label style={{ marginLeft: "1%" }} for="c">التقسيم السنوي للعالم الحالي :</label>
-                                    <input type="text" id="c" style={{width: "30%"}}></input>
+                                    <input type="text" id="c" style={{ width: "30%" }}></input>
                                 </div>
                                 <h3 style={{ marginRight: 20, marginTop: 3, textAlign: "right", fontFamily: 'Markazi Text ,serif', fontWeight: 700 }}>البيانات الشخصية</h3>
                                 <div style={{ display: "flex", marginTop: 15 }}>
                                     <label for="id">الرقم القومي  :</label>
-                                    <input type="text" id="id"style={{width: "30%"}}></input>
+                                    <input type="text" id="id" style={{ width: "30%" }} value={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].NATIONAL_ID_CARD_NO : null : null} ></input>
                                     <label for="w">جهة الإصدار :</label>
-                                    <input type="text" id="w"style={{width: "10%"}}></input>
+                                    <input type="text" id="w" style={{ width: "10%" }}></input>
                                     <label for="d">تاريخ الإصدار :</label>
-                                    <input type="text" id="d"style={{width: "15%"}}></input>
+                                    <input type="text" id="d" style={{ width: "15%" }}></input>
                                 </div>
                                 <div style={{ display: "flex", marginTop: 15 }}>
                                     <label style={{ marginLeft: 20 }} for="ii">الرقم التأميني  :</label>
-                                    <input type="text" id="ii"></input>
+                                    <input type="text" id="ii" value={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].SOCIAL_INSURANCE_NUMBER : null : null}></input>
                                     <label style={{ marginLeft: 20 }} for="io">مكتب التأمينات :</label>
                                     <input type="text" id="io"></input>
                                 </div>
                                 <div style={{ display: "flex", marginTop: 15 }}>
                                     <label style={{ marginLeft: 20 }} for="adress">العنوان  :</label>
-                                    <input type="text" id="adress"></input>
+                                    <input type="text" id="adress" style={{ width: "70%" }} value={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].ADDRESS : null : null}></input>
                                 </div>
                                 <div style={{ display: "flex", marginTop: 15 }}>
                                     <label style={{ marginLeft: "1%" }} for="mob">الموبايل  :</label>
-                                    <input type="text" id="mob" style={{width: "20%"}}></input>
+                                    <input type="text" id="mob" style={{ width: "20%" }} value={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].PHONE_3_MOBILE : null : null}></input>
                                     <label style={{ marginLeft: "1%" }} for="h">ت المنزل :</label>
-                                    <input type="text" id="h" style={{width: "20%"}}></input>
+                                    <input type="text" id="h" style={{ width: "20%" }} value={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].PHONE_1_HOME : null : null}></input>
                                     <label style={{ marginLeft: "1%" }} for="office">المكتب :</label>
-                                    <input type="text" id="office" style={{width: "20%"}}></input>
+                                    <input type="text" id="office" style={{ width: "20%" }} value={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].PHONE_1_OFFICE : null : null}></input>
                                 </div>
                                 <div style={{ display: "flex", marginTop: 15 }}>
                                     <label style={{ marginLeft: 20 }} for="email">البريد الألكتروني  :</label>
-                                    <input type="text" id="email"></input>
+                                    <input type="text" id="email" value={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].EMP_EMAIL : null : null}></input>
                                     <label style={{ marginLeft: 20 }} for="ms">الحالة الإجتماعية :</label>
                                     <input type="text" id="ms"></input>
                                 </div>
                                 <div style={{ display: "flex", marginTop: 15 }}>
                                     <label style={{ marginLeft: "2%" }} for="syt">نوع النقابة  :</label>
-                                    <input type="text" id="syt"style={{width: "15%"}}></input>
+                                    <input type="text" id="syt" style={{ width: "15%" }}></input>
                                     <label style={{ marginLeft: "2%" }} for="memnum">رقم العضوية :</label>
-                                    <input type="text" id="memnum" style={{width: "15%"}}></input>
+                                    <input type="text" id="memnum" style={{ width: "15%" }}></input>
                                     <label style={{ marginLeft: "2%" }} for="memdate">تاريخ العضوية :</label>
-                                    <input type="text" id="memdate" style={{width: "15%"}}></input>
+                                    <input type="text" id="memdate" style={{ width: "15%" }}></input>
                                 </div>
                                 <div style={{ display: "flex", marginTop: 15 }}>
                                     <label style={{ marginLeft: "1%" }} for="milstate">الموقف من التجنيد  :</label>
-                                    <input type="text" id="milstate" style={{width: "15%"}}></input>
+                                    <input type="text" id="milstate" style={{ width: "15%" }}></input>
                                     <input style={{ width: "5%", marginLeft: "2%", marginRight: "2%" }} type="text"></input>
                                     <input style={{ width: "5%", marginLeft: "2%", marginRight: "2%" }} type="text"></input>
                                     <input style={{ width: "10%", marginLeft: "2%", marginRight: "2%" }} type="text"></input>
                                     <label style={{ marginLeft: "2%" }} for="memdate">تاريخ التقاعد :</label>
-                                    <input type="text" id="memdate" style={{width:"15%"}}></input>
+                                    <input type="text" id="memdate" style={{ width: "15%" }}></input>
                                 </div>
                                 <div style={{ display: "flex", marginTop: 15 }}>
                                     <label style={{ marginLeft: 20 }} for="sex">النوع  :</label>
@@ -143,11 +134,11 @@ class Employee extends React.Component {
                                 </div>
                                 <div style={{ display: "flex", marginTop: 15 }}>
                                     <label style={{ marginLeft: "1%" }} for="dob">تاريخ الميلاد  :</label>
-                                    <input type="text" id="dob" style={{width: "15%"}}></input>
+                                    <input type="text" id="dob" style={{ width: "15%" }}></input>
                                     <label style={{ marginLeft: "1%" }} for="aob">جهة الميلاد :</label>
-                                    <input type="text" id="aob" style={{width: "15%"}}></input>
+                                    <input type="text" id="aob" style={{ width: "15%" }}></input>
                                     <label style={{ marginLeft: "1%" }} for="cob">محافظة الميلاد :</label>
-                                    <input type="text" id="cob" style={{width: "15%"}}></input>
+                                    <input type="text" id="cob" style={{ width: "15%" }}></input>
                                 </div>
                             </div>
 
@@ -158,7 +149,7 @@ class Employee extends React.Component {
                                 <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", marginTop: 10 }}>
                                     <div style={{ display: "flex" }}>
                                         <button style={{ display: "block", border: "1px solid black", marginRight: 5, marginLeft: 5 }} type="button" class="btn btn-outline btn-lg">المؤهل</button>
-                                        <button style={{ display: "block", border: "1px solid black", marginRight: 5, marginLeft: 5 }} type="button" class="btn btn-outline btn-lg">التدرج</button>
+                                        <button style={{ display: "block", border: "1px solid black", marginRight: 5, marginLeft: 5 }} type="button" class="btn btn-outline btn-lg" > <Link to={`/EmpTrans`}><a onClick={this.empTransButtonHandeler} href="/EmpTrans">التدرج</a></Link></button>
                                     </div>
                                 </div>
                                 <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", marginTop: 10 }}>
@@ -204,11 +195,9 @@ class Employee extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        posts: state.posts.mainCodes,
-        val: state.posts.items
-
+        empdetails: state.posts.empdetails
     };
 };
 export default connect(mapStateToProps, {
-    getMainCodes
+    getEmpDetails, getEmpTrans, getUpJd
 })(Employee);

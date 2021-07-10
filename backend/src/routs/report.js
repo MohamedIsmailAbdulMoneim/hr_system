@@ -17,13 +17,63 @@ ORDER BY id DESC
 LIMIT 1`
 
 
-function getEmpDetails(req,res){
+function getEmpDetails(req, res) {
     let empid = req.params.empid
-    let query2 = `SELECT * FROM employee JOIN( SELECT a_sup_box.sup_box_id, a_sup_box.sup_box_name, a_job_trans.NATIONAL_ID_CARD_NO FROM a_sup_box JOIN a_job_trans ON a_job_trans.SUP_BOX_ID = a_sup_box.SUP_BOX_ID WHERE a_job_trans.INDICATOR = 2 ) AS emp_box JOIN employee_appraisal ON employee.NATIONAL_ID_CARD_NO = emp_box.NATIONAL_ID_CARD_NO AND employee.NATIONAL_ID_CARD_NO = employee_appraisal.NATIONAL_ID_CARD_NO WHERE employee.NATIONAL_ID_CARD_NO = ${empid}`
+    let query = `SELECT
+    *,
+    dateofj.TRANS_DATE,
+    (SELECT CAT_NAME FROM a_category WHERE CAT_ID = emp_box.CAT_ID) AS cat_name,
+
+    (
+    SELECT
+        JOB_ASSIGNMENT_FORM_ARABIC
+    FROM
+        job_assignment_form
+    WHERE
+        job_assignment_form.JOB_ASSIGNMENT_FORM = emp_box.JOB_ASSIGNMENT_FORM
+) AS WOG
+FROM
+    employee
+JOIN(
+    SELECT
+        a_sup_box.sup_box_id,
+        a_sup_box.SUP_BOX_NAME,
+        a_job_trans.NATIONAL_ID_CARD_NO,
+        a_job_trans.JOB_ASSIGNMENT_FORM,
+        a_main_box.CAT_ID
+    FROM
+        a_sup_box
+    JOIN a_job_trans
+    JOIN a_main_box
+    ON a_job_trans.SUP_BOX_ID = a_sup_box.SUP_BOX_ID AND a_sup_box.MAIN_BOX_ID = a_main_box.MAIN_BOX_ID
+    WHERE
+        a_job_trans.INDICATOR = 2
+) AS emp_box
+JOIN(
+    SELECT
+        NATIONAL_ID_CARD_NO,
+        TRANS_DATE
+    FROM
+        a_job_trans
+    WHERE
+        a_job_trans.JOB_ASSIGNMENT_FORM = 1
+) AS dateofj
+JOIN employee_appraisal ON employee.NATIONAL_ID_CARD_NO = dateofj.NATIONAL_ID_CARD_NO AND employee.NATIONAL_ID_CARD_NO = emp_box.NATIONAL_ID_CARD_NO AND employee.NATIONAL_ID_CARD_NO = employee_appraisal.NATIONAL_ID_CARD_NO
+WHERE
+    employee.NATIONAL_ID_CARD_NO =(
+    SELECT
+        NATIONAL_ID_CARD_NO
+    FROM
+        employee
+    WHERE
+        EMPLOYEE_ID = ${empid}
+) AND APPRAISAL_DATE = 2020
+    `
     db.query(query, (err, details) => {
         if (err) {
             console.log(err);
         } else {
+            console.log(details);
             res.send(details)
         }
     })
@@ -116,6 +166,8 @@ router
     .get('/getjobgovern', getjobgovern)
     .get('/getjobstation/:govern', getjobstation)
     .get('/getempstationandgovern/:govern/:station', getEmpStationAndGovern)
+    .get('/getempdetails/:empid', getEmpDetails)
+
 
 
 
