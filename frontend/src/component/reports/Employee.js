@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import {
-    getEmpDetails, getEmpTrans, getUpJd
+    getEmpDetails, getEmpTrans, getUpJd, getEmpAppraisal
 } from "../../actions/Actions";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
@@ -19,9 +19,13 @@ class Employee extends React.Component {
         this.props.getEmpDetails(e.target.value)
     }
 
-    empTransButtonHandeler = (e) => {
+    empTransButtonHandler = (e) => {
         this.props.getEmpTrans(this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].EMPLOYEE_ID : null : null)
         this.props.getUpJd(10, this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].SUP_BOX_NAME : null : null)
+    }
+
+    empAppraisalHandler = (e) => {
+        this.props.getEmpAppraisal(this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].EMPLOYEE_ID : null : null)
 
     }
 
@@ -149,7 +153,7 @@ class Employee extends React.Component {
                                 <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", marginTop: 10 }}>
                                     <div style={{ display: "flex" }}>
                                         <button style={{ display: "block", border: "1px solid black", marginRight: 5, marginLeft: 5 }} type="button" class="btn btn-outline btn-lg">المؤهل</button>
-                                        <button style={{ display: "block", border: "1px solid black", marginRight: 5, marginLeft: 5 }} type="button" class="btn btn-outline btn-lg" > <Link to={`/EmpTrans`}><a onClick={this.empTransButtonHandeler} href="/EmpTrans">التدرج</a></Link></button>
+                                        <button style={{ display: "block", border: "1px solid black", marginRight: 5, marginLeft: 5 }} type="button" class="btn btn-outline btn-lg" > <Link to={`/EmpTrans`}><a onClick={this.empTransButtonHandler} href="/EmpTrans">التدرج</a></Link></button>
                                     </div>
                                 </div>
                                 <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", marginTop: 10 }}>
@@ -171,7 +175,7 @@ class Employee extends React.Component {
                                     </div>
                                 </div>
                                 <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", marginTop: 10 }}>
-                                    <button style={{ display: "block", border: "1px solid black", marginRight: 5, marginLeft: 5 }} type="button" class="btn btn-outline btn-lg">التقييمات السنوية</button>
+                                    <button style={{ display: "block", border: "1px solid black", marginRight: 5, marginLeft: 5 }} type="button" class="btn btn-outline btn-lg"><Link to={`/empsappraisal`}><a onClick={this.empAppraisalHandler} href="/empsappraisal">التقييمات السنوية</a></Link></button>
                                 </div>
                                 <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", marginTop: 10 }}>
                                     <button style={{ display: "block", border: "1px solid black", marginRight: 5, marginLeft: 5 }} type="button" class="btn btn-outline btn-lg">طباعة البيانات الوظيفية</button>
@@ -199,5 +203,5 @@ const mapStateToProps = (state) => {
     };
 };
 export default connect(mapStateToProps, {
-    getEmpDetails, getEmpTrans, getUpJd
+    getEmpDetails, getEmpTrans, getUpJd, getEmpAppraisal
 })(Employee);

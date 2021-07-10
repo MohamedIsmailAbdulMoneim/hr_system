@@ -18,4 +18,5 @@ export const fetchCurrentjd = "FETCH-CURRENT-JD"
 export const fetchavailsupbox = "FETCH-AVAIL-SUPBOX"
 export const fetchupjd = "FETCH-UP-JD"
 export const fetchEmpDetails = "FETCH-EMP-DETAILS"
+export const fetchDownJd = "FETCH-DOWN-JD"
 

@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import {
-    getEmpTrans, getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox, getUpJd
+    getEmpTrans, getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox, getUpJd, gitDownJd
 } from "../../actions/Actions";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
@@ -15,6 +15,10 @@ class EmpTrans extends React.Component {
         super(props);
         this.state = { add: false, edit: false, empid: null, empname: null, transdate: null, jdname: null, supboxname: null, gname: null, jasi: null, indname: null, catname: null, catid: null, supboxid: null, levels: null, showStructWAdd: false, showStruct: false };
 
+    }
+
+    componentDidMount() {
+        this.props.gitDownJd()
     }
 
     clickHandler = (e) => {
@@ -545,9 +549,10 @@ const mapStateToProps = (state) => {
         empNameByName: state.posts.empNameByName,
         empcurrentjd: state.posts.empcurrentjd,
         empavailsup: state.posts.empavailsup,
-        upjd: state.posts.upjd
+        upjd: state.posts.upjd,
+        downJd: state.posts.downJd
     };
 };
 export default connect(mapStateToProps, {
-    getEmpTrans, getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox, getUpJd
+    getEmpTrans, getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox, getUpJd, gitDownJd
 })(EmpTrans);

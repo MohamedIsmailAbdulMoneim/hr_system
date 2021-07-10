@@ -18,11 +18,32 @@ import {
   fetchavailjd,
   fetchavailsupbox,
   fetchupjd,
-  fetchEmpDetails
+  fetchEmpDetails,
+  fetchDownJd
 } from "../actions/ActionTypes";
 import axios from "axios";
 
 let outDocsData = [];
+
+export const gitDownJd = () => (dispatch) => {
+  axios.get(`http://localhost:5000/gitDownJd`).then((res) => {
+    console.log(res.data.length);
+    var obj = []
+    for (var i = 0; i < res.data.length; i++) {
+      for (var b = 0; b < res.data.length; b++) {
+        if (res.data[i].SUP_BOX_ID = res.data[i].SUP_BOX_ID_P)
+          obj.push(res.data[i].SUP_BOX_NAME)
+
+      }
+    }
+    console.log(obj);
+    dispatch({
+      type: fetchDownJd,
+      payload: { data: res.data },
+    });
+  });
+
+}
 
 export const getEmpDetails = (empid) => (dispatch) => {
   axios.get(`http://localhost:5000/getempdetails/${empid}`).then((res) => {

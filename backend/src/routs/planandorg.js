@@ -154,7 +154,7 @@ function getEmpApprails(req, res) {
                 res.send(details);
             }
         })
-    } else if ((!appraisal || appraisal === "اختر التقييم") && (!year || year === "اختر السنة")) {
+    } else if ((!appraisal || appraisal === "اختر التقييم" || appraisal == "undefined") && (!year || year === "اختر السنة" || year == "undefined")) {
         db.query(`SELECT employee.NAME_ARABIC, employee_appraisal.APPRAISAL_DATE ,appraisal.APPRAISAL_ARABIC , employee.EMPLOYEE_ID, employee_appraisal.NATIONAL_ID_CARD_NO FROM employee_appraisal JOIN employee ON employee.NATIONAL_ID_CARD_NO = employee_appraisal.NATIONAL_ID_CARD_NO JOIN APPRAISAL ON APPRAISAL.APPRAISAL = employee_appraisal.APPRAISAL WHERE employee.EMPLOYEE_ID = ${empid} ORDER BY employee_appraisal.APPRAISAL_DATE`, (err, details) => {
             if (err) {
                 console.log(err);
@@ -396,6 +396,18 @@ function postnewtrans(req, res) {
     console.log(req.body);
 }
 
+function gitDownJd(req, res) {
+    let query = `SELECT * FROM a_sup_box JOIN( SELECT a_main_box.MAIN_BOX_ID, a_main_box.CAT_ID, a_job_dgree.J_D_NAME FROM a_main_box JOIN a_job_dgree ON a_main_box.J_D_ID = a_job_dgree.J_D_ID ) AS mainwithjdn ON a_sup_box.MAIN_BOX_ID = mainwithjdn.MAIN_BOX_ID WHERE cat_id = 130 ORDER BY SUP_BOX_ID_P`
+    db.query(query, (err, details) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(details);
+        }
+    })
+
+}
+
 router
     .get('/getjobdgbycat/:catid/:mainboxid', getJobDgByCat)
 
@@ -423,6 +435,8 @@ router
     .post('/postnewtrans', postnewtrans)
 
     .get('/getUpJd/:len/:supboxname', getUpJd)
+
+    .get('/gitDownJd', gitDownJd)
 
 
 
