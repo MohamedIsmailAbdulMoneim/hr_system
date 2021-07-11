@@ -172,9 +172,11 @@ class Sidebar extends React.Component {
                                 {/* <li>
                                     <a href="morris.html">جزاءات</a>
                                 </li> */}
-                                {/* <li>
-                                    <a href="morris.html">البيانات العائلية</a>
-                                </li> */}
+                                <Link to={`/empfamily`}>
+                                <li>
+                                    <a href="/empfamily">البيانات العائلية</a>
+                                </li>
+                                </Link>
                                 <li>
                                     <a href="/orgstructure">الهيكل</a>
                                 </li>

@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import {
-    getEmpTrans, getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox, getUpJd, gitDownJd
+    getEmpFamily,getEmpName,getEmpNameByName
 } from "../../actions/Actions";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
@@ -10,44 +10,43 @@ import Reactmoment from "react-moment"
 
 
 
-class EmpTrans extends React.Component {
+class EmpFamily extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { showTransResult: true, add: false, edit: false, empid: null, empname: null, transdate: null, jdname: null, supboxname: null, gname: null, jasi: null, indname: null, catname: null, catid: null, supboxid: null, levels: null, showStructWAdd: false, showStruct: false, showNamesResults: false };
+        this.state = { showFamilyResult: true, add: false, edit: false, empid: null, empname: null, transdate: null, jdname: null, supboxname: null, gname: null, jasi: null, indname: null, catname: null, catid: null, supboxid: null, levels: null, showStructWAdd: false, showStruct: false, showNamesResults: false };
 
     }
 
     componentDidMount() {
-        this.props.gitDownJd()
     }
 
     idInputHandler = (e) => {
         this.refs.name.value = ''
         this.refs.name.placeholder = ''
-        this.setState({ showTransResult: false })
+        this.setState({ showFamilyResult: false })
         if (e.key === 'Enter') {
             this.props.getEmpName(e.target.value)
-            this.props.getEmpTrans(e.target.value, "")          
+            this.props.getEmpFamily(e.target.value, "")          
             this.setState({ showStruct: false, showStructWAdd: false, edit: false, empid: e.target.value, showTransResult: true })
         }
     }
 
 
     nameInputHandler = (e) => {
-        this.setState({showNamesResults:true, showTransResult: false })
+        this.setState({showNamesResults:true, showFamilyResult: false })
         this.props.getEmpNameByName(e.target.value)
         this.refs.empid.value = ''
         if (e.key === 'Enter') {
-            this.props.getEmpTrans("",e.target.value)
-            this.setState({showTransResult: true})
+            this.props.getEmpFamily("",e.target.value)
+            this.setState({showFamilyResult: true})
         }
     }
 
 
     namesOptionshandler = (e) =>{
         this.refs.name.value = e.target.value
-        this.props.getEmpTrans("",e.target.value)
-        this.setState({showTransResult: true})
+        this.props.getEmpFamily("",e.target.value)
+        this.setState({showFamilyResult: true})
     }
 
 
@@ -96,57 +95,6 @@ class EmpTrans extends React.Component {
         this.setState({ transdate: e.target.value })
     }
 
-
-    catClickHandeler = (e) => {
-        this.props.getJobDgByCat(e.target.value, this.props.empcurrentjd ? this.props.empcurrentjd.length ? this.props.empcurrentjd[0].J_D_ID_P : null : null)
-
-        this.setState({ catname: e.target.value })
-        if (this.refs.selected) {
-            if (this.refs.selected.options) {
-                this.refs.selected.options.selectedIndex = 2
-            }
-        }
-
-    }
-
-    jdNameClickHandeler = (e) => {
-        this.setState({ showStructWAdd: false, jdname: e.target.value, levels: this.props.jobdgbycat ? this.props.jobdgbycat.length ? this.props.jobdgbycat[0].levels : null : null })
-        this.props.getAvailSupBox(this.state.catname, e.target.value)
-        if (this.refs.sps) {
-            if (this.refs.sps.options) {
-                this.refs.sps.options.selectedIndex = this.refs.sps.options.length - 1
-            }
-        }
-        console.log(this.state.showStructWAdd);
-
-    }
-
-    supboxClickHandeler = (e) => {
-        this.setState({
-            supboxname: e.target.value,
-            showStructWAdd: true
-        })
-        // this.props.getUpJd(10, this.props.empname ? this.props.empname.length ? this.props.empname[0].SUP_BOX_ID : null : null))
-        this.props.getUpJd(10, e.target.value)
-    }
-    gNameClickeHandeler = (e) => {
-        this.setState({
-            gname: e.target.value
-        })
-    }
-
-    jasiClickeHandeler = (e) => {
-        this.setState({
-            jasi: e.target.value
-        })
-    }
-
-    indClickeHandeler = (e) => {
-        this.setState({
-            indname: e.target.value
-        })
-    }
-
     handelEdit_1 = (e) => {
         var myCurrentDate = e.target.getAttribute("transdate") ? e.target.getAttribute("transdate").slice(0, 10) : null
         var myFutureDate = new Date(myCurrentDate);
@@ -171,16 +119,10 @@ class EmpTrans extends React.Component {
         })
     }
 
-    showStruct = () => {
-        this.setState({ showStruct: true })
-        this.props.getUpJd(10, this.props.empTrans ? this.props.empTrans.length >= 1 ? this.props.empTrans[this.props.empTrans.length - 1].SUP_BOX_NAME : null : null)
-
-    }
-
 
     render() {
 
-        console.log(this.props.empTrans);
+        console.log(this.props.empfamily);
         const styles = {
             display: "block",
             padding: "0.375rem 2.25rem 0.375rem 0.75rem",
@@ -242,15 +184,7 @@ class EmpTrans extends React.Component {
                                         </div>
 
                                         <div class="input-group">
-                                            <span>الوظيفة :  </span>
-                                            <select required ref="selected" style={{ marginTop: 5, marginRight: 5, height: 25, width: 188 }} onChange={this.jdNameClickHandeler}>
-                                                <option>
-                                                    {this.props.jobdgbycat ? this.props.jobdgbycat.length ? this.props.jobdgbycat[0].J_D_NAME : null : null}
-                                                </option>
-                                                <option>{this.props.empcurrentjd.length >= 1 ? this.props.empcurrentjd[0].J_D_NAME : null}</option>
-                                                <option selected>اختر الوظيفة</option>
 
-                                            </select>
                                         </div>
                                         <div class="input-group">
                                             <span>المسمى الوظيفي :  </span>
@@ -327,20 +261,8 @@ class EmpTrans extends React.Component {
                 </div>
 
                 </form>
-                    {this.props.upjd && this.state.showStructWAdd ? this.props.upjd.length ? this.props.upjd.length >= 1 ?
-                        <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
-                            {this.props.upjd.map(up => (
-                                <Fragment>
-                                    {up.length ? up[0].boxname && up[0].boxname !== "null" ?
-                                        <Fragment><div style={{ width: "50%", background: "#c3c3c3", borderRadius: 10, margin: 10 }}>
-                                            <h3>{up[0].boxname}</h3></div><span style={{ fontSize: 30 }}>&#8593;</span></Fragment>
-                                        : null : null}
-                                </Fragment>
-                            ))}
-                            <div style={{ width: "50%", background: "#c3c3c3", borderRadius: 10, margin: 10 }}>
-                                <h3>{this.state.supboxname}</h3>
-                            </div>
-                        </div> : null : null : null}
+
+
                 </div>: null}
                 
                 {this.state.showNamesResults ? <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}>
@@ -373,23 +295,6 @@ class EmpTrans extends React.Component {
                         </div>
                     </div>
 
-
-                    {
-                        this.props.upjd ? this.props.upjd.length && this.state.showStruct ? this.props.upjd.length >= 1 ?
-                            <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
-                                {this.props.upjd.map(up => (
-                                    <Fragment>
-                                        {up.length >= 1 ? up[0].boxname ?
-                                            <Fragment><div style={{ width: "50%", background: "#c3c3c3", borderRadius: 10, margin: 10 }}>
-                                                <h3>{up[0].boxname}</h3></div><span style={{ fontSize: 30 }}>&#8593;</span></Fragment>
-                                            : null : null}
-                                    </Fragment>
-                                ))}
-                                <div style={{ width: "50%", background: "#c3c3c3", borderRadius: 10, margin: 10 }}>
-                                    <h3>{this.props.empTrans ? this.props.empTrans.length >= 1 ? this.props.empTrans[this.props.empTrans.length - 1].SUP_BOX_NAME : null : null}</h3>
-                                </div>
-                            </div> : null : null : null
-                    }
                 </div>
                 <div class="row">
                     <div class="col-lg-12">
@@ -403,7 +308,7 @@ class EmpTrans extends React.Component {
                             <div class="panel-body">
                                 <div class="table-responsive">
                                     <table class="table table-striped table-bordered table-hover" id="dataTables-example">
-                                        {!this.state.edit && !this.state.add && this.state.showTransResult ?
+                                        {!this.state.edit && !this.state.add && this.state.showFamilyResult ?
                                             <Fragment>
                                                 <thead>
                                                     <tr>
@@ -424,10 +329,10 @@ class EmpTrans extends React.Component {
 
                                                     </tr>
                                                 </thead>
-                                                {this.props.empTrans.map(trans => (
+                                                {this.props.empfamily.map(trans => (
                                                     <tbody>
                                                         <tr>
-                                                            <td >{trans.TRANS_DATE.slice(0, 10)}</td>
+                                                            {/* <td >{trans.TRANS_DATE.slice(0, 10)}</td> */}
                                                             {/* <td ref="catid">{trans.CAT_ID}</td> */}
                                                             <td ref="catname">{trans.CAT_NAME}</td>
                                                             {/* <td ref="mainboxid">{trans.MAIN_BOX_ID}</td> */}
@@ -553,7 +458,7 @@ class EmpTrans extends React.Component {
                                                 : null}
 
                                     </table>
-                                    {this.props.empTrans.length < 1 ? <h1>عفواً لا توجد بييانات</h1> : null}
+                                    {this.props.empTrans.empfamily < 1 ? <h1>عفواً لا توجد بييانات</h1> : null}
                                 </div>
                             </div>
                         </div>
@@ -567,17 +472,9 @@ class EmpTrans extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        cates: state.posts.cates,
-        jobdgbycat: state.posts.jobdgbycat,
-        empTrans: state.posts.empTrans,
-        empname: state.posts.empname,
-        empNameByName: state.posts.empNameByName,
-        empcurrentjd: state.posts.empcurrentjd,
-        empavailsup: state.posts.empavailsup,
-        upjd: state.posts.upjd,
-        downJd: state.posts.downJd
+        empfamily: state.posts.empfamily
     };
 };
 export default connect(mapStateToProps, {
-    getEmpTrans, getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox, getUpJd, gitDownJd
-})(EmpTrans);
+    getEmpFamily,getEmpName,getEmpNameByName
+})(EmpFamily);

@@ -13,6 +13,7 @@ import {
   fetchEmpAppraisal,
   fetchEmpTrans,
   fetchEmpEdu,
+  fetchEmpFamily,
   fetchEmpNameByName,
   fetchCurrentjd,
   fetchavailjd,
@@ -82,6 +83,7 @@ export const getCates = () => (dispatch) => {
   }))
 }
 
+// planandorganize folder
 export const getJobDgByCat = (val, mainboxid) => (dispatch) => {
   axios.get(`http://localhost:5000/getjobdgbycat/${val}/${mainboxid}`).then((res => {
     dispatch({
@@ -153,7 +155,7 @@ export const getEmpStationAndGovern = (val_1, val_2) => (dispatch) => {
 }
 
 export const getEmpName = (val) => (dispatch) => {
-  axios.get(`http://localhost:5000/empname/${val}`).then(res => {
+  axios.get(`http://localhost:5000/empnamebyid/${val}`).then(res => {
     dispatch({
       type: fetchEmpName,
       payload: res.data
@@ -184,9 +186,8 @@ export const getEmpAppraisal = (empid, appraisal, year) => (dispatch) => {
   })
 }
 
-export const getEmpTrans = (empid) => (dispatch) => {
-  axios.get(`http://localhost:5000/getemptrans/${empid}`).then(res => {
-    console.log("hit");
+export const getEmpTrans = (empid,empname) => (dispatch) => {
+  axios.get(`http://localhost:5000/getemptrans/?empid=${empid}&empname=${empname}`).then(res => {
     dispatch({
       type: fetchEmpTrans,
       payload: res.data
@@ -201,6 +202,16 @@ export const getEmpEdu = (empid) => (dispatch) => {
       payload: res.data
     })
   })
+}
+
+export const getEmpFamily = (empid,empname) => (dispatch) => {
+  axios.get(`http://localhost:5000/getempfamily/?empid=${empid}&empname=${empname}`).then(res => {
+    dispatch({
+      type: fetchEmpFamily,
+      payload: res.data
+    })
+  })
+  
 }
 
 export const getCurrentJd = (empid) => (dispatch) => {

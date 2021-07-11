@@ -29,19 +29,6 @@ function getMainCodes(req, res) {
     })
 }
 
-function getMainCodesByCate(req, res) {
-    const jdId = req.params.jdid
-    console.log(jdId);
-    const query = `SELECT * FROM a_main_box JOIN a_sup_box ON a_main_box.MAIN_BOX_ID = a_sup_box.MAIN_BOX_ID JOIN a_job_dgree ON a_main_box.J_D_ID = a_job_dgree.J_D_ID WHERE a_job_dgree.J_D_ID = ${jdId};`
-    db.query(query, (err, details) => {
-        if (err) {
-            console.log(err);
-        } else {
-            res.send(details)
-        }
-    })
-}
-
 function getCates(req, res) {
     const query = `SELECT CAT_NAME, a_category.CAT_ID FROM a_category JOIN a_category_org ON a_category.CAT_ID = a_category_org.CAT_ID WHERE ORGANIZATION = 30;`
     db.query(query, (err, details) => {
@@ -68,7 +55,7 @@ function getEmpNameById(req, res) {
 
 function getEmpNameByName(req, res) {
     let empname = req.params.empname
-    let query = `SELECT NAME_ARABIC FROM employee WHERE NAME_ARABIC  LIKE "%${empname}%"`
+    let query = `SELECT NAME_ARABIC, EMPLOYEE_ID  FROM employee WHERE NAME_ARABIC  LIKE "%${empname}%"`
     db.query(query, (err, details) => {
         if (err) {
             console.log(err);
@@ -79,13 +66,27 @@ function getEmpNameByName(req, res) {
 
 }
 
+// function getMainCodesByCate(req, res) {
+//     const jdId = req.params.jdid
+//     console.log(jdId);
+//     const query = `SELECT * FROM a_main_box JOIN a_sup_box ON a_main_box.MAIN_BOX_ID = a_sup_box.MAIN_BOX_ID JOIN a_job_dgree ON a_main_box.J_D_ID = a_job_dgree.J_D_ID WHERE a_job_dgree.J_D_ID = ${jdId};`
+//     db.query(query, (err, details) => {
+//         if (err) {
+//             console.log(err);
+//         } else {
+//             res.send(details)
+//         }
+//     })
+// }
+
+
 
 
 router
     .get('/getjobdgreecodes/:jDName', getJobDgreeCodes)
     .get('/getmaincodes/:jdid', getMainCodes)
     .get('/category', getCates)
-    .get('/empname/:empid', getEmpNameById)
+    .get('/empnamebyid/:empid', getEmpNameById)
     .get('/empnamebyName/:empname', getEmpNameByName)
 
 

@@ -25,7 +25,7 @@ class Employee extends React.Component {
     }
 
     empAppraisalHandler = (e) => {
-        this.props.getEmpAppraisal(this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].EMPLOYEE_ID : null : null)
+        this.props.getEmpAppraisal(this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].EMPLOYEE_ID : null : null, "","")
 
     }
 

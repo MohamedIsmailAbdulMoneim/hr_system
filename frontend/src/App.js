@@ -18,6 +18,7 @@ import EmpByDeps from './component/reports/Empbydeps'
 import EmpsAppraisal from './component/transactions/EmpsAppraisal';
 import EmpEdu from './component/transactions/EmpEduDeg';
 import EmpTraining from './component/transactions/EmpTraining';
+import EmpFamily from './component/transactions/EmpFamily';
 
 
 
@@ -48,6 +49,7 @@ function App() {
             <Route path="/empsappraisal" exact component={EmpsAppraisal} />
             <Route path="/empedudeg" exact component={EmpEdu} />
             <Route path="/EmpTraining" exact component={EmpTraining} />
+            <Route path="/empfamily" exact component={EmpFamily} />
 
 
 
