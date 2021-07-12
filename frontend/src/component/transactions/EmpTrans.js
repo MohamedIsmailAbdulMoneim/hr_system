@@ -218,7 +218,7 @@ class EmpTrans extends React.Component {
                                             <span >رقم الأداء :  </span><input type="number" onKeyUp={this.getNameAndCurrent} style={{ background: "white", marginTop: 5, marginRight: 5, height: 25, width: 188, border: "1px solid black" }} type="text" name="first_name" />
                                         </div>
                                         <div class="input-group">
-                                            <span>الإسم :  </span><input required style={{ background: "white", marginTop: 5, marginRight: 5, height: 25, width: 188, border: "1px solid black" }} type="text" name="first_name" value={this.props.empname || this.props.empNameByName ? this.props.empname.length >= 1 || this.props.empNameByName.length >= 1 ? this.props.empname[0].NAME_ARABIC || this.props.empNameByName[0].NAME_ARABIC : null : null} />
+                                            <span>الإسم :  </span><input required style={{ background: "white", marginTop: 5, marginRight: 5, height: 25, width: 188, border: "1px solid black" }} type="text" name="first_name" value={this.props.empname ? this.props.empname.length >= 1 ? this.props.empname[0].NAME_ARABIC || this.props.empNameByName ?  this.props.empNameByName.length >= 1 ?  this.props.empNameByName[0].NAME_ARABIC :null : null : null : null} />
                                         </div>
 
                                         <div class="input-group">

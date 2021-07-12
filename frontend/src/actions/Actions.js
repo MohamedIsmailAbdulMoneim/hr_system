@@ -195,8 +195,9 @@ export const getEmpTrans = (empid,empname) => (dispatch) => {
   })
 }
 
-export const getEmpEdu = (empid) => (dispatch) => {
-  axios.get(`http://localhost:5000/getempedu/${empid}`).then(res => {
+export const getEmpEdu = (empid,empname) => (dispatch) => {
+  console.log(empid,empname);
+  axios.get(`http://localhost:5000/getempedu/?empid=${empid}&empname=${empname}`).then(res => {
     dispatch({
       type: fetchEmpEdu,
       payload: res.data
@@ -251,3 +252,4 @@ export const getUpJd = (len, supboxname) => (dispatch) => {
   })
 
 }
+

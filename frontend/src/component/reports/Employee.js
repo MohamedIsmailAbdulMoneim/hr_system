@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import {
-    getEmpDetails, getEmpTrans, getUpJd, getEmpAppraisal
+    getEmpDetails, getEmpTrans, getUpJd, getEmpAppraisal,getEmpEdu,getEmpFamily
 } from "../../actions/Actions";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
@@ -19,9 +19,18 @@ class Employee extends React.Component {
         this.props.getEmpDetails(e.target.value)
     }
 
+
+    empEduButtonHandler = (e) => {
+        this.props.getEmpEdu(this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].EMPLOYEE_ID : null : null)
+    }
+
     empTransButtonHandler = (e) => {
         this.props.getEmpTrans(this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].EMPLOYEE_ID : null : null)
         this.props.getUpJd(10, this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].SUP_BOX_NAME : null : null)
+    }
+
+    empFamilyButtonHandler = (e) => {
+        this.props.getEmpFamily(this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].EMPLOYEE_ID : null : null)
     }
 
     empAppraisalHandler = (e) => {
@@ -152,14 +161,15 @@ class Employee extends React.Component {
                                 <img style={{ borderTop: 3 }} src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin" class="rounded-circle" width="150" />
                                 <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", marginTop: 10 }}>
                                     <div style={{ display: "flex" }}>
-                                        <button style={{ display: "block", border: "1px solid black", marginRight: 5, marginLeft: 5 }} type="button" class="btn btn-outline btn-lg">المؤهل</button>
-                                        <button style={{ display: "block", border: "1px solid black", marginRight: 5, marginLeft: 5 }} type="button" class="btn btn-outline btn-lg" > <Link to={`/EmpTrans`}><a onClick={this.empTransButtonHandler} href="/EmpTrans">التدرج</a></Link></button>
+                                        <button style={{ display: "block", border: "1px solid black", marginRight: 5, marginLeft: 5 }} type="button" class="btn btn-outline btn-lg"><Link to={`/empedudeg`}><a onClick={this.empEduButtonHandler} href="/empedudeg">المؤهل</a></Link></button>                  
+
+                                        <button style={{ display: "block", border: "1px solid black", marginRight: 5, marginLeft: 5 }} type="button" class="btn btn-outline btn-lg" ><Link to={`/EmpTrans`}><a onClick={this.empTransButtonHandler} href="/EmpTrans">التدرج</a></Link></button>
                                     </div>
                                 </div>
                                 <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", marginTop: 10 }}>
                                     <div style={{ display: "flex" }}>
                                         <button style={{ display: "block", border: "1px solid black", marginRight: 5, marginLeft: 5 }} type="button" class="btn btn-outline btn-lg">الخبرات</button>
-                                        <button style={{ display: "block", border: "1px solid black", marginRight: 5, marginLeft: 5 }} type="button" class="btn btn-outline btn-lg">العائلية</button>
+                                        <button style={{ display: "block", border: "1px solid black", marginRight: 5, marginLeft: 5 }} type="button" class="btn btn-outline btn-lg"><Link to={`/empfamily`}><a onClick={this.empFamilyButtonHandler} href="/empfamily">العائلية</a></Link></button>
                                     </div>
                                 </div>
                                 <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", marginTop: 10 }}>
@@ -199,9 +209,9 @@ class Employee extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        empdetails: state.posts.empdetails
+        empdetails: state.posts.empdetails,
     };
 };
 export default connect(mapStateToProps, {
-    getEmpDetails, getEmpTrans, getUpJd, getEmpAppraisal
+    getEmpDetails, getEmpTrans, getUpJd, getEmpAppraisal,getEmpEdu,getEmpFamily
 })(Employee);

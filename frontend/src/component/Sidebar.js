@@ -150,11 +150,11 @@ class Sidebar extends React.Component {
                                 <li>
                                     <a href="/EmpTrans">تدرج</a>
                                 </li>
-                                {/* <Link to={`/empedudeg`}>
+                                <Link to={`/empedudeg`}>
                                     <li>
                                         <a onClick={this.props.getJobGovern} href="/empedudeg">مؤهلات الموظفين</a>
                                     </li>
-                                </Link> */}
+                                </Link>
                                 {/* <Link to={`/emptraining`}>
                                     <li>
                                         <a href="/emptraining">تدريب</a>
