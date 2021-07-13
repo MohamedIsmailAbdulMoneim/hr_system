@@ -187,7 +187,7 @@ export const getEmpAppraisal = (empid, appraisal, year) => (dispatch) => {
   })
 }
 
-export const getEmpTrans = (empid,empname) => (dispatch) => {
+export const getEmpTrans = (empid, empname) => (dispatch) => {
   axios.get(`http://localhost:5000/getemptrans/?empid=${empid}&empname=${empname}`).then(res => {
     dispatch({
       type: fetchEmpTrans,
@@ -196,8 +196,9 @@ export const getEmpTrans = (empid,empname) => (dispatch) => {
   })
 }
 
-export const getEmpEdu = (empid,empname) => (dispatch) => {
-  console.log(empid,empname);
+
+export const getEmpEdu = (empid, empname) => (dispatch) => {
+  console.log(empid, empname);
   axios.get(`http://localhost:5000/getempedu/?empid=${empid}&empname=${empname}`).then(res => {
     dispatch({
       type: fetchEmpEdu,
@@ -206,14 +207,14 @@ export const getEmpEdu = (empid,empname) => (dispatch) => {
   })
 }
 
-export const getEmpFamily = (empid,empname) => (dispatch) => {
+export const getEmpFamily = (empid, empname) => (dispatch) => {
   axios.get(`http://localhost:5000/getempfamily/?empid=${empid}&empname=${empname}`).then(res => {
     dispatch({
       type: fetchEmpFamily,
       payload: res.data
     })
   })
-  
+
 }
 
 export const getCurrentJd = (empid) => (dispatch) => {
