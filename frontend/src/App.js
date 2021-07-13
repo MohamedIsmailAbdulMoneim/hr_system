@@ -4,6 +4,7 @@ import Home from './component/Home';
 import Sidebar from './component/Sidebar';
 import Header from './component/Header';
 import Table from './component/Table';
+import Chart from './component/reports/chart';
 import Form from './component/Form';
 import AssisstantChairman from './component/mainCodes/AssisstantChairman';
 import GeneralManager from './component/mainCodes/GeneralManager';
@@ -53,8 +54,9 @@ function App() {
 
 
 
-
           </Switch>
+          <Chart />
+
         </div>
       </Router>
     </Provider>

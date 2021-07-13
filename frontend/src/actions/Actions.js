@@ -156,6 +156,7 @@ export const getEmpStationAndGovern = (val_1, val_2) => (dispatch) => {
 
 export const getEmpName = (val) => (dispatch) => {
   axios.get(`http://localhost:5000/empnamebyid/${val}`).then(res => {
+    console.log('hitempname');
     dispatch({
       type: fetchEmpName,
       payload: res.data

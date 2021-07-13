@@ -13,12 +13,41 @@ import Reactmoment from "react-moment"
 class EmpTrans extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { showTransResult: true, add: false, edit: false, empid: null, empname: null, transdate: null, jdname: null, supboxname: null, gname: null, jasi: null, indname: null, catname: null, catid: null, supboxid: null, levels: null, showStructWAdd: false, showStruct: false, showNamesResults: false };
+        this.state = { showDateUnlessEdit : true,showTransResult: true, add: false, edit: false, empid: null, empname: null, transdate: null, jdname: null, supboxname: null, gname: null, jasi: null, indname: null, catname: null, catid: null, supboxid: null,mainboxid: null, levels: null, showStructWAdd: false, showStruct: false, showNamesResults: false };
 
     }
 
     componentDidMount() {
-        this.props.gitDownJd()
+        
+    }
+
+    handleChange = (e) => {
+        let value = Array.from(e.target.selectedOptions, option => option.value);
+
+        console.log(value);
+    }
+
+    idInputAddHandler = (e) => {
+        this.refs.name.placeholder = ''
+        this.setState({ showTransResult: false })
+            this.props.getEmpName(e.target.value)
+            // this.setState({ showStruct: false, showStructWAdd: false, edit: false, empid: e.target.value, showTransResult: true })
+        
+        let selectTags =  document.getElementsByTagName('select')
+        // for (let index = 0; index < selectTags.length; index++) {
+        //     document.getElementsByTagName('select')[index].selectedIndex = document.getElementsByTagName('select')[index]        
+        // }
+        // console.log(document.getElementsByTagName('select')[0].options.length);
+    }
+
+    nameInputAddHandler = (e) => {
+        this.setState({showNamesResults:true, showTransResult: false })
+        this.props.getEmpNameByName(e.target.value)
+        this.refs.empid.value = ''
+            // this.setState({showTransResult: true})
+            // window.history.replaceState(null, "New Page Title", "/emptrans/goes/here")
+            // this.props.history.push(window.location.pathname + "?" + currentUrlParams.toString());
+
     }
 
     idInputHandler = (e) => {
@@ -29,7 +58,8 @@ class EmpTrans extends React.Component {
             this.props.getEmpName(e.target.value)
             this.props.getEmpTrans(e.target.value, "")          
             this.setState({ showStruct: false, showStructWAdd: false, edit: false, empid: e.target.value, showTransResult: true })
-        }
+            window.history.replaceState(null, "New Page Title", `/emptrans/?empid=${e.target.value}`)
+        }   
     }
 
 
@@ -40,6 +70,8 @@ class EmpTrans extends React.Component {
         if (e.key === 'Enter') {
             this.props.getEmpTrans("",e.target.value)
             this.setState({showTransResult: true})
+            // window.history.replaceState(null, "New Page Title", "/emptrans/goes/here")
+            // this.props.history.push(window.location.pathname + "?" + currentUrlParams.toString());
         }
     }
 
@@ -61,7 +93,7 @@ class EmpTrans extends React.Component {
 
     addButtonClickHandeler = () => {
         this.setState({ add: true })
-        this.setState({ empid: null, empname: null, transdate: null, catname: null, jdname: null, supboxname: null, gname: null, jasi: null, indname: null, shoshowStructWAddw: false, showStruct: false })
+        this.setState({ empid: null, empname: null, transdate: null, catname: null, jdname: null, supboxname: null, gname: null, jasi: null, indname: null, shoshowStructWAddw: false, showStruct: false, showNamesResults:false })
     }
     handelInsertNewTrans = (e) => {
         e.preventDefault()
@@ -103,10 +135,9 @@ class EmpTrans extends React.Component {
         this.setState({ catname: e.target.value })
         if (this.refs.selected) {
             if (this.refs.selected.options) {
-                this.refs.selected.options.selectedIndex = 2
+                this.refs.selected.options.selectedIndex = this.refs.selected.options.length -1
             }
         }
-
     }
 
     jdNameClickHandeler = (e) => {
@@ -148,20 +179,21 @@ class EmpTrans extends React.Component {
     }
 
     handelEdit_1 = (e) => {
-        var myCurrentDate = e.target.getAttribute("transdate") ? e.target.getAttribute("transdate").slice(0, 10) : null
-        var myFutureDate = new Date(myCurrentDate);
-        myFutureDate.setDate(myFutureDate.getDate() + 1);//myFutureDate is now 8 days in the future
-        let newDate = myFutureDate.getUTCFullYear() + "-" + (myFutureDate.getUTCMonth() + 1) + "-" + myFutureDate.getUTCDate()
-        this.setState({ edit: true, empname: e.target.getAttribute("empname"), transdate: newDate, catname: e.target.getAttribute("catname"), catid: e.target.getAttribute("catid"), jdname: e.target.getAttribute("jdname"), supboxname: e.target.getAttribute("supboxname"), gname: e.target.getAttribute("jobgroup"), jasi: e.target.getAttribute("jasform"), indname: e.target.getAttribute("indname") })
+        
+        this.setState({mainboxid: e.target.getAttribute("mainboxid"), edit: true, empname: e.target.getAttribute("empname"), transdate: e.target.getAttribute("transdate"), catname: e.target.getAttribute("catname"), catid: e.target.getAttribute("catid"), jdname: e.target.getAttribute("jdname"), supboxname: e.target.getAttribute("supboxname"), gname: e.target.getAttribute("jobgroup"), jasi: e.target.getAttribute("jasform"), indname: e.target.getAttribute("indname") })
         // new Date(this.props.empdetails[0].SECTOR_JOIN_DATE.slice(0, 10)).setDate(this.props.empdetails[0].SECTOR_JOIN_DATE.slice(0, 10).getDate() + 1).getUTCFullYear() + "-" + (this.props.empdetails[0].SECTOR_JOIN_DATE.slice(0, 10).getUTCMonth() + 1) + "-" + this.props.empdetails[0].SECTOR_JOIN_DATE.slice(0, 10).getUTCDate()
 
     }
 
+    editDate = (e) => {
+        this.setState({showDateUnlessEdit: false })
+    }
+
     handelEdit_2 = (e) => {
         e.preventDefault()
+        console.log(this.state.empid);
         // let data = { empNat: this.state.empNat, appraisal: this.refs.newAppraisal.value, year: document.getElementById("year").placeholder }
-
-        let data = { date: this.state.transdate, catname: this.state.catname, jdname: this.state.jdname, supboxname: this.state.supboxname, gname: this.state.gname, jasi: this.state.jasi, indname: this.state.indname, empid: this.state.empid }
+        let data = { mainboxid: this.state.mainboxid, date: this.state.transdate, catname: this.state.catname, jdname: this.state.jdname, supboxname: this.state.supboxname, gname: this.state.gname, jasi: this.state.jasi, indname: this.state.indname, empid: this.state.empid, empname: this.props.empNameByName ? this.props.empNameByName.length >= 1 ? this.props.empNameByName[0].NAME_ARABIC :null : null }
         axios({
             method: "PUT",
             data: data,
@@ -179,8 +211,8 @@ class EmpTrans extends React.Component {
 
 
     render() {
+        console.log(this.props.empname && !this.state.edit ? this.props.empname.length >= 1 ? this.props.empname[0].NAME_ARABIC : null : null);
 
-        console.log(this.props.empTrans);
         const styles = {
             display: "block",
             padding: "0.375rem 2.25rem 0.375rem 0.75rem",
@@ -200,25 +232,24 @@ class EmpTrans extends React.Component {
 
         return (
             <div id="page-wrapper" >
-                {this.state.add ? <div> <form> <div class="row">
+                {this.state.add ? <div> <div class="row">
                     <div className="col-lg-12" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                         <div style={{ height: "100%", width: 750 }} class="panel panel-default">
                             <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }} class="panel-heading">
                                 <span style={{ position: "relative", right: 50 }}>إضافة تدرج جديد</span> {this.state.edit ? <i onClick={this.closeEditSectionHandler} style={{ fontSize: 15, position: "relative", left: 530 }} class="fas fa-times-circle"></i> : null}
                                 {this.state.add ? <i onClick={this.closeAddSectionHandler} style={{ fontSize: 15, position: "relative", top: 5, left: 380 }} class="fas fa-times-circle"></i> : null}
-
-                                <input style={{ position: "relative", right: 250, fontSize: 20 }} type="submit" class="btn btn-primary" onSubmit={this.handelInsertNewTrans} value="Add" />
+                                <input style={{ position: "relative", right: 250, fontSize: 20 }} type="submit" class="btn btn-primary" onClick={this.handelInsertNewTrans} value="Add" />
 
                             </div>
-
+                            
                             <div style={{ display: "flex", marginTop: 5 }}>
                                 <div style={{ marginRight: 20, marginTop: 5 }}>
                                     <div className="col-lg-4">
                                         <div class="input-group">
-                                            <span >رقم الأداء :  </span><input type="number" onKeyUp={this.getNameAndCurrent} style={{ background: "white", marginTop: 5, marginRight: 5, height: 25, width: 188, border: "1px solid black" }} type="text" name="first_name" />
+                                            <span >رقم الأداء :  </span><input onChange={this.idInputAddHandler} type="number" onKeyUp={this.getNameAndCurrent} style={{ background: "white", marginTop: 5, marginRight: 5, height: 25, width: 188, border: "1px solid black" }} type="text" name="first_name" />
                                         </div>
                                         <div class="input-group">
-                                            <span>الإسم :  </span><input required style={{ background: "white", marginTop: 5, marginRight: 5, height: 25, width: 188, border: "1px solid black" }} type="text" name="first_name" value={this.props.empname ? this.props.empname.length >= 1 ? this.props.empname[0].NAME_ARABIC || this.props.empNameByName ?  this.props.empNameByName.length >= 1 ?  this.props.empNameByName[0].NAME_ARABIC :null : null : null : null} />
+                                            <span>الإسم :  </span><input onChange={this.nameInputAddHandler} required style={{ background: "white", marginTop: 5, marginRight: 5, height: 25, width: 188, border: "1px solid black" }} type="text" name="first_name" value={this.props.empname ? this.props.empname.length >= 1 ? this.props.empname[0].NAME_ARABIC || this.props.empNameByName ?  this.props.empNameByName.length >= 1 ?  this.props.empNameByName[0].NAME_ARABIC :null : null : null : null} />
                                         </div>
 
                                         <div class="input-group">
@@ -228,7 +259,7 @@ class EmpTrans extends React.Component {
                                     <div className="col-lg-4">
                                         <div class="input-group">
                                             <span>الإدارة :  </span>
-                                            <select required style={{ marginTop: 5, marginRight: 5, height: 25, width: 188 }} onChange={this.catClickHandeler}>
+                                            <select  required style={{ marginTop: 5, marginRight: 5, height: 25, width: 188 }} onChange={this.catClickHandeler}>
                                                 {this.props.cates.map(cate => (
                                                     <Fragment>
                                                         <option id={cate.CAT_ID}>
@@ -240,14 +271,14 @@ class EmpTrans extends React.Component {
                                                 </option>
                                             </select>
                                         </div>
-
                                         <div class="input-group">
                                             <span>الوظيفة :  </span>
                                             <select required ref="selected" style={{ marginTop: 5, marginRight: 5, height: 25, width: 188 }} onChange={this.jdNameClickHandeler}>
+                                                {this.props.jobdgbycat.map(job => (
                                                 <option>
-                                                    {this.props.jobdgbycat ? this.props.jobdgbycat.length ? this.props.jobdgbycat[0].J_D_NAME : null : null}
+                                                {job.J_D_NAME}
                                                 </option>
-                                                <option>{this.props.empcurrentjd.length >= 1 ? this.props.empcurrentjd[0].J_D_NAME : null}</option>
+                                                ))}
                                                 <option selected>اختر الوظيفة</option>
 
                                             </select>
@@ -271,9 +302,9 @@ class EmpTrans extends React.Component {
                                             <select required style={{ marginTop: 5, marginRight: 6, height: 25, width: 188 }} onChange={this.gNameClickeHandeler}>
                                                 <option>فني</option>
                                                 <option>إداري</option>
+                                                <option selected>اختر نوع التخصص</option>
                                             </select>
                                         </div>
-
                                         <div class="input-group">
                                             <span>طريقة شغل الوظيفة :  </span>
                                             <select required style={{ marginTop: 5, marginRight: 6, height: 25, width: 188 }} onChange={this.jasiClickeHandeler}>
@@ -310,6 +341,8 @@ class EmpTrans extends React.Component {
                                                 <option>أصلية</option>
                                                 <option>حالية</option>
                                                 <option>سابقة</option>
+                                                <option selected>اختر  ...</option>
+
                                             </select>
                                         </div>
 
@@ -326,7 +359,6 @@ class EmpTrans extends React.Component {
 
                 </div>
 
-                </form>
                     {this.props.upjd && this.state.showStructWAdd ? this.props.upjd.length ? this.props.upjd.length >= 1 ?
                         <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
                             {this.props.upjd.map(up => (
@@ -429,7 +461,7 @@ class EmpTrans extends React.Component {
                                                         <tr>
                                                             <td >{trans.TRANS_DATE.slice(0, 10)}</td>
                                                             {/* <td ref="catid">{trans.CAT_ID}</td> */}
-                                                            <td ref="catname">{trans.CAT_NAME}</td>
+                                                            <td ref="catname">{trans.catename}</td>
                                                             {/* <td ref="mainboxid">{trans.MAIN_BOX_ID}</td> */}
                                                             <td ref="jdname">{trans.MAIN_BOX_NAME}</td>
                                                             {/* <td ref="supboxid">{trans.SUP_BOX_ID}</td> */}
@@ -465,8 +497,11 @@ class EmpTrans extends React.Component {
                                                     </thead>
                                                     <tbody>
                                                         <tr>
+                                                        
                                                             <td style={{ width: 250 }} ><input type="text" placeholder={this.state.empname ? this.state.empname : null} disabled /></td>
-                                                            <td><input type="date" id="date" onChange={this.handelDateClick} value={this.state.transdate ? this.state.transdate : null} style={{ display: "inline", width: 80 }} /></td>
+                                                            {this.state.showDateUnlessEdit ? <td><input onClick={this.editDate} type="text" id="date" onChange={this.handelDateClick} value={this.state.transdate ? this.state.transdate : null} style={{ display: "inline", width: 80 }} /></td>
+     : <td><input type="date" id="date" onChange={this.handelDateClick} value={this.state.transdate ? this.state.transdate : null} style={{ display: "inline", width: 80 }} /></td>
+ }
                                                             {/* <td><input placeholder={this.state.catname} /></td> */}
                                                             <td>
                                                                 <select onChange={this.catClickHandeler}>
