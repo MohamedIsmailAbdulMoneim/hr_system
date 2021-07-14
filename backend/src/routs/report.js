@@ -147,6 +147,29 @@ function getEmpStationAndGovern(req, res) {
 }
 
 
+function getqn  (req,res){
+    let query = `
+    SELECT COUNT(DEGREE_LEVEL_ID) AS postgraduate FROM dgree_level JOIN( SELECT education_degree.DEGREE_LEVEL, education_degree.DEGREE FROM education_degree JOIN employee_education_degree ON education_degree.DEGREE = employee_education_degree.DEGREE ) AS deglevel ON deglevel.DEGREE_LEVEL = dgree_level.DEGREE_LEVEL_ID WHERE dgree_level.DEGREE_LEVEL_ID = 1;
+    SELECT COUNT(DEGREE_LEVEL_ID) AS academicqualifications FROM dgree_level JOIN( SELECT education_degree.DEGREE_LEVEL, education_degree.DEGREE FROM education_degree JOIN employee_education_degree ON education_degree.DEGREE = employee_education_degree.DEGREE ) AS deglevel ON deglevel.DEGREE_LEVEL = dgree_level.DEGREE_LEVEL_ID WHERE dgree_level.DEGREE_LEVEL_ID = 2;
+    SELECT COUNT(DEGREE_LEVEL_ID) AS aboveaverage FROM dgree_level JOIN( SELECT education_degree.DEGREE_LEVEL, education_degree.DEGREE FROM education_degree JOIN employee_education_degree ON education_degree.DEGREE = employee_education_degree.DEGREE ) AS deglevel ON deglevel.DEGREE_LEVEL = dgree_level.DEGREE_LEVEL_ID WHERE dgree_level.DEGREE_LEVEL_ID = 3;
+    SELECT COUNT(DEGREE_LEVEL_ID) AS averagequalification FROM dgree_level JOIN( SELECT education_degree.DEGREE_LEVEL, education_degree.DEGREE FROM education_degree JOIN employee_education_degree ON education_degree.DEGREE = employee_education_degree.DEGREE ) AS deglevel ON deglevel.DEGREE_LEVEL = dgree_level.DEGREE_LEVEL_ID WHERE dgree_level.DEGREE_LEVEL_ID = 4;
+    SELECT COUNT(DEGREE_LEVEL_ID) AS preparatory FROM dgree_level JOIN( SELECT education_degree.DEGREE_LEVEL, education_degree.DEGREE FROM education_degree JOIN employee_education_degree ON education_degree.DEGREE = employee_education_degree.DEGREE ) AS deglevel ON deglevel.DEGREE_LEVEL = dgree_level.DEGREE_LEVEL_ID WHERE dgree_level.DEGREE_LEVEL_ID = 5;
+    SELECT COUNT(DEGREE_LEVEL_ID) AS primarydg FROM dgree_level JOIN( SELECT education_degree.DEGREE_LEVEL, education_degree.DEGREE FROM education_degree JOIN employee_education_degree ON education_degree.DEGREE = employee_education_degree.DEGREE ) AS deglevel ON deglevel.DEGREE_LEVEL = dgree_level.DEGREE_LEVEL_ID WHERE dgree_level.DEGREE_LEVEL_ID = 6;
+    SELECT COUNT(DEGREE_LEVEL_ID) AS literacy  FROM dgree_level JOIN( SELECT education_degree.DEGREE_LEVEL, education_degree.DEGREE FROM education_degree JOIN employee_education_degree ON education_degree.DEGREE = employee_education_degree.DEGREE ) AS deglevel ON deglevel.DEGREE_LEVEL = dgree_level.DEGREE_LEVEL_ID WHERE dgree_level.DEGREE_LEVEL_ID = 7;
+    SELECT COUNT(DEGREE_LEVEL_ID) AS without  FROM dgree_level JOIN( SELECT education_degree.DEGREE_LEVEL, education_degree.DEGREE FROM education_degree JOIN employee_education_degree ON education_degree.DEGREE = employee_education_degree.DEGREE ) AS deglevel ON deglevel.DEGREE_LEVEL = dgree_level.DEGREE_LEVEL_ID WHERE dgree_level.DEGREE_LEVEL_ID = 8;  
+    `
+    db.query(query, (err, details) => {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log(details);
+            res.send(details)
+        }
+    })
+    
+}
+
+
 
 router
     .get('/getdeps', getDeps)
@@ -155,6 +178,7 @@ router
     .get('/getjobstation/:govern', getjobstation)
     .get('/getempstationandgovern/:govern/:station', getEmpStationAndGovern)
     .get('/getempdetails/:empid', getEmpDetails)
+    .get('/getqn', getqn)
 
 
 

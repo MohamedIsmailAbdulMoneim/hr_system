@@ -16,9 +16,55 @@ class EmpEduDeg extends React.Component {
         this.state = { add: false, edit: false, empid: null, empname: null, catname: null, catid: null, supboxid: null, levels: null, showStructWAdd: false, showStruct: false, showNamesResults: false };
 
     }
+    /* 
+    
+    --------------------
+    Create Methods
+    --------------------
+    
+    */
 
-    componentDidMount() {
+    addButtonClickHandeler = () => {
+        this.setState({ add: true })
+        this.setState({ empid: null, empname: null, transdate: null, catname: null, jdname: null, supboxname: null, gname: null, jasi: null, indname: null, shoshowStructWAddw: false, showStruct: false })
     }
+
+    handelInsertNewEdu = (e) => {
+        e.preventDefault()
+        const fd = {
+            empid: this.state.empid,
+            transdate: this.state.transdate,
+            jdname: this.state.jdname,
+            supboxname: this.state.supboxname,
+            gname: this.state.gname,
+            jasi: this.state.jasi,
+            indname: this.state.indname,
+            catname: this.state.catname,
+        };
+        axios({
+            method: "POST",
+            data: fd,
+            withCredentials: true,
+            url: "http://localhost:5000/postnewtrans",
+            headers: { "Content-Type": "application/json" },
+        }).then((res) => {
+        })
+    }
+
+    closeAddSectionHandler = (e) => {
+        this.setState({ add: false, showStructWAdd: false })
+    }
+
+
+
+    /* 
+    
+    --------------------
+    Read Methods
+    --------------------
+    
+    */
+   
 
     idInputHandler = (e) => {
         this.refs.name.value = ''
@@ -43,52 +89,20 @@ class EmpEduDeg extends React.Component {
         }
     }
 
-
     namesOptionshandler = (e) => {
         this.refs.name.value = e.target.value
         this.props.getEmpEdu("", e.target.value)
         this.setState({ showFamilyResult: true })
     }
 
+    /* 
+    
+    --------------------
+    Update Methods
+    --------------------
+    
+    */
 
-    closeAddSectionHandler = (e) => {
-        this.setState({ add: false, showStructWAdd: false })
-    }
-
-    closeEditSectionHandler = (e) => {
-        this.setState({ edit: false })
-    }
-
-    addButtonClickHandeler = () => {
-        this.setState({ add: true })
-        this.setState({ empid: null, empname: null, transdate: null, catname: null, jdname: null, supboxname: null, gname: null, jasi: null, indname: null, shoshowStructWAddw: false, showStruct: false })
-    }
-    handelInsertNewTrans = (e) => {
-        e.preventDefault()
-        const fd = {
-            empid: this.state.empid,
-            transdate: this.state.transdate,
-            jdname: this.state.jdname,
-            supboxname: this.state.supboxname,
-            gname: this.state.gname,
-            jasi: this.state.jasi,
-            indname: this.state.indname,
-            catname: this.state.catname,
-        };
-        axios({
-            method: "POST",
-            data: fd,
-            withCredentials: true,
-            url: "http://localhost:5000/postnewtrans",
-            headers: { "Content-Type": "application/json" },
-        }).then((res) => {
-        })
-    }
-
-
-    handelDateClick = (e) => {
-        this.setState({ transdate: e.target.value })
-    }
 
     handelEdit_1 = (e) => {
         var myCurrentDate = e.target.getAttribute("transdate") ? e.target.getAttribute("transdate").slice(0, 10) : null
@@ -114,6 +128,43 @@ class EmpEduDeg extends React.Component {
         })
     }
 
+    closeEditSectionHandler = (e) => {
+        this.setState({ edit: false })
+    }
+
+    /* 
+    
+    --------------------
+    Delete Methods
+    --------------------
+    
+    */
+
+
+    /* 
+    
+    --------------------
+    Shared Methods
+    --------------------
+    
+    */
+
+
+    handelDateClick = (e) => {
+        this.setState({ transdate: e.target.value })
+    }
+
+
+
+    // End Of Methods
+
+
+
+
+
+    componentDidMount() {
+    }
+
 
     render() {
         console.log(this.props.empEdu);
@@ -136,19 +187,118 @@ class EmpEduDeg extends React.Component {
 
         return (
             <div id="page-wrapper" >
-                {this.state.add ? <div> <form> <div class="row">
-                    <div className="col-lg-12" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                        <div style={{ height: "100%", width: 750 }} class="panel panel-default">
-                            <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }} class="panel-heading">
-                                <span style={{ position: "relative", right: 50 }}>إضافة بيانات جديدة</span> {this.state.edit ? <i onClick={this.closeEditSectionHandler} style={{ fontSize: 15, position: "relative", left: 530 }} class="fas fa-times-circle"></i> : null}
-                                {this.state.add ? <i onClick={this.closeAddSectionHandler} style={{ fontSize: 15, position: "relative", top: 5, left: 380 }} class="fas fa-times-circle"></i> : null}
-                                <input style={{ position: "relative", right: 250, fontSize: 20 }} type="submit" class="btn btn-primary" onSubmit={this.handelInsertNewTrans} value="Add" />
+                {this.state.add ?
+                    <div>
+                        <div class="row">
+                            <div className="col-lg-12" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                                <div style={{ height: "100%", width: 750 }} class="panel panel-default">
+                                    <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }} class="panel-heading">
+                                        <span style={{ position: "relative", right: 50 }}>إضافة مؤهل جديد</span> {this.state.edit ? <i onClick={this.closeEditSectionHandler} style={{ fontSize: 15, position: "relative", left: 530 }} class="fas fa-times-circle"></i> : null}
+                                        {this.state.add ? <i onClick={this.closeAddSectionHandler} style={{ fontSize: 15, position: "relative", top: 5, left: 380 }} class="fas fa-times-circle"></i> : null}
+                                        <input onClick={this.addNewHandler} style={{ position: "relative", right: 250, fontSize: 20 }} type="submit" class="btn btn-primary" value="اضف" />
+                                    </div>
+                                    <div style={{ display: "flex", marginTop: 5 }}>
+                                        <div style={{ marginRight: 20, marginTop: 5 }}>
+                                            <div className="col-lg-4">
+                                                <div class="input-group">
+                                                    <span >رقم الأداء :  </span><input onChange={this.idInputAddHandler} type="number" style={{ background: "white", marginTop: 5, marginRight: 5, height: 25, width: 188, border: "1px solid black" }} type="text" name="first_name" placeholder={this.props.empNameByName ? this.props.empNameByName.length >= 1 ? this.props.empNameByName[0].EMPLOYEE_ID : null : null} />
+                                                </div>
+                                                <div class="input-group">
+                                                    <span>الإسم :  </span><input ref="insertName" onChange={this.nameInputAddHandler} required style={{ background: "white", marginTop: 5, marginRight: 5, height: 25, width: 188, border: "1px solid black" }} type="text" name="first_name" placeholder={this.props.empname ? this.props.empname.length >= 1 ? this.props.empname[0].NAME_ARABIC : null : null || this.props.empNameByName ? this.props.empNameByName.length >= 1 ? this.props.empNameByName[0].NAME_ARABIC : null : null} />
+                                                </div>
+
+                                                <div class="input-group">
+                                                    <span>الدرجة :  </span>
+                                                    <select required style={{ marginTop: 5, marginRight: 5, height: 25, width: 188 }} onChange={this.catClickHandeler}>
+                                                        <option selected>
+                                                            اختر الدرجة
+                                                        </option>
+                                                        <option>زمالة</option>
+                                                        <option>دكتوراه</option>
+                                                        <option>ماجستير</option>
+                                                        <option>دبلوم دراسات عليا</option>
+                                                        <option>ليسانس</option>
+                                                        <option>بكالوريوس</option>
+                                                        <option>دبلوم</option>
+                                                        <option>الشهادة الأهلية</option>
+                                                        <option>ثانوية</option>
+                                                        <option>إعدادية</option>
+                                                        <option>إبتدائية</option>
+                                                        <option>شهادة محو الأمية</option>
+                                                        <option>بدون مؤهل</option>
+                                                        <option>مؤهل فوق متوسط</option>
+                                                        <option>مؤهل متوسط</option>
+                                                        <option>شهادة</option>
+
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div className="col-lg-4">
+                                                <div class="input-group">
+                                                    <span>التخصص :  </span>
+                                                    <select required ref="selected" style={{ marginTop: 5, marginRight: 5, height: 25, width: 188 }} onChange={this.jdNameClickHandeler}>
+
+                                                        <option selected>اختر الوظيفة</option>
+
+                                                    </select>
+                                                </div>
+                                                <div class="input-group">
+                                                    <span>جهة التخرج :  </span>
+                                                    <select required ref="sps" style={{ marginTop: 5, marginRight: 5, height: 25, width: 188 }} onChange={this.supboxClickHandeler}>
+
+                                                        <option selected>اختر المسمى الوظيفي</option>
+
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div className="col-lg-4">
+                                                <div class="input-group">
+                                                    <span>سنة التخرج :  </span>
+                                                    <select required style={{ marginTop: 5, marginRight: 6, height: 25, width: 188 }} onChange={this.gNameClickeHandeler}>
+                                                        <option>فني</option>
+                                                        <option>إداري</option>
+                                                        <option selected>اختر نوع التخصص</option>
+                                                    </select>
+                                                </div>
+                                                <div class="input-group">
+                                                    <span>التقدير :  </span>
+                                                    <select required style={{ marginTop: 5, marginRight: 6, height: 25, width: 188 }} onChange={this.jasiClickeHandeler}>
+                                                        <option>أخرى</option>
+                                                        <option>تعيين</option>
+                                                        <option>نقل</option>
+                                                        <option>ندب</option>
+                                                        <option>اعاره</option>
+                                                        <option>تكليف</option>
+                                                        <option>محدد المدة</option>
+                                                        <option>تدريب</option>
+                                                        <option>ترقية</option>
+                                                        <option>تثبيت</option>
+                                                        <option>نقل طبقا لتعديل تنظيمي</option>
+                                                        <option>إعادة تعيين</option>
+                                                        <option>إلغاء ندب</option>
+                                                        <option>إلغاء تكليف</option>
+                                                        <option>تسكين</option>
+                                                        <option>تعديل مسمى الوظيفة</option>
+                                                        <option>عقد مؤقت</option>
+                                                        <option>مكافئة شاملة</option>
+                                                        <option>تعديل ندب</option>
+                                                        <option>إشراف</option>
+                                                        <option>الحاق</option>
+                                                        <option>عقد إختبار</option>
+                                                        <option>إنهاء خدمة</option>
+                                                        <option>أستيعاب</option>
+                                                        <option selected>اختر ...</option>
+                                                    </select>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {this.state.addConfirmed ? <div style={{ width: "70%" }} class="alert alert-warning" role="alert"> هل انت متأكد من إضافة تدرج جديد ؟ <button onClick={this.handelInsertNewTrans} style={{ position: "absolute", left: "17%", top: "80%" }} type="button" class="btn btn-warning">تأكيد</button> <i onClick={this.closeAddConfirmHandler} style={{ fontSize: 15, position: "relative", top: "5%", left: "62%" }} class="fas fa-times-circle"></i></div> : null}
                             </div>
                         </div>
-                    </div>
-                </div>
-                </form>
-                </div> : null}
+                    </div> : null}
                 {this.state.showNamesResults ?
                     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}>
                         <select onClick={this.namesOptionshandler} style={styles} multiple name="pets" id="pet-select">
@@ -174,7 +324,7 @@ class EmpEduDeg extends React.Component {
                                 <div style={{ marginTop: 20, marginRight: 0, width: "70%" }} class="input-group">
                                     <span >الإسم : </span><input ref="name" onKeyUp={this.nameInputHandler} placeholder={this.props.empname && !this.state.edit ? this.props.empname.length >= 1 ? this.props.empname[0].NAME_ARABIC : null : null} style={{ background: "white", width: "80%", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
                                 </div>
-                                <button onClick={this.addButtonClickHandeler} style={{ position: "relative", right: 20, top: 8 }} type="button" class="btn btn-primary">إضافة تدرج جديد</button>
+                                <button onClick={this.addButtonClickHandeler} style={{ position: "relative", right: 20, top: 8 }} type="button" class="btn btn-primary">إضافة مؤهل جديد</button>
                             </div>
                         </div>
                     </div>

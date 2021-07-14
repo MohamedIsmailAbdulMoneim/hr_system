@@ -13,7 +13,7 @@ import Reactmoment from "react-moment"
 class EmpTrans extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { showDateUnlessEdit: true, showTransResult: true, add: false, edit: false, empid: null, empname: null, transdate: null, jdname: null, supboxname: null, gname: null, jasi: null, indname: null, catname: null, catid: null, supboxid: null, mainboxid: null, levels: null, showStructWAdd: false, showStruct: false, showNamesResults: false };
+        this.state = { editConfirmed: false ,addConfirmed: false, showDateUnlessEdit: true, showTransResult: true, add: false, edit: false, empid: null, empname: null, transdate: null, jdname: null, supboxname: null, gname: null, jasi: null, indname: null, catname: null, catid: null, supboxid: null, mainboxid: null, levels: null, showStructWAdd: false, showStruct: false, showNamesResults: false };
 
     }
 
@@ -21,22 +21,27 @@ class EmpTrans extends React.Component {
 
     }
 
-    handleChange = (e) => {
-        let value = Array.from(e.target.selectedOptions, option => option.value);
+    /* 
+    
+    --------------------
+    Create Methods
+    --------------------
+    
+    */
 
-        console.log(value);
+    addNewHandler = (e) =>{
+        this.setState({addConfirmed:true})
     }
 
     idInputAddHandler = (e) => {
-        this.refs.name.placeholder = ''
         this.setState({ showTransResult: false })
         this.props.getEmpName(e.target.value)
         // this.setState({ showStruct: false, showStructWAdd: false, edit: false, empid: e.target.value, showTransResult: true })
 
         let selectTags = document.getElementsByTagName('select')
-        // for (let index = 0; index < selectTags.length; index++) {
-        //     document.getElementsByTagName('select')[index].selectedIndex = document.getElementsByTagName('select')[index]        
-        // }
+        for (let index = 0; index < selectTags.length; index++) {
+            document.getElementsByTagName('select')[index].selectedIndex = document.getElementsByTagName('select')[index].options.length - 1      
+        }
         // console.log(document.getElementsByTagName('select')[0].options.length);
     }
 
@@ -44,58 +49,64 @@ class EmpTrans extends React.Component {
         this.setState({ showNamesResults: true, showTransResult: false })
         this.props.getEmpNameByName(e.target.value)
         this.refs.empid.value = ''
-        // this.setState({showTransResult: true})
-        // window.history.replaceState(null, "New Page Title", "/emptrans/goes/here")
-        // this.props.history.push(window.location.pathname + "?" + currentUrlParams.toString());
-
-    }
-
-    idInputHandler = (e) => {
-        this.refs.name.value = ''
-        this.refs.name.placeholder = ''
-        this.setState({ showTransResult: false })
-        if (e.key === 'Enter') {
-            this.props.getEmpName(e.target.value)
-            this.props.getEmpTrans(e.target.value, "")
-            this.setState({ showStruct: false, showStructWAdd: false, edit: false, empid: e.target.value, showTransResult: true })
-            window.history.replaceState(null, "New Page Title", `/emptrans/?empid=${e.target.value}`)
+        let selectTags = document.getElementsByTagName('select')
+        for (let index = 0; index < selectTags.length; index++) {
+            document.getElementsByTagName('select')[index].selectedIndex = document.getElementsByTagName('select')[index].options.length - 1      
         }
     }
 
-
-    nameInputHandler = (e) => {
-        this.setState({ showNamesResults: true, showTransResult: false })
-        this.props.getEmpNameByName(e.target.value)
-        this.refs.empid.value = ''
-        if (e.key === 'Enter') {
-            this.props.getEmpTrans("", e.target.value)
-            this.setState({ showTransResult: true })
-            // window.history.replaceState(null, "New Page Title", "/emptrans/goes/here")
-            // this.props.history.push(window.location.pathname + "?" + currentUrlParams.toString());
-        }
+    closeAddConfirmHandler = (e) =>{
+        this.setState({addConfirmed:false})
     }
 
+    /* 
+    
+    --------------------
+    Read Methods
+    --------------------
+    
+    */
 
-    namesOptionshandler = (e) => {
-        this.refs.name.value = e.target.value
-        this.props.getEmpTrans("", e.target.value)
-        this.setState({ showTransResult: true })
+    /* 
+    
+    --------------------
+    Update Methods
+    --------------------
+    
+    */
+
+
+    /* 
+    
+    --------------------
+    Delete Methods
+    --------------------
+    
+    */
+
+
+    /* 
+    
+    --------------------
+    Shared Methods
+    --------------------
+    
+    */
+
+    // End Of Methods
+
+
+
+
+
+
+
+
+
+    closeEditConfirmHandler = (e) =>{
+        this.setState({editConfirmed:false})
     }
 
-
-    closeAddSectionHandler = (e) => {
-        this.setState({ add: false, showStructWAdd: false })
-    }
-
-    closeEditSectionHandler = (e) => {
-        this.setState({ edit: false })
-        this.props.getEmpTrans(this.state.empid, "")
-    }
-
-    addButtonClickHandeler = () => {
-        this.setState({ add: true })
-        this.setState({ empid: null, empname: null, transdate: null, catname: null, jdname: null, supboxname: null, gname: null, jasi: null, indname: null, shoshowStructWAddw: false, showStruct: false, showNamesResults: false })
-    }
     handelInsertNewTrans = (e) => {
         e.preventDefault()
         const fd = {
@@ -117,13 +128,105 @@ class EmpTrans extends React.Component {
         }).then((res) => {
         })
     }
-    getNameAndCurrent = (e) => {
-        this.setState({
-            empid: e.target.value, showStruct: false, showStructWAdd: false
-        })
-        this.props.getEmpName(e.target.value)
-        this.props.getCurrentJd(e.target.value)
+
+
+    closeAddSectionHandler = (e) => {
+        this.setState({ add: false, showStructWAdd: false })
     }
+
+    /* search section handlers
+
+
+
+    Methods to handle search
+    ************************
+
+
+    */
+
+    idInputHandler = (e) => {
+        if(this.refs.searchName){
+            if(this.refs.searchName.value){
+                this.refs.searchName.value = ''
+            }
+        }
+        if(this.refs.searchName){
+            if(this.refs.searchName.placeholder){
+                this.refs.searchName.placeholder = ''
+            }
+        }
+        if(this.refs.insertNames){
+            if(this.refs.insertName.value){
+                this.refs.insertName.value = ''
+            }
+        }
+        if(this.refs.insertName){
+            if(this.refs.insertName.placeholder){
+                this.refs.insertName.placeholder = ''
+            }
+        }
+
+        this.setState({ showTransResult: false })
+        if (e.key === 'Enter') {
+            this.props.getEmpName(e.target.value)
+            this.props.getEmpTrans(e.target.value, "")
+            this.setState({ showStruct: false, showStructWAdd: false, edit: false, empid: e.target.value, showTransResult: true })
+            window.history.replaceState(null, "New Page Title", `/emptrans/?empid=${e.target.value}`)
+        }
+    }
+
+
+    nameInputHandler = (e) => {
+        this.setState({ showNamesResults: true, showTransResult: false })
+        this.props.getEmpNameByName(e.target.value)
+        this.props.getCurrentJd(e.target.value)
+        this.refs.empid.value = ''
+        if (e.key === 'Enter') {
+            this.props.getEmpTrans("", e.target.value)
+            this.setState({ showTransResult: true, empid: e.target.value })
+            // window.history.replaceState(null, "New Page Title", "/emptrans/goes/here")
+            // this.props.history.push(window.location.pathname + "?" + currentUrlParams.toString());
+        }
+    }
+
+    addNewButtonClickHandeler = () => {
+        this.setState({ add: true })
+        this.setState({ empid: null, empname: null, transdate: null, catname: null, jdname: null, supboxname: null, gname: null, jasi: null, indname: null, shoshowStructWAddw: false, showStruct: false, showNamesResults: false })
+    }
+
+    
+
+
+    namesOptionshandler = (e) => {
+        this.refs.searchName.value = e.target.value
+        this.refs.insertName.value = e.target.value
+        this.props.getEmpNameByName(e.target.value)
+
+        this.props.getEmpTrans("", e.target.value)
+        this.setState({ showTransResult: true })
+    }
+
+
+
+    /* edit section handlers
+
+    Methods to handle edit
+    ************************
+
+    */
+
+    editHandler = (e) =>{
+        this.setState({editConfirmed:true})
+    }
+
+
+    closeEditSectionHandler = (e) => {
+        this.setState({ edit: false })
+        this.props.getEmpTrans(this.state.empid, "")
+    }
+
+
+
 
     handelDateClick = (e) => {
         this.setState({ transdate: e.target.value })
@@ -213,7 +316,7 @@ class EmpTrans extends React.Component {
 
 
     render() {
-        console.log(this.props.empname && !this.state.edit ? this.props.empname.length >= 1 ? this.props.empname[0].NAME_ARABIC : null : null);
+        console.log(this.props.empNameByName ? this.props.empNameByName.length >= 1 ? this.props.empNameByName[0].EMPLOYEE_ID : null : null);
 
         const styles = {
             display: "block",
@@ -240,18 +343,17 @@ class EmpTrans extends React.Component {
                             <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }} class="panel-heading">
                                 <span style={{ position: "relative", right: 50 }}>إضافة تدرج جديد</span> {this.state.edit ? <i onClick={this.closeEditSectionHandler} style={{ fontSize: 15, position: "relative", left: 530 }} class="fas fa-times-circle"></i> : null}
                                 {this.state.add ? <i onClick={this.closeAddSectionHandler} style={{ fontSize: 15, position: "relative", top: 5, left: 380 }} class="fas fa-times-circle"></i> : null}
-                                <input style={{ position: "relative", right: 250, fontSize: 20 }} type="submit" class="btn btn-primary" onClick={this.handelInsertNewTrans} value="Add" />
-
+                                <input onClick={this.addNewHandler} style={{ position: "relative", right: 250, fontSize: 20 }} type="submit" class="btn btn-primary" value="اضف" />
                             </div>
 
                             <div style={{ display: "flex", marginTop: 5 }}>
                                 <div style={{ marginRight: 20, marginTop: 5 }}>
                                     <div className="col-lg-4">
                                         <div class="input-group">
-                                            <span >رقم الأداء :  </span><input onChange={this.idInputAddHandler} type="number" onKeyUp={this.getNameAndCurrent} style={{ background: "white", marginTop: 5, marginRight: 5, height: 25, width: 188, border: "1px solid black" }} type="text" name="first_name" />
+                                            <span >رقم الأداء :  </span><input onChange={this.idInputAddHandler} type="number"  style={{ background: "white", marginTop: 5, marginRight: 5, height: 25, width: 188, border: "1px solid black" }} type="text" name="first_name" placeholder={this.props.empNameByName ? this.props.empNameByName.length >= 1 ? this.props.empNameByName[0].EMPLOYEE_ID : null : null} />
                                         </div>
                                         <div class="input-group">
-                                            <span>الإسم :  </span><input onChange={this.nameInputAddHandler} required style={{ background: "white", marginTop: 5, marginRight: 5, height: 25, width: 188, border: "1px solid black" }} type="text" name="first_name" value={this.props.empname ? this.props.empname.length >= 1 ? this.props.empname[0].NAME_ARABIC || this.props.empNameByName ? this.props.empNameByName.length >= 1 ? this.props.empNameByName[0].NAME_ARABIC : null : null : null : null} />
+                                            <span>الإسم :  </span><input ref="insertName" onChange={this.nameInputAddHandler} required style={{ background: "white", marginTop: 5, marginRight: 5, height: 25, width: 188, border: "1px solid black" }} type="text" name="first_name" placeholder={this.props.empname ? this.props.empname.length >= 1 ? this.props.empname[0].NAME_ARABIC  : null : null || this.props.empNameByName ? this.props.empNameByName.length >= 1 ? this.props.empNameByName[0].NAME_ARABIC : null : null} />
                                         </div>
 
                                         <div class="input-group">
@@ -347,15 +449,16 @@ class EmpTrans extends React.Component {
 
                                             </select>
                                         </div>
-
                                     </div>
 
                                 </div>
                                 <div>
-
                                 </div>
                             </div>
-                        </div>
+                        </div>                                
+
+                        {this.state.addConfirmed ? <div style={{width: "70%"}} class="alert alert-warning" role="alert"> هل انت متأكد من إضافة تدرج جديد ؟ <button onClick={this.handelInsertNewTrans} style={{position: "absolute", left: "17%", top: "80%"}} type="button" class="btn btn-warning">تأكيد</button> <i onClick={this.closeAddConfirmHandler} style={{ fontSize: 15, position: "relative", top: "5%", left: "62%" }} class="fas fa-times-circle"></i></div> : null}
+
 
                     </div>
 
@@ -400,9 +503,9 @@ class EmpTrans extends React.Component {
                                     <span>رقم الأداء : </span><input ref="empid" onKeyDown={this.idInputHandler} style={{ background: "white", width: "40%", marginBottom: 5, marginRight: 5, border: "1px solid black" }} type="text" name="first_name" />
                                 </div>
                                 <div style={{ marginTop: 20, marginRight: 0, width: "70%" }} class="input-group">
-                                    <span >الإسم : </span><input ref="name" onKeyUp={this.nameInputHandler} placeholder={this.props.empname && !this.state.edit ? this.props.empname.length >= 1 ? this.props.empname[0].NAME_ARABIC : null : null} style={{ background: "white", width: "80%", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
+                                    <span >الإسم : </span><input ref="searchName" onKeyUp={this.nameInputHandler} placeholder={this.props.empname && !this.state.edit ? this.props.empname.length >= 1 ? this.props.empname[0].NAME_ARABIC : null : null} style={{ background: "white", width: "80%", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
                                 </div>
-                                <button onClick={this.addButtonClickHandeler} style={{ position: "relative", right: 20, top: 8 }} type="button" class="btn btn-primary">إضافة تدرج جديد</button>
+                                <button onClick={this.addNewButtonClickHandeler} style={{ position: "relative", right: 20, top: 8 }} type="button" class="btn btn-primary">إضافة تدرج جديد</button>
                             </div>
                         </div>
                     </div>
@@ -428,16 +531,16 @@ class EmpTrans extends React.Component {
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="panel panel-default">
+                        {this.props.empname && !this.state.edit && !this.state.add ? this.props.empname.length >= 1 ? <h3>  بيان بحركة السيد / {this.props.empname[0].NAME_ARABIC}</h3> : null : null || this.props.empNameByName ? this.props.empNameByName.length >= 1 ? ` السيد ${this.props.empNameByName[0].NAME_ARABIC} ` : null : null}
                             <div class="panel-heading" style={{ display: "flex", justifyContent: "space-evenly" }}>
-                                {this.props.empname ? this.props.empname.length >= 1 ? <h3>  بيان بحركة السيد / {this.props.empname[0].NAME_ARABIC}</h3> : null : null || this.props.empNameByName ? this.props.empNameByName.length >= 1 ? ` السيد ${this.props.empNameByName[0].NAME_ARABIC} ` : null : null}
-                                <button onClick={this.showStruct} style={{ height: "50%", position: "relative", right: "20%" }} type="button" class="btn btn-primary">عرض الهيكل الخاص بالموظف</button>
+                                <button onClick={this.showStruct} style={{ height: "15%", position: "absolute", right: "5%" }} type="button" class="btn btn-primary">موقع الموظف بالهيكل</button>
                                 {this.state.edit ? <i onClick={this.closeEditSectionHandler} style={{ fontSize: 15, position: "relative", bottom: 10, left: 550 }} class="fas fa-times-circle"></i> : null}
-                                <i style={{ fontSize: 40, position: "relative", right: "20%" }} class="fas fa-file-excel"></i>
+                                <i style={{ fontSize: 40, position: "relative", right: "48%" }} class="fas fa-file-excel"></i>
                             </div>
                             <div class="panel-body">
                                 <div class="table-responsive">
                                     <table class="table table-striped table-bordered table-hover" id="dataTables-example">
-                                        {!this.state.edit && !this.state.add && this.state.showTransResult ?
+                                        {!this.state.edit && this.state.showTransResult ?
                                             <Fragment>
                                                 <thead>
                                                     <tr>
@@ -471,7 +574,7 @@ class EmpTrans extends React.Component {
                                                             <td ref="gname">{trans.G_NAME}</td>
                                                             <td ref="jasi">{trans.JOB_ASSIGNMENT_FORM_ARABIC}</td>
                                                             <td ref="indname">{trans.INDICATOR_NAME}</td>
-                                                            <td onClick={this.handelEdit_1}><i empname={trans.NAME_ARABIC} transdate={trans.TRANS_DATE} catid={trans.CAT_ID} catname={trans.CAT_NAME} mainboxid={trans.MAIN_BOX_ID} jdname={trans.MAIN_BOX_NAME} supboxid={trans.SUP_BOX_ID} supboxname={trans.SUP_BOX_NAME} jobgroup={trans.G_NAME} onClick={this.editHandler} jasform={trans.JOB_ASSIGNMENT_FORM_ARABIC} indname={trans.INDICATOR_NAME} class="fas fa-edit"></i></td>
+                                                            <td onClick={this.handelEdit_1}><i empname={trans.NAME_ARABIC} transdate={trans.TRANS_DATE} catid={trans.CAT_ID} catname={trans.CAT_NAME} mainboxid={trans.MAIN_BOX_ID} jdname={trans.MAIN_BOX_NAME} supboxid={trans.SUP_BOX_ID} supboxname={trans.SUP_BOX_NAME} jobgroup={trans.G_NAME} jasform={trans.JOB_ASSIGNMENT_FORM_ARABIC} indname={trans.INDICATOR_NAME} class="fas fa-edit"></i></td>
                                                             <td><i class="fas fa-backspace"></i></td>
                                                         </tr>
                                                     </tbody>
@@ -582,7 +685,7 @@ class EmpTrans extends React.Component {
                                                                     <option>سابقة</option>
                                                                     <option selected>{this.state.indname}</option>
                                                                 </select></td>
-                                                            <td onClick={this.handelEdit_2}><i class="fas fa-edit"></i></td>
+                                                            <td onClick={this.editHandler}><i class="fas fa-edit"></i></td>
                                                             <td><i class="fas fa-backspace"></i></td>
                                                         </tr>
                                                     </tbody>
@@ -591,8 +694,12 @@ class EmpTrans extends React.Component {
 
                                     </table>
                                     {this.props.empTrans.length < 1 ? <h1>عفواً لا توجد بييانات</h1> : null}
+
                                 </div>
                             </div>
+                        </div>
+                        <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
+                        {this.state.editConfirmed ? <div style={{width: "100%"}} class="alert alert-warning" role="alert"> هل انت متأكد من تعديل هذا التدرج  ؟ <button onClick={this.handelEdit_2} style={{position: "absolute", left: "3%", top: "78%"}} type="button" class="btn btn-warning">تأكيد</button> <i onClick={this.closeEditConfirmHandler} style={{ fontSize: 15, position: "relative", top: "7%", left: "56%" }} class="fas fa-times-circle"></i></div> : null}
                         </div>
                     </div>
                 </div>

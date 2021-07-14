@@ -55,7 +55,6 @@ function App() {
 
 
           </Switch>
-          <Chart />
 
         </div>
       </Router>

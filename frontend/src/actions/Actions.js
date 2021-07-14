@@ -20,7 +20,8 @@ import {
   fetchavailsupbox,
   fetchupjd,
   fetchEmpDetails,
-  fetchDownJd
+  fetchDownJd,
+  fetchqn
 } from "../actions/ActionTypes";
 import axios from "axios";
 
@@ -245,7 +246,6 @@ export const getAvailSupBox = (catname, jdname) => (dispatch) => {
 }
 
 export const getUpJd = (len, supboxname) => (dispatch) => {
-  console.log("ddddddddddd");
   axios.get(`http://localhost:5000/getUpJd/${len}/${supboxname}`).then(res => {
     dispatch({
       type: fetchupjd,
@@ -255,3 +255,13 @@ export const getUpJd = (len, supboxname) => (dispatch) => {
 
 }
 
+
+export const getQn = () => (dispatch) => {
+  axios.get(`http://localhost:5000/getqn`).then(res => {
+    dispatch({
+      type: fetchqn,
+      payload: res.data
+    })
+  })
+  
+}
