@@ -56,7 +56,34 @@ function getEmpNameByName(req, res) {
             res.send(details);
         }
     })
+}
 
+function getQulSpeciality(req,res){
+    let specarabic = req.query.specarabic
+    console.log(specarabic);
+    let query = `SELECT SPECIALITY_ARABIC FROM dgree_speciality WHERE SPECIALITY_ARABIC LIKE "%${specarabic}%" `
+    db.query(query, (err, details) => {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log(details);
+            res.send(details);
+        }
+    })
+}
+
+function getUneSchool(req,res){
+    let uneschool = req.query.uneschool
+    console.log(uneschool);
+    let query = `SELECT UNIVERSITY_SCHOOL_ARABIC FROM university_school WHERE UNIVERSITY_SCHOOL_ARABIC LIKE "%${uneschool}%" `
+    db.query(query, (err, details) => {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log(details);
+            res.send(details);
+        }
+    })
 }
 
 // function getMainCodesByCate(req, res) {
@@ -81,6 +108,9 @@ router
     .get('/category', getCates)
     .get('/empnamebyid/:empid', getEmpNameById)
     .get('/empnamebyName/:empname', getEmpNameByName)
+    .get('/specarabic',getQulSpeciality)
+    .get('/uneschool',getUneSchool)
+
 
 
 

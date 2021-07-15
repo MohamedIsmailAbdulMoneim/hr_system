@@ -602,6 +602,7 @@ function postnewtrans(req, res) {
         if (err) {
             console.log(err);
         } else {
+            console.log(details);
             res.send(details);
         }
     })

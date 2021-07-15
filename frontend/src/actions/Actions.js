@@ -21,7 +21,9 @@ import {
   fetchupjd,
   fetchEmpDetails,
   fetchDownJd,
-  fetchqn
+  fetchqn,
+  fetchuneschool,
+  fetchspecarabic
 } from "../actions/ActionTypes";
 import axios from "axios";
 
@@ -264,4 +266,22 @@ export const getQn = () => (dispatch) => {
     })
   })
   
+}
+
+export const getQulSpeciality = (specarabic) => (dispatch) =>{
+  axios.get(`http://localhost:5000/specarabic/?specarabic=${specarabic}`).then(res => {
+    dispatch({
+      type: fetchspecarabic,
+      payload: res.data
+    })
+  })
+}
+
+export const getUneSchool = (uneschool) => (dispatch) => {
+  axios.get(`http://localhost:5000/uneschool/?uneschool=${uneschool}`).then(res => {
+    dispatch({
+      type: fetchuneschool,
+      payload: res.data
+    })
+  })
 }

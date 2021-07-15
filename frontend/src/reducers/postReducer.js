@@ -1,6 +1,6 @@
 import {
   fetchCates,
-  fetchJobDgreeCodes, fetchMainCodes, fetchJobByCat, fetchSupBoxNamesandmanager, fetchJobGovern, fetchJobStation, fetchEmpStationAndGovern, fetchDeps, fetchEmpByDeps, fetchEmpName, fetchEmpAppraisal, fetchEmpTrans, fetchEmpEdu, fetchEmpNameByName, fetchCurrentjd, fetchavailjd, fetchavailsupbox, fetchupjd, fetchEmpDetails, fetchDownJd,fetchEmpFamily,fetchqn
+  fetchJobDgreeCodes, fetchMainCodes, fetchJobByCat, fetchSupBoxNamesandmanager, fetchJobGovern, fetchJobStation, fetchEmpStationAndGovern, fetchDeps, fetchEmpByDeps, fetchEmpName, fetchEmpAppraisal, fetchEmpTrans, fetchEmpEdu, fetchEmpNameByName, fetchCurrentjd, fetchavailjd, fetchavailsupbox, fetchupjd, fetchEmpDetails, fetchDownJd,fetchEmpFamily,fetchqn, fetchspecarabic, fetchuneschool
 
 } from "../actions/ActionTypes";
 
@@ -26,7 +26,10 @@ const initialState = {
   empdetails: [],
   downJd: [],
   empNameByName: [],
-  qn : []
+  qn : [],
+  specarabic: [],
+  uneshcool: []
+  
 
 };
 
@@ -162,6 +165,24 @@ export default function (state = initialState, action) {
           ...state,
           qn: action.payload
         }
+      case fetchspecarabic:
+          return {
+            ...state,
+            specarabic: action.payload
+          }
+
+      case fetchuneschool:
+          return {
+            ...state,
+            uneshcool: action.payload
+          }
+
+
+
+
+            
+            
+        
 
     default:
       return state;

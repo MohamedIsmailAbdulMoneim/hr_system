@@ -21,4 +21,5 @@ export const fetchEmpDetails = "FETCH-EMP-DETAILS"
 export const fetchDownJd = "FETCH-DOWN-JD"
 export const fetchEmpFamily = "FETCH-EMP-FAMILY"
 export const fetchqn = "FETCH-Q-N"
-
+export const fetchuneschool = "FETCH-UNE-SCHOOL"
+export const fetchspecarabic = "FETCH-SPEC-ARABIC"
