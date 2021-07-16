@@ -13,7 +13,7 @@ let obj = {columnsNums : 5, columnsNames: {a1: "id", a2:"name",a3:"dob"},columns
 async function exTest(obj){
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("My Sheet");
-    
+    const nothing;
     
   
   worksheet.columns = [
