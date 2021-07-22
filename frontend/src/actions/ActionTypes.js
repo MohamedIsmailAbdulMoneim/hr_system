@@ -23,3 +23,19 @@ export const fetchEmpFamily = "FETCH-EMP-FAMILY"
 export const fetchqn = "FETCH-Q-N"
 export const fetchuneschool = "FETCH-UNE-SCHOOL"
 export const fetchspecarabic = "FETCH-SPEC-ARABIC"
+export const GET_ERRORS = "GET-ERRORS"
+export const CLEAR_ERRORS = "CLEAR-ERRORS"
+export const USER_LOADED = "USER-LOADED"
+export const USER_LOADING = "USER-LOADING"
+export const AUTH_ERROR = "AUTH-ERROR"
+export const LOGIN_SUCCESS = "LOGIN-SUCCESS"
+export const LOGIN_FAIL = "LOGIN-FAIL"
+export const LOGOUT_SUCCESS = "LOGOUT-SUCCESS"
+export const REGISTER_SUCCESS = "REGISTER-SUCCESS"
+export const REGISTER_FAIL = "REGISTER-FAIL"
+
+
+
+
+
+

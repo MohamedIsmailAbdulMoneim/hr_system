@@ -5,7 +5,11 @@
 */
 
 body {
+  direction: rtl;
   background-color: #f8f8f8;
+  font-family : Markazi Text ,serif;
+  font-weight: 700px;
+  font-size: 12pt
 }
 
 #wrapper {
@@ -368,4 +372,29 @@ ul.pull-left {
 }
 .bar:after {
   right:50%; 
+}
+
+div.form-group input {
+height: 30px;
+}
+div div.data-wrapper {
+  margin-top: -15px;
+}
+
+.form-group label {
+  font-size: 11pt;
+  font-weight: 500;
+}
+
+ul .header-buttons{
+  border: #3d8b3d 1px solid;
+  border-radius: 4px;
+  color: #c5c5c5;
+  background: #062f07;
+  box-shadow: 0 10px 6px -6px #777;
+  width: 90px;
+}
+
+.header-buttons a {
+  color: yellow;
 }

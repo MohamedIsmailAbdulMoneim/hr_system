@@ -1,7 +1,10 @@
-const Sequelize = require("sequelize");
-const sequelize = require("../database/connection");
-// const sequelize = require("../database/connection");
-// const sequelize = require("../database/connection");
+const { Sequelize } = require('sequelize');
+
+
+const sequelize = new Sequelize('hr_database', 'root', '', {
+    host: 'localhost',
+    dialect: 'mysql'
+});
 
 module.exports = sequelize.define("mezo", {
     id: {
@@ -9,7 +12,7 @@ module.exports = sequelize.define("mezo", {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true
-},
-content: Sequelize.STRING(300)
+    },
+    content: Sequelize.STRING(300)
 });
 

@@ -153,7 +153,7 @@ class EmpTrans extends React.Component {
         }
         if (this.refs.searchName) {
             if (this.refs.searchName.placeholder) {
-                this.refs.searchName.placeholder = ''
+                this.refs.searchName.placeholder = null
             }
         }
         if (this.refs.insertNames) {
@@ -172,7 +172,6 @@ class EmpTrans extends React.Component {
             this.props.getEmpName(e.target.value)
             this.props.getEmpTrans(e.target.value, "")
             this.setState({ showStruct: false, showStructWAdd: false, edit: false, empid: e.target.value, showTransResult: true })
-            window.history.replaceState(null, "New Page Title", `/emptrans/?empid=${e.target.value}`)
         }
     }
 
@@ -182,6 +181,11 @@ class EmpTrans extends React.Component {
         this.props.getEmpNameByName(e.target.value)
         this.props.getCurrentJd(e.target.value)
         this.refs.empid.value = ''
+        if (this.refs.searchName) {
+            if (this.refs.searchName.placeholder) {
+                this.refs.searchName.placeholder = ''
+            }
+        }
         if (e.key === 'Enter') {
             this.props.getEmpTrans("", e.target.value)
             this.setState({ showTransResult: true, empid: e.target.value })
@@ -317,7 +321,7 @@ class EmpTrans extends React.Component {
 
 
     render() {
-        console.log(this.props.empNameByName ? this.props.empNameByName.length >= 1 ? this.props.empNameByName[0].EMPLOYEE_ID : null : null);
+        console.log(this.refs.searchName ? this.refs.searchName.placeholder : null);
 
         const styles = {
             display: "block",
@@ -505,7 +509,7 @@ class EmpTrans extends React.Component {
                                     <span>رقم الأداء : </span><input ref="empid" onKeyDown={this.idInputHandler} style={{ background: "white", width: "40%", marginBottom: 5, marginRight: 5, border: "1px solid black" }} type="text" name="first_name" />
                                 </div>
                                 <div style={{ marginTop: 20, marginRight: 0, width: "70%" }} class="input-group">
-                                    <span >الإسم : </span><input ref="searchName" onKeyUp={this.nameInputHandler} placeholder={this.props.empname && !this.state.edit ? this.props.empname.length >= 1 ? this.props.empname[0].NAME_ARABIC : null : null} style={{ background: "white", width: "80%", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
+                                    <span >الإسم : </span><input ref="searchName" onKeyUp={this.nameInputHandler} placeholder={this.props.empname && !this.state.edit ? this.props.empname.length >= 1 ? this.props.empname[0].NAME_ARABIC : "null" : "null"} style={{ background: "white", width: "80%", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
                                 </div>
                                 <button onClick={this.addNewButtonClickHandeler} style={{ position: "relative", right: 20, top: 8 }} type="button" class="btn btn-primary">إضافة تدرج جديد</button>
                             </div>
@@ -533,7 +537,7 @@ class EmpTrans extends React.Component {
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="panel panel-default">
-                            {this.props.empname && !this.state.edit && !this.state.add ? this.props.empname.length >= 1 ? <h3>  بيان بحركة السيد / {this.props.empname[0].NAME_ARABIC}</h3> : null : null || this.props.empNameByName ? this.props.empNameByName.length >= 1 ? ` السيد ${this.props.empNameByName[0].NAME_ARABIC} ` : null : null}
+                            {this.props.empname && !this.state.edit && !this.state.add ? this.props.empname.length >= 1 ? <h3>  بيان بحركة السيد / {this.props.empname[0].NAME_ARABIC}</h3> : null : null || this.props.empNameByName ? this.props.empNameByName.length >= 1 ? `  ${this.props.empNameByName[0].NAME_ARABIC} ` : null : null}
                             <div class="panel-heading" style={{ display: "flex", justifyContent: "space-evenly" }}>
                                 <button onClick={this.showStruct} style={{ height: "15%", position: "absolute", right: "5%" }} type="button" class="btn btn-primary">موقع الموظف بالهيكل</button>
                                 {this.state.edit ? <i onClick={this.closeEditSectionHandler} style={{ fontSize: 15, position: "relative", bottom: 10, left: 550 }} class="fas fa-times-circle"></i> : null}

@@ -49,8 +49,8 @@ export const gitDownJd = () => (dispatch) => {
 
 }
 
-export const getEmpDetails = (empid) => (dispatch) => {
-  axios.get(`http://localhost:5000/getempdetails/${empid}`).then((res) => {
+export const getEmpDetails = (empid, empname) => (dispatch) => {
+  axios.get(`http://localhost:5000/getempdetails/?empid=${empid}&empname=${empname}`).then((res) => {
     dispatch({
       type: fetchEmpDetails,
       payload: { data: res.data },
@@ -265,10 +265,10 @@ export const getQn = () => (dispatch) => {
       payload: res.data
     })
   })
-  
+
 }
 
-export const getQulSpeciality = (specarabic) => (dispatch) =>{
+export const getQulSpeciality = (specarabic) => (dispatch) => {
   axios.get(`http://localhost:5000/specarabic/?specarabic=${specarabic}`).then(res => {
     dispatch({
       type: fetchspecarabic,

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Bar, Line, Pie } from 'react-chartjs-2';
 import { connect } from "react-redux";
 import {
-    getEmpTrans, getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox, getUpJd, gitDownJd,getQn
+    getEmpTrans, getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox, getUpJd, gitDownJd, getQn
 } from "../../actions/Actions";
 
 
@@ -13,15 +13,15 @@ class Chart extends Component {
     render() {
         console.log(this.props.qn);
         return (
-                <div style={{width :"30%"}}>
+            <div style={{ width: "30%" }}>
                 <Pie
                     data={{
                         labels: ['دراسات عليا', 'مؤهل عال', 'مؤهل فوق المتوسط', 'مؤهل متوسط', 'إعدادية', 'ابتدائية', 'محو أمية', 'بدونة مؤهل'],
-                        datasets:[
+                        datasets: [
                             {
                                 label: 'asdasdasd',
                                 data: [
-                                    this.props.qn.length ? this.props.qn[0][0].postgraduate:null , this.props.qn.length ? this.props.qn[1][0].academicqualifications : null,this.props.qn.length ? this.props.qn[2][0].aboveaverage : null,this.props.qn.length ? this.props.qn[3][0].averagequalification : null,this.props.qn.length ? this.props.qn[4][0].preparatory : null,this.props.qn.length ? this.props.qn[5][0].primarydg : null,this.props.qn.length ? this.props.qn[6][0].literacy: null,this.props.qn.length ? this.props.qn[7][0].without : null
+                                    this.props.qn.length ? this.props.qn[0][0].postgraduate : null, this.props.qn.length ? this.props.qn[1][0].academicqualifications : null, this.props.qn.length ? this.props.qn[2][0].aboveaverage : null, this.props.qn.length ? this.props.qn[3][0].averagequalification : null, this.props.qn.length ? this.props.qn[4][0].preparatory : null, this.props.qn.length ? this.props.qn[5][0].primarydg : null, this.props.qn.length ? this.props.qn[6][0].literacy : null, this.props.qn.length ? this.props.qn[7][0].without : null
                                 ],
                                 backgroundColor: [
                                     '#d1830e',
@@ -36,19 +36,22 @@ class Chart extends Component {
                             }
                         ]
                     }}
-                    options={{maintainAspectRatio: false ,legend: {
-                        display: false
-                    },tooltips: {
-                        callbacks: {
-                           label: function(tooltipItem) {
-                                  return tooltipItem.yLabel;
-                           }
-                        }}}}
+                    options={{
+                        maintainAspectRatio: false, legend: {
+                            display: false
+                        }, tooltips: {
+                            callbacks: {
+                                label: function (tooltipItem) {
+                                    return tooltipItem.yLabel;
+                                }
+                            }
+                        }
+                    }}
 
-                    width = {400}
+                    width={400}
                     height={400}
-                /> 
-                </div>
+                />
+            </div>
 
         )
     }
@@ -65,10 +68,10 @@ const mapStateToProps = (state) => {
         empavailsup: state.posts.empavailsup,
         upjd: state.posts.upjd,
         downJd: state.posts.downJd,
-        qn : state.posts.qn
+        qn: state.posts.qn
     };
 };
 
 export default connect(mapStateToProps, {
-    getEmpTrans, getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox, getUpJd, gitDownJd,getQn
+    getEmpTrans, getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox, getUpJd, gitDownJd, getQn
 })(Chart);

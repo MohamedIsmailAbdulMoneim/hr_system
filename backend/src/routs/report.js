@@ -18,56 +18,111 @@ LIMIT 1`
 
 
 function getEmpDetails(req, res) {
-    let empid = req.params.empid
-    let query = `SELECT
-    *,
-    dateofj.TRANS_DATE,
-    (SELECT CAT_NAME FROM a_category WHERE CAT_ID = emp_box.CAT_ID) AS cat_name,
+    let empid = req.query.empid
+    let empname = req.query.empname
+    let query;
 
-    (
-    SELECT
-        JOB_ASSIGNMENT_FORM_ARABIC
-    FROM
-        job_assignment_form
-    WHERE
-        job_assignment_form.JOB_ASSIGNMENT_FORM = emp_box.JOB_ASSIGNMENT_FORM
-) AS WOG
-FROM
-    employee
-JOIN(
-    SELECT
-        a_sup_box.sup_box_id,
-        a_sup_box.SUP_BOX_NAME,
-        a_job_trans.NATIONAL_ID_CARD_NO,
-        a_job_trans.JOB_ASSIGNMENT_FORM,
-        a_main_box.CAT_ID
-    FROM
-        a_sup_box
-    JOIN a_job_trans
-    JOIN a_main_box
-    ON a_job_trans.SUP_BOX_ID = a_sup_box.SUP_BOX_ID AND a_sup_box.MAIN_BOX_ID = a_main_box.MAIN_BOX_ID
-    WHERE
-        a_job_trans.INDICATOR = 2
-) AS emp_box
-JOIN(
-    SELECT
-        NATIONAL_ID_CARD_NO,
-        TRANS_DATE
-    FROM
-        a_job_trans
-    WHERE
-        a_job_trans.JOB_ASSIGNMENT_FORM = 1
-) AS dateofj
-JOIN employee_appraisal ON employee.NATIONAL_ID_CARD_NO = dateofj.NATIONAL_ID_CARD_NO AND employee.NATIONAL_ID_CARD_NO = emp_box.NATIONAL_ID_CARD_NO AND employee.NATIONAL_ID_CARD_NO = employee_appraisal.NATIONAL_ID_CARD_NO
-WHERE
-    employee.NATIONAL_ID_CARD_NO =(
-    SELECT
-        NATIONAL_ID_CARD_NO
+    if (!empid || empid == "undefiened") {
+        query = `SELECT
+        *,
+        dateofj.TRANS_DATE,
+        (SELECT CAT_NAME FROM a_category WHERE CAT_ID = emp_box.CAT_ID) AS cat_name,
+    
+        (
+        SELECT
+            JOB_ASSIGNMENT_FORM_ARABIC
+        FROM
+            job_assignment_form
+        WHERE
+            job_assignment_form.JOB_ASSIGNMENT_FORM = emp_box.JOB_ASSIGNMENT_FORM
+    ) AS WOG
     FROM
         employee
+    JOIN(
+        SELECT
+            a_sup_box.sup_box_id,
+            a_sup_box.SUP_BOX_NAME,
+            a_job_trans.NATIONAL_ID_CARD_NO,
+            a_job_trans.JOB_ASSIGNMENT_FORM,
+            a_main_box.CAT_ID
+        FROM
+            a_sup_box
+        JOIN a_job_trans
+        JOIN a_main_box
+        ON a_job_trans.SUP_BOX_ID = a_sup_box.SUP_BOX_ID AND a_sup_box.MAIN_BOX_ID = a_main_box.MAIN_BOX_ID
+        WHERE
+            a_job_trans.INDICATOR = 2
+    ) AS emp_box
+    JOIN(
+        SELECT
+            NATIONAL_ID_CARD_NO,
+            TRANS_DATE
+        FROM
+            a_job_trans
+        WHERE
+            a_job_trans.JOB_ASSIGNMENT_FORM = 1
+    ) AS dateofj
+    JOIN employee_appraisal ON employee.NATIONAL_ID_CARD_NO = dateofj.NATIONAL_ID_CARD_NO AND employee.NATIONAL_ID_CARD_NO = emp_box.NATIONAL_ID_CARD_NO AND employee.NATIONAL_ID_CARD_NO = employee_appraisal.NATIONAL_ID_CARD_NO
     WHERE
-        EMPLOYEE_ID = ${empid}
-) AND APPRAISAL_DATE = 2020`
+        employee.NATIONAL_ID_CARD_NO =(
+        SELECT
+            NATIONAL_ID_CARD_NO
+        FROM
+            employee
+        WHERE
+            NAME_ARABIC = "${empname}"
+    ) AND APPRAISAL_DATE = 2020`
+    } else if (!empname || empname == "undefined") {
+        query = `SELECT
+        *,
+        dateofj.TRANS_DATE,
+        (SELECT CAT_NAME FROM a_category WHERE CAT_ID = emp_box.CAT_ID) AS cat_name,
+    
+        (
+        SELECT
+            JOB_ASSIGNMENT_FORM_ARABIC
+        FROM
+            job_assignment_form
+        WHERE
+            job_assignment_form.JOB_ASSIGNMENT_FORM = emp_box.JOB_ASSIGNMENT_FORM
+    ) AS WOG
+    FROM
+        employee
+    JOIN(
+        SELECT
+            a_sup_box.sup_box_id,
+            a_sup_box.SUP_BOX_NAME,
+            a_job_trans.NATIONAL_ID_CARD_NO,
+            a_job_trans.JOB_ASSIGNMENT_FORM,
+            a_main_box.CAT_ID
+        FROM
+            a_sup_box
+        JOIN a_job_trans
+        JOIN a_main_box
+        ON a_job_trans.SUP_BOX_ID = a_sup_box.SUP_BOX_ID AND a_sup_box.MAIN_BOX_ID = a_main_box.MAIN_BOX_ID
+        WHERE
+            a_job_trans.INDICATOR = 2
+    ) AS emp_box
+    JOIN(
+        SELECT
+            NATIONAL_ID_CARD_NO,
+            TRANS_DATE
+        FROM
+            a_job_trans
+        WHERE
+            a_job_trans.JOB_ASSIGNMENT_FORM = 1
+    ) AS dateofj
+    JOIN employee_appraisal ON employee.NATIONAL_ID_CARD_NO = dateofj.NATIONAL_ID_CARD_NO AND employee.NATIONAL_ID_CARD_NO = emp_box.NATIONAL_ID_CARD_NO AND employee.NATIONAL_ID_CARD_NO = employee_appraisal.NATIONAL_ID_CARD_NO
+    WHERE
+        employee.NATIONAL_ID_CARD_NO =(
+        SELECT
+            NATIONAL_ID_CARD_NO
+        FROM
+            employee
+        WHERE
+            EMPLOYEE_ID = ${empid}
+    ) AND APPRAISAL_DATE = 2020`
+    }
     db.query(query, (err, details) => {
         if (err) {
         } else {
@@ -147,7 +202,7 @@ function getEmpStationAndGovern(req, res) {
 }
 
 
-function getqn  (req,res){
+function getqn(req, res) {
     let query = `
     SELECT COUNT(DEGREE_LEVEL_ID) AS postgraduate FROM dgree_level JOIN( SELECT education_degree.DEGREE_LEVEL, education_degree.DEGREE FROM education_degree JOIN employee_education_degree ON education_degree.DEGREE = employee_education_degree.DEGREE ) AS deglevel ON deglevel.DEGREE_LEVEL = dgree_level.DEGREE_LEVEL_ID WHERE dgree_level.DEGREE_LEVEL_ID = 1;
     SELECT COUNT(DEGREE_LEVEL_ID) AS academicqualifications FROM dgree_level JOIN( SELECT education_degree.DEGREE_LEVEL, education_degree.DEGREE FROM education_degree JOIN employee_education_degree ON education_degree.DEGREE = employee_education_degree.DEGREE ) AS deglevel ON deglevel.DEGREE_LEVEL = dgree_level.DEGREE_LEVEL_ID WHERE dgree_level.DEGREE_LEVEL_ID = 2;
@@ -156,7 +211,7 @@ function getqn  (req,res){
     SELECT COUNT(DEGREE_LEVEL_ID) AS preparatory FROM dgree_level JOIN( SELECT education_degree.DEGREE_LEVEL, education_degree.DEGREE FROM education_degree JOIN employee_education_degree ON education_degree.DEGREE = employee_education_degree.DEGREE ) AS deglevel ON deglevel.DEGREE_LEVEL = dgree_level.DEGREE_LEVEL_ID WHERE dgree_level.DEGREE_LEVEL_ID = 5;
     SELECT COUNT(DEGREE_LEVEL_ID) AS primarydg FROM dgree_level JOIN( SELECT education_degree.DEGREE_LEVEL, education_degree.DEGREE FROM education_degree JOIN employee_education_degree ON education_degree.DEGREE = employee_education_degree.DEGREE ) AS deglevel ON deglevel.DEGREE_LEVEL = dgree_level.DEGREE_LEVEL_ID WHERE dgree_level.DEGREE_LEVEL_ID = 6;
     SELECT COUNT(DEGREE_LEVEL_ID) AS literacy  FROM dgree_level JOIN( SELECT education_degree.DEGREE_LEVEL, education_degree.DEGREE FROM education_degree JOIN employee_education_degree ON education_degree.DEGREE = employee_education_degree.DEGREE ) AS deglevel ON deglevel.DEGREE_LEVEL = dgree_level.DEGREE_LEVEL_ID WHERE dgree_level.DEGREE_LEVEL_ID = 7;
-    SELECT COUNT(DEGREE_LEVEL_ID) AS without  FROM dgree_level JOIN( SELECT education_degree.DEGREE_LEVEL, education_degree.DEGREE FROM education_degree JOIN employee_education_degree ON education_degree.DEGREE = employee_education_degree.DEGREE ) AS deglevel ON deglevel.DEGREE_LEVEL = dgree_level.DEGREE_LEVEL_ID WHERE dgree_level.DEGREE_LEVEL_ID = 8;  
+    SELECT COUNT(DEGREE_LEVEL_ID) AS without FROM dgree_level JOIN( SELECT education_degree.DEGREE_LEVEL, education_degree.DEGREE FROM education_degree JOIN employee_education_degree ON education_degree.DEGREE = employee_education_degree.DEGREE ) AS deglevel ON deglevel.DEGREE_LEVEL = dgree_level.DEGREE_LEVEL_ID WHERE dgree_level.DEGREE_LEVEL_ID = 8;  
     `
     db.query(query, (err, details) => {
         if (err) {
@@ -166,7 +221,7 @@ function getqn  (req,res){
             res.send(details)
         }
     })
-    
+
 }
 
 
@@ -177,7 +232,7 @@ router
     .get('/getjobgovern', getjobgovern)
     .get('/getjobstation/:govern', getjobstation)
     .get('/getempstationandgovern/:govern/:station', getEmpStationAndGovern)
-    .get('/getempdetails/:empid', getEmpDetails)
+    .get('/getempdetails', getEmpDetails)
     .get('/getqn', getqn)
 
 
