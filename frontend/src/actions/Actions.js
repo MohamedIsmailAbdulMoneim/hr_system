@@ -178,11 +178,10 @@ export const getEmpNameByName = (val) => (dispatch) => {
 
 
 
-export const getEmpAppraisal = (empid, appraisal, year) => (dispatch) => {
+export const getEmpAppraisal = (empid, empname, appraisal, year) => (dispatch) => {
   console.log(empid, appraisal, year);
   // axios.get(`http://localhost:5000/getempappraisal/${empid}/${appraisal}/${year}`).then(res => {
-  axios.get(`http://localhost:5000/getempappraisal/?empid=${empid}&appraisal=${appraisal}&year=${year}`).then(res => {
-
+  axios.get(`http://localhost:5000/empappraisal/?empid=${empid}&empname=${empname}&appraisal=${appraisal}&year=${year}`).then(res => {
     dispatch({
       type: fetchEmpAppraisal,
       payload: res.data

@@ -61,7 +61,6 @@ export const register = ({ uname, pw }) => (dispatch) => {
 export const tokenConfig = getState => {
     const token = getState().auth.token
 
-    console.log(token);
 
     const config = {
         headers: {

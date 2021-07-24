@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import {
-    getJobDgreeCodes, getMainCodes, getJobGovern, getDeps, getEmpName,getCates
+    getJobDgreeCodes, getMainCodes, getJobGovern, getDeps, getEmpName, getCates
 } from "../actions/Actions";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
@@ -11,7 +11,7 @@ class Sidebar extends React.Component {
         super(props);
         this.state = { mainName: null }
     }
-    componentDidMount(){
+    componentDidMount() {
         this.props.getCates()
     }
 
@@ -28,16 +28,6 @@ class Sidebar extends React.Component {
             <div className="navbar-default sidebar" role="navigation">
                 <div className="sidebar-nav navbar-collapse">
                     <ul className="nav" id="side-menu">
-                        <li className="sidebar-search">
-                            <div className="input-group custom-search-form">
-                                <input type="text" className="form-control" placeholder="Search..." />
-                                <span className="input-group-btn">
-                                    <button className="btn btn-default" type="button">
-                                        <i className="fa fa-search"></i>
-                                    </button>
-                                </span>
-                            </div>
-                        </li>
                         <li>
                             <a onClick={this.handle} className="active" href="/"><i className="fa fa-dashboard fa-fw"></i> Dashboard</a>
                         </li>
@@ -173,9 +163,9 @@ class Sidebar extends React.Component {
                                     <a href="morris.html">جزاءات</a>
                                 </li> */}
                                 <Link to={`/empfamily`}>
-                                <li>
-                                    <a href="/empfamily">البيانات العائلية</a>
-                                </li>
+                                    <li>
+                                        <a href="/empfamily">البيانات العائلية</a>
+                                    </li>
                                 </Link>
                                 <li>
                                     <a href="/orgstructure">الهيكل</a>

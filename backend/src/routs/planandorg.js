@@ -127,7 +127,7 @@ function getJobDgByCat(req, res) {
 function getSupBoxNames(req, res) {
     const jdid = req.params.jdid
     const catid = req.params.catid
-    const query = `SELECT * FROM emp_sup_box WHERE MAIN_BOX_ID IN (SELECT MAIN_BOX_ID FROM A_MAIN_BOX WHERE J_D_ID = ${jdid} AND CAT_ID = ${catid})`
+    const query = `SELECT * FROM a_sup_box WHERE MAIN_BOX_ID IN (SELECT MAIN_BOX_ID FROM A_MAIN_BOX WHERE J_D_ID = ${jdid} AND CAT_ID = ${catid})`
     db.query(query, (err, details) => {
         if (err) {
         } else {
@@ -152,132 +152,26 @@ function getMaincode(req, res) {
 function getsupboxmangers(req, res) {
     const mainid = req.params.mainid
     let query = `SELECT a_sup_box.SUP_BOX_NAME AS emp_box_name, emp.SUP_BOX_NAME AS manager_box_name,emp.SUP_BOX_ID AS manager_box_id, a_sup_box.SUP_BOX_ID AS emp_box_id, a_sup_box.SUP_BOX_NAME AS emp_box_name , latest.NAME_ARABIC FROM a_sup_box JOIN( SELECT * FROM a_sup_box ) AS emp JOIN( SELECT employee.NATIONAL_ID_CARD_NO, a_job_trans.TRANS_DATE, a_job_trans.SUP_BOX_ID, employee.NAME_ARABIC FROM a_job_trans JOIN employee ON a_job_trans.NATIONAL_ID_CARD_NO = employee.NATIONAL_ID_CARD_NO WHERE a_job_trans.INDICATOR = 2 ) AS latest ON a_sup_box.SUP_BOX_ID_P = emp.SUP_BOX_ID AND latest.SUP_BOX_ID = a_sup_box.SUP_BOX_ID WHERE a_sup_box.MAIN_BOX_ID = ${mainid}`
+    console.log('hit');
     db.query(query, (err, details) => {
         if (err) {
+            console.log(err);
         } else {
+            console.log(details);
             res.send(details);
         }
     })
 }
 
-// function getEmpApprails(req, res) {
-//     let query;
-//     const empid = req.query.empid
-//     const appraisal = req.query.appraisal
-//     const year = req.query.year
-//     if (!empid && (!appraisal||appraisal === "اختر التقييم")) {
-//         db.query(`SELECT employee.NAME_ARABIC, employee_appraisal.APPRAISAL_DATE, appraisal.APPRAISAL_ARABIC,
-//         employee.EMPLOYEE_ID, employee_appraisal.NATIONAL_ID_CARD_NO
-//         FROM
-//         employee_appraisal
-//         JOIN employee ON employee.NATIONAL_ID_CARD_NO = employee_appraisal.NATIONAL_ID_CARD_NO
-//         JOIN APPRAISAL ON APPRAISAL.APPRAISAL = employee_appraisal.APPRAISAL
-//         WHERE
-//         employee_appraisal.APPRAISAL_DATE = ${year}
-//         ORDER BY
-//         appraisal.APPRAISAL_ARABIC`, (err, details) => {
-//             if (err) {
-//             } else {
-//                 res.send(details);
-//             }
-//         })
-//     } else if ((!appraisal|| appraisal === "اختر التقييم") && (!year || year === "اختر السنة")) {
-//         db.query(`SELECT employee.NAME_ARABIC, employee_appraisal.APPRAISAL_DATE ,appraisal.APPRAISAL_ARABIC , employee.EMPLOYEE_ID, employee_appraisal.NATIONAL_ID_CARD_NO FROM employee_appraisal JOIN employee ON employee.NATIONAL_ID_CARD_NO = employee_appraisal.NATIONAL_ID_CARD_NO JOIN APPRAISAL ON APPRAISAL.APPRAISAL = employee_appraisal.APPRAISAL WHERE employee.EMPLOYEE_ID = ${empid} ORDER BY employee_appraisal.APPRAISAL_DATE`, (err, details) => {
-//             if (err) {
-//             } else {
-//                 res.send(details);
-//             }
-//         })
-//     }
-//     else if (!empid && (year === "null" || year === "اختر السنة")) {
-//         db.query(db.query(`SELECT
-//         employee.NAME_ARABIC,
-//         employee_appraisal.APPRAISAL_DATE,
-//         appraisal.APPRAISAL_ARABIC,
-//         employee.EMPLOYEE_ID,
-//         employee_appraisal.NATIONAL_ID_CARD_NO
-//     FROM
-//         employee_appraisal
-//     JOIN employee ON employee.NATIONAL_ID_CARD_NO = employee_appraisal.NATIONAL_ID_CARD_NO
-//     JOIN APPRAISAL ON APPRAISAL.APPRAISAL = employee_appraisal.APPRAISAL
-//     WHERE
-//     appraisal.APPRAISAL_ARABIC = "${appraisal}"
-//     ORDER BY
-//                 employee_appraisal.APPRAISAL_DATE`, (err, details) => {
-//             if (err) {
-//             } else {
-//                 res.send(details);
-//             }
-//         }))
-//     } else if (!empid) {
-//         db.query(`SELECT employee.NAME_ARABIC,
-//         employee_appraisal.APPRAISAL_DATE,
-//         appraisal.APPRAISAL_ARABIC,
-//         employee.EMPLOYEE_ID,
-//         employee_appraisal.NATIONAL_ID_CARD_NO
-//     FROM
-//         employee_appraisal
-//     JOIN employee ON employee.NATIONAL_ID_CARD_NO = employee_appraisal.NATIONAL_ID_CARD_NO
-//     JOIN APPRAISAL ON APPRAISAL.APPRAISAL = employee_appraisal.APPRAISAL
-//     WHERE
-//         employee_appraisal.APPRAISAL_DATE = ${year} AND appraisal.APPRAISAL_ARABIC = "${appraisal}"
-//     ORDER BY employee_appraisal.APPRAISAL_DATE`, (err, details) => {
-//             if (err) {
-//             } else {
-//                 res.send(details);
-//             }
-//         })
-//     } else if (!appraisal|| appraisal === "اختر التقييم") {
-//         db.query(`SELECT
-//         employee.NAME_ARABIC,
-//         employee_appraisal.APPRAISAL_DATE,
-//         appraisal.APPRAISAL_ARABIC,
-//         employee.EMPLOYEE_ID,
-//         employee_appraisal.NATIONAL_ID_CARD_NO
-//     FROM
-//         employee_appraisal
-//     JOIN employee ON employee.NATIONAL_ID_CARD_NO = employee_appraisal.NATIONAL_ID_CARD_NO
-//     JOIN APPRAISAL ON APPRAISAL.APPRAISAL = employee_appraisal.APPRAISAL
-//     WHERE
-//         employee.EMPLOYEE_ID = ${empid} AND employee_appraisal.APPRAISAL_DATE = ${year}
-//     ORDER BY
-//         employee_appraisal.APPRAISAL_DATE`, (err, details) => {
-//             if (err) {
-//             } else {
-//                 res.send(details);
-//             }
-//         })
-//     } else if (!year|| year === "اختر السنة") {
-//         db.query(`SELECT
-//         employee.NAME_ARABIC,
-//         employee_appraisal.APPRAISAL_DATE,
-//         appraisal.APPRAISAL_ARABIC,
-//         employee.EMPLOYEE_ID,
-//         employee_appraisal.NATIONAL_ID_CARD_NO
-//     FROM
-//         employee_appraisal
-//     JOIN employee ON employee.NATIONAL_ID_CARD_NO = employee_appraisal.NATIONAL_ID_CARD_NO
-//     JOIN APPRAISAL ON APPRAISAL.APPRAISAL = employee_appraisal.APPRAISAL
-//     WHERE
-//         employee.EMPLOYEE_ID = ${empid} AND appraisal.APPRAISAL_ARABIC = "${appraisal}"
-//     ORDER BY
-//         employee_appraisal.APPRAISAL_DATE`, (err, details) => {
-//             if (err) {
-//             } else {
-//                 res.send(details);
-//             }
-//         })
-//     }
-
-// }
-
 function getEmpApprails(req, res) {
     let query;
     const empid = req.query.empid
+    const empname = req.query.empname
     const appraisal = req.query.appraisal
     const year = req.query.year
 
-    if (!empid && (!appraisal || appraisal === "اختر التقييم")) {
+
+    if ((empid.length === 0 && !empname) && (!appraisal || appraisal === "اختر التقدير")) {
 
         query = `SELECT employee.NAME_ARABIC, employee_appraisal.APPRAISAL_DATE, appraisal.APPRAISAL_ARABIC,
         employee.EMPLOYEE_ID, employee_appraisal.NATIONAL_ID_CARD_NO
@@ -290,11 +184,11 @@ function getEmpApprails(req, res) {
         ORDER BY
         appraisal.APPRAISAL_ARABIC`
 
-    } else if ((!appraisal || appraisal === "اختر التقييم") && (!year || year === "اختر السنة")) {
+    } else if (!appraisal || appraisal === "اختر التقدير" && (!year || year === "اختر السنة")) {
 
-        query = `SELECT employee.NAME_ARABIC, employee_appraisal.APPRAISAL_DATE ,appraisal.APPRAISAL_ARABIC , employee.EMPLOYEE_ID, employee_appraisal.NATIONAL_ID_CARD_NO FROM employee_appraisal JOIN employee ON employee.NATIONAL_ID_CARD_NO = employee_appraisal.NATIONAL_ID_CARD_NO JOIN APPRAISAL ON APPRAISAL.APPRAISAL = employee_appraisal.APPRAISAL WHERE employee.EMPLOYEE_ID = ${empid} ORDER BY employee_appraisal.APPRAISAL_DATE`
+        query = `SELECT employee.NAME_ARABIC, employee_appraisal.APPRAISAL_DATE ,appraisal.APPRAISAL_ARABIC , employee.EMPLOYEE_ID, employee_appraisal.NATIONAL_ID_CARD_NO FROM employee_appraisal JOIN employee ON employee.NATIONAL_ID_CARD_NO = employee_appraisal.NATIONAL_ID_CARD_NO JOIN APPRAISAL ON APPRAISAL.APPRAISAL = employee_appraisal.APPRAISAL WHERE ${empid.length !== 0 ? `employee.EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `employee.NAME_ARABIC = "${empname}"` : null} ORDER BY employee_appraisal.APPRAISAL_DATE`
 
-    } else if (!empid && (year === "null" || year === "اختر السنة")) {
+    } else if ((empid.length === 0 && !empname) && (!year || year === "اختر السنة")) {
         query = `SELECT
         employee.NAME_ARABIC,
         employee_appraisal.APPRAISAL_DATE,
@@ -307,9 +201,8 @@ function getEmpApprails(req, res) {
     JOIN APPRAISAL ON APPRAISAL.APPRAISAL = employee_appraisal.APPRAISAL
     WHERE
     appraisal.APPRAISAL_ARABIC = "${appraisal}"
-    ORDER BY
-                employee_appraisal.APPRAISAL_DATE`
-    } else if (!empid) {
+    ORDER BY employee_appraisal.APPRAISAL_DATE`
+    } else if (empid.length === 0 && !empname) {
         query = `SELECT employee.NAME_ARABIC,
         employee_appraisal.APPRAISAL_DATE,
         appraisal.APPRAISAL_ARABIC,
@@ -322,7 +215,7 @@ function getEmpApprails(req, res) {
     WHERE
         employee_appraisal.APPRAISAL_DATE = ${year} AND appraisal.APPRAISAL_ARABIC = "${appraisal}"
     ORDER BY employee_appraisal.APPRAISAL_DATE`
-    } else if (!appraisal || appraisal === "اختر التقييم") {
+    } else if (!appraisal || appraisal === "اختر التقدير") {
         query = `SELECT
         employee.NAME_ARABIC,
         employee_appraisal.APPRAISAL_DATE,
@@ -334,9 +227,8 @@ function getEmpApprails(req, res) {
     JOIN employee ON employee.NATIONAL_ID_CARD_NO = employee_appraisal.NATIONAL_ID_CARD_NO
     JOIN APPRAISAL ON APPRAISAL.APPRAISAL = employee_appraisal.APPRAISAL
     WHERE
-        employee.EMPLOYEE_ID = ${empid} AND employee_appraisal.APPRAISAL_DATE = ${year}
-    ORDER BY
-        employee_appraisal.APPRAISAL_DATE`
+    ${empid.length !== 0 ? `employee.EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `employee.NAME_ARABIC = "${empname}"` : null} AND employee_appraisal.APPRAISAL_DATE = ${year}
+    ORDER BY employee_appraisal.APPRAISAL_DATE`
     } else if (!year || year === "اختر السنة") {
         query = `SELECT
         employee.NAME_ARABIC,
@@ -349,19 +241,42 @@ function getEmpApprails(req, res) {
     JOIN employee ON employee.NATIONAL_ID_CARD_NO = employee_appraisal.NATIONAL_ID_CARD_NO
     JOIN APPRAISAL ON APPRAISAL.APPRAISAL = employee_appraisal.APPRAISAL
     WHERE
-        employee.EMPLOYEE_ID = ${empid} AND appraisal.APPRAISAL_ARABIC = "${appraisal}"
+    ${empid.length !== 0 ? `employee.EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `employee.NAME_ARABIC = "${empname}"` : null} AND appraisal.APPRAISAL_ARABIC = "${appraisal}"
     ORDER BY
         employee_appraisal.APPRAISAL_DATE`
     }
 
     db.query(query, (err, details) => {
         if (err) {
+            console.log(err);
         } else {
             res.send(details);
         }
     })
+    console.log(query);
 
 }
+
+function newAppraisal(req, res) {
+    const { appDate, appValue, empid, empname } = req.body
+
+    if (empid == "null" && empname == "null") {
+        res.json({ data: null, msg: "يجب إدخال أي من الإسم ورقم الأداء" })
+        return;
+    }
+    let query = `INSERT INTO employee_appraisal (APPRAISAL_DATE, APPRAISAL , NATIONAL_ID_CARD_NO , ORGANIZATION) VALUES (${appDate},(select APPRAISAL FROM appraisal WHERE APPRAISAL_ARABIC = "${appValue}"),(select NATIONAL_ID_CARD_NO FROM employee WHERE ${empid != "null" ? `EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `NAME_ARABIC = "${empname}"` : null}),30)`
+    console.log('hit');
+    db.query(query, (err, details) => {
+        if (err) {
+            console.log(err);
+            res.json({ data: null, msg: "يوجد خطاء بقاعدة البيانات" })
+        } else {
+            console.log(details);
+            res.json({ data: details, msg: "تم إدخال التقييم بنجاح" });
+        }
+    })
+}
+
 
 function updateAppraisal(req, res) {
     let query = `UPDATE employee_appraisal JOIN employee ON employee_appraisal.NATIONAL_ID_CARD_NO = employee.NATIONAL_ID_CARD_NO JOIN appraisal SET employee_appraisal.APPRAISAL = appraisal.APPRAISAL WHERE appraisal.APPRAISAL_ARABIC = "${req.body.appraisal}" AND employee_appraisal.APPRAISAL_DATE = ${req.body.year} AND employee_appraisal.NATIONAL_ID_CARD_NO = ${req.body.empNat}`
@@ -387,12 +302,9 @@ function updateAppraisal(req, res) {
 function getEmpTrans(req, res) {
     const empid = req.query.empid
     const empname = req.query.empname
-    let query;
-    if (!empid || empid == "undefiened") {
-        query = `select *, a_job_trans.SUP_BOX_NAME AS catename from a_job_trans JOIN employee JOIN job_assignment_form JOIN indicators JOIN a_sup_box JOIN a_category JOIN a_job_groups ON a_job_trans.G_ID = a_job_groups.G_ID AND a_category.CAT_ID = a_job_trans.CAT_ID AND a_sup_box.SUP_BOX_ID = a_job_trans.SUP_BOX_ID AND a_job_trans.NATIONAL_ID_CARD_NO = employee.NATIONAL_ID_CARD_NO AND a_job_trans.JOB_ASSIGNMENT_FORM = JOB_ASSIGNMENT_FORM.JOB_ASSIGNMENT_FORM AND a_job_trans.INDICATOR = indicators.INDICATOR WHERE employee.NAME_ARABIC = "${empname}" ORDER by a_job_trans.TRANS_DATE`
-    } else if (!empname || empname == "undefined") {
-        query = `select *, a_job_trans.SUP_BOX_NAME AS catename from a_job_trans JOIN employee JOIN job_assignment_form JOIN indicators JOIN a_sup_box JOIN a_category JOIN a_job_groups ON a_job_trans.G_ID = a_job_groups.G_ID AND a_category.CAT_ID = a_job_trans.CAT_ID AND a_sup_box.SUP_BOX_ID = a_job_trans.SUP_BOX_ID AND a_job_trans.NATIONAL_ID_CARD_NO = employee.NATIONAL_ID_CARD_NO AND a_job_trans.JOB_ASSIGNMENT_FORM = JOB_ASSIGNMENT_FORM.JOB_ASSIGNMENT_FORM AND a_job_trans.INDICATOR = indicators.INDICATOR WHERE employee.EMPLOYEE_ID = ${empid} ORDER by a_job_trans.TRANS_DATE`
-    }
+
+    let query = `select *, a_job_trans.SUP_BOX_NAME AS catename from a_job_trans JOIN employee JOIN job_assignment_form JOIN indicators JOIN a_sup_box JOIN a_category JOIN a_job_groups ON a_job_trans.G_ID = a_job_groups.G_ID AND a_category.CAT_ID = a_job_trans.CAT_ID AND a_sup_box.SUP_BOX_ID = a_job_trans.SUP_BOX_ID AND a_job_trans.NATIONAL_ID_CARD_NO = employee.NATIONAL_ID_CARD_NO AND a_job_trans.JOB_ASSIGNMENT_FORM = JOB_ASSIGNMENT_FORM.JOB_ASSIGNMENT_FORM AND a_job_trans.INDICATOR = indicators.INDICATOR WHERE ${empid || empid !== "undefined" ? `employee.EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `employee.NAME_ARABIC = "${empname}"` : null} ORDER by a_job_trans.TRANS_DATE`
+
     db.query(query, (err, details) => {
         if (err) {
         } else {
@@ -451,16 +363,12 @@ WHERE
 function getEmpEdu(req, res) {
     let empid = req.query.empid
     let empname = req.query.empname
-    let query;
 
-    if (!empid || empid == "undefined") {
-        query = `SELECT * FROM employee_education_degree JOIN education_degree JOIN dgree_speciality JOIN dgree_speciality_detail JOIN UNIVERSITY_SCHOOL JOIN GRADUATION_GRADE JOIN (SELECT employee.EMPLOYEE_ID,employee.NATIONAL_ID_CARD_NO FROM employee ) AS detofemp ON employee_education_degree.DEGREE = education_degree.DEGREE AND employee_education_degree.SPECIALITY = dgree_speciality.SPECIALITY AND employee_education_degree.SPECIALITY_DETAIL = dgree_speciality_detail.SPECIALITY_DETAIL AND employee_education_degree.UNIVERSITY_SCHOOL = university_school.UNIVERSITY_SCHOOL AND employee_education_degree.GRADUATION_GRADE = graduation_grade.GRADUATION_GRADE AND employee_education_degree.NATIONAL_ID_CARD_NO = detofemp.NATIONAL_ID_CARD_NO WHERE detofemp.NAME_ARABIC = "${empname}" `
+    let query = `SELECT * FROM employee_education_degree JOIN education_degree JOIN dgree_speciality JOIN dgree_speciality_detail JOIN UNIVERSITY_SCHOOL JOIN GRADUATION_GRADE JOIN (SELECT employee.EMPLOYEE_ID,employee.NATIONAL_ID_CARD_NO FROM employee ) AS detofemp ON employee_education_degree.DEGREE = education_degree.DEGREE AND employee_education_degree.SPECIALITY = dgree_speciality.SPECIALITY AND employee_education_degree.SPECIALITY_DETAIL = dgree_speciality_detail.SPECIALITY_DETAIL AND employee_education_degree.UNIVERSITY_SCHOOL = university_school.UNIVERSITY_SCHOOL AND employee_education_degree.GRADUATION_GRADE = graduation_grade.GRADUATION_GRADE AND employee_education_degree.NATIONAL_ID_CARD_NO = detofemp.NATIONAL_ID_CARD_NO WHERE ${empid || empid !== "undefined" ? `detofemp.EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `detofemp.NAME_ARABIC = "${empname}"` : null}`
 
-    } else if (!empname || empname == "undefined") {
-        query = `SELECT * FROM employee_education_degree JOIN education_degree JOIN dgree_speciality JOIN dgree_speciality_detail JOIN UNIVERSITY_SCHOOL JOIN GRADUATION_GRADE JOIN (SELECT employee.EMPLOYEE_ID,employee.NATIONAL_ID_CARD_NO FROM employee ) AS detofemp ON employee_education_degree.DEGREE = education_degree.DEGREE AND employee_education_degree.SPECIALITY = dgree_speciality.SPECIALITY AND employee_education_degree.SPECIALITY_DETAIL = dgree_speciality_detail.SPECIALITY_DETAIL AND employee_education_degree.UNIVERSITY_SCHOOL = university_school.UNIVERSITY_SCHOOL AND employee_education_degree.GRADUATION_GRADE = graduation_grade.GRADUATION_GRADE AND employee_education_degree.NATIONAL_ID_CARD_NO = detofemp.NATIONAL_ID_CARD_NO WHERE detofemp.EMPLOYEE_ID = ${empid}`
-    }
     db.query(query, (err, details) => {
         if (err) {
+            console.log(err);
         } else {
             res.send(details);
         }
@@ -470,13 +378,9 @@ function getEmpEdu(req, res) {
 function getEmpFamily(req, res) {
     let empid = req.query.empid
     let empname = req.query.empname
-    let query;
-    if (!empid || empid == "undefined") {
-        query = `SELECT *,detofemp.EMPLOYEE_ID,detofemp.NAME_ARABIC FROM employee_family_member JOIN (SELECT employee.EMPLOYEE_ID,employee.NAME_ARABIC,employee.NATIONAL_ID_CARD_NO FROM employee ) AS detofemp ON employee_family_member.NATIONAL_ID_CARD_NO = detofemp.NATIONAL_ID_CARD_NO WHERE detofemp.NAME_ARABIC = "${empname}"`
 
-    } else if (!empname || empname == "undefined") {
-        query = `SELECT *,detofemp.EMPLOYEE_ID,detofemp.NAME_ARABIC FROM employee_family_member JOIN (SELECT employee.EMPLOYEE_ID,employee.NAME_ARABIC,employee.NATIONAL_ID_CARD_NO FROM employee ) AS detofemp ON employee_family_member.NATIONAL_ID_CARD_NO = detofemp.NATIONAL_ID_CARD_NO WHERE detofemp.EMPLOYEE_ID = ${empid}`
-    }
+    let query = `SELECT *, detofemp.EMPLOYEE_ID, detofemp.NAME_ARABIC FROM employee_family_member JOIN(SELECT employee.EMPLOYEE_ID, employee.NAME_ARABIC, employee.NATIONAL_ID_CARD_NO FROM employee) AS detofemp ON employee_family_member.NATIONAL_ID_CARD_NO = detofemp.NATIONAL_ID_CARD_NO WHERE ${empid || empid !== "undefined" ? `detofemp.EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `detofemp.NAME_ARABIC = "${empname}"` : null} `
+
     db.query(query, (err, details) => {
         if (err) {
         } else {
@@ -506,97 +410,97 @@ function postnewtrans(req, res) {
     )
     VALUES(
         (
-        SELECT
+            SELECT
             NATIONAL_ID_CARD_NO
         FROM
             employee
         WHERE
             EMPLOYEE_ID = ${req.body.empid}
-    ),"${req.body.transdate}",
-    (
-        SELECT
+    ), "${req.body.transdate}",
+        (
+            SELECT
             CAT_ID
-        FROM
-            a_category
-        WHERE
-            CAT_NAME = "${req.body.catname}"
+    FROM
+    a_category
+    WHERE
+    CAT_NAME = "${req.body.catname}"
     ),
     30,
-    (
-        SELECT
-            MAIN_BOX_ID
-        FROM
-            a_main_box
-        WHERE
-            J_D_ID =(
+        (
             SELECT
+            MAIN_BOX_ID
+    FROM
+    a_main_box
+    WHERE
+    J_D_ID = (
+        SELECT
                 J_D_ID
-            FROM
-                a_job_dgree
-            WHERE
-                J_D_NAME = "${req.body.jdname}"
-        ) AND CAT_ID =(
+    FROM
+    a_job_dgree
+    WHERE
+    J_D_NAME = "${req.body.jdname}"
+        ) AND CAT_ID = (
         SELECT
             CAT_ID
-        FROM
-            a_category
-        WHERE
-            CAT_NAME = "${req.body.catname}"
+    FROM
+    a_category
+    WHERE
+    CAT_NAME = "${req.body.catname}"
     )
     ),
     (
         SELECT
             SUP_BOX_ID
-        FROM
-            a_sup_box
-        WHERE
-            SUP_BOX_NAME = "${req.body.supboxname}" AND MAIN_BOX_ID =(
+    FROM
+    a_sup_box
+    WHERE
+    SUP_BOX_NAME = "${req.body.supboxname}" AND MAIN_BOX_ID = (
         SELECT
             MAIN_BOX_ID
-        FROM
-            a_main_box
-        WHERE
-            J_D_ID =(
-            SELECT
+    FROM
+    a_main_box
+    WHERE
+    J_D_ID = (
+        SELECT
                 J_D_ID
-            FROM
-                a_job_dgree
-            WHERE
-                J_D_NAME = "${req.body.jdname}"
-        ) AND CAT_ID =(
+    FROM
+    a_job_dgree
+    WHERE
+    J_D_NAME = "${req.body.jdname}"
+        ) AND CAT_ID = (
         SELECT
             CAT_ID
-        FROM
-            a_category
-        WHERE
-            CAT_NAME = "${req.body.catname}"
+    FROM
+    a_category
+    WHERE
+    CAT_NAME = "${req.body.catname}"
     )))
     ,
     (
         SELECT
             G_ID
-        FROM
-            a_job_groups
-        WHERE
-            G_NAME = "${req.body.gname}"
+    FROM
+    a_job_groups
+    WHERE
+    G_NAME = "${req.body.gname}"
     ),
-        "${req.body.catname}",
-    (
-        SELECT
+    "${req.body.catname}",
+        (
+            SELECT
             JOB_ASSIGNMENT_FORM
-        FROM
-            JOB_ASSIGNMENT_FORM
-        WHERE
-            JOB_ASSIGNMENT_FORM_ARABIC = "${req.body.jasi}"
+    FROM
+    JOB_ASSIGNMENT_FORM
+    WHERE
+    JOB_ASSIGNMENT_FORM_ARABIC = "${req.body.jasi}"
     ),
     (
         SELECT
             INDICATOR
-        FROM
-            indicators
-        WHERE
-            INDICATOR_NAME = "${req.body.indname}"
-    ),"${req.body.jdname}")`
+    FROM
+    indicators
+    WHERE
+    INDICATOR_NAME = "${req.body.indname}"
+    ), "${req.body.jdname}")`
 
     db.query(query, (err, details) => {
         if (err) {
@@ -614,40 +518,41 @@ function updateEmpTrans(req, res) {
     console.log(req.body);
     if (!req.body.empname || req.body.empname == "null" || req.body.empname == "undefined") {
         query = `UPDATE a_job_trans SET SUP_BOX_NAME = "${req.body.catname}", MAIN_BOX_NAME = "${req.body.jdname}", SUP_BOX_ID = (
-            SELECT
+        SELECT
                 SUP_BOX_ID
-            FROM
-                a_sup_box
-            WHERE
-                SUP_BOX_NAME = "${req.body.supboxname}" AND MAIN_BOX_ID =(
-            SELECT
+    FROM
+    a_sup_box
+    WHERE
+    SUP_BOX_NAME = "${req.body.supboxname}" AND MAIN_BOX_ID = (
+        SELECT
                 MAIN_BOX_ID
-            FROM
-                a_main_box
-            WHERE
-                J_D_ID =(
-                SELECT
+    FROM
+    a_main_box
+    WHERE
+    J_D_ID = (
+        SELECT
                     J_D_ID
-                FROM
-                    a_job_dgree
-                WHERE
-                    J_D_NAME = "${req.body.jdname}"
-            ) AND CAT_ID =(
-            SELECT
+    FROM
+    a_job_dgree
+    WHERE
+    J_D_NAME = "${req.body.jdname}"
+            ) AND CAT_ID = (
+        SELECT
                 CAT_ID
-            FROM
-                a_category
-            WHERE
-                CAT_NAME = "${req.body.catname}"
-        ))), G_ID = (SELECT G_ID FROM a_job_groups WHERE G_NAME = "${req.body.gname}"), job_assignment_form = (SELECT JOB_ASSIGNMENT_FORM FROM job_assignment_form WHERE JOB_ASSIGNMENT_FORM_ARABIC = "${req.body.jasi}"), INDICATOR = (SELECT INDICATOR FROM indicators WHERE INDICATOR_NAME = "${req.body.indname}" ) WHERE NATIONAL_ID_CARD_NO = (SELECT NATIONAL_ID_CARD_NO FROM employee WHERE EMPLOYEE_ID  = ${req.body.empid} AND TRANS_DATE = "${req.body.date}") `
+    FROM
+    a_category
+    WHERE
+    CAT_NAME = "${req.body.catname}"
+        ) LIMIT 1) LIMIT 1), G_ID = (SELECT G_ID FROM a_job_groups WHERE G_NAME = "${req.body.gname}"), job_assignment_form = (SELECT JOB_ASSIGNMENT_FORM FROM job_assignment_form WHERE JOB_ASSIGNMENT_FORM_ARABIC = "${req.body.jasi}"), INDICATOR = (SELECT INDICATOR FROM indicators WHERE INDICATOR_NAME = "${req.body.indname}" ) WHERE NATIONAL_ID_CARD_NO = (SELECT NATIONAL_ID_CARD_NO FROM employee WHERE EMPLOYEE_ID = ${req.body.empid} AND TRANS_DATE = "${req.body.date}")`
     } else if (!req.body.empid || req.body.empid == "null" || req.body.empid == "undefined") {
-        query = `UPDATE a_job_trans SET SUP_BOX_NAME = "${req.body.catname}", MAIN_BOX_NAME = "${req.body.jdname}", SUP_BOX_ID = (SELECT SUP_BOX_ID FROM a_sup_box WHERE SUP_BOX_NAME = "${req.body.supboxname}" AND MAIN_BOX_ID = ${req.body.mainboxid}), G_ID = (SELECT G_ID FROM a_job_groups WHERE G_NAME = "${req.body.gname}"), job_assignment_form = (SELECT JOB_ASSIGNMENT_FORM FROM job_assignment_form WHERE JOB_ASSIGNMENT_FORM_ARABIC = "${req.body.jasi}"), INDICATOR = (SELECT INDICATOR FROM indicators WHERE INDICATOR_NAME = "${req.body.indname}" ) WHERE NATIONAL_ID_CARD_NO = (SELECT NATIONAL_ID_CARD_NO FROM employee WHERE NAME_ARABIC  = "${req.body.empname}" AND TRANS_DATE = "${req.body.date}" ) `
+        query = `UPDATE a_job_trans SET SUP_BOX_NAME = "${req.body.catname}", MAIN_BOX_NAME = "${req.body.jdname}", SUP_BOX_ID = (SELECT SUP_BOX_ID FROM a_sup_box WHERE SUP_BOX_NAME = "${req.body.supboxname}" AND MAIN_BOX_ID = ${req.body.mainboxid}), G_ID = (SELECT G_ID FROM a_job_groups WHERE G_NAME = "${req.body.gname}"), job_assignment_form = (SELECT JOB_ASSIGNMENT_FORM FROM job_assignment_form WHERE JOB_ASSIGNMENT_FORM_ARABIC = "${req.body.jasi}"), INDICATOR = (SELECT INDICATOR FROM indicators WHERE INDICATOR_NAME = "${req.body.indname}" ) WHERE NATIONAL_ID_CARD_NO = (SELECT NATIONAL_ID_CARD_NO FROM employee WHERE NAME_ARABIC = "${req.body.empname}" AND TRANS_DATE = "${req.body.date}" )`
     }
 
     db.query(query, (err, details) => {
         if (err) {
             console.log(err);
         } else {
+            console.log(details);
             res.send(details);
         }
     })
@@ -657,7 +562,7 @@ function getAvailSupBox(req, res) {
     const catname = req.params.catname
     const jdname = req.params.jdname
 
-    let query = `SELECT SUP_BOX_NAME, SUP_BOX_ID from a_sup_box WHERE MAIN_BOX_ID IN (SELECT a_main_box.MAIN_BOX_ID FROM a_main_box JOIN a_job_dgree JOIN a_category ON a_main_box.J_D_ID = a_job_dgree.J_D_ID AND a_main_box.CAT_ID = a_category.CAT_ID WHERE a_category.CAT_NAME = "${catname}" AND a_job_dgree.J_D_NAME = "${jdname}")`
+    let query = `SELECT SUP_BOX_NAME, SUP_BOX_ID from a_sup_box WHERE MAIN_BOX_ID IN(SELECT a_main_box.MAIN_BOX_ID FROM a_main_box JOIN a_job_dgree JOIN a_category ON a_main_box.J_D_ID = a_job_dgree.J_D_ID AND a_main_box.CAT_ID = a_category.CAT_ID WHERE a_category.CAT_NAME = "${catname}" AND a_job_dgree.J_D_NAME = "${jdname}")`
     db.query(query, (err, details) => {
         if (err) {
         } else {
@@ -669,7 +574,7 @@ function getAvailSupBox(req, res) {
 function getUpJd(req, res) {
     const len = req.params.len
     const supboxname = req.params.supboxname
-    let query = `CALL GTT(${len},(SELECT SUP_BOX_ID FROM a_sup_box WHERE SUP_BOX_NAME = "${supboxname}"))`
+    let query = `CALL GTT(${len}, (SELECT SUP_BOX_ID FROM a_sup_box WHERE SUP_BOX_NAME = "${supboxname}"))`
     db.query(query, (err, details) => {
         if (err) {
         } else {
@@ -682,7 +587,7 @@ function getUpJd(req, res) {
 //     const catname = req.params.catname
 //     const jdname = req.params.jdname
 
-//     let query =`SELECT SUP_BOX_NAME from a_sup_box WHERE MAIN_BOX_ID IN (SELECT a_main_box.MAIN_BOX_ID FROM a_main_box JOIN a_job_dgree JOIN a_category ON a_main_box.J_D_ID = a_job_dgree.J_D_ID AND a_main_box.CAT_ID = a_category.CAT_ID WHERE a_category.CAT_NAME = "${catname}" AND a_job_dgree.J_D_NAME = "${jdname}")`
+//     let query =`SELECT SUP_BOX_NAME from a_sup_box WHERE MAIN_BOX_ID IN(SELECT a_main_box.MAIN_BOX_ID FROM a_main_box JOIN a_job_dgree JOIN a_category ON a_main_box.J_D_ID = a_job_dgree.J_D_ID AND a_main_box.CAT_ID = a_category.CAT_ID WHERE a_category.CAT_NAME = "${catname}" AND a_job_dgree.J_D_NAME = "${jdname}")`
 //     db.query(query, (err, details) => {
 //         if (err) {
 //             console.log(err);
@@ -695,13 +600,16 @@ function getUpJd(req, res) {
 router
     .get('/getjobdgbycat/:catid/:mainboxid', getJobDgByCat)
 
-    .get(`/getsupboxnames/:jdid/:catid`, getSupBoxNames)
+    .get(`/getsupboxnames/:jdid /:catid`, getSupBoxNames)
 
     .get(`/getboxandmangers/:mainid`, getsupboxmangers)
 
     .get(`/getmaincode/:jdid/:catid`, getMaincode)
 
-    .get('/getempappraisal', getEmpApprails)
+    .get('/empappraisal', getEmpApprails)
+    .post('/empappraisal', newAppraisal)
+
+
     .put('/appraisalupdate', updateAppraisal)
 
     .get('/getemptrans', getEmpTrans)

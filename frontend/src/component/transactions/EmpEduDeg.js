@@ -236,7 +236,7 @@ class EmpEduDeg extends React.Component {
                                         <div style={{ marginRight: 20, marginTop: 5 }}>
 
                                             <div className="col-lg-4">
-                                                <TextField
+                                                {/* <TextField
                                                     id="with-placeholder"
                                                     label={<span style={{ fontSize: '2rem' }}>dsdsa</span>}
                                                     placeholder="id"
@@ -248,7 +248,7 @@ class EmpEduDeg extends React.Component {
                                                     className={classes.textField}
                                                     margin="normal"
                                                     autoFocus={true}
-                                                    helperText={"Add an existing id or select "} />
+                                                    helperText={"Add an existing id or select "} /> */}
 
                                                 <div class="input-group">
                                                     <span >رقم الأداء :  </span><input onChange={this.idInputAddHandler} type="number" style={{ background: "white", marginTop: 5, marginRight: 5, height: 25, width: 188, border: "1px solid black" }} type="text" name="first_name" placeholder={this.props.empNameByName ? this.props.empNameByName.length >= 1 ? this.props.empNameByName[0].EMPLOYEE_ID : null : null} />

@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react'
 import logo from './logo.png'
+import dashboard from './dashboard.png'
 import { Button } from '@material-ui/core';
 import { logOut } from '../actions/AuthActions'
 import { connect } from "react-redux";
@@ -23,7 +24,12 @@ class Header extends React.Component {
             <Fragment>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <div style={{ background: "#042903", width: "100%", height: "70px" }}>
-                        <img style={{ height: "60%", position: "absolute", top: "1%", left: "1%" }} src={logo} />
+                        <img style={{ height: "100%", float: "left" }} src={logo} />
+                        <span style={{ float: "right", color: "#9ca084", fontFamily: `'Exo 2', sans-serif`, fontWeight: "900", fontSize: "30pt", marginTop: 5, marginRight: 5 }}>Admin Dashboard</span>
+                        <i style={{ float: "right", color: "#9ca084", height: "100%", fontSize: "50pt", marginRight: 5 }} class="fas fa-tachometer-alt"></i>
+
+
+
                     </div>
                 </div>
                 <div className="navbar-header">

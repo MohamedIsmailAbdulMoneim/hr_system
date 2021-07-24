@@ -6,8 +6,11 @@ import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import Reactmoment from "react-moment"
+import ExcelSheet from "../reports/ExcelSheet"
 
 
+
+const colNames = [{ label: "الإسم", value: "name" }, { label: "تاريخ الحركة", value: "date" }, { label: "الإدارة", value: "dep" }, { label: "الوظيفة", value: "job" }, { label: "المسمى الوظيفي", value: "jobdesc" }, { label: "نوع التخصص", value: "gname" }, { label: "طريقة شغل الوظيفة", value: "jas" }, { label: "حالة الوظيفة", value: "ind" }]
 
 
 class EmpTrans extends React.Component {
@@ -99,6 +102,23 @@ class EmpTrans extends React.Component {
 
 
 
+    handleDataSet = () => {
+        // const colNames = [{ label: "الإسم", value: "name" },
+        //  { label: "تاريخ الحركة", value: "date" },
+        //  { label: "الإدارة", value: "dep" }, 
+        //  { label: "الوظيفة", value: "job" },
+        //   { label: "المسمى الوظيفي", value: "jobdesc" }, 
+        //   { label: "نوع التخصص", value: "gname" },
+        //    { label: "طريقة شغل الوظيفة", value: "jas" }, 
+        //    { label: "حالة الوظيفة", value: "ind" }]
+
+        const dataSet = [];
+        this.props.empTrans.map(inf => {
+            dataSet.push({ name: inf.NAME_ARABIC, date: inf.TRANS_DATE, dep: inf.CAT_NAME, job: inf.MAIN_BOX_NAME, jobdesc: inf.SUP_BOX_NAME, gname: inf.G_NAME, jas: inf.JOB_ASSIGNMENT_FORM_ARABIC, ind: inf.INDICATOR_NAME })
+        })
+
+        return dataSet;
+    }
 
 
 
@@ -537,11 +557,11 @@ class EmpTrans extends React.Component {
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="panel panel-default">
+                            <button onClick={this.showStruct} style={{ height: "15%", minHeight: 50, float: 'right' }} type="button" class="btn btn-primary">موقع الموظف بالهيكل</button>
+                            <i style={{ fontSize: 40, position: "relative", right: "48%" }} class="fas fa-file-excel"></i>
                             {this.props.empname && !this.state.edit && !this.state.add ? this.props.empname.length >= 1 ? <h3>  بيان بحركة السيد / {this.props.empname[0].NAME_ARABIC}</h3> : null : null || this.props.empNameByName ? this.props.empNameByName.length >= 1 ? `  ${this.props.empNameByName[0].NAME_ARABIC} ` : null : null}
                             <div class="panel-heading" style={{ display: "flex", justifyContent: "space-evenly" }}>
-                                <button onClick={this.showStruct} style={{ height: "15%", position: "absolute", right: "5%" }} type="button" class="btn btn-primary">موقع الموظف بالهيكل</button>
                                 {this.state.edit ? <i onClick={this.closeEditSectionHandler} style={{ fontSize: 15, position: "relative", bottom: 10, left: 550 }} class="fas fa-times-circle"></i> : null}
-                                <i style={{ fontSize: 40, position: "relative", right: "48%" }} class="fas fa-file-excel"></i>
                             </div>
                             <div class="panel-body">
                                 <div class="table-responsive">
@@ -551,34 +571,26 @@ class EmpTrans extends React.Component {
                                                 <thead>
                                                     <tr>
                                                         {this.state.edit ? <th style={{ width: 250 }}>الإسم</th> : null}
-                                                        <th>تاريخ الحركة</th>
-                                                        {/* <th>كود الإدارة</th> */}
-                                                        <th>الإدارة</th>
-                                                        {/* <th>كود الوظيفة</th> */}
                                                         <th>الوظيفة</th>
-                                                        {/* <th>كود المسمى الوظيفي</th> */}
                                                         <th>المسمى الوظيفي</th>
-                                                        <th>نوع التخصص</th>
+                                                        <th>تاريخ الحركة</th>
+                                                        <th>الإدارة</th>
                                                         <th>طريقة شغل الوظيفة</th>
+                                                        <th>نوع التخصص</th>
                                                         <th>حالة الوظيفة</th>
                                                         <th>تعديل</th>
                                                         <th>حذف</th>
-
-
                                                     </tr>
                                                 </thead>
                                                 {this.props.empTrans.map(trans => (
                                                     <tbody>
                                                         <tr>
-                                                            <td >{trans.TRANS_DATE.slice(0, 10)}</td>
-                                                            {/* <td ref="catid">{trans.CAT_ID}</td> */}
-                                                            <td ref="catname">{trans.catename}</td>
-                                                            {/* <td ref="mainboxid">{trans.MAIN_BOX_ID}</td> */}
                                                             <td ref="jdname">{trans.MAIN_BOX_NAME}</td>
-                                                            {/* <td ref="supboxid">{trans.SUP_BOX_ID}</td> */}
                                                             <td ref="supboxname">{trans.SUP_BOX_NAME}</td>
-                                                            <td ref="gname">{trans.G_NAME}</td>
+                                                            <td >{trans.TRANS_DATE}</td>
+                                                            <td ref="catname">{trans.catename}</td>
                                                             <td ref="jasi">{trans.JOB_ASSIGNMENT_FORM_ARABIC}</td>
+                                                            <td ref="gname">{trans.G_NAME}</td>
                                                             <td ref="indname">{trans.INDICATOR_NAME}</td>
                                                             <td onClick={this.handelEdit_1}><i empname={trans.NAME_ARABIC} transdate={trans.TRANS_DATE} catid={trans.CAT_ID} catname={trans.CAT_NAME} mainboxid={trans.MAIN_BOX_ID} jdname={trans.MAIN_BOX_NAME} supboxid={trans.SUP_BOX_ID} supboxname={trans.SUP_BOX_NAME} jobgroup={trans.G_NAME} jasform={trans.JOB_ASSIGNMENT_FORM_ARABIC} indname={trans.INDICATOR_NAME} class="fas fa-edit"></i></td>
                                                             <td><i class="fas fa-backspace"></i></td>
@@ -709,7 +721,9 @@ class EmpTrans extends React.Component {
                         </div>
                     </div>
                 </div>
-            </div >
+                <ExcelSheet colNames={colNames} data={this.handleDataSet()} />
+
+            </div>
         )
     }
 }
