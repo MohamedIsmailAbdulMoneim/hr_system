@@ -224,6 +224,34 @@ function getqn(req, res) {
 
 }
 
+function getEmps(req, res) {
+    let query = `
+    select COUNT(GENDER) AS MALE from employee WHERE GENDER = 1;
+    select COUNT(GENDER) AS FEMALE from employee WHERE GENDER = 2;
+    `
+    db.query(query, (err, data) => {
+        if (err) {
+            res.json({ data: null, msg: "there is an error" })
+        } else {
+            res.json(data)
+        }
+    })
+}
+
+function getgid(req, res) {
+    let query = `
+      SELECT DISTINCT COUNT(NATIONAL_ID_CARD_NO) AS Technical FROM a_job_trans WHERE G_ID = 1;
+      SELECT DISTINCT COUNT(NATIONAL_ID_CARD_NO) AS NON_Technical FROM a_job_trans WHERE G_ID = 2;
+    `
+    db.query(query, (err, data) => {
+        if (err) {
+            res.json({ data: null, msg: "there is an error" })
+        } else {
+            res.json(data)
+        }
+    })
+}
+
 
 
 router
@@ -234,6 +262,8 @@ router
     .get('/getempstationandgovern/:govern/:station', getEmpStationAndGovern)
     .get('/getempdetails', getEmpDetails)
     .get('/getqn', getqn)
+    .get('/getemps', getEmps)
+    .get('/getgid', getgid)
 
 
 

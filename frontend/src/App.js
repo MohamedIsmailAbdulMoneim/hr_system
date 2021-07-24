@@ -22,6 +22,7 @@ import EmpFamily from './component/transactions/EmpFamily';
 import Login from './component/Login';
 import Register from './component/register';
 import { loadUser } from './actions/AuthActions';
+import { getemps, getGid } from './actions/Actions'
 // import { useEffect } from 'react';
 
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
@@ -35,6 +36,9 @@ class App extends React.Component {
   }
   componentDidMount() {
     store.dispatch(loadUser())
+    store.dispatch(getemps())
+    store.dispatch(getGid())
+
   }
 
   render() {

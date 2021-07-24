@@ -1,6 +1,6 @@
 import {
   fetchCates,
-  fetchJobDgreeCodes, fetchMainCodes, fetchJobByCat, fetchSupBoxNamesandmanager, fetchJobGovern, fetchJobStation, fetchEmpStationAndGovern, fetchDeps, fetchEmpByDeps, fetchEmpName, fetchEmpAppraisal, fetchEmpTrans, fetchEmpEdu, fetchEmpNameByName, fetchCurrentjd, fetchavailjd, fetchavailsupbox, fetchupjd, fetchEmpDetails, fetchDownJd,fetchEmpFamily,fetchqn, fetchspecarabic, fetchuneschool
+  fetchJobDgreeCodes, fetchMainCodes, fetchJobByCat, fetchSupBoxNamesandmanager, fetchJobGovern, fetchJobStation, fetchEmpStationAndGovern, fetchDeps, fetchEmpByDeps, fetchEmpName, fetchEmpAppraisal, fetchEmpTrans, fetchEmpEdu, fetchEmpNameByName, fetchCurrentjd, fetchavailjd, fetchavailsupbox, fetchupjd, fetchEmpDetails, fetchDownJd, fetchEmpFamily, fetchqn, fetchspecarabic, fetchuneschool, fetchemps, fetchgid
 
 } from "../actions/ActionTypes";
 
@@ -26,10 +26,12 @@ const initialState = {
   empdetails: [],
   downJd: [],
   empNameByName: [],
-  qn : [],
+  qn: [],
   specarabic: [],
-  uneshcool: []
-  
+  uneshcool: [],
+  emps: [],
+  gid: []
+
 
 };
 
@@ -154,35 +156,40 @@ export default function (state = initialState, action) {
         downJd: action.payload.data
       }
 
-      case fetchEmpFamily:
-        return {
-          ...state,
-          empfamily: action.payload
-        }
+    case fetchEmpFamily:
+      return {
+        ...state,
+        empfamily: action.payload
+      }
 
-      case fetchqn:
-        return {
-          ...state,
-          qn: action.payload
-        }
-      case fetchspecarabic:
-          return {
-            ...state,
-            specarabic: action.payload
-          }
+    case fetchqn:
+      return {
+        ...state,
+        qn: action.payload
+      }
+    case fetchspecarabic:
+      return {
+        ...state,
+        specarabic: action.payload
+      }
 
-      case fetchuneschool:
-          return {
-            ...state,
-            uneshcool: action.payload
-          }
+    case fetchuneschool:
+      return {
+        ...state,
+        uneshcool: action.payload
+      }
 
+    case fetchemps:
+      return {
+        ...state,
+        emps: action.payload
+      }
+    case fetchgid:
+      return {
+        ...state,
+        gid: action.payload
+      }
 
-
-
-            
-            
-        
 
     default:
       return state;

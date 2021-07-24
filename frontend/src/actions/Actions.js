@@ -23,7 +23,9 @@ import {
   fetchDownJd,
   fetchqn,
   fetchuneschool,
-  fetchspecarabic
+  fetchspecarabic,
+  fetchemps,
+  fetchgid
 } from "../actions/ActionTypes";
 import axios from "axios";
 
@@ -280,6 +282,27 @@ export const getUneSchool = (uneschool) => (dispatch) => {
   axios.get(`http://localhost:5000/uneschool/?uneschool=${uneschool}`).then(res => {
     dispatch({
       type: fetchuneschool,
+      payload: res.data
+    })
+  })
+}
+
+export const getemps = () => (dispatch) => {
+  axios.get('http://localhost:5000/getemps').then(res => {
+    console.log(res.data);
+    dispatch({
+      type: fetchemps,
+      payload: res.data
+    })
+  })
+}
+
+
+export const getGid = () => (dispatch) => {
+  axios.get('http://localhost:5000/getgid').then(res => {
+    console.log(res.data);
+    dispatch({
+      type: fetchgid,
       payload: res.data
     })
   })

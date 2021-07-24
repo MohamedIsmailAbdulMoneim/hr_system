@@ -34,6 +34,8 @@ export const LOGOUT_SUCCESS = "LOGOUT-SUCCESS"
 export const REGISTER_SUCCESS = "REGISTER-SUCCESS"
 export const REGISTER_FAIL = "REGISTER-FAIL"
 export const NEW_APPRAISAL = "NEW-APPRAISAL"
+export const fetchemps = "FETCH-EMPS"
+export const fetchgid = "FETCH-GID"
 
 
 

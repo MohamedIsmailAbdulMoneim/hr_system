@@ -25,8 +25,8 @@ class Header extends React.Component {
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <div style={{ background: "#042903", width: "100%", height: "70px" }}>
                         <img style={{ height: "100%", float: "left" }} src={logo} />
-                        <span style={{ float: "right", color: "#9ca084", fontFamily: `'Exo 2', sans-serif`, fontWeight: "900", fontSize: "30pt", marginTop: 5, marginRight: 5 }}>Admin Dashboard</span>
-                        <i style={{ float: "right", color: "#9ca084", height: "100%", fontSize: "50pt", marginRight: 5 }} class="fas fa-tachometer-alt"></i>
+                        <span style={{ float: "right", color: "#9ca084", fontFamily: `'Exo 2', sans-serif`, fontWeight: "900", fontSize: "30pt", marginTop: 10, marginRight: 5 }}>Admin Dashboard</span>
+                        <i style={{ float: "right", color: "#9ca084", height: "100%", fontSize: "40pt", marginRight: 5, marginTop: 10 }} class="fas fa-tachometer-alt"></i>
 
 
 
