@@ -11,7 +11,6 @@ class Chart extends Component {
 
 
     render() {
-        console.log(this.props.gid[1][0].NON_Technical);
         return (
             <Fragment>
                 <div style={{ display: "flex" }}>

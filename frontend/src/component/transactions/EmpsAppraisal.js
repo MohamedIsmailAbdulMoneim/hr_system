@@ -168,8 +168,8 @@ class EmpsAppraisal extends React.Component {
                 {this.state.add ?
                     <Fragment>
                         <div class="row">
-                            <div className="col-lg-12" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                                <div style={{ height: "100%", minHeight: 250, width: "50%", minWidth: "350", overflow: "auto" }} class="panel panel-default">
+                            <div className="col-lg-12" style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop:"5px" }}>
+                                <div style={{ height: "100%", minHeight: 250, width: "50%", minWidth: "750px", overflow: "auto" }} class="panel panel-default">
                                     <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }} class="panel-heading">
                                         <span style={{ position: "relative", right: 50 }}>إضافة تقييم جديد</span> {this.state.edit ? <i onClick={this.closeEditSectionHandler} style={{ fontSize: 15, position: "relative", left: 530 }} class="fas fa-times-circle"></i> : null}
                                         {this.state.add ? <i onClick={this.closeAddSectionHandler} style={{ fontSize: 15, float: "right" }} class="fas fa-times-circle"></i> : null}
@@ -227,7 +227,7 @@ class EmpsAppraisal extends React.Component {
                     </div>
                 </div>
                 <div className="row">
-                    <div className="col-lg-12" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                    <div className="col-lg-12" style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: 10 }}>
                         <div style={{ height: "100%", width: 600 }} class="panel panel-default">
 
                             <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }} class="panel-heading">
@@ -297,7 +297,7 @@ class EmpsAppraisal extends React.Component {
                 <div class="row">
                     <div class="col-lg-12">
                         <div className="panel panel-default">
-                            <div className="panel-heading">
+                            <div className="panel-heading" style={{minHeight: 40}}>
                             </div>
                             <div class="panel-body">
                                 <div class="table-responsive">

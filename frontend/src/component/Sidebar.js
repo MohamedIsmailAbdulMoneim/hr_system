@@ -3,7 +3,7 @@ import {
     getJobDgreeCodes, getMainCodes, getJobGovern, getDeps, getEmpName, getCates
 } from "../actions/Actions";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import axios from "axios";
 
 class Sidebar extends React.Component {
@@ -24,6 +24,17 @@ class Sidebar extends React.Component {
     render() {
         this.props.getMainCodes(this.props.posts)
 
+        const styles = {
+            position: "relative",
+            display: "block",
+            width: 250,
+            width: "100%",
+            textDecoration: "none",
+            padding: 15,
+            minHeight: 50,
+            whiteSpace: "normal"
+        }
+
         return (
             <div className="navbar-default sidebar" role="navigation">
                 <div className="sidebar-nav navbar-collapse">
@@ -43,16 +54,16 @@ class Sidebar extends React.Component {
                                         <li>
                                             <a href="/assisstantchairman">مساعد رئيس الشركة</a>
                                         </li> */}
-                                        <Link to={`/generalmanager`}>
+                                        <NavLink  style={styles} to={`/generalmanager`}>
                                             <li>
                                                 <a onClick={this.handleSidebarClick} href="/generalmanager">مدير عام</a>
                                             </li>
-                                        </Link>
-                                        <Link to={`/assisstantgeneralmanager`}>
+                                        </NavLink >
+                                        <NavLink  style={styles} to={`/assisstantgeneralmanager`}>
                                             <li>
                                                 <a onClick={this.handleSidebarClick} href="assisstantgeneralmanager">مدير عام مساعد</a>
                                             </li>
-                                        </Link>
+                                        </NavLink >
 
                                     </ul>
                                 </li>
@@ -140,19 +151,19 @@ class Sidebar extends React.Component {
                                 <li>
                                     <a href="/EmpTrans">تدرج</a>
                                 </li>
-                                <Link to={`/empedudeg`}>
+                                <NavLink style={styles} to={`/empedudeg`}>
                                     <li>
                                         <a onClick={this.props.getJobGovern} href="/empedudeg">مؤهلات الموظفين</a>
                                     </li>
-                                </Link>
+                                </NavLink >
                                 {/* <Link to={`/emptraining`}>
                                     <li>
                                         <a href="/emptraining">تدريب</a>
                                     </li>
                                 </Link> */}
-                                {/* <li>
-                                    <a href="morris.html">خبرات سابقة</a>
-                                </li> */}
+                                <li>
+                                    <a href="/empexperience">خبرات سابقة</a>
+                                </li>
                                 <li>
                                     <a href="/empsappraisal">تقييمات سنوية</a>
                                 </li>
@@ -162,11 +173,11 @@ class Sidebar extends React.Component {
                                 {/* <li>
                                     <a href="morris.html">جزاءات</a>
                                 </li> */}
-                                <Link to={`/empfamily`}>
+                                <NavLink  to={`/empfamily`}>
                                     <li>
                                         <a href="/empfamily">البيانات العائلية</a>
                                     </li>
-                                </Link>
+                                </NavLink >
                                 <li>
                                     <a href="/orgstructure">الهيكل</a>
                                 </li>
@@ -179,19 +190,18 @@ class Sidebar extends React.Component {
                                 <li>
                                     <a href="/Employee">بيانات الموظفين</a>
                                 </li>
-                                <Link to={`/empbystation`}>
-
+                                <NavLink  style={styles} to={`/empbystation`}>
                                     <li>
                                         <a onClick={this.props.getJobGovern} href="/empbystation">الموظفون بالمحطات</a>
                                     </li>
-                                </Link>
+                                </NavLink >
 
-                                <Link to={`/empbydeps`}>
+                                <NavLink  style={styles} to={`/empbydeps`}>
 
                                     <li>
                                         <a onClick={this.props.getDeps} href="/empbydeps">الموظفون بالإدارات</a>
                                     </li>
-                                </Link>
+                                </NavLink >
 
 
 

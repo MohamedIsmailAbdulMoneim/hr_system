@@ -25,11 +25,6 @@ class Home extends React.Component {
     render(){
         return (
             <div id="page-wrapper">
-                <div className="row">
-                    <div className="col-lg-12">
-                        <h1 className="page-header">سيستم إدارة الموارد البشرية</h1>
-                    </div>
-                </div>
                 <div className="chart">
                 <Chart />
                 </div>

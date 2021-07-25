@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import Reactmoment from "react-moment"
 import ExcelSheet from "../reports/ExcelSheet"
-
+import structure from "../structure.png"
 
 
 const colNames = [{ label: "الإسم", value: "name" }, { label: "تاريخ الحركة", value: "date" }, { label: "الإدارة", value: "dep" }, { label: "الوظيفة", value: "job" }, { label: "المسمى الوظيفي", value: "jobdesc" }, { label: "نوع التخصص", value: "gname" }, { label: "طريقة شغل الوظيفة", value: "jas" }, { label: "حالة الوظيفة", value: "ind" }]
@@ -556,12 +556,13 @@ class EmpTrans extends React.Component {
                 </div>
                 <div class="row">
                     <div class="col-lg-12">
-                        <div class="panel panel-default">
-                            <button onClick={this.showStruct} style={{ height: "15%", minHeight: 50, float: 'right' }} type="button" class="btn btn-primary">موقع الموظف بالهيكل</button>
-                            <i style={{ fontSize: 40, position: "relative", right: "48%" }} class="fas fa-file-excel"></i>
-                            {this.props.empname && !this.state.edit && !this.state.add ? this.props.empname.length >= 1 ? <h3>  بيان بحركة السيد / {this.props.empname[0].NAME_ARABIC}</h3> : null : null || this.props.empNameByName ? this.props.empNameByName.length >= 1 ? `  ${this.props.empNameByName[0].NAME_ARABIC} ` : null : null}
-                            <div class="panel-heading" style={{ display: "flex", justifyContent: "space-evenly" }}>
+                        <div class="panel panel-default" style={{width: "100%"}}>
+                            <div class="panel-heading" style={{ display: "flex", width: "100%", justifyContent: "space-between" }}>
                                 {this.state.edit ? <i onClick={this.closeEditSectionHandler} style={{ fontSize: 15, position: "relative", bottom: 10, left: 550 }} class="fas fa-times-circle"></i> : null}
+                                <ExcelSheet colNames={colNames} data={this.handleDataSet()} />
+                                {this.props.empname && !this.state.edit && !this.state.add ? this.props.empname.length >= 1 ? <h3>  بيان بحركة السيد / {this.props.empname[0].NAME_ARABIC}</h3> : null : null || this.props.empNameByName ? this.props.empNameByName.length >= 1 ? `  ${this.props.empNameByName[0].NAME_ARABIC} ` : null : null}
+                                <img onClick={this.showStruct} src={structure} style={{width:50,height:50}} />
+
                             </div>
                             <div class="panel-body">
                                 <div class="table-responsive">
@@ -571,11 +572,11 @@ class EmpTrans extends React.Component {
                                                 <thead>
                                                     <tr>
                                                         {this.state.edit ? <th style={{ width: 250 }}>الإسم</th> : null}
-                                                        <th>الوظيفة</th>
-                                                        <th>المسمى الوظيفي</th>
-                                                        <th>تاريخ الحركة</th>
-                                                        <th>الإدارة</th>
-                                                        <th>طريقة شغل الوظيفة</th>
+                                                        <th style={{width: 110}}>الوظيفة</th>
+                                                        <th style={{width: 220}}>المسمى الوظيفي</th>
+                                                        <th style={{width: 90}}>تاريخ الحركة</th>
+                                                        <th style={{width: 150}}>الإدارة</th>
+                                                        <th style={{width: 90}}>طريقة شغل الوظيفة</th>
                                                         <th>نوع التخصص</th>
                                                         <th>حالة الوظيفة</th>
                                                         <th>تعديل</th>
@@ -598,6 +599,8 @@ class EmpTrans extends React.Component {
                                                     </tbody>
 
                                                 ))}
+
+
 
                                             </Fragment>
 
@@ -713,15 +716,17 @@ class EmpTrans extends React.Component {
                                     </table>
                                     {this.props.empTrans.length < 1 ? <h1>عفواً لا توجد بييانات</h1> : null}
 
+
                                 </div>
                             </div>
+
                         </div>
                         <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                             {this.state.editConfirmed ? <div style={{ width: "100%" }} class="alert alert-warning" role="alert"> هل انت متأكد من تعديل هذا التدرج  ؟ <button onClick={this.handelEdit_2} style={{ position: "absolute", left: "3%", top: "78%" }} type="button" class="btn btn-warning">تأكيد</button> <i onClick={this.closeEditConfirmHandler} style={{ fontSize: 15, position: "relative", top: "7%", left: "56%" }} class="fas fa-times-circle"></i></div> : null}
                         </div>
+
                     </div>
                 </div>
-                <ExcelSheet colNames={colNames} data={this.handleDataSet()} />
 
             </div>
         )

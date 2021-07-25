@@ -16,6 +16,7 @@ import Employee from './component/reports/Employee';
 import Empbystation from './component/reports/Empbystation';
 import EmpByDeps from './component/reports/Empbydeps'
 import EmpsAppraisal from './component/transactions/EmpsAppraisal';
+import EmpExperience from './component/transactions/EmpExperience'
 import EmpEdu from './component/transactions/EmpEduDeg';
 import EmpTraining from './component/transactions/EmpTraining';
 import EmpFamily from './component/transactions/EmpFamily';
@@ -23,8 +24,6 @@ import Login from './component/Login';
 import Register from './component/register';
 import { loadUser } from './actions/AuthActions';
 import { getemps, getGid } from './actions/Actions'
-// import { useEffect } from 'react';
-
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 
@@ -46,10 +45,11 @@ class App extends React.Component {
       <Provider store={store} >
         <Router>
           <div className="App" id="wrapper">
-            <nav nav className="navbar navbar-default navbar-static-top" role="navigation" style={{ marginBottom: 0 }}>
+            <nav className="navbar navbar-default navbar-static-top" role="navigation" style={{ marginBottom: 0 }}>
               <Header />
               <Sidebar />
             </nav>
+
             <Switch>
               <Route path="/" exact component={Home} />
               <Route path="/table" exact component={Table} />
@@ -68,10 +68,15 @@ class App extends React.Component {
               <Route path="/empfamily" exact component={EmpFamily} />
               <Route path="/login" exact component={Login} />
               <Route path="/register" exact component={Register} />
+              <Route path="/empexperience" exact component={EmpExperience} />
+
+              
 
 
 
             </Switch>
+
+
 
           </div>
         </Router>

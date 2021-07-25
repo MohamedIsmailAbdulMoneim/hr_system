@@ -1,5 +1,7 @@
 {
   "dependencies": {
-    "react-export-excel": "^0.5.3"
+    "react-export-excel": "^0.5.3",
+    "ruby": "^0.6.1",
+    "rubygems": "^1.0.3"
   }
 }
