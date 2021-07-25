@@ -25,14 +25,8 @@ class Sidebar extends React.Component {
         this.props.getMainCodes(this.props.posts)
 
         const styles = {
-            position: "relative",
-            display: "block",
-            width: 250,
+            margin: 10,
             width: "100%",
-            textDecoration: "none",
-            padding: 15,
-            minHeight: 50,
-            whiteSpace: "normal"
         }
 
         return (
@@ -54,17 +48,16 @@ class Sidebar extends React.Component {
                                         <li>
                                             <a href="/assisstantchairman">مساعد رئيس الشركة</a>
                                         </li> */}
-                                        <NavLink  style={styles} to={`/generalmanager`}>
+                                        <NavLink style={styles} to={`/generalmanager`}>
                                             <li>
                                                 <a onClick={this.handleSidebarClick} href="/generalmanager">مدير عام</a>
                                             </li>
                                         </NavLink >
-                                        <NavLink  style={styles} to={`/assisstantgeneralmanager`}>
+                                        <NavLink style={styles} to={`/assisstantgeneralmanager`}>
                                             <li>
                                                 <a onClick={this.handleSidebarClick} href="assisstantgeneralmanager">مدير عام مساعد</a>
                                             </li>
                                         </NavLink >
-
                                     </ul>
                                 </li>
                                 {/* <li>
@@ -147,10 +140,11 @@ class Sidebar extends React.Component {
                                 {/* <li>
                                     <a href="morris.html">البيانات الأساسية للعمالة المؤقتة</a>
                                 </li> */}
-
-                                <li>
-                                    <a href="/EmpTrans">تدرج</a>
-                                </li>
+                                <NavLink style={styles} to={`/EmpTrans`}>
+                                    <li>
+                                        <a href="/EmpTrans">تدرج</a>
+                                    </li>
+                                </NavLink>
                                 <NavLink style={styles} to={`/empedudeg`}>
                                     <li>
                                         <a onClick={this.props.getJobGovern} href="/empedudeg">مؤهلات الموظفين</a>
@@ -161,53 +155,53 @@ class Sidebar extends React.Component {
                                         <a href="/emptraining">تدريب</a>
                                     </li>
                                 </Link> */}
-                                <li>
-                                    <a href="/empexperience">خبرات سابقة</a>
-                                </li>
-                                <li>
-                                    <a href="/empsappraisal">تقييمات سنوية</a>
-                                </li>
+                                <NavLink style={styles} to={`/empexperience`}>
+                                    <li>
+                                        <a href="/empexperience">خبرات سابقة</a>
+                                    </li>
+                                </NavLink>
+                                <NavLink style={styles} to={`/empsappraisal`}>
+                                    <li>
+                                        <a href="/empsappraisal">تقييمات سنوية</a>
+                                    </li>
+                                </NavLink>
                                 {/* <li>
                                     <a href="morris.html">سفر</a>
                                 </li> */}
                                 {/* <li>
                                     <a href="morris.html">جزاءات</a>
                                 </li> */}
-                                <NavLink  to={`/empfamily`}>
-                                    <li>
+                                <NavLink style={styles} to={`/empfamily`}>
+                                    <li >
                                         <a href="/empfamily">البيانات العائلية</a>
                                     </li>
                                 </NavLink >
-                                <li>
-                                    <a href="/orgstructure">الهيكل</a>
-                                </li>
+                                <NavLink style={styles} to={`/orgstructure`}>
+                                    <li>
+                                        <a href="/orgstructure">الهيكل</a>
+                                    </li>
+                                </NavLink>
                             </ul>
-
                         </li>
                         <li>
                             <a href="#"><i className="fa fa-bar-chart-o fa-fw"></i> تقارير<span className="fa arrow"></span></a>
                             <ul className="nav nav-first-level">
-                                <li>
-                                    <a href="/Employee">بيانات الموظفين</a>
-                                </li>
-                                <NavLink  style={styles} to={`/empbystation`}>
+                                <NavLink style={styles} to={`/Employee`}>
+                                    <li>
+                                        <a href="/Employee">بيانات الموظفين</a>
+                                    </li>
+                                </NavLink>
+                                <NavLink style={styles} to={`/empbystation`}>
                                     <li>
                                         <a onClick={this.props.getJobGovern} href="/empbystation">الموظفون بالمحطات</a>
                                     </li>
                                 </NavLink >
-
-                                <NavLink  style={styles} to={`/empbydeps`}>
-
+                                <NavLink style={styles} to={`/empbydeps`}>
                                     <li>
                                         <a onClick={this.props.getDeps} href="/empbydeps">الموظفون بالإدارات</a>
                                     </li>
                                 </NavLink >
-
-
-
-
                             </ul>
-
                         </li>
                         <li>
                             <a href="#"><i className="fa fa-files-o fa-fw"></i> Sample Pages<span className="fa arrow"></span></a>

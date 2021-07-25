@@ -365,7 +365,6 @@ class EmpEduDeg extends React.Component {
                         <div class="panel panel-default">
                             <div class="panel-heading" style={{ display: "flex", justifyContent: "space-evenly" }}>
                                 {this.state.edit ? <i onClick={this.closeEditSectionHandler} style={{ fontSize: 15, position: "relative", bottom: 10, left: 550 }} class="fas fa-times-circle"></i> : null}
-                                <i style={{ fontSize: 40, position: "relative", right: "90%" }} class="fas fa-file-excel"></i>
                             </div>
                             <div class="panel-body">
                                 <div class="table-responsive">
@@ -417,7 +416,7 @@ class EmpEduDeg extends React.Component {
                                                         {this.state.showDateUnlessEdit ? <td><input onClick={this.editDate} type="text" id="date" onChange={this.handelDateClick} value={this.state.transdate ? this.state.transdate : null} style={{ display: "inline", width: 80 }} /></td>
                                                             : <td><input type="date" id="date" onChange={this.handelDateClick} value={this.state.transdate ? this.state.transdate : null} style={{ display: "inline", width: 80 }} /></td>
                                                         }
-                                                        {/* <td><input placeholder={this.state.catname} /></td> */}
+                                                        <td><input placeholder={this.state.catname} /></td>
                                                         <td>
                                                             <select onChange={this.catClickHandeler}>
                                                                 {this.props.cates.map(cate => (
@@ -506,7 +505,7 @@ class EmpEduDeg extends React.Component {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div >
             </div >
         )
     }

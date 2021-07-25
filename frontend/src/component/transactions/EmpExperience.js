@@ -168,7 +168,7 @@ class EmpExperience extends React.Component {
                 {this.state.add ?
                     <Fragment>
                         <div class="row">
-                            <div className="col-lg-12" style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop:"5px" }}>
+                            <div className="col-lg-12" style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: "5px" }}>
                                 <div style={{ height: "100%", minHeight: 250, width: "50%", minWidth: "750px", overflow: "auto" }} class="panel panel-default">
                                     <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }} class="panel-heading">
                                         <span style={{ position: "relative", right: 50 }}>إضافة بيانات جديدة</span> {this.state.edit ? <i onClick={this.closeEditSectionHandler} style={{ fontSize: 15, position: "relative", left: 530 }} class="fas fa-times-circle"></i> : null}
@@ -260,7 +260,7 @@ class EmpExperience extends React.Component {
                 <div class="row">
                     <div class="col-lg-12">
                         <div className="panel panel-default">
-                            <div className="panel-heading" style={{minHeight: 40}}>
+                            <div className="panel-heading" style={{ minHeight: 40 }}>
                                 خبرة داخل القطاع
                             </div>
                             <div class="panel-body">
@@ -300,7 +300,7 @@ class EmpExperience extends React.Component {
                             </div>
                         </div>
                         <div className="panel panel-default">
-                            <div className="panel-heading" style={{minHeight: 40}}>
+                            <div className="panel-heading" style={{ minHeight: 40 }}>
                                 خبرة خارج القطاع
                             </div>
                             <div class="panel-body">
@@ -308,7 +308,7 @@ class EmpExperience extends React.Component {
                                     <table class="table table-striped table-bordered table-hover" id="dataTables-example">
                                         <thead>
                                             <tr>
-                                            <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>جهة الخبرة</th>
+                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>جهة الخبرة</th>
                                                 <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>الوظيفة</th>
                                                 <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>من</th>
                                                 <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>إلى</th>
@@ -340,15 +340,15 @@ class EmpExperience extends React.Component {
                             </div>
                         </div>
                         <div className="panel panel-default">
-                            <div className="panel-heading" style={{minHeight: 40}}>
-                               الخدمة العسكرية
+                            <div className="panel-heading" style={{ minHeight: 40 }}>
+                                الخدمة العسكرية
                             </div>
                             <div class="panel-body">
                                 <div class="table-responsive">
                                     <table class="table table-striped table-bordered table-hover" id="dataTables-example">
                                         <thead>
                                             <tr>
-                                            <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>جهة الخبرة</th>
+                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>جهة الخبرة</th>
                                                 <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>الوظيفة</th>
                                                 <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>من</th>
                                                 <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>إلى</th>
