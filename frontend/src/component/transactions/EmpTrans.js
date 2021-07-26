@@ -16,12 +16,20 @@ const colNames = [{ label: "الإسم", value: "name" }, { label: "تاريخ �
 class EmpTrans extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { editConfirmed: false, addConfirmed: false, showDateUnlessEdit: true, showTransResult: true, add: false, edit: false, empid: null, empname: null, transdate: null, jdname: null, supboxname: null, gname: null, jasi: null, indname: null, catname: null, catid: null, supboxid: null, mainboxid: null, levels: null, showStructWAdd: false, showStruct: false, showNamesResults: false };
+        this.state = { rowTrans: null, editConfirmed: false, addConfirmed: false, showDateUnlessEdit: true, showTransResult: true, add: false, edit: false, empid: null, empname: null, transdate: null, jdname: null, supboxname: null, gname: null, jasi: null, indname: null, catname: null, catid: null, supboxid: null, mainboxid: null, levels: null, showStructWAdd: false, showStruct: false, showNamesResults: false };
 
     }
 
     componentDidMount() {
+        this.props.getEmpTrans("", this.state.empname)
 
+    }
+
+    componentDidUpdate(prevProps) {
+        const { empTrans } = this.props
+        if (empTrans !== prevProps.empTrans) {
+            this.render()
+        }
     }
 
     /* 
@@ -197,7 +205,7 @@ class EmpTrans extends React.Component {
 
 
     nameInputHandler = (e) => {
-        this.setState({ showNamesResults: true, showTransResult: false })
+        this.setState({ showNamesResults: true, showTransResult: false, edit: false })
         this.props.getEmpNameByName(e.target.value)
         this.props.getCurrentJd(e.target.value)
         this.refs.empid.value = ''
@@ -308,8 +316,26 @@ class EmpTrans extends React.Component {
     }
 
     handelEdit_1 = (e) => {
+        this.setState({ edit: true, rowTrans: e.target.getAttribute("transdate") })
 
-        this.setState({ mainboxid: e.target.getAttribute("mainboxid"), edit: true, empname: e.target.getAttribute("empname"), transdate: e.target.getAttribute("transdate"), catname: e.target.getAttribute("catname"), catid: e.target.getAttribute("catid"), jdname: e.target.getAttribute("jdname"), supboxname: e.target.getAttribute("supboxname"), gname: e.target.getAttribute("jobgroup"), jasi: e.target.getAttribute("jasform"), indname: e.target.getAttribute("indname") })
+
+
+        let tds = document.getElementById(e.target.getAttribute("transdate")).childNodes
+
+        for (let i = 0; i < tds.length; i++) {
+
+
+            tds[i].style.background = "white"
+            tds[tds.length - 2].childNodes[0].classList.remove("fa-edit")
+            tds[tds.length - 2].childNodes[0].classList.add("fa-check")
+            tds[tds.length - 1].childNodes[0].classList.remove("fa-backspace")
+            tds[tds.length - 1].childNodes[0].classList.add("fa-times")
+
+
+        }
+
+        // document.getElementById(e.target.getAttribute("transdate")).childNodes[0].childNodes[0].removeAttribute("disabled")
+        this.setState({ edit: true, mainboxid: e.target.getAttribute("mainboxid"), edit: true, empname: e.target.getAttribute("empname"), transdate: e.target.getAttribute("transdate"), catname: e.target.getAttribute("catname"), catid: e.target.getAttribute("catid"), jdname: e.target.getAttribute("jdname"), supboxname: e.target.getAttribute("supboxname"), gname: e.target.getAttribute("jobgroup"), jasi: e.target.getAttribute("jasform"), indname: e.target.getAttribute("indname") })
         // new Date(this.props.empdetails[0].SECTOR_JOIN_DATE.slice(0, 10)).setDate(this.props.empdetails[0].SECTOR_JOIN_DATE.slice(0, 10).getDate() + 1).getUTCFullYear() + "-" + (this.props.empdetails[0].SECTOR_JOIN_DATE.slice(0, 10).getUTCMonth() + 1) + "-" + this.props.empdetails[0].SECTOR_JOIN_DATE.slice(0, 10).getUTCDate()
 
     }
@@ -320,17 +346,28 @@ class EmpTrans extends React.Component {
 
     handelEdit_2 = (e) => {
         e.preventDefault()
-        console.log(this.state.empid);
         // let data = { empNat: this.state.empNat, appraisal: this.refs.newAppraisal.value, year: document.getElementById("year").placeholder }
         let data = { mainboxid: this.state.mainboxid, date: this.state.transdate, catname: this.state.catname, jdname: this.state.jdname, supboxname: this.state.supboxname, gname: this.state.gname, jasi: this.state.jasi, indname: this.state.indname, empid: this.state.empid, empname: this.props.empNameByName ? this.props.empNameByName.length >= 1 ? this.props.empNameByName[0].NAME_ARABIC : null : null }
-        axios({
-            method: "PUT",
-            data: data,
-            url: `http://localhost:5000/updateemptrans`,
-            headers: { "Content-Type": "application/json" },
-        }).then(data => {
+        this.updateEmpTrans(data)
+        let tds = document.getElementById(e.target.getAttribute("transdate")).childNodes
 
+        for (let i = 0; i < tds.length; i++) {
+
+
+            tds[i].style.background = "transparent"
+            tds[tds.length - 2].childNodes[0].classList.remove("fa-check")
+            tds[tds.length - 2].childNodes[0].classList.add("fa-edit")
+            tds[tds.length - 1].childNodes[0].classList.remove("fa-times")
+            tds[tds.length - 1].childNodes[0].classList.add("fa-backspace")
+
+
+        }
+        this.setState({
+            edit: false
         })
+
+        this.forceUpdate(this.props.getEmpTrans("", this.state.empname))
+
     }
 
     showStruct = () => {
@@ -341,7 +378,6 @@ class EmpTrans extends React.Component {
 
 
     render() {
-        console.log(this.refs.searchName ? this.refs.searchName.placeholder : null);
 
         const styles = {
             display: "block",
@@ -529,7 +565,7 @@ class EmpTrans extends React.Component {
                                     <span>رقم الأداء : </span><input ref="empid" onKeyDown={this.idInputHandler} style={{ background: "white", width: "40%", marginBottom: 5, marginRight: 5, border: "1px solid black" }} type="text" name="first_name" />
                                 </div>
                                 <div style={{ marginTop: 20, marginRight: 0, width: "70%" }} class="input-group">
-                                    <span >الإسم : </span><input ref="searchName" onKeyUp={this.nameInputHandler} placeholder={this.props.empname && !this.state.edit ? this.props.empname.length >= 1 ? this.props.empname[0].NAME_ARABIC : "null" : "null"} style={{ background: "white", width: "80%", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
+                                    <span >الإسم : </span><input ref="searchName" onKeyUp={this.nameInputHandler} style={{ background: "white", width: "80%", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
                                 </div>
                                 <button onClick={this.addNewButtonClickHandeler} style={{ position: "relative", right: 20, top: 8 }} type="button" class="btn btn-primary">إضافة تدرج جديد</button>
                             </div>
@@ -556,27 +592,26 @@ class EmpTrans extends React.Component {
                 </div>
                 <div class="row">
                     <div class="col-lg-12">
-                        <div class="panel panel-default" style={{width: "100%"}}>
+                        <div class="panel panel-default" style={{ width: "100%" }}>
                             <div class="panel-heading" style={{ display: "flex", width: "100%", justifyContent: "space-between" }}>
                                 {this.state.edit ? <i onClick={this.closeEditSectionHandler} style={{ fontSize: 15, position: "relative", bottom: 10, left: 550 }} class="fas fa-times-circle"></i> : null}
                                 <ExcelSheet colNames={colNames} data={this.handleDataSet()} />
                                 {this.props.empname && !this.state.edit && !this.state.add ? this.props.empname.length >= 1 ? <h3>  بيان بحركة السيد / {this.props.empname[0].NAME_ARABIC}</h3> : null : null || this.props.empNameByName ? this.props.empNameByName.length >= 1 ? `  ${this.props.empNameByName[0].NAME_ARABIC} ` : null : null}
-                                <img onClick={this.showStruct} src={structure} style={{width:50,height:50}} />
+                                <img onClick={this.showStruct} src={structure} style={{ width: 50, height: 50 }} />
 
                             </div>
                             <div class="panel-body">
                                 <div class="table-responsive">
-                                    <table class="table table-striped table-bordered table-hover" id="dataTables-example">
-                                        {!this.state.edit && this.state.showTransResult ?
+                                    <table class="table table-striped table-bordered table-hover" >
+                                        {this.state.edit ?
                                             <Fragment>
                                                 <thead>
                                                     <tr>
-                                                        {this.state.edit ? <th style={{ width: 250 }}>الإسم</th> : null}
-                                                        <th style={{width: 110}}>الوظيفة</th>
-                                                        <th style={{width: 220}}>المسمى الوظيفي</th>
-                                                        <th style={{width: 90}}>تاريخ الحركة</th>
-                                                        <th style={{width: 150}}>الإدارة</th>
-                                                        <th style={{width: 90}}>طريقة شغل الوظيفة</th>
+                                                        <th>الإدارة</th>
+                                                        <th>الوظيفة</th>
+                                                        <th>المسمى الوظيفي</th>
+                                                        <th>تاريخ الحركة</th>
+                                                        <th>طريقة شغل الوظيفة</th>
                                                         <th>نوع التخصص</th>
                                                         <th>حالة الوظيفة</th>
                                                         <th>تعديل</th>
@@ -585,66 +620,21 @@ class EmpTrans extends React.Component {
                                                 </thead>
                                                 {this.props.empTrans.map(trans => (
                                                     <tbody>
-                                                        <tr>
-                                                            <td ref="jdname">{trans.MAIN_BOX_NAME}</td>
-                                                            <td ref="supboxname">{trans.SUP_BOX_NAME}</td>
-                                                            <td >{trans.TRANS_DATE}</td>
-                                                            <td ref="catname">{trans.catename}</td>
-                                                            <td ref="jasi">{trans.JOB_ASSIGNMENT_FORM_ARABIC}</td>
-                                                            <td ref="gname">{trans.G_NAME}</td>
-                                                            <td ref="indname">{trans.INDICATOR_NAME}</td>
-                                                            <td onClick={this.handelEdit_1}><i empname={trans.NAME_ARABIC} transdate={trans.TRANS_DATE} catid={trans.CAT_ID} catname={trans.CAT_NAME} mainboxid={trans.MAIN_BOX_ID} jdname={trans.MAIN_BOX_NAME} supboxid={trans.SUP_BOX_ID} supboxname={trans.SUP_BOX_NAME} jobgroup={trans.G_NAME} jasform={trans.JOB_ASSIGNMENT_FORM_ARABIC} indname={trans.INDICATOR_NAME} class="fas fa-edit"></i></td>
-                                                            <td><i class="fas fa-backspace"></i></td>
-                                                        </tr>
-                                                    </tbody>
-
-                                                ))}
-
-
-
-                                            </Fragment>
-
-                                            : !this.state.add && this.state.edit ?
-                                                <Fragment>
-
-                                                    <thead>
-                                                        <tr>
-                                                            <th>الإسم</th>
-                                                            <th>تاريخ الحركة</th>
-                                                            <th>الإدارة</th>
-                                                            <th>الوظيفة</th>
-                                                            <th>المسمى الوظيفي</th>
-                                                            <th>نوع التخصص</th>
-                                                            <th>طريقة شغل الوظيفة</th>
-                                                            <th>حالة الوظيفة</th>
-                                                            <th>تعديل</th>
-                                                            <th>حذف</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr>
-
-                                                            <td style={{ width: 250 }} ><input type="text" placeholder={this.state.empname ? this.state.empname : null} disabled /></td>
-                                                            {this.state.showDateUnlessEdit ? <td><input onClick={this.editDate} type="text" id="date" onChange={this.handelDateClick} value={this.state.transdate ? this.state.transdate : null} style={{ display: "inline", width: 80 }} /></td>
-                                                                : <td><input type="date" id="date" onChange={this.handelDateClick} value={this.state.transdate ? this.state.transdate : null} style={{ display: "inline", width: 80 }} /></td>
-                                                            }
-                                                            {/* <td><input placeholder={this.state.catname} /></td> */}
+                                                        <tr id={trans.TRANS_DATE}>
+                                                            <td>{this.state.edit && this.state.rowTrans == trans.TRANS_DATE ? <select style={{ height: 34, width: 163.46, borderRadius: 5 }} onChange={this.catClickHandeler}>
+                                                                {this.props.cates.map(cate => (
+                                                                    <Fragment>
+                                                                        <option id={cate.CAT_ID}>
+                                                                            {cate.CAT_NAME}
+                                                                        </option>
+                                                                    </Fragment>
+                                                                ))}
+                                                                <option selected>
+                                                                    {this.state.catname}
+                                                                </option>
+                                                            </select> : trans.catename}</td>
                                                             <td>
-                                                                <select onChange={this.catClickHandeler}>
-                                                                    {this.props.cates.map(cate => (
-                                                                        <Fragment>
-                                                                            <option id={cate.CAT_ID}>
-                                                                                {cate.CAT_NAME}
-                                                                            </option>
-                                                                        </Fragment>
-                                                                    ))}
-                                                                    <option selected>
-                                                                        {this.state.catname}
-                                                                    </option>
-                                                                </select>
-                                                            </td>
-                                                            <td>
-                                                                <select onChange={this.jdNameClickHandeler}>
+                                                                {this.state.edit && this.state.rowTrans == trans.TRANS_DATE ? <select style={{ height: 34, width: 163.46, borderRadius: 5 }} onChange={this.jdNameClickHandeler}>
                                                                     {this.props.jobdgbycat.map(job => (
                                                                         <option>
                                                                             {job.J_D_NAME}
@@ -652,67 +642,93 @@ class EmpTrans extends React.Component {
                                                                     ))}
                                                                     <option selected>{this.state.jdname}</option>
                                                                 </select>
-                                                            </td>
-                                                            <td>
-                                                                <select required onChange={this.supboxClickHandeler}>
-                                                                    {this.props.empavailsup.map(job => (
-                                                                        <option>
-                                                                            {job.SUP_BOX_NAME}
-                                                                        </option>
-                                                                    ))}
-                                                                    <option selected>{this.state.supboxname}</option>
-
-                                                                </select>
-                                                            </td>
-                                                            <td>
-                                                                <select required onChange={this.gNameClickeHandeler}>
-                                                                    <option>فني</option>
-                                                                    <option>إداري</option>
-                                                                </select>
-                                                            </td>
-                                                            <td>
-                                                                <select required onChange={this.jasiClickeHandeler}>
-                                                                    <option>أخرى</option>
-                                                                    <option>تعيين</option>
-                                                                    <option>نقل</option>
-                                                                    <option>ندب</option>
-                                                                    <option>اعاره</option>
-                                                                    <option>تكليف</option>
-                                                                    <option>محدد المدة</option>
-                                                                    <option>تدريب</option>
-                                                                    <option>ترقية</option>
-                                                                    <option>تثبيت</option>
-                                                                    <option>نقل طبقا لتعديل تنظيمي</option>
-                                                                    <option>إعادة تعيين</option>
-                                                                    <option>إلغاء ندب</option>
-                                                                    <option>إلغاء تكليف</option>
-                                                                    <option>تسكين</option>
-                                                                    <option>تعديل مسمى الوظيفة</option>
-                                                                    <option>عقد مؤقت</option>
-                                                                    <option>مكافئة شاملة</option>
-                                                                    <option>تعديل ندب</option>
-                                                                    <option>إشراف</option>
-                                                                    <option>الحاق</option>
-                                                                    <option>عقد إختبار</option>
-                                                                    <option>إنهاء خدمة</option>
-                                                                    <option>أستيعاب</option>
-                                                                    <option selected>{this.state.jasi}</option>
-                                                                </select>
-                                                            </td>
-                                                            <td>
-                                                                <select required onChange={this.indClickeHandeler}>
-                                                                    <option>أصلية</option>
-                                                                    <option>حالية</option>
-                                                                    <option>سابقة</option>
-                                                                    <option selected>{this.state.indname}</option>
-                                                                </select></td>
-                                                            <td onClick={this.editHandler}><i class="fas fa-edit"></i></td>
-                                                            <td><i class="fas fa-backspace"></i></td>
+                                                                    :
+                                                                    trans.MAIN_BOX_NAME}</td>
+                                                            <td >{this.state.edit && this.state.rowTrans == trans.TRANS_DATE ? <select style={{ height: 34, width: 220, borderRadius: 5 }} required onChange={this.supboxClickHandeler}>
+                                                                {this.props.empavailsup.map(job => (
+                                                                    <option>
+                                                                        {job.SUP_BOX_NAME}
+                                                                    </option>
+                                                                ))}
+                                                                <option selected>{this.state.supboxname}</option>
+                                                            </select> : trans.SUP_BOX_NAME}</td>
+                                                            <td>{this.state.edit && this.state.rowTrans == trans.TRANS_DATE ? <input type="date" onChange={this.handelDateClick} className="form-control" /> : trans.TRANS_DATE}</td>
+                                                            <td>{this.state.edit && this.state.rowTrans == trans.TRANS_DATE ? <select style={{ height: 34, width: 163.46, borderRadius: 5 }} required onChange={this.jasiClickeHandeler}>
+                                                                <option>أخرى</option>
+                                                                <option>تعيين</option>
+                                                                <option>نقل</option>
+                                                                <option>ندب</option>
+                                                                <option>اعاره</option>
+                                                                <option>تكليف</option>
+                                                                <option>محدد المدة</option>
+                                                                <option>تدريب</option>
+                                                                <option>ترقية</option>
+                                                                <option>تثبيت</option>
+                                                                <option>نقل طبقا لتعديل تنظيمي</option>
+                                                                <option>إعادة تعيين</option>
+                                                                <option>إلغاء ندب</option>
+                                                                <option>إلغاء تكليف</option>
+                                                                <option>تسكين</option>
+                                                                <option>تعديل مسمى الوظيفة</option>
+                                                                <option>عقد مؤقت</option>
+                                                                <option>مكافئة شاملة</option>
+                                                                <option>تعديل ندب</option>
+                                                                <option>إشراف</option>
+                                                                <option>الحاق</option>
+                                                                <option>عقد إختبار</option>
+                                                                <option>إنهاء خدمة</option>
+                                                                <option>أستيعاب</option>
+                                                                <option selected>{this.state.jasi}</option>
+                                                            </select> : trans.JOB_ASSIGNMENT_FORM_ARABIC}</td>
+                                                            <td>{this.state.edit && this.state.rowTrans == trans.TRANS_DATE ? <select style={{ height: 34, width: 163.46, borderRadius: 5 }} required onChange={this.gNameClickeHandeler}>
+                                                                <option>فني</option>
+                                                                <option>إداري</option>
+                                                            </select> : trans.G_NAME}</td>
+                                                            <td>{this.state.edit && this.state.rowTrans == trans.TRANS_DATE ? <select style={{ height: 34, width: 163.46, borderRadius: 5 }} required onChange={this.indClickeHandeler}>
+                                                                <option>أصلية</option>
+                                                                <option>حالية</option>
+                                                                <option>سابقة</option>
+                                                                <option selected>{this.state.indname}</option>
+                                                            </select> : trans.INDICATOR_NAME}</td>
+                                                            <td onClick={this.state.edit ? this.handelEdit_2 : this.handelEdit_1}><i style={{ marginTop: 7 }} empname={trans.NAME_ARABIC} transdate={trans.TRANS_DATE} catid={trans.CAT_ID} catname={trans.CAT_NAME} mainboxid={trans.MAIN_BOX_ID} jdname={trans.MAIN_BOX_NAME} supboxid={trans.SUP_BOX_ID} supboxname={trans.SUP_BOX_NAME} jobgroup={trans.G_NAME} jasform={trans.JOB_ASSIGNMENT_FORM_ARABIC} indname={trans.INDICATOR_NAME} class="fas fa-edit"></i></td>
+                                                            <td><i style={{ marginTop: 7 }} class="fas fa-backspace"></i></td>
                                                         </tr>
                                                     </tbody>
-                                                </Fragment>
-                                                : null}
 
+                                                ))}
+                                            </Fragment> : <Fragment>
+                                                <thead>
+                                                    <tr>
+                                                        <th>الإدارة</th>
+                                                        <th>الوظيفة</th>
+                                                        <th>المسمى الوظيفي</th>
+                                                        <th>تاريخ الحركة</th>
+                                                        <th>طريقة شغل الوظيفة</th>
+                                                        <th>نوع التخصص</th>
+                                                        <th>حالة الوظيفة</th>
+                                                        <th>تعديل</th>
+                                                        <th>حذف</th>
+                                                    </tr>
+                                                </thead>
+                                                {this.props.empTrans.map(trans => (
+                                                    <tbody>
+                                                        <tr id={trans.TRANS_DATE}>
+                                                            <td>{trans.catename}</td>
+                                                            <td>
+                                                                {trans.MAIN_BOX_NAME}</td>
+                                                            <td >{trans.SUP_BOX_NAME}</td>
+                                                            <td>{trans.TRANS_DATE}</td>
+                                                            <td>{trans.JOB_ASSIGNMENT_FORM_ARABIC}</td>
+                                                            <td>{trans.G_NAME}</td>
+                                                            <td>{trans.INDICATOR_NAME}</td>
+                                                            <td onClick={this.state.edit ? this.handelEdit_2 : this.handelEdit_1}><i style={{ marginTop: 7 }} empname={trans.NAME_ARABIC} transdate={trans.TRANS_DATE} catid={trans.CAT_ID} catname={trans.CAT_NAME} mainboxid={trans.MAIN_BOX_ID} jdname={trans.MAIN_BOX_NAME} supboxid={trans.SUP_BOX_ID} supboxname={trans.SUP_BOX_NAME} jobgroup={trans.G_NAME} jasform={trans.JOB_ASSIGNMENT_FORM_ARABIC} indname={trans.INDICATOR_NAME} class="fas fa-edit"></i></td>
+                                                            <td><i style={{ marginTop: 7 }} class="fas fa-backspace"></i></td>
+                                                        </tr>
+                                                    </tbody>
+
+                                                ))}
+                                            </Fragment>
+                                        }
                                     </table>
                                     {this.props.empTrans.length < 1 ? <h1>عفواً لا توجد بييانات</h1> : null}
 
@@ -750,3 +766,153 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps, {
     getEmpTrans, getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox, getUpJd, gitDownJd
 })(EmpTrans);
+
+
+{/* <table class="table table-striped table-bordered table-hover" id="dataTables-example">
+{!this.state.edit && this.state.showTransResult ?
+    <Fragment>
+        <thead>
+            <tr>
+                {this.state.edit ? <th style={{ width: 250 }}>الإسم</th> : null}
+                <th style={{width: 110}}>الوظيفة</th>
+                <th style={{width: 220}}>المسمى الوظيفي</th>
+                <th style={{width: 90}}>تاريخ الحركة</th>
+                <th style={{width: 150}}>الإدارة</th>
+                <th style={{width: 90}}>طريقة شغل الوظيفة</th>
+                <th>نوع التخصص</th>
+                <th>حالة الوظيفة</th>
+                <th>تعديل</th>
+                <th>حذف</th>
+            </tr>
+        </thead>
+        {this.props.empTrans.map(trans => (
+            <tbody>
+                <tr>
+                    <td ref="jdname">{trans.MAIN_BOX_NAME}</td>
+                    <td ref="supboxname">{trans.SUP_BOX_NAME}</td>
+                    <td >{trans.TRANS_DATE}</td>
+                    <td ref="catname">{trans.catename}</td>
+                    <td ref="jasi">{trans.JOB_ASSIGNMENT_FORM_ARABIC}</td>
+                    <td ref="gname">{trans.G_NAME}</td>
+                    <td ref="indname">{trans.INDICATOR_NAME}</td>
+                    <td onClick={this.handelEdit_1}><i empname={trans.NAME_ARABIC} transdate={trans.TRANS_DATE} catid={trans.CAT_ID} catname={trans.CAT_NAME} mainboxid={trans.MAIN_BOX_ID} jdname={trans.MAIN_BOX_NAME} supboxid={trans.SUP_BOX_ID} supboxname={trans.SUP_BOX_NAME} jobgroup={trans.G_NAME} jasform={trans.JOB_ASSIGNMENT_FORM_ARABIC} indname={trans.INDICATOR_NAME} class="fas fa-edit"></i></td>
+                    <td><i class="fas fa-backspace"></i></td>
+                </tr>
+            </tbody>
+
+        ))}
+
+
+
+    </Fragment>
+
+    : !this.state.add && this.state.edit ?
+        <Fragment>
+
+            <thead>
+                <tr>
+                    <th>الإسم</th>
+                    <th>تاريخ الحركة</th>
+                    <th>الإدارة</th>
+                    <th>الوظيفة</th>
+                    <th>المسمى الوظيفي</th>
+                    <th>نوع التخصص</th>
+                    <th>طريقة شغل الوظيفة</th>
+                    <th>حالة الوظيفة</th>
+                    <th>تعديل</th>
+                    <th>حذف</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+
+                    <td style={{ width: 250 }} ><input type="text" placeholder={this.state.empname ? this.state.empname : null} disabled /></td>
+                    {this.state.showDateUnlessEdit ? <td><input onClick={this.editDate} type="text" id="date" onChange={this.handelDateClick} value={this.state.transdate ? this.state.transdate : null} style={{ display: "inline", width: 80 }} /></td>
+                        : <td><input type="date" id="date" onChange={this.handelDateClick} value={this.state.transdate ? this.state.transdate : null} style={{ display: "inline", width: 80 }} /></td>
+                    }
+                    <td><input placeholder={this.state.catname} /></td>
+                    <td>
+                        <select onChange={this.catClickHandeler}>
+                            {this.props.cates.map(cate => (
+                                <Fragment>
+                                    <option id={cate.CAT_ID}>
+                                        {cate.CAT_NAME}
+                                    </option>
+                                </Fragment>
+                            ))}
+                            <option selected>
+                                {this.state.catname}
+                            </option>
+                        </select>
+                    </td>
+                    <td>
+                        <select onChange={this.jdNameClickHandeler}>
+                            {this.props.jobdgbycat.map(job => (
+                                <option>
+                                    {job.J_D_NAME}
+                                </option>
+                            ))}
+                            <option selected>{this.state.jdname}</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select required onChange={this.supboxClickHandeler}>
+                            {this.props.empavailsup.map(job => (
+                                <option>
+                                    {job.SUP_BOX_NAME}
+                                </option>
+                            ))}
+                            <option selected>{this.state.supboxname}</option>
+
+                        </select>
+                    </td>
+                    <td>
+                        <select required onChange={this.gNameClickeHandeler}>
+                            <option>فني</option>
+                            <option>إداري</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select required onChange={this.jasiClickeHandeler}>
+                            <option>أخرى</option>
+                            <option>تعيين</option>
+                            <option>نقل</option>
+                            <option>ندب</option>
+                            <option>اعاره</option>
+                            <option>تكليف</option>
+                            <option>محدد المدة</option>
+                            <option>تدريب</option>
+                            <option>ترقية</option>
+                            <option>تثبيت</option>
+                            <option>نقل طبقا لتعديل تنظيمي</option>
+                            <option>إعادة تعيين</option>
+                            <option>إلغاء ندب</option>
+                            <option>إلغاء تكليف</option>
+                            <option>تسكين</option>
+                            <option>تعديل مسمى الوظيفة</option>
+                            <option>عقد مؤقت</option>
+                            <option>مكافئة شاملة</option>
+                            <option>تعديل ندب</option>
+                            <option>إشراف</option>
+                            <option>الحاق</option>
+                            <option>عقد إختبار</option>
+                            <option>إنهاء خدمة</option>
+                            <option>أستيعاب</option>
+                            <option selected>{this.state.jasi}</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select required onChange={this.indClickeHandeler}>
+                            <option>أصلية</option>
+                            <option>حالية</option>
+                            <option>سابقة</option>
+                            <option selected>{this.state.indname}</option>
+                        </select></td>
+                    <td onClick={this.editHandler}><i class="fas fa-edit"></i></td>
+                    <td><i class="fas fa-backspace"></i></td>
+                </tr>
+            </tbody>
+        </Fragment>
+        : null}
+
+</table> */}
