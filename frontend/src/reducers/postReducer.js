@@ -1,6 +1,6 @@
 import {
   fetchCates,
-  fetchJobDgreeCodes, fetchMainCodes, fetchJobByCat, fetchSupBoxNamesandmanager, fetchJobGovern, fetchJobStation, fetchEmpStationAndGovern, fetchDeps, fetchEmpByDeps, fetchEmpName, fetchEmpAppraisal, fetchEmpTrans, fetchEmpEdu, fetchEmpNameByName, fetchCurrentjd, fetchavailjd, fetchavailsupbox, fetchupjd, fetchEmpDetails, fetchDownJd, fetchEmpFamily, fetchqn, fetchspecarabic, fetchuneschool, fetchemps, fetchgid
+  fetchJobDgreeCodes, fetchMainCodes, fetchJobByCat, fetchSupBoxNamesandmanager, fetchJobGovern, fetchJobStation, fetchEmpStationAndGovern, fetchDeps, fetchEmpByDeps, fetchEmpName, fetchEmpAppraisal, fetchEmpTrans, fetchEmpEdu, fetchEmpNameByName, fetchCurrentjd, fetchavailjd, fetchavailsupbox, fetchupjd, fetchEmpDetails, fetchDownJd, fetchEmpFamily, fetchqn, fetchspecarabic, fetchuneschool, fetchemps, fetchgid, updatetrans
 
 } from "../actions/ActionTypes";
 
@@ -188,6 +188,12 @@ export default function (state = initialState, action) {
       return {
         ...state,
         gid: action.payload
+      }
+
+    case updatetrans:
+      return {
+        ...state,
+        empTrans: action.payload
       }
 
 

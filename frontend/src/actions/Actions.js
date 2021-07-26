@@ -25,7 +25,8 @@ import {
   fetchuneschool,
   fetchspecarabic,
   fetchemps,
-  fetchgid
+  fetchgid,
+  updatetrans
 } from "../actions/ActionTypes";
 import axios from "axios";
 
@@ -304,6 +305,20 @@ export const getGid = () => (dispatch) => {
     dispatch({
       type: fetchgid,
       payload: res.data
+    })
+  })
+}
+
+export const updateEmpTrans = (obj) => (dispatch) => {
+  axios({
+    method: "PUT",
+    data: obj,
+    url: `http://localhost:5000/updateemptrans`,
+    headers: { "Content-Type": "application/json" },
+  }).then(data => {
+    dispatch({
+      type: updatetrans,
+      payload: data.data[1]
     })
   })
 }

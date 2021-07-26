@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import {
-    getEmpTrans, getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox, getUpJd, gitDownJd
+    getEmpTrans, getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox, getUpJd, gitDownJd, updateEmpTrans
 } from "../../actions/Actions";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
@@ -348,7 +348,7 @@ class EmpTrans extends React.Component {
         e.preventDefault()
         // let data = { empNat: this.state.empNat, appraisal: this.refs.newAppraisal.value, year: document.getElementById("year").placeholder }
         let data = { mainboxid: this.state.mainboxid, date: this.state.transdate, catname: this.state.catname, jdname: this.state.jdname, supboxname: this.state.supboxname, gname: this.state.gname, jasi: this.state.jasi, indname: this.state.indname, empid: this.state.empid, empname: this.props.empNameByName ? this.props.empNameByName.length >= 1 ? this.props.empNameByName[0].NAME_ARABIC : null : null }
-        this.updateEmpTrans(data)
+        this.props.updateEmpTrans(data)
         let tds = document.getElementById(e.target.getAttribute("transdate")).childNodes
 
         for (let i = 0; i < tds.length; i++) {
@@ -764,7 +764,7 @@ const mapStateToProps = (state) => {
     };
 };
 export default connect(mapStateToProps, {
-    getEmpTrans, getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox, getUpJd, gitDownJd
+    getEmpTrans, getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox, getUpJd, gitDownJd, updateEmpTrans
 })(EmpTrans);
 
 
