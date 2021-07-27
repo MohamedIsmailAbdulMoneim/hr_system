@@ -18,13 +18,9 @@ export const loadUser = () => (dispatch, getState) => {
         type: USER_LOADING
     });
 
-    console.log('hit');
-
-
     axios.get('http://localhost:5000/protected', tokenConfig(getState)).then(res => dispatch({
         type: USER_LOADED,
         payload: res.data
-
     })).catch(err => {
         dispatch(returnErrors(err.response.data, err.response.status))
         dispatch({

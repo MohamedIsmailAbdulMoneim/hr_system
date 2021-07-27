@@ -2,8 +2,9 @@ import React, { Component, Fragment } from "react";
 import { Bar, Line, Pie } from 'react-chartjs-2';
 import { connect } from "react-redux";
 import {
-    getEmpTrans, getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox, getUpJd, gitDownJd, getQn
+     getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox, getUpJd, gitDownJd, getQn
 } from "../../actions/Actions";
+import {updateEmpTrans, getEmpTrans} from "../../actions/TransActions";
 
 
 class Chart extends Component {

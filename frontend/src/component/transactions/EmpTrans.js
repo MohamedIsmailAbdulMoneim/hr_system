@@ -1,7 +1,8 @@
 import React, { Fragment } from "react";
 import {
-    getEmpTrans, getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox, getUpJd, gitDownJd, updateEmpTrans
+     getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox, getUpJd, gitDownJd
 } from "../../actions/Actions";
+import {updateEmpTrans, getEmpTrans} from "../../actions/TransActions";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -16,21 +17,14 @@ const colNames = [{ label: "الإسم", value: "name" }, { label: "تاريخ �
 class EmpTrans extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { rowTrans: null, editConfirmed: false, addConfirmed: false, showDateUnlessEdit: true, showTransResult: true, add: false, edit: false, empid: null, empname: null, transdate: null, jdname: null, supboxname: null, gname: null, jasi: null, indname: null, catname: null, catid: null, supboxid: null, mainboxid: null, levels: null, showStructWAdd: false, showStruct: false, showNamesResults: false };
+        this.state = {catnameChanged: false ,rowTrans: null, editConfirmed: false, addConfirmed: false, showDateUnlessEdit: true, showTransResult: true, add: false, edit: false, empid: null, empname: null, transdate: null, jdname: null, supboxname: null, gname: null, jasi: null, indname: null, catname: null, catid: null, supboxid: null, mainboxid: null, levels: null, showStructWAdd: false, showStruct: false, showNamesResults: false };
 
     }
 
     componentDidMount() {
-        this.props.getEmpTrans("", this.state.empname)
 
     }
 
-    componentDidUpdate(prevProps) {
-        const { empTrans } = this.props
-        if (empTrans !== prevProps.empTrans) {
-            this.render()
-        }
-    }
 
     /* 
     
@@ -254,8 +248,15 @@ class EmpTrans extends React.Component {
 
 
     closeEditSectionHandler = (e) => {
+        let tds = document.getElementById(e.target.getAttribute("transdate")).childNodes
+        for (let i = 0; i < tds.length; i++) {
+            tds[i].style.background = "transparent"
+            tds[tds.length - 2].childNodes[0].classList.remove("fa-check")
+            tds[tds.length - 2].childNodes[0].classList.add("fa-edit")
+            tds[tds.length - 1].childNodes[0].classList.remove("fa-times")
+            tds[tds.length - 1].childNodes[0].classList.add("fa-backspace")
+        }
         this.setState({ edit: false })
-        this.props.getEmpTrans(this.state.empid, "")
     }
 
 
@@ -269,7 +270,7 @@ class EmpTrans extends React.Component {
     catClickHandeler = (e) => {
         this.props.getJobDgByCat(e.target.value, this.props.empcurrentjd ? this.props.empcurrentjd.length ? this.props.empcurrentjd[0].J_D_ID_P : null : null)
 
-        this.setState({ catname: e.target.value })
+        this.setState({ catname: e.target.value, catnameChanged: true })
         if (this.refs.selected) {
             if (this.refs.selected.options) {
                 this.refs.selected.options.selectedIndex = this.refs.selected.options.length - 1
@@ -366,9 +367,10 @@ class EmpTrans extends React.Component {
             edit: false
         })
 
-        this.forceUpdate(this.props.getEmpTrans("", this.state.empname))
-
+        this.props.getEmpTrans("", this.state.empname)
     }
+
+    
 
     showStruct = () => {
         this.setState({ showStruct: true })
@@ -594,7 +596,6 @@ class EmpTrans extends React.Component {
                     <div class="col-lg-12">
                         <div class="panel panel-default" style={{ width: "100%" }}>
                             <div class="panel-heading" style={{ display: "flex", width: "100%", justifyContent: "space-between" }}>
-                                {this.state.edit ? <i onClick={this.closeEditSectionHandler} style={{ fontSize: 15, position: "relative", bottom: 10, left: 550 }} class="fas fa-times-circle"></i> : null}
                                 <ExcelSheet colNames={colNames} data={this.handleDataSet()} />
                                 {this.props.empname && !this.state.edit && !this.state.add ? this.props.empname.length >= 1 ? <h3>  بيان بحركة السيد / {this.props.empname[0].NAME_ARABIC}</h3> : null : null || this.props.empNameByName ? this.props.empNameByName.length >= 1 ? `  ${this.props.empNameByName[0].NAME_ARABIC} ` : null : null}
                                 <img onClick={this.showStruct} src={structure} style={{ width: 50, height: 50 }} />
@@ -621,7 +622,7 @@ class EmpTrans extends React.Component {
                                                 {this.props.empTrans.map(trans => (
                                                     <tbody>
                                                         <tr id={trans.TRANS_DATE}>
-                                                            <td>{this.state.edit && this.state.rowTrans == trans.TRANS_DATE ? <select style={{ height: 34, width: 163.46, borderRadius: 5 }} onChange={this.catClickHandeler}>
+                                                            <td>{this.state.edit && this.state.rowTrans == trans.TRANS_DATE ? <select style={{ height: 34, width: 150, borderRadius: 5 }} onChange={this.catClickHandeler}>
                                                                 {this.props.cates.map(cate => (
                                                                     <Fragment>
                                                                         <option id={cate.CAT_ID}>
@@ -634,26 +635,26 @@ class EmpTrans extends React.Component {
                                                                 </option>
                                                             </select> : trans.catename}</td>
                                                             <td>
-                                                                {this.state.edit && this.state.rowTrans == trans.TRANS_DATE ? <select style={{ height: 34, width: 163.46, borderRadius: 5 }} onChange={this.jdNameClickHandeler}>
+                                                                {this.state.edit && this.state.rowTrans == trans.TRANS_DATE ? <select style={{ height: 34, width: 90, borderRadius: 5 }} onChange={this.jdNameClickHandeler}>
                                                                     {this.props.jobdgbycat.map(job => (
                                                                         <option>
                                                                             {job.J_D_NAME}
                                                                         </option>
                                                                     ))}
-                                                                    <option selected>{this.state.jdname}</option>
+                                                                    <option selected>{this.state.catnameChanged ? "اختر الوظيفة" : this.state.jdname}</option>
                                                                 </select>
                                                                     :
                                                                     trans.MAIN_BOX_NAME}</td>
-                                                            <td >{this.state.edit && this.state.rowTrans == trans.TRANS_DATE ? <select style={{ height: 34, width: 220, borderRadius: 5 }} required onChange={this.supboxClickHandeler}>
+                                                            <td >{this.state.edit && this.state.rowTrans == trans.TRANS_DATE ? <select style={{ height: 34, width: 150, borderRadius: 5 }} required onChange={this.supboxClickHandeler}>
                                                                 {this.props.empavailsup.map(job => (
                                                                     <option>
                                                                         {job.SUP_BOX_NAME}
                                                                     </option>
                                                                 ))}
-                                                                <option selected>{this.state.supboxname}</option>
+                                                                <option selected>{this.state.catnameChanged ? "اختر المسمى الوظيفي" : this.state.supboxname}</option>
                                                             </select> : trans.SUP_BOX_NAME}</td>
                                                             <td>{this.state.edit && this.state.rowTrans == trans.TRANS_DATE ? <input type="date" onChange={this.handelDateClick} className="form-control" /> : trans.TRANS_DATE}</td>
-                                                            <td>{this.state.edit && this.state.rowTrans == trans.TRANS_DATE ? <select style={{ height: 34, width: 163.46, borderRadius: 5 }} required onChange={this.jasiClickeHandeler}>
+                                                            <td>{this.state.edit && this.state.rowTrans == trans.TRANS_DATE ? <select style={{ height: 34, width: 90, borderRadius: 5 }} required onChange={this.jasiClickeHandeler}>
                                                                 <option>أخرى</option>
                                                                 <option>تعيين</option>
                                                                 <option>نقل</option>
@@ -680,18 +681,19 @@ class EmpTrans extends React.Component {
                                                                 <option>أستيعاب</option>
                                                                 <option selected>{this.state.jasi}</option>
                                                             </select> : trans.JOB_ASSIGNMENT_FORM_ARABIC}</td>
-                                                            <td>{this.state.edit && this.state.rowTrans == trans.TRANS_DATE ? <select style={{ height: 34, width: 163.46, borderRadius: 5 }} required onChange={this.gNameClickeHandeler}>
+                                                            <td>{this.state.edit && this.state.rowTrans == trans.TRANS_DATE ? <select style={{ height: 34, width: 80, borderRadius: 5 }} required onChange={this.gNameClickeHandeler}>
                                                                 <option>فني</option>
                                                                 <option>إداري</option>
+                                                                <option selected>{this.state.gname}</option>
                                                             </select> : trans.G_NAME}</td>
-                                                            <td>{this.state.edit && this.state.rowTrans == trans.TRANS_DATE ? <select style={{ height: 34, width: 163.46, borderRadius: 5 }} required onChange={this.indClickeHandeler}>
+                                                            <td>{this.state.edit && this.state.rowTrans == trans.TRANS_DATE ? <select style={{ height: 34, width: 80, borderRadius: 5 }} required onChange={this.indClickeHandeler}>
                                                                 <option>أصلية</option>
                                                                 <option>حالية</option>
                                                                 <option>سابقة</option>
                                                                 <option selected>{this.state.indname}</option>
                                                             </select> : trans.INDICATOR_NAME}</td>
                                                             <td onClick={this.state.edit ? this.handelEdit_2 : this.handelEdit_1}><i style={{ marginTop: 7 }} empname={trans.NAME_ARABIC} transdate={trans.TRANS_DATE} catid={trans.CAT_ID} catname={trans.CAT_NAME} mainboxid={trans.MAIN_BOX_ID} jdname={trans.MAIN_BOX_NAME} supboxid={trans.SUP_BOX_ID} supboxname={trans.SUP_BOX_NAME} jobgroup={trans.G_NAME} jasform={trans.JOB_ASSIGNMENT_FORM_ARABIC} indname={trans.INDICATOR_NAME} class="fas fa-edit"></i></td>
-                                                            <td><i style={{ marginTop: 7 }} class="fas fa-backspace"></i></td>
+                                                            <td><i transdate={trans.TRANS_DATE} onClick={this.state.edit ? this.closeEditSectionHandler : null} style={{ marginTop: 7 }} class="fas fa-backspace"></i></td>
                                                         </tr>
                                                     </tbody>
 
@@ -714,15 +716,14 @@ class EmpTrans extends React.Component {
                                                     <tbody>
                                                         <tr id={trans.TRANS_DATE}>
                                                             <td>{trans.catename}</td>
-                                                            <td>
-                                                                {trans.MAIN_BOX_NAME}</td>
+                                                            <td>{trans.MAIN_BOX_NAME}</td>
                                                             <td >{trans.SUP_BOX_NAME}</td>
                                                             <td>{trans.TRANS_DATE}</td>
                                                             <td>{trans.JOB_ASSIGNMENT_FORM_ARABIC}</td>
                                                             <td>{trans.G_NAME}</td>
                                                             <td>{trans.INDICATOR_NAME}</td>
                                                             <td onClick={this.state.edit ? this.handelEdit_2 : this.handelEdit_1}><i style={{ marginTop: 7 }} empname={trans.NAME_ARABIC} transdate={trans.TRANS_DATE} catid={trans.CAT_ID} catname={trans.CAT_NAME} mainboxid={trans.MAIN_BOX_ID} jdname={trans.MAIN_BOX_NAME} supboxid={trans.SUP_BOX_ID} supboxname={trans.SUP_BOX_NAME} jobgroup={trans.G_NAME} jasform={trans.JOB_ASSIGNMENT_FORM_ARABIC} indname={trans.INDICATOR_NAME} class="fas fa-edit"></i></td>
-                                                            <td><i style={{ marginTop: 7 }} class="fas fa-backspace"></i></td>
+                                                            <td><i transdate={trans.TRANS_DATE}  style={{ marginTop: 7 }} class="fas fa-backspace"></i></td>
                                                         </tr>
                                                     </tbody>
 
@@ -754,13 +755,15 @@ const mapStateToProps = (state) => {
     return {
         cates: state.posts.cates,
         jobdgbycat: state.posts.jobdgbycat,
-        empTrans: state.posts.empTrans,
+        empTrans: state.trans.empTrans,
         empname: state.posts.empname,
         empNameByName: state.posts.empNameByName,
         empcurrentjd: state.posts.empcurrentjd,
         empavailsup: state.posts.empavailsup,
         upjd: state.posts.upjd,
-        downJd: state.posts.downJd
+        downJd: state.posts.downJd,
+
+
     };
 };
 export default connect(mapStateToProps, {

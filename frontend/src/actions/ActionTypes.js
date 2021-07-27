@@ -37,6 +37,7 @@ export const NEW_APPRAISAL = "NEW-APPRAISAL"
 export const fetchemps = "FETCH-EMPS"
 export const fetchgid = "FETCH-GID"
 export const updatetrans = "UPDATE-TRANS"
+export const updateAppraisal = "UPDATE-APPRAISAL"
 
 
 

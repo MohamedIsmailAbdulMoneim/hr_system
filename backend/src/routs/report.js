@@ -2,20 +2,6 @@ const express = require("express");
 const db = require("../database/connection")
 
 let router = express.Router();
-let query = `SELECT
-emp.NAME_ARABIC,
-employee_appraisal.APPRAISAL_DATE,
-appraisal.APPRAISAL_ARABIC
-FROM
-employee_appraisal
-JOIN
-(SELECT employee.NATIONAL_ID_CARD_NO, employee.NAME_ARABIC from employee JOIN employee_appraisal ON employee.NATIONAL_ID_CARD_NO = employee_appraisal.NATIONAL_ID_CARD_NO) as emp
-JOIN APPRAISAL ON APPRAISAL.APPRAISAL = employee_appraisal.APPRAISAL WHERE employee_appraisal.APPRAISAL_DATE = 2018`
-let query_2 = `SELECT * from t
-WHERE id < 5
-ORDER BY id DESC
-LIMIT 1`
-
 
 function getEmpDetails(req, res) {
     let empid = req.query.empid
@@ -215,9 +201,7 @@ function getqn(req, res) {
     `
     db.query(query, (err, details) => {
         if (err) {
-            console.log(err);
         } else {
-            console.log(details);
             res.send(details)
         }
     })
@@ -251,8 +235,6 @@ function getgid(req, res) {
         }
     })
 }
-
-
 
 router
     .get('/getdeps', getDeps)

@@ -25,8 +25,7 @@ import {
   fetchuneschool,
   fetchspecarabic,
   fetchemps,
-  fetchgid,
-  updatetrans
+  fetchgid
 } from "../actions/ActionTypes";
 import axios from "axios";
 
@@ -192,14 +191,14 @@ export const getEmpAppraisal = (empid, empname, appraisal, year) => (dispatch) =
   })
 }
 
-export const getEmpTrans = (empid, empname) => (dispatch) => {
-  axios.get(`http://localhost:5000/getemptrans/?empid=${empid}&empname=${empname}`).then(res => {
-    dispatch({
-      type: fetchEmpTrans,
-      payload: res.data
-    })
-  })
-}
+// export const getEmpTrans = (empid, empname) => (dispatch) => {
+//   axios.get(`http://localhost:5000/getemptrans/?empid=${empid}&empname=${empname}`).then(res => {
+//     dispatch({
+//       type: fetchEmpTrans,
+//       payload: res.data
+//     })
+//   })
+// }
 
 
 export const getEmpEdu = (empid, empname) => (dispatch) => {
@@ -305,20 +304,6 @@ export const getGid = () => (dispatch) => {
     dispatch({
       type: fetchgid,
       payload: res.data
-    })
-  })
-}
-
-export const updateEmpTrans = (obj) => (dispatch) => {
-  axios({
-    method: "PUT",
-    data: obj,
-    url: `http://localhost:5000/updateemptrans`,
-    headers: { "Content-Type": "application/json" },
-  }).then(data => {
-    dispatch({
-      type: updatetrans,
-      payload: data.data[1]
     })
   })
 }

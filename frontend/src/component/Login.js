@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Bar, Line, Pie } from 'react-chartjs-2';
 import { connect } from "react-redux";
 import {
-    getEmpTrans, getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox, getUpJd, gitDownJd, getQn
+     getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox, getUpJd, gitDownJd, getQn
 } from "../actions/Actions";
 import axios from "axios"
 
@@ -87,5 +87,5 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, {
-    getEmpTrans, getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox, getUpJd, gitDownJd, getQn
+     getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox, getUpJd, gitDownJd, getQn
 })(Login);

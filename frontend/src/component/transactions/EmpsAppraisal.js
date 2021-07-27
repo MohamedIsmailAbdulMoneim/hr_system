@@ -4,7 +4,7 @@ import {
     getEmpByDeps, getEmpName, getEmpNameByName, getEmpAppraisal
 
 } from "../../actions/Actions";
-import { newAppraisal } from "../../actions/TransActions"
+import { newAppraisal,updateEmpAppraisal } from "../../actions/TransActions"
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -56,12 +56,10 @@ class EmpsAppraisal extends React.Component {
 
     idInputHandler = (e) => {
 
-        this.setState({ showFamilyResult: false })
-        if (e.key === 'Enter') {
             this.props.getEmpName(e.target.value)
             this.props.getEmpAppraisal(e.target.value, "")
             this.setState({ showStruct: false, showStructWAdd: false, edit: false, empid: e.target.value, showTransResult: true, showMaritalstate: true })
-        }
+        
     }
 
 
@@ -99,12 +97,70 @@ class EmpsAppraisal extends React.Component {
         this.props.getEmpAppraisal(document.getElementById("empid").value, document.getElementById("empname").value, document.getElementById("empapp").value, document.getElementById("year1").value)
     }
 
-    handelEdit_1 = async (e) => {
-        this.setState({ edit: true, empAppraisal: e.target.getAttribute("empApp"), appraisalYear: e.target.getAttribute("empDate"), empName: e.target.getAttribute("empName"), empNat: e.target.getAttribute("empnatid") })
+    handelEdit_1 = (e) => {
+        this.setState({ edit: true, rowTrans: e.target.getAttribute("tableId") })
 
+
+
+        let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
+
+        for (let i = 0; i < tds.length; i++) {
+
+
+            tds[i].style.background = "white"
+            tds[tds.length - 2].childNodes[0].classList.remove("fa-edit")
+            tds[tds.length - 2].childNodes[0].classList.add("fa-check")
+            tds[tds.length - 1].childNodes[0].classList.remove("fa-backspace")
+            tds[tds.length - 1].childNodes[0].classList.add("fa-times")
+
+
+        }
+
+        // document.getElementById(e.target.getAttribute("transdate")).childNodes[0].childNodes[0].removeAttribute("disabled")
+        this.setState({ edit: true, mainboxid: e.target.getAttribute("mainboxid"), edit: true, empname: e.target.getAttribute("empname"), transdate: e.target.getAttribute("transdate"), catname: e.target.getAttribute("catname"), catid: e.target.getAttribute("catid"), jdname: e.target.getAttribute("jdname"), supboxname: e.target.getAttribute("supboxname"), gname: e.target.getAttribute("jobgroup"), jasi: e.target.getAttribute("jasform"), indname: e.target.getAttribute("indname") })
+        // new Date(this.props.empdetails[0].SECTOR_JOIN_DATE.slice(0, 10)).setDate(this.props.empdetails[0].SECTOR_JOIN_DATE.slice(0, 10).getDate() + 1).getUTCFullYear() + "-" + (this.props.empdetails[0].SECTOR_JOIN_DATE.slice(0, 10).getUTCMonth() + 1) + "-" + this.props.empdetails[0].SECTOR_JOIN_DATE.slice(0, 10).getUTCDate()
 
     }
 
+    closeEditSectionHandler = (e) => {
+        let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
+        for (let i = 0; i < tds.length; i++) {
+            tds[i].style.background = "transparent"
+            tds[tds.length - 2].childNodes[0].classList.remove("fa-check")
+            tds[tds.length - 2].childNodes[0].classList.add("fa-edit")
+            tds[tds.length - 1].childNodes[0].classList.remove("fa-times")
+            tds[tds.length - 1].childNodes[0].classList.add("fa-backspace")
+        }
+        this.setState({ edit: false })
+    }
+
+
+    handelEdit_2 = (e) => {
+        e.preventDefault()
+        // let data = { empNat: this.state.empNat, appraisal: this.refs.newAppraisal.value, year: document.getElementById("year").placeholder }
+        let data = {appraisal: this.refs.newAppraisal.value , year: document.getElementById("year").placeholder ,catname: this.state.catname, jdname: this.state.jdname, supboxname: this.state.supboxname, gname: this.state.gname, jasi: this.state.jasi, indname: this.state.indname, empid: this.state.empid, empname: this.props.empNameByName ? this.props.empNameByName.length >= 1 ? this.props.empNameByName[0].NAME_ARABIC : null : null }
+
+        this.props.updateEmpAppraisal(data)
+        let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
+
+
+        for (let i = 0; i < tds.length; i++) {
+
+
+            tds[i].style.background = "transparent"
+            tds[tds.length - 2].childNodes[0].classList.remove("fa-check")
+            tds[tds.length - 2].childNodes[0].classList.add("fa-edit")
+            tds[tds.length - 1].childNodes[0].classList.remove("fa-times")
+            tds[tds.length - 1].childNodes[0].classList.add("fa-backspace")
+
+
+        }
+        this.setState({
+            edit: false
+        })
+
+        this.props.getEmpAppraisal(document.getElementById("empid").value, document.getElementById("empname").value, document.getElementById("empapp").value, document.getElementById("year1").value)
+    }
     // catClickHandeler = (e) => {
 
     //     this.setState({ catname: e.target.value })
@@ -116,25 +172,8 @@ class EmpsAppraisal extends React.Component {
 
     // }
 
-    handelEdit_2 = (e) => {
-
-        let data = { empNat: this.state.empNat, appraisal: this.refs.newAppraisal.value, year: document.getElementById("year").placeholder }
-        axios({
-            method: "PUT",
-            data: data,
-            url: 'http://localhost:5000/appraisalupdate',
-            headers: { "Content-Type": "application/json" },
-        }).then(data => {
-            console.log(data);
-        })
-
-        window.location.reload();
-
-
-    }
 
     render() {
-
         var dates = [];
         let start = 1996;
         let end = 2021;
@@ -171,7 +210,7 @@ class EmpsAppraisal extends React.Component {
                             <div className="col-lg-12" style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop:"5px" }}>
                                 <div style={{ height: "100%", minHeight: 250, width: "50%", minWidth: "750px", overflow: "auto" }} class="panel panel-default">
                                     <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }} class="panel-heading">
-                                        <span style={{ position: "relative", right: 50 }}>إضافة تقييم جديد</span> {this.state.edit ? <i onClick={this.closeEditSectionHandler} style={{ fontSize: 15, position: "relative", left: 530 }} class="fas fa-times-circle"></i> : null}
+                                        <span style={{ position: "relative", right: 50 }}>إضافة تقييم جديد</span> {this.state.edit ? <i style={{ fontSize: 15, position: "relative", left: 530 }} class="fas fa-times-circle"></i> : null}
                                         {this.state.add ? <i onClick={this.closeAddSectionHandler} style={{ fontSize: 15, float: "right" }} class="fas fa-times-circle"></i> : null}
                                     </div>
                                     {this.state.showMsg ? this.props.msg == "تم إدخال التقييم بنجاح" ? <div id="showmsg" className="alert alert-success" role="alert"> {this.props.msg}</div> : this.props.msg == "يوجد خطاء بقاعدة البيانات" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.props.msg}</div> : this.props.msg == "يجب إدخال أي من الإسم ورقم الأداء" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.props.msg}</div> : null : null}
@@ -247,8 +286,8 @@ class EmpsAppraisal extends React.Component {
                                     </div>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}></label>
-                                        <button type="button" style={{ marginRight: 30, marginTop: 6 }} >
-                                            <i onClick={this.handelSearch} class="fas fa-search"></i>
+                                        <button onClick={this.handelSearch} type="button" style={{ marginRight: 30, marginTop: 6 }} >
+                                            <i class="fas fa-search"></i>
                                         </button>
                                     </div>
                                 </div>
@@ -293,7 +332,6 @@ class EmpsAppraisal extends React.Component {
                         <h1 class="page-header">Tables</h1>
                     </div>
                 </div>
-
                 <div class="row">
                     <div class="col-lg-12">
                         <div className="panel panel-default">
@@ -313,44 +351,16 @@ class EmpsAppraisal extends React.Component {
                                         </thead>
                                         {this.props.empApp.map(emp => (
                                             <tbody>
-                                                <tr>
+                                                <tr id={emp.id}>
                                                     <td>{emp.NAME_ARABIC}</td>
                                                     <td>{emp.APPRAISAL_ARABIC}</td>
                                                     <td>{emp.APPRAISAL_DATE}</td>
-                                                    <td onClick={this.handelEdit_1}><i style={{ fontSize: 20 }} empName={emp.NAME_ARABIC} empApp={emp.APPRAISAL_ARABIC} empDate={emp.APPRAISAL_DATE} empnatid={emp.NATIONAL_ID_CARD_NO} onClick={this.editHandler} class="fas fa-edit"></i></td>
-                                                    <td><i class="fas fa-backspace"></i></td>
+                                                    <td onClick={this.state.edit ? this.handelEdit_2 : this.handelEdit_1}><i style={{ fontSize: 20 }} tableId ={emp.id} empName={emp.NAME_ARABIC} empApp={emp.APPRAISAL_ARABIC} empDate={emp.APPRAISAL_DATE} empnatid={emp.NATIONAL_ID_CARD_NO} onClick={this.editHandler} class="fas fa-edit"></i></td>
+                                                    <td onClick={this.state.edit ? this.closeEditSectionHandler : null}><i tableId ={emp.id} class="fas fa-backspace"></i></td>
                                                 </tr>
                                             </tbody>
                                         ))
                                         }
-                                        {/* {!this.state.edit ? this.props.empApp.map(emp => (
-                                            <tbody>
-                                                <tr>
-                                                    <td>{emp.NAME_ARABIC}</td>
-                                                    <td>{emp.APPRAISAL_ARABIC}</td>
-                                                    <td>{emp.APPRAISAL_DATE}</td>
-                                                    <td onClick={this.handelEdit_1}><i style={{ fontSize: 20 }} empName={emp.NAME_ARABIC} empApp={emp.APPRAISAL_ARABIC} empDate={emp.APPRAISAL_DATE} empnatid={emp.NATIONAL_ID_CARD_NO} onClick={this.editHandler} class="fas fa-edit"></i></td>
-                                                    <td><i class="fas fa-backspace"></i></td>
-                                                </tr>
-                                            </tbody>
-                                        )) :
-                                            <tbody>
-                                                <tr style={{ marginTop: 5, marginBottom: 5 }}>
-                                                    <td><input type="text" placeholder={this.state.empName} disabled /></td>
-                                                    <td><select ref="newAppraisal" onChange={this.handelAppraisal} style={{ width: 120, height: 27.5, marginBottom: 5, marginRight: 2 }}>
-                                                        {appraisals.map(apprsl => (
-                                                            <option id="appraisal" appraisl={apprsl}>{apprsl}</option>
-                                                        ))}
-                                                        <option selected>{this.state.empAppraisal}</option>
-                                                    </select></td>
-                                                    <td><input id="year" type="text" placeholder={this.state.appraisalYear} disabled /></td>
-                                                    <td><button onClick={this.handelEdit_2} type="button" class="btn btn-success">Success</button></td>
-                                                    <td><i class="fas fa-backspace"></i></td>
-                                                </tr>
-                                            </tbody>
-
-                                        } */}
-
                                     </table>
                                     {/* <p>{this.props.empdep.length}</p> */}
                                 </div>
@@ -381,46 +391,3 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps, {
     getEmpByDeps, getEmpAppraisal, getEmpName, getEmpNameByName, newAppraisal
 })(EmpsAppraisal);
-
-                // <div className="row">
-                //     <div className="col-lg-12" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                //         <div style={{ height: 150, width: 750 }} class="panel panel-default">
-                //             <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }} class="panel-heading">
-                //                 التقييمات السنوية
-                //             </div>
-                //             <div style={{ marginRight: 20, display: "flex", justifyContent: "center", alignItems: "center", marginLeft: 40 }}>
-                //                 <div style={{ marginTop: 20 }} class="input-group">
-                //                     <span>رقم الأداء  </span><input style={{ background: "white", width: 20, marginBottom: 5, marginRight: 5, border: "1px solid black", width: 120 }} onKeyUp={this.handelName} id="empid" type="text" name="first_name" />
-                //                 </div>
-                //                 <div style={{ marginTop: 20 }} class="input-group">
-                //                     <span>الإسم</span><input style={{ background: "white", width: 20, marginBottom: 5, marginRight: 5, border: "1px solid black", width: 120 }} type="text" disabled={true} id="name" value={this.props.empname.length >= 0 ? this.props.empname[0].NAME_ARABIC : null} />
-                //                 </div>
-                //                 <div style={{ marginRight: 5, marginTop: 20 }} class="input-group">
-                //                     <span>التقدير</span>
-                //                     <select id="empapp" onChange={this.handelAppraisal} style={{ width: 120, height: 27.5, marginBottom: 5, marginRight: 2 }}>
-                //                         {appraisals.map(apprsl => (
-                //                             <option appraisl={apprsl}>{apprsl}</option>
-                //                         ))}
-                //                         <option selected>اختر التقييم</option>
-                //                     </select>
-                //                 </div>
-                //                 <div style={{ marginRight: 5, marginTop: 20, }} class="input-group">
-                //                     <span style={{ marginTop: 3, marginLeft: 1 }}> السنة</span>
-                //                     <select id="year1" onChange={this.handelYear} style={{ width: 120, height: 27.5, marginBottom: 5, marginRight: 2 }}>
-                //                         {dates.map(year => (
-                //                             <option year={year} >{year}</option>
-                //                         ))}
-                //                         <option selected>اختر السنة</option>
-                //                     </select>
-                //                 </div>
-                //                 <button onClick={this.handelSearch} style={{ position: "relative", right: 5, top: 18 }} type="button" class="btn btn-primary">
-                //                     <i class="fas fa-search"></i>
-                //                 </button>
-                //                 <button style={{ position: "relative", right: 20, top: 18 }} type="button" class="btn btn-primary">إضافة تقييم جديد</button>
-
-
-                //             </div>
-
-                //         </div>
-                //     </div>
-                // </div>

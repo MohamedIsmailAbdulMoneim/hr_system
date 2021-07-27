@@ -60,13 +60,10 @@ function getEmpNameByName(req, res) {
 
 function getQulSpeciality(req, res) {
     let specarabic = req.query.specarabic
-    console.log(specarabic);
     let query = `SELECT SPECIALITY_ARABIC FROM dgree_speciality WHERE SPECIALITY_ARABIC LIKE "%${specarabic}%" `
     db.query(query, (err, details) => {
         if (err) {
-            console.log(err);
         } else {
-            console.log(details);
             res.send(details);
         }
     })
@@ -74,30 +71,14 @@ function getQulSpeciality(req, res) {
 
 function getUneSchool(req, res) {
     let uneschool = req.query.uneschool
-    console.log(uneschool);
     let query = `SELECT UNIVERSITY_SCHOOL_ARABIC FROM university_school WHERE UNIVERSITY_SCHOOL_ARABIC LIKE "%${uneschool}%" `
     db.query(query, (err, details) => {
         if (err) {
-            console.log(err);
         } else {
-            console.log(details);
             res.send(details);
         }
     })
 }
-
-// function getMainCodesByCate(req, res) {
-//     const jdId = req.params.jdid
-//     console.log(jdId);
-//     const query = `SELECT * FROM a_main_box JOIN a_sup_box ON a_main_box.MAIN_BOX_ID = a_sup_box.MAIN_BOX_ID JOIN a_job_dgree ON a_main_box.J_D_ID = a_job_dgree.J_D_ID WHERE a_job_dgree.J_D_ID = ${jdId};`
-//     db.query(query, (err, details) => {
-//         if (err) {
-//             console.log(err);
-//         } else {
-//             res.send(details)
-//         }
-//     })
-// }
 
 
 
@@ -110,10 +91,5 @@ router
     .get('/empnamebyName/:empname', getEmpNameByName)
     .get('/specarabic', getQulSpeciality)
     .get('/uneschool', getUneSchool)
-
-
-
-
-
-
+    
 module.exports = router;
