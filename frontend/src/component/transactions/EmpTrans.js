@@ -366,8 +366,6 @@ class EmpTrans extends React.Component {
         this.setState({
             edit: false
         })
-
-        this.props.getEmpTrans("", this.state.empname)
     }
 
     
@@ -692,8 +690,8 @@ class EmpTrans extends React.Component {
                                                                 <option>سابقة</option>
                                                                 <option selected>{this.state.indname}</option>
                                                             </select> : trans.INDICATOR_NAME}</td>
-                                                            <td onClick={this.state.edit ? this.handelEdit_2 : this.handelEdit_1}><i style={{ marginTop: 7 }} empname={trans.NAME_ARABIC} transdate={trans.TRANS_DATE} catid={trans.CAT_ID} catname={trans.CAT_NAME} mainboxid={trans.MAIN_BOX_ID} jdname={trans.MAIN_BOX_NAME} supboxid={trans.SUP_BOX_ID} supboxname={trans.SUP_BOX_NAME} jobgroup={trans.G_NAME} jasform={trans.JOB_ASSIGNMENT_FORM_ARABIC} indname={trans.INDICATOR_NAME} class="fas fa-edit"></i></td>
-                                                            <td><i transdate={trans.TRANS_DATE} onClick={this.state.edit ? this.closeEditSectionHandler : null} style={{ marginTop: 7 }} class="fas fa-backspace"></i></td>
+                                                            <td  transdate={trans.TRANS_DATE}><i onClick={this.state.edit ? this.handelEdit_2 : this.handelEdit_1} style={{ marginTop: 7 }} empname={trans.NAME_ARABIC} transdate={trans.TRANS_DATE} catid={trans.CAT_ID} catname={trans.CAT_NAME} mainboxid={trans.MAIN_BOX_ID} jdname={trans.MAIN_BOX_NAME} supboxid={trans.SUP_BOX_ID} supboxname={trans.SUP_BOX_NAME} jobgroup={trans.G_NAME} jasform={trans.JOB_ASSIGNMENT_FORM_ARABIC} indname={trans.INDICATOR_NAME} class="fas fa-edit"></i></td>
+                                                            <td  transdate={trans.TRANS_DATE}><i onClick={this.state.edit ? this.closeEditSectionHandler : null} transdate={trans.TRANS_DATE}  style={{ marginTop: 7 }} class="fas fa-backspace"></i></td>
                                                         </tr>
                                                     </tbody>
 
@@ -722,7 +720,7 @@ class EmpTrans extends React.Component {
                                                             <td>{trans.JOB_ASSIGNMENT_FORM_ARABIC}</td>
                                                             <td>{trans.G_NAME}</td>
                                                             <td>{trans.INDICATOR_NAME}</td>
-                                                            <td onClick={this.state.edit ? this.handelEdit_2 : this.handelEdit_1}><i style={{ marginTop: 7 }} empname={trans.NAME_ARABIC} transdate={trans.TRANS_DATE} catid={trans.CAT_ID} catname={trans.CAT_NAME} mainboxid={trans.MAIN_BOX_ID} jdname={trans.MAIN_BOX_NAME} supboxid={trans.SUP_BOX_ID} supboxname={trans.SUP_BOX_NAME} jobgroup={trans.G_NAME} jasform={trans.JOB_ASSIGNMENT_FORM_ARABIC} indname={trans.INDICATOR_NAME} class="fas fa-edit"></i></td>
+                                                            <td ><i style={{ marginTop: 7 }} empname={trans.NAME_ARABIC} transdate={trans.TRANS_DATE} catid={trans.CAT_ID} catname={trans.CAT_NAME} mainboxid={trans.MAIN_BOX_ID} jdname={trans.MAIN_BOX_NAME} supboxid={trans.SUP_BOX_ID} supboxname={trans.SUP_BOX_NAME} jobgroup={trans.G_NAME} jasform={trans.JOB_ASSIGNMENT_FORM_ARABIC} indname={trans.INDICATOR_NAME} class="fas fa-edit"></i></td>
                                                             <td><i transdate={trans.TRANS_DATE}  style={{ marginTop: 7 }} class="fas fa-backspace"></i></td>
                                                         </tr>
                                                     </tbody>

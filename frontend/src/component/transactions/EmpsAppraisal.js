@@ -4,7 +4,7 @@ import {
     getEmpByDeps, getEmpName, getEmpNameByName, getEmpAppraisal
 
 } from "../../actions/Actions";
-import { newAppraisal,updateEmpAppraisal } from "../../actions/TransActions"
+import { newAppraisal, updateEmpAppraisal } from "../../actions/TransActions"
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -14,7 +14,7 @@ import 'moment-timezone';
 class EmpsAppraisal extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { confirmAdd: false, showMsg: false, errorAdd: false, empAppraisal: "null", appraisalYear: "null", add: false, edit: false, empid: null, empname: null, catname: null, catid: null, showNamesResults: false };
+        this.state = { confirmAdd: false, showMsg: false, errorAdd: false, empAppraisal: "null", appraisalYear: "null", rowAppraisal: false, add: false, edit: false, empid: null, empname: null,empnat: null ,showNamesResults: false,updated: false };
     }
 
     addButtonClickHandeler = (e) => {
@@ -56,10 +56,9 @@ class EmpsAppraisal extends React.Component {
 
     idInputHandler = (e) => {
 
-            this.props.getEmpName(e.target.value)
-            this.props.getEmpAppraisal(e.target.value, "")
-            this.setState({ showStruct: false, showStructWAdd: false, edit: false, empid: e.target.value, showTransResult: true, showMaritalstate: true })
-        
+        this.props.getEmpName(e.target.value)
+        this.setState({ showStruct: false, showStructWAdd: false, edit: false, empid: e.target.value, showTransResult: true, showMaritalstate: true, updated:false })
+
     }
 
 
@@ -69,7 +68,6 @@ class EmpsAppraisal extends React.Component {
         this.props.getEmpNameByName(e.target.value)
         this.refs.empid.value = ''
         if (e.key === 'Enter') {
-            this.props.getEmpAppraisal("", e.target.value)
             this.setState({ showFamilyResult: true, showMaritalstate: true })
         }
     }
@@ -98,28 +96,15 @@ class EmpsAppraisal extends React.Component {
     }
 
     handelEdit_1 = (e) => {
-        this.setState({ edit: true, rowTrans: e.target.getAttribute("tableId") })
-
-
-
+        this.setState({ edit: true, rowAppraisal: e.target.getAttribute("tableId") ,empAppraisal: e.target.getAttribute("empApp") , appraisalYear: e.target.getAttribute("empDate") ,empnat: e.target.getAttribute("empnatid")})
         let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
-
         for (let i = 0; i < tds.length; i++) {
-
-
             tds[i].style.background = "white"
             tds[tds.length - 2].childNodes[0].classList.remove("fa-edit")
             tds[tds.length - 2].childNodes[0].classList.add("fa-check")
             tds[tds.length - 1].childNodes[0].classList.remove("fa-backspace")
             tds[tds.length - 1].childNodes[0].classList.add("fa-times")
-
-
         }
-
-        // document.getElementById(e.target.getAttribute("transdate")).childNodes[0].childNodes[0].removeAttribute("disabled")
-        this.setState({ edit: true, mainboxid: e.target.getAttribute("mainboxid"), edit: true, empname: e.target.getAttribute("empname"), transdate: e.target.getAttribute("transdate"), catname: e.target.getAttribute("catname"), catid: e.target.getAttribute("catid"), jdname: e.target.getAttribute("jdname"), supboxname: e.target.getAttribute("supboxname"), gname: e.target.getAttribute("jobgroup"), jasi: e.target.getAttribute("jasform"), indname: e.target.getAttribute("indname") })
-        // new Date(this.props.empdetails[0].SECTOR_JOIN_DATE.slice(0, 10)).setDate(this.props.empdetails[0].SECTOR_JOIN_DATE.slice(0, 10).getDate() + 1).getUTCFullYear() + "-" + (this.props.empdetails[0].SECTOR_JOIN_DATE.slice(0, 10).getUTCMonth() + 1) + "-" + this.props.empdetails[0].SECTOR_JOIN_DATE.slice(0, 10).getUTCDate()
-
     }
 
     closeEditSectionHandler = (e) => {
@@ -137,29 +122,21 @@ class EmpsAppraisal extends React.Component {
 
     handelEdit_2 = (e) => {
         e.preventDefault()
-        // let data = { empNat: this.state.empNat, appraisal: this.refs.newAppraisal.value, year: document.getElementById("year").placeholder }
-        let data = {appraisal: this.refs.newAppraisal.value , year: document.getElementById("year").placeholder ,catname: this.state.catname, jdname: this.state.jdname, supboxname: this.state.supboxname, gname: this.state.gname, jasi: this.state.jasi, indname: this.state.indname, empid: this.state.empid, empname: this.props.empNameByName ? this.props.empNameByName.length >= 1 ? this.props.empNameByName[0].NAME_ARABIC : null : null }
-
-        this.props.updateEmpAppraisal(data)
+        // let data = { , appraisal: this.refs.newAppraisal.value, year: document.getElementById("year").placeholder }
+        let data = { empNat: this.state.empNat, appraisal: this.state.appraisal, year: this.state.appraisalYear }
+        // this.props.updateEmpAppraisal(data)
         let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
-
-
         for (let i = 0; i < tds.length; i++) {
-
-
             tds[i].style.background = "transparent"
             tds[tds.length - 2].childNodes[0].classList.remove("fa-check")
             tds[tds.length - 2].childNodes[0].classList.add("fa-edit")
             tds[tds.length - 1].childNodes[0].classList.remove("fa-times")
             tds[tds.length - 1].childNodes[0].classList.add("fa-backspace")
-
-
         }
         this.setState({
-            edit: false
+            edit: false,
+            updated: true
         })
-
-        this.props.getEmpAppraisal(document.getElementById("empid").value, document.getElementById("empname").value, document.getElementById("empapp").value, document.getElementById("year1").value)
     }
     // catClickHandeler = (e) => {
 
@@ -207,7 +184,7 @@ class EmpsAppraisal extends React.Component {
                 {this.state.add ?
                     <Fragment>
                         <div class="row">
-                            <div className="col-lg-12" style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop:"5px" }}>
+                            <div className="col-lg-12" style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: "5px" }}>
                                 <div style={{ height: "100%", minHeight: 250, width: "50%", minWidth: "750px", overflow: "auto" }} class="panel panel-default">
                                     <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }} class="panel-heading">
                                         <span style={{ position: "relative", right: 50 }}>إضافة تقييم جديد</span> {this.state.edit ? <i style={{ fontSize: 15, position: "relative", left: 530 }} class="fas fa-times-circle"></i> : null}
@@ -335,7 +312,7 @@ class EmpsAppraisal extends React.Component {
                 <div class="row">
                     <div class="col-lg-12">
                         <div className="panel panel-default">
-                            <div className="panel-heading" style={{minHeight: 40}}>
+                            <div className="panel-heading" style={{ minHeight: 40 }}>
                             </div>
                             <div class="panel-body">
                                 <div class="table-responsive">
@@ -353,10 +330,17 @@ class EmpsAppraisal extends React.Component {
                                             <tbody>
                                                 <tr id={emp.id}>
                                                     <td>{emp.NAME_ARABIC}</td>
-                                                    <td>{emp.APPRAISAL_ARABIC}</td>
-                                                    <td>{emp.APPRAISAL_DATE}</td>
-                                                    <td onClick={this.state.edit ? this.handelEdit_2 : this.handelEdit_1}><i style={{ fontSize: 20 }} tableId ={emp.id} empName={emp.NAME_ARABIC} empApp={emp.APPRAISAL_ARABIC} empDate={emp.APPRAISAL_DATE} empnatid={emp.NATIONAL_ID_CARD_NO} onClick={this.editHandler} class="fas fa-edit"></i></td>
-                                                    <td onClick={this.state.edit ? this.closeEditSectionHandler : null}><i tableId ={emp.id} class="fas fa-backspace"></i></td>
+                                                    <td>{this.state.edit && this.state.rowAppraisal == emp.id ? <select onChange={this.handelAppraisal} id="empapp" style={{ width: "50%", height: 30 }}>
+                                                        {appraisals.map(apprsl => (
+                                                            <option>{apprsl}</option>
+                                                        ))}
+                                                        <option selected>اختر التقدير</option>
+
+                                                    </select> : this.state.updated && this.state.rowAppraisal == emp.id ? this.state.empAppraisal : emp.APPRAISAL_ARABIC}</td>
+                                                    <td style={{width: "10%"}}>{this.state.edit && this.state.rowAppraisal == emp.id ? <input onChange={this.handelYear} className="form-control" style={{ width: "100%" }} type="text" />
+                                                        : emp.APPRAISAL_DATE}</td>
+                                                    <td tableId={emp.id}><i onClick={this.state.edit ? this.handelEdit_2 : this.handelEdit_1} style={{ fontSize: 20 }} tableId={emp.id} empName={emp.NAME_ARABIC} empApp={emp.APPRAISAL_ARABIC} empDate={emp.APPRAISAL_DATE} empnatid={emp.NATIONAL_ID_CARD_NO} class="fas fa-edit"></i></td>
+                                                    <td tableId={emp.id}><i onClick={this.state.edit ? this.closeEditSectionHandler : null} tableId={emp.id} class="fas fa-backspace"></i></td>
                                                 </tr>
                                             </tbody>
                                         ))

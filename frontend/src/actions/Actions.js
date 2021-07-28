@@ -191,14 +191,6 @@ export const getEmpAppraisal = (empid, empname, appraisal, year) => (dispatch) =
   })
 }
 
-// export const getEmpTrans = (empid, empname) => (dispatch) => {
-//   axios.get(`http://localhost:5000/getemptrans/?empid=${empid}&empname=${empname}`).then(res => {
-//     dispatch({
-//       type: fetchEmpTrans,
-//       payload: res.data
-//     })
-//   })
-// }
 
 
 export const getEmpEdu = (empid, empname) => (dispatch) => {
