@@ -54,9 +54,10 @@ export const updateEmpAppraisal = (obj) => (dispatch) => {
     url: 'http://localhost:5000/appraisalupdate',
     headers: { "Content-Type": "application/json" },
   }).then(data => {
+    console.log(data.status);
     dispatch({
-      type:updateAppraisal,
-      data: data.data[1]
+      type: updateAppraisal,
+      payload: { data: data.data, result: data.data.status }
     })
   })
 }

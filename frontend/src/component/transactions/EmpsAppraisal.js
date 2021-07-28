@@ -14,7 +14,7 @@ import 'moment-timezone';
 class EmpsAppraisal extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { confirmAdd: false, showMsg: false, errorAdd: false, empAppraisal: "null", appraisalYear: "null", rowAppraisal: false, add: false, edit: false, empid: null, empname: null,empnat: null ,showNamesResults: false,updated: false };
+        this.state = { confirmAdd: false, showMsg: false, errorAdd: false, empAppraisal: "null", appraisalYear: "null", rowAppraisal: false, add: false, edit: false, empid: null, empname: null, empnat: null, showNamesResults: false, updated: false };
     }
 
     addButtonClickHandeler = (e) => {
@@ -57,19 +57,17 @@ class EmpsAppraisal extends React.Component {
     idInputHandler = (e) => {
 
         this.props.getEmpName(e.target.value)
-        this.setState({ showStruct: false, showStructWAdd: false, edit: false, empid: e.target.value, showTransResult: true, showMaritalstate: true, updated:false })
+        this.setState({ showStruct: false, showStructWAdd: false, edit: false, empid: e.target.value, showTransResult: true, showMaritalstate: true })
 
     }
 
 
 
     nameInputHandler = (e) => {
-        this.setState({ showNamesResults: true, showFamilyResult: false })
+        this.setState({ showNamesResults: true })
         this.props.getEmpNameByName(e.target.value)
         this.refs.empid.value = ''
-        if (e.key === 'Enter') {
-            this.setState({ showFamilyResult: true, showMaritalstate: true })
-        }
+
     }
 
 
@@ -91,12 +89,12 @@ class EmpsAppraisal extends React.Component {
     }
 
     handelSearch = () => {
-        this.setState({ edit: false })
+        this.setState({ edit: false, updated: false })
         this.props.getEmpAppraisal(document.getElementById("empid").value, document.getElementById("empname").value, document.getElementById("empapp").value, document.getElementById("year1").value)
     }
 
     handelEdit_1 = (e) => {
-        this.setState({ edit: true, rowAppraisal: e.target.getAttribute("tableId") ,empAppraisal: e.target.getAttribute("empApp") , appraisalYear: e.target.getAttribute("empDate") ,empnat: e.target.getAttribute("empnatid")})
+        this.setState({ edit: true, rowAppraisal: e.target.getAttribute("tableId"), empAppraisal: e.target.getAttribute("empApp"), appraisalYear: e.target.getAttribute("empDate"), empnat: e.target.getAttribute("empnatid") })
         let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
         for (let i = 0; i < tds.length; i++) {
             tds[i].style.background = "white"
@@ -123,8 +121,9 @@ class EmpsAppraisal extends React.Component {
     handelEdit_2 = (e) => {
         e.preventDefault()
         // let data = { , appraisal: this.refs.newAppraisal.value, year: document.getElementById("year").placeholder }
-        let data = { empNat: this.state.empNat, appraisal: this.state.appraisal, year: this.state.appraisalYear }
-        // this.props.updateEmpAppraisal(data)
+        let data = { empNat: this.state.empnat, appraisal: this.state.empAppraisal, year: this.state.appraisalYear }
+        console.log(data.empNat);
+        this.props.updateEmpAppraisal(data)
         let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
         for (let i = 0; i < tds.length; i++) {
             tds[i].style.background = "transparent"
@@ -134,9 +133,11 @@ class EmpsAppraisal extends React.Component {
             tds[tds.length - 1].childNodes[0].classList.add("fa-backspace")
         }
         this.setState({
-            edit: false,
-            updated: true
+            edit: false
         })
+        if (this.props.result == 200) {
+            this.setState({ updated: true })
+        }
     }
     // catClickHandeler = (e) => {
 
@@ -179,6 +180,8 @@ class EmpsAppraisal extends React.Component {
             transition: "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out"
 
         }
+
+        console.log(this.props.result);
         return (
             <div id="page-wrapper" >
                 {this.state.add ?
@@ -337,10 +340,10 @@ class EmpsAppraisal extends React.Component {
                                                         <option selected>اختر التقدير</option>
 
                                                     </select> : this.state.updated && this.state.rowAppraisal == emp.id ? this.state.empAppraisal : emp.APPRAISAL_ARABIC}</td>
-                                                    <td style={{width: "10%"}}>{this.state.edit && this.state.rowAppraisal == emp.id ? <input onChange={this.handelYear} className="form-control" style={{ width: "100%" }} type="text" />
-                                                        : emp.APPRAISAL_DATE}</td>
-                                                    <td tableId={emp.id}><i onClick={this.state.edit ? this.handelEdit_2 : this.handelEdit_1} style={{ fontSize: 20 }} tableId={emp.id} empName={emp.NAME_ARABIC} empApp={emp.APPRAISAL_ARABIC} empDate={emp.APPRAISAL_DATE} empnatid={emp.NATIONAL_ID_CARD_NO} class="fas fa-edit"></i></td>
-                                                    <td tableId={emp.id}><i onClick={this.state.edit ? this.closeEditSectionHandler : null} tableId={emp.id} class="fas fa-backspace"></i></td>
+                                                    <td style={{ width: "10%" }}>{this.state.edit && this.state.rowAppraisal == emp.id ? <input onChange={this.handelYear} value={this.state.appraisalYear} className="form-control" style={{ width: "100%" }} type="text" /> :
+                                                        this.state.updated && this.state.rowAppraisal == emp.id ? this.state.appraisalYear : emp.APPRAISAL_DATE}</td>
+                                                    <td><i onClick={this.state.edit ? this.handelEdit_2 : this.handelEdit_1} tableId={emp.id} style={{ fontSize: 20 }} empName={emp.NAME_ARABIC} empApp={emp.APPRAISAL_ARABIC} empDate={emp.APPRAISAL_DATE} empnatid={emp.NATIONAL_ID_CARD_NO} class="fas fa-edit"></i></td>
+                                                    <td><i onClick={this.state.edit ? this.closeEditSectionHandler : null} tableId={emp.id} class="fas fa-backspace"></i></td>
                                                 </tr>
                                             </tbody>
                                         ))
@@ -367,11 +370,12 @@ const mapStateToProps = (state) => {
         empApp: state.posts.empApp,
         cates: state.posts.cates,
         result: state.trans.result,
-        msg: state.trans.msg
-
+        msg: state.trans.msg,
+        updatedInf: state.trans.updatedInf,
+        result: state.trans.result
 
     };
 };
 export default connect(mapStateToProps, {
-    getEmpByDeps, getEmpAppraisal, getEmpName, getEmpNameByName, newAppraisal
+    getEmpByDeps, getEmpAppraisal, getEmpName, getEmpNameByName, newAppraisal, updateEmpAppraisal
 })(EmpsAppraisal);

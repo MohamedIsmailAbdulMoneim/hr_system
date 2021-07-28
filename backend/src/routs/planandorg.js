@@ -58,7 +58,7 @@ function getsupboxmangers(req, res) {
 }
 
 function getEmpApprails(req, res) {
-    
+
     const empid = req.query.empid
     const empname = req.query.empname
     const appraisal = req.query.appraisal
@@ -71,7 +71,7 @@ function getEmpApprails(req, res) {
     JOIN employee ON employee.NATIONAL_ID_CARD_NO = employee_appraisal.NATIONAL_ID_CARD_NO
     JOIN APPRAISAL ON APPRAISAL.APPRAISAL = employee_appraisal.APPRAISAL
     WHERE
-    ${(empid.length === 0 && !empname)&&(!appraisal || appraisal === "اختر التقدير") ? `employee_appraisal.APPRAISAL_DATE = ${year}` : !appraisal || appraisal === "اختر التقدير" && (!year || year === "اختر السنة") ? `${empid.length !== 0 ? `employee.EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `employee.NAME_ARABIC = "${empname}"` : null}` : (empid.length === 0 && !empname) && (!year || year === "اختر السنة") ? `appraisal.APPRAISAL_ARABIC = "${appraisal}"` : empid.length === 0 && !empname ?  `employee_appraisal.APPRAISAL_DATE = ${year} AND appraisal.APPRAISAL_ARABIC = "${appraisal}"` : !appraisal || appraisal === "اختر التقدير" ? `${empid.length !== 0 ? `employee.EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `employee.NAME_ARABIC = "${empname}"` : null} AND employee_appraisal.APPRAISAL_DATE = ${year}` : !year || year === "اختر السنة" ? `${empid.length !== 0 ? `employee.EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `employee.NAME_ARABIC = "${empname}"` : null} AND appraisal.APPRAISAL_ARABIC = "${appraisal}"` : null }
+    ${(empid.length === 0 && !empname) && (!appraisal || appraisal === "اختر التقدير") ? `employee_appraisal.APPRAISAL_DATE = ${year}` : !appraisal || appraisal === "اختر التقدير" && (!year || year === "اختر السنة") ? `${empid.length !== 0 ? `employee.EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `employee.NAME_ARABIC = "${empname}"` : null}` : (empid.length === 0 && !empname) && (!year || year === "اختر السنة") ? `appraisal.APPRAISAL_ARABIC = "${appraisal}"` : empid.length === 0 && !empname ? `employee_appraisal.APPRAISAL_DATE = ${year} AND appraisal.APPRAISAL_ARABIC = "${appraisal}"` : !appraisal || appraisal === "اختر التقدير" ? `${empid.length !== 0 ? `employee.EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `employee.NAME_ARABIC = "${empname}"` : null} AND employee_appraisal.APPRAISAL_DATE = ${year}` : !year || year === "اختر السنة" ? `${empid.length !== 0 ? `employee.EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `employee.NAME_ARABIC = "${empname}"` : null} AND appraisal.APPRAISAL_ARABIC = "${appraisal}"` : null}
     ORDER BY employee_appraisal.APPRAISAL_DATE`
 
     db.query(query, (err, details) => {
@@ -102,13 +102,16 @@ function newAppraisal(req, res) {
 
 
 function updateAppraisal(req, res) {
-    let {appraisal, year, empNat} = req.body
+    let { appraisal, year, empNat } = req.body
     // let query = `UPDATE employee_appraisal JOIN employee ON employee_appraisal.NATIONAL_ID_CARD_NO = employee.NATIONAL_ID_CARD_NO JOIN appraisal SET employee_appraisal.APPRAISAL = appraisal.APPRAISAL WHERE appraisal.APPRAISAL_ARABIC = "${req.body.appraisal}" AND employee_appraisal.APPRAISAL_DATE = ${req.body.year} AND employee_appraisal.NATIONAL_ID_CARD_NO = ${req.body.empNat}`
-    let query = `UPDATE employee_appraisal SET employee_appraisal.APPRAISAL = appraisal.APPRAISAL WHERE appraisal.APPRAISAL_ARABIC = "${req.body.appraisal}"AND employee_appraisal.APPRAISAL_DATE = ${req.body.year} AND employee_appraisal.NATIONAL_ID_CARD_NO = ${req.body.empNat}`
+    let query = `UPDATE employee_appraisal SET APPRAISAL = (SELECT APPRAISAL FROM appraisal WHERE APPRAISAL_ARABIC = "${appraisal}"), APPRAISAL_DATE = ${year} WHERE NATIONAL_ID_CARD_NO = ${empNat} AND APPRAISAL_DATE = ${year}`
     db.query(query, (err, details) => {
         if (err) {
+            res.json({ data: null, status: 400 })
         } else {
-            res.send(details);
+            res.json({ data: details, status: 200 });
+
+
         }
     })
 }
