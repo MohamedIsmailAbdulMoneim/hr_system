@@ -10,16 +10,58 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import moment from 'react-moment';
 import 'moment-timezone';
+import Pagination from "../Pagination";
 
 class EmpsAppraisal extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { confirmAdd: false, showMsg: false, errorAdd: false, empAppraisal: "null", appraisalYear: "null", rowAppraisal: false, add: false, edit: false, empid: null, empname: null, empnat: null, showNamesResults: false, updated: false };
+        this.state = { confirmAdd: false, showMsg: false, errorAdd: false, empAppraisal: "null", appraisalYear: "null", rowAppraisal: false, add: false, edit: false, empid: null, empname: null, empnat: null, showNamesResults: false, updated: false, firstArg: 0, secondArg: 20, currentPage: 1, firstArgPerBtn: 0, secondArgPerBtn:10 };
+    }
+
+    changeArgs = (i) => (e) => {
+        e.preventDefault()
+        this.setState({currentPage: i})
+        if (i == 1) {
+            this.setState({ firstArg: (i - 1) * 20, secondArg: i * 20 })
+
+        }
+        else if (i > 1) {
+            this.setState({ firstArg: (i - 1) * 20 + 1, secondArg: i * 20 })
+            console.log('hello world');
+
+
+        }
+
     }
 
     addButtonClickHandeler = (e) => {
         this.setState({ add: true })
     }
+
+    minusFirstArg = (e) => {
+        e.preventDefault()
+        console.log('dasd');
+        if(this.state.firstArgPerBtn > 0){
+            this.setState(prevState => {
+                return { firstArgPerBtn: prevState.firstArgPerBtn - 1, secondArgPerBtn: prevState.secondArgPerBtn - 1, currentPage: prevState.currentPage -1, firstArg: prevState.firstArg - 10, secondArg: prevState.secondArg -10 }
+            })
+        }
+
+        this.changeArgs(this.state.currentPage - 1)
+      }
+
+      plusSecondArg = (e) => {
+        e.preventDefault()
+        let itemsPerPage = Math.ceil(this.props.empApp.length / 10)
+        if(this.state.secondArgPerBtn < itemsPerPage){
+            this.setState(prevState => {
+                return { firstArgPerBtn: prevState.firstArgPerBtn + 1, secondArgPerBtn: prevState.secondArgPerBtn + 1, currentPage: prevState.currentPage + 1, firstArg: prevState.firstArg + 10, secondArg:prevState.secondArg + 10 }
+            })
+            console.log(this.state.firstArgPerBtn, this.state.secondArgPerBtn);
+        }
+        this.changeArgs(this.state.currentPage + 1)
+
+      }
 
 
     idInputAddHandler = (e) => {
@@ -89,7 +131,7 @@ class EmpsAppraisal extends React.Component {
     }
 
     handelSearch = () => {
-        this.setState({ edit: false, updated: false })
+        this.setState({ edit: false, updated: false, firstArg: 0, secondArg: 20,currentPage:1, firstArgPerBtn: 0, secondArgPerBtn: 10 })
         this.props.getEmpAppraisal(document.getElementById("empid").value, document.getElementById("empname").value, document.getElementById("empapp").value, document.getElementById("year1").value)
     }
 
@@ -139,6 +181,13 @@ class EmpsAppraisal extends React.Component {
             this.setState({ updated: true })
         }
     }
+
+    closeAddSectionHandler = (e) => {
+        this.setState({
+            add: false
+        })
+    }
+
     // catClickHandeler = (e) => {
 
     //     this.setState({ catname: e.target.value })
@@ -161,6 +210,8 @@ class EmpsAppraisal extends React.Component {
             start++;
         }
 
+        console.log(this.props.empApp.length);
+
 
         let appraisals = ["ممتاز بجدارة", "ممتاز", "جيد جدا بجدارة", "جيد جدا", "جيد", "مقبول", "ضعيف", "جيد حكمي", "جيد جدا حكمي", "ممتاز حكمي"]
 
@@ -181,7 +232,7 @@ class EmpsAppraisal extends React.Component {
 
         }
 
-        console.log(this.props.result);
+        console.log(this.state.firstArg, this.state.secondArg);
         return (
             <div id="page-wrapper" >
                 {this.state.add ?
@@ -189,9 +240,10 @@ class EmpsAppraisal extends React.Component {
                         <div class="row">
                             <div className="col-lg-12" style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: "5px" }}>
                                 <div style={{ height: "100%", minHeight: 250, width: "50%", minWidth: "750px", overflow: "auto" }} class="panel panel-default">
-                                    <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }} class="panel-heading">
-                                        <span style={{ position: "relative", right: 50 }}>إضافة تقييم جديد</span> {this.state.edit ? <i style={{ fontSize: 15, position: "relative", left: 530 }} class="fas fa-times-circle"></i> : null}
-                                        {this.state.add ? <i onClick={this.closeAddSectionHandler} style={{ fontSize: 15, float: "right" }} class="fas fa-times-circle"></i> : null}
+                                    <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt", display: "flex", justifyContent: "space-between" }} class="panel-heading">
+                                        {this.state.add ? <i onClick={this.closeAddSectionHandler} class="fas fa-times-circle"></i> : null}
+                                        <span>إضافة تقييم جديد</span>
+                                        <div></div>
                                     </div>
                                     {this.state.showMsg ? this.props.msg == "تم إدخال التقييم بنجاح" ? <div id="showmsg" className="alert alert-success" role="alert"> {this.props.msg}</div> : this.props.msg == "يوجد خطاء بقاعدة البيانات" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.props.msg}</div> : this.props.msg == "يجب إدخال أي من الإسم ورقم الأداء" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.props.msg}</div> : null : null}
                                     <div style={{ display: "flex", justifyContent: "space-around" }}>
@@ -249,10 +301,10 @@ class EmpsAppraisal extends React.Component {
                     <div className="col-lg-12" style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: 10 }}>
                         <div style={{ height: "100%", width: 600 }} class="panel panel-default">
 
-                            <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }} class="panel-heading">
-                                تقييمات العاملين
-                                <button onClick={this.addButtonClickHandeler} style={{ float: "left" }} type="button" class="btn btn-primary">إضافة تقييم جديد</button>
-
+                            <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt", display: "flex", justifyContent: "space-between" }} class="panel-heading">
+                                <div></div>
+                                <span style={{ marginRight: 70 }}>تقييمات العاملين</span>
+                                <button onClick={this.addButtonClickHandeler} type="button" class="btn btn-primary">إضافة تقييم جديد</button>
                             </div>
                             <div style={{ marginRight: 20, display: "flex", justifyContent: "center", alignItems: "center", marginLeft: 40 }}>
                                 <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -309,11 +361,6 @@ class EmpsAppraisal extends React.Component {
                 </div>
                 <div class="row">
                     <div class="col-lg-12">
-                        <h1 class="page-header">Tables</h1>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-12">
                         <div className="panel panel-default">
                             <div className="panel-heading" style={{ minHeight: 40 }}>
                             </div>
@@ -329,7 +376,7 @@ class EmpsAppraisal extends React.Component {
                                                 <th>حذف</th>
                                             </tr>
                                         </thead>
-                                        {this.props.empApp.map(emp => (
+                                        {this.props.empApp.slice(this.state.firstArg, this.state.secondArg).map(emp => (
                                             <tbody>
                                                 <tr id={emp.id}>
                                                     <td>{emp.NAME_ARABIC}</td>
@@ -349,7 +396,7 @@ class EmpsAppraisal extends React.Component {
                                         ))
                                         }
                                     </table>
-                                    {/* <p>{this.props.empdep.length}</p> */}
+                                    <Pagination minusFirstArg={this.minusFirstArg} plusSecondArg={this.plusSecondArg} firstArgPerBtn={this.state.firstArgPerBtn} secondArgPerBtn={this.state.secondArgPerBtn} changargs={this.changeArgs} pagesLength={this.props.empApp.length} currentPage={this.state.currentPage} />
                                 </div>
                             </div>
                         </div>

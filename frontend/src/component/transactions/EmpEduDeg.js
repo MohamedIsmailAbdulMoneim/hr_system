@@ -225,90 +225,64 @@ class EmpEduDeg extends React.Component {
                     <div>
                         <div class="row">
                             <div className="col-lg-12" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                                <div style={{ height: "100%", width: 750 }} class="panel panel-default">
+                                <div style={{ height: "100%", minHeight: 250, width: "50%", minWidth: "750px", overflow: "auto" }} class="panel panel-default">
                                     <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }} class="panel-heading">
-                                        <span style={{ position: "relative", right: 50 }}>إضافة مؤهل جديد</span> {this.state.edit ? <i onClick={this.closeEditSectionHandler} style={{ fontSize: 15, position: "relative", left: 530 }} class="fas fa-times-circle"></i> : null}
-                                        {this.state.add ? <i onClick={this.closeAddSectionHandler} style={{ fontSize: 15, position: "relative", top: 5, left: 380 }} class="fas fa-times-circle"></i> : null}
-                                        <input onClick={this.addNewHandler} style={{ position: "relative", right: 250, fontSize: 20 }} type="submit" class="btn btn-primary" value="اضف" />
+                                        <span style={{ position: "relative", right: 50 }}>إضافة مؤهل جديد</span> {this.state.edit ? <i style={{ fontSize: 15, position: "relative", left: 530 }} class="fas fa-times-circle"></i> : null}
+                                        {this.state.add ? <i onClick={this.closeAddSectionHandler} style={{ fontSize: 15, float: "right" }} class="fas fa-times-circle"></i> : null}
                                     </div>
-
-                                    <div style={{ display: "flex", marginTop: 5 }}>
-                                        <div style={{ marginRight: 20, marginTop: 5 }}>
-
-                                            <div className="col-lg-4">
-                                                {/* <TextField
-                                                    id="with-placeholder"
-                                                    label={<span style={{ fontSize: '2rem' }}>dsdsa</span>}
-                                                    placeholder="id"
-                                                    InputProps={{
-                                                        classes: {
-                                                            input: classes.resize,
-                                                        },
-                                                    }}
-                                                    className={classes.textField}
-                                                    margin="normal"
-                                                    autoFocus={true}
-                                                    helperText={"Add an existing id or select "} /> */}
-
-                                                <div class="input-group">
-                                                    <span >رقم الأداء :  </span><input onChange={this.idInputAddHandler} type="number" style={{ background: "white", marginTop: 5, marginRight: 5, height: 25, width: 188, border: "1px solid black" }} type="text" name="first_name" placeholder={this.props.empNameByName ? this.props.empNameByName.length >= 1 ? this.props.empNameByName[0].EMPLOYEE_ID : null : null} />
-                                                </div>
-                                                <div class="input-group">
-                                                    <span>الإسم :  </span><input onKeyUp={this.nameInputHandler} ref="insertName" onChange={this.nameInputAddHandler} required style={{ background: "white", marginTop: 5, marginRight: 5, height: 25, width: 188, border: "1px solid black" }} type="text" name="first_name" placeholder={this.props.empname ? this.props.empname.length >= 1 ? this.props.empname[0].NAME_ARABIC : null : null || this.props.empNameByName ? this.props.empNameByName.length >= 1 ? this.props.empNameByName[0].NAME_ARABIC : null : null} />
-                                                </div>
-                                                <div class="input-group">
-                                                    <span>الدرجة :  </span>
-                                                    <select required style={{ marginTop: 5, marginRight: 5, height: 25, width: 188 }} onChange={this.catClickHandeler}>
-                                                        <option selected>
-                                                            اختر الدرجة
-                                                        </option>
-                                                        <option>زمالة</option>
-                                                        <option>دكتوراه</option>
-                                                        <option>ماجستير</option>
-                                                        <option>دبلوم دراسات عليا</option>
-                                                        <option>ليسانس</option>
-                                                        <option>بكالوريوس</option>
-                                                        <option>دبلوم</option>
-                                                        <option>الشهادة الأهلية</option>
-                                                        <option>ثانوية</option>
-                                                        <option>إعدادية</option>
-                                                        <option>إبتدائية</option>
-                                                        <option>شهادة محو الأمية</option>
-                                                        <option>بدون مؤهل</option>
-                                                        <option>مؤهل فوق متوسط</option>
-                                                        <option>مؤهل متوسط</option>
-                                                        <option>شهادة</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div className="col-lg-4">
-                                                <div class="input-group">
-                                                    <span>التخصص :  </span><input ref="spec" onChange={this.specialityHandler} />
-                                                </div>
-                                                <div class="input-group">
-                                                    <span>جهة التخرج :  </span><input ref="spec" onChange={this.uneshcoolHandler} />
-
-                                                </div>
-                                            </div>
-                                            <div className="col-lg-4">
-                                                <div class="input-group">
-                                                    <span>سنة التخرج :  </span><input type="number" onChange={this.graduationYearHandler} />
-                                                </div>
-                                                <div class="input-group">
-                                                    <span>التقدير :  </span>
-                                                    <select required style={{ marginTop: 5, marginRight: 6, height: 25, width: 188 }} onChange={this.gNameClickeHandeler}>
-                                                        <option>امتياز مع مرتبة الشرف</option>
-                                                        <option>ممتاز</option>
-                                                        <option>جيد جداً مع مرتبة الشرف</option>
-                                                        <option>جيد جداً</option>
-                                                        <option>جيد</option>
-                                                        <option>مقبول</option>
-                                                        <option selected>اخترالتقدير</option>
-                                                    </select>
-                                                </div>
-                                            </div>
+                                    {this.state.showMsg ? this.props.msg == "تم إدخال التقييم بنجاح" ? <div id="showmsg" className="alert alert-success" role="alert"> {this.props.msg}</div> : this.props.msg == "يوجد خطاء بقاعدة البيانات" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.props.msg}</div> : this.props.msg == "يجب إدخال أي من الإسم ورقم الأداء" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.props.msg}</div> : null : null}
+                                    <div style={{ display: "flex", justifyContent: "space-around" }}>
+                                        <div className="form-group" controlId="formBasicEmail">
+                                            <label style={{ width: "100%", textAlign: "right" }}>رقم الأداء : </label>
+                                            <input onChange={this.idInputAddHandler} className="form-control" style={{ width: "100%", minWidth: "250px" }} onKeyDown={this.nameInputHandler} type="text" />
+                                        </div>
+                                        <div className="form-group" controlId="formBasicEmail">
+                                            <label style={{ width: "100%", textAlign: "right" }}>الأسم : </label>
+                                            <input onKeyDown={this.nameInputAddHandler} id="nameinputadd" className="form-control" style={{ width: "100%", minWidth: "250px" }} onChange={this.nameInputHandler} type="text" />
                                         </div>
                                     </div>
+                                    <div style={{ display: "flex", justifyContent: "space-around" }}>
+                                        <div className="form-group" controlId="formBasicEmail">
+                                            <label style={{ width: "100%", textAlign: "right" }}>التقدير : </label>
+                                            <select onChange={this.handelAppraisal} id="empapp" style={{ height: 30, width: "100%", minWidth: "215px" }}>
+                                                <option selected>اختر التقدير</option>
+                                            </select>
+                                        </div>
+                                        <div className="form-group" controlId="formBasicEmail">
+                                            <label style={{ width: "100%", textAlign: "right" }}>السنة : </label>
+                                            <input onChange={this.handelYear} className="form-control" style={{ width: "100%", minWidth: "250px" }} onKeyDown={this.nameInputHandler} type="text" />
+                                        </div>
+                                    </div>
+                                    <div style={{ display: "flex", justifyContent: "space-around" }}>
+
+                                        <span>الدرجة :  </span>
+                                        <select required style={{ marginTop: 5, marginRight: 5, height: 25, width: 188 }} onChange={this.catClickHandeler}>
+                                            <option selected>
+                                                اختر الدرجة
+                                            </option>
+                                            <option>زمالة</option>
+                                            <option>دكتوراه</option>
+                                            <option>ماجستير</option>
+                                            <option>دبلوم دراسات عليا</option>
+                                            <option>ليسانس</option>
+                                            <option>بكالوريوس</option>
+                                            <option>دبلوم</option>
+                                            <option>الشهادة الأهلية</option>
+                                            <option>ثانوية</option>
+                                            <option>إعدادية</option>
+                                            <option>إبتدائية</option>
+                                            <option>شهادة محو الأمية</option>
+                                            <option>بدون مؤهل</option>
+                                            <option>مؤهل فوق متوسط</option>
+                                            <option>مؤهل متوسط</option>
+                                            <option>شهادة</option>
+                                        </select>
+                                    </div>
+                                    <button onClick={this.submitButtonHandler} style={{ width: "92%", margin: "0 auto" }} type="button" class="btn btn-primary btn-block">إضافة تقييم جديد</button>
+
+                                    {this.state.confirmAdd ? <div style={{ width: "100%" }} class="alert alert-warning" role="alert"> هل انت متأكد من إضافة تدرج جديد ؟ <button onClick={this.handleNewAppraisal} style={{ float: "left" }} type="button" class="btn btn-warning">تأكيد</button> <i onClick={this.submitButtonHandler} style={{ fontSize: 15, float: "right" }} class="fas fa-times-circle"></i></div> : null}
+
+
                                 </div>
                                 {this.state.addConfirmed ? <div style={{ width: "70%" }} class="alert alert-warning" role="alert"> هل انت متأكد من إضافة تدرج جديد ؟ <button onClick={this.handelInsertNewTrans} style={{ position: "absolute", left: "17%", top: "80%" }} type="button" class="btn btn-warning">تأكيد</button> <i onClick={this.closeAddConfirmHandler} style={{ fontSize: 15, position: "relative", top: "5%", left: "62%" }} class="fas fa-times-circle"></i></div> : null}
                             </div>
@@ -353,7 +327,7 @@ class EmpEduDeg extends React.Component {
                                     <span>رقم الأداء : </span><input ref="empid" onKeyDown={this.idInputHandler} style={{ background: "white", width: "40%", marginBottom: 5, marginRight: 5, border: "1px solid black" }} type="text" name="first_name" />
                                 </div>
                                 <div style={{ marginTop: 20, marginRight: 0, width: "70%" }} class="input-group">
-                                    <span >الإسم : </span><input ref="name" onKeyUp={this.nameInputHandler} placeholder={this.props.empname && !this.state.edit ? this.props.empname.length >= 1 ? this.props.empname[0].NAME_ARABIC : null : null} style={{ background: "white", width: "80%", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
+                                    <span >الإسم : </span><input ref="name" onKeyUp={this.nameInputHandler} style={{ background: "white", width: "80%", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
                                 </div>
                                 <button onClick={this.addButtonClickHandeler} style={{ position: "relative", right: 20, top: 8 }} type="button" class="btn btn-primary">إضافة مؤهل جديد</button>
                             </div>
@@ -532,3 +506,75 @@ export default connect(mapStateToProps, {
     getEmpEdu, getEmpName, getEmpNameByName, getQulSpeciality, getUneSchool
 })(withStyles(styles)(EmpEduDeg));
 
+{/* <div className="col-lg-4">
+                                                <TextField
+                                                    id="with-placeholder"
+                                                    label={<span style={{ fontSize: '2rem' }}>dsdsa</span>}
+                                                    placeholder="id"
+                                                    InputProps={{
+                                                        classes: {
+                                                            input: classes.resize,
+                                                        },
+                                                    }}
+                                                    className={classes.textField}
+                                                    margin="normal"
+                                                    autoFocus={true}
+                                                    helperText={"Add an existing id or select "} />
+
+                                                <div class="input-group">
+                                                    <span >رقم الأداء :  </span><input onChange={this.idInputAddHandler} type="number" style={{ background: "white", marginTop: 5, marginRight: 5, height: 25, width: 188, border: "1px solid black" }} type="text" name="first_name" placeholder={this.props.empNameByName ? this.props.empNameByName.length >= 1 ? this.props.empNameByName[0].EMPLOYEE_ID : null : null} />
+                                                </div>
+                                                <div class="input-group">
+                                                    <span>الإسم :  </span><input onKeyUp={this.nameInputHandler} ref="insertName" onChange={this.nameInputAddHandler} required style={{ background: "white", marginTop: 5, marginRight: 5, height: 25, width: 188, border: "1px solid black" }} type="text" name="first_name" placeholder={this.props.empname ? this.props.empname.length >= 1 ? this.props.empname[0].NAME_ARABIC : null : null || this.props.empNameByName ? this.props.empNameByName.length >= 1 ? this.props.empNameByName[0].NAME_ARABIC : null : null} />
+                                                </div>
+                                                <div class="input-group">
+                                                    <span>الدرجة :  </span>
+                                                    <select required style={{ marginTop: 5, marginRight: 5, height: 25, width: 188 }} onChange={this.catClickHandeler}>
+                                                        <option selected>
+                                                            اختر الدرجة
+                                                        </option>
+                                                        <option>زمالة</option>
+                                                        <option>دكتوراه</option>
+                                                        <option>ماجستير</option>
+                                                        <option>دبلوم دراسات عليا</option>
+                                                        <option>ليسانس</option>
+                                                        <option>بكالوريوس</option>
+                                                        <option>دبلوم</option>
+                                                        <option>الشهادة الأهلية</option>
+                                                        <option>ثانوية</option>
+                                                        <option>إعدادية</option>
+                                                        <option>إبتدائية</option>
+                                                        <option>شهادة محو الأمية</option>
+                                                        <option>بدون مؤهل</option>
+                                                        <option>مؤهل فوق متوسط</option>
+                                                        <option>مؤهل متوسط</option>
+                                                        <option>شهادة</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div className="col-lg-4">
+                                                <div class="input-group">
+                                                    <span>التخصص :  </span><input ref="spec" onChange={this.specialityHandler} />
+                                                </div>
+                                                <div class="input-group">
+                                                    <span>جهة التخرج :  </span><input ref="spec" onChange={this.uneshcoolHandler} />
+
+                                                </div>
+                                            </div>
+                                            <div className="col-lg-4">
+                                                <div class="input-group">
+                                                    <span>سنة التخرج :  </span><input type="number" onChange={this.graduationYearHandler} />
+                                                </div>
+                                                <div class="input-group">
+                                                    <span>التقدير :  </span>
+                                                    <select required style={{ marginTop: 5, marginRight: 6, height: 25, width: 188 }} onChange={this.gNameClickeHandeler}>
+                                                        <option>امتياز مع مرتبة الشرف</option>
+                                                        <option>ممتاز</option>
+                                                        <option>جيد جداً مع مرتبة الشرف</option>
+                                                        <option>جيد جداً</option>
+                                                        <option>جيد</option>
+                                                        <option>مقبول</option>
+                                                        <option selected>اخترالتقدير</option>
+                                                    </select>
+                                                </div>
+                                            </div> */}
