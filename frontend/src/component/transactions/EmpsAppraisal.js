@@ -15,19 +15,18 @@ import Pagination from "../Pagination";
 class EmpsAppraisal extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { confirmAdd: false, showMsg: false, errorAdd: false, empAppraisal: "null", appraisalYear: "null", rowAppraisal: false, add: false, edit: false, empid: null, empname: null, empnat: null, showNamesResults: false, updated: false, firstArg: 0, secondArg: 20, currentPage: 1, firstArgPerBtn: 0, secondArgPerBtn:10 };
+        this.state = { confirmAdd: false, showMsg: false, errorAdd: false, empAppraisal: "null", appraisalYear: "null", rowAppraisal: false, add: false, edit: false, empid: null, empname: null, empnat: null, showNamesResults: false, updated: false, firstArg: 0, secondArg: 20, currentPage: 1, firstArgPerBtn: 0, secondArgPerBtn: 10 };
     }
 
     changeArgs = (i) => (e) => {
         e.preventDefault()
-        this.setState({currentPage: i})
+        this.setState({ currentPage: i })
         if (i == 1) {
             this.setState({ firstArg: (i - 1) * 20, secondArg: i * 20 })
 
         }
         else if (i > 1) {
             this.setState({ firstArg: (i - 1) * 20 + 1, secondArg: i * 20 })
-            console.log('hello world');
 
 
         }
@@ -40,28 +39,27 @@ class EmpsAppraisal extends React.Component {
 
     minusFirstArg = (e) => {
         e.preventDefault()
-        console.log('dasd');
-        if(this.state.firstArgPerBtn > 0){
+        if (this.state.firstArgPerBtn > 0) {
             this.setState(prevState => {
-                return { firstArgPerBtn: prevState.firstArgPerBtn - 1, secondArgPerBtn: prevState.secondArgPerBtn - 1, currentPage: prevState.currentPage -1, firstArg: prevState.firstArg - 10, secondArg: prevState.secondArg -10 }
+                return { firstArgPerBtn: prevState.firstArgPerBtn - 1, secondArgPerBtn: prevState.secondArgPerBtn - 1, currentPage: prevState.currentPage - 1, firstArg: prevState.firstArg - 10, secondArg: prevState.secondArg - 10 }
             })
         }
 
         this.changeArgs(this.state.currentPage - 1)
-      }
+    }
 
-      plusSecondArg = (e) => {
+    plusSecondArg = (e) => {
         e.preventDefault()
-        let itemsPerPage = Math.ceil(this.props.empApp.length / 10)
-        if(this.state.secondArgPerBtn < itemsPerPage){
+        let itemsPerPage = Math.ceil(this.props.empApp.length / 20)
+        if (this.state.secondArgPerBtn < itemsPerPage) {
             this.setState(prevState => {
-                return { firstArgPerBtn: prevState.firstArgPerBtn + 1, secondArgPerBtn: prevState.secondArgPerBtn + 1, currentPage: prevState.currentPage + 1, firstArg: prevState.firstArg + 10, secondArg:prevState.secondArg + 10 }
+                return { firstArgPerBtn: prevState.firstArgPerBtn + 1, secondArgPerBtn: prevState.secondArgPerBtn + 1, currentPage: prevState.currentPage + 1, firstArg: prevState.firstArg + 10, secondArg: prevState.secondArg + 10 }
             })
-            console.log(this.state.firstArgPerBtn, this.state.secondArgPerBtn);
+
         }
         this.changeArgs(this.state.currentPage + 1)
 
-      }
+    }
 
 
     idInputAddHandler = (e) => {
@@ -131,7 +129,7 @@ class EmpsAppraisal extends React.Component {
     }
 
     handelSearch = () => {
-        this.setState({ edit: false, updated: false, firstArg: 0, secondArg: 20,currentPage:1, firstArgPerBtn: 0, secondArgPerBtn: 10 })
+        this.setState({ edit: false, updated: false, firstArg: 0, secondArg: 20, currentPage: 1, firstArgPerBtn: 0, secondArgPerBtn: 10 })
         this.props.getEmpAppraisal(document.getElementById("empid").value, document.getElementById("empname").value, document.getElementById("empapp").value, document.getElementById("year1").value)
     }
 
@@ -164,7 +162,6 @@ class EmpsAppraisal extends React.Component {
         e.preventDefault()
         // let data = { , appraisal: this.refs.newAppraisal.value, year: document.getElementById("year").placeholder }
         let data = { empNat: this.state.empnat, appraisal: this.state.empAppraisal, year: this.state.appraisalYear }
-        console.log(data.empNat);
         this.props.updateEmpAppraisal(data)
         let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
         for (let i = 0; i < tds.length; i++) {
@@ -210,8 +207,6 @@ class EmpsAppraisal extends React.Component {
             start++;
         }
 
-        console.log(this.props.empApp.length);
-
 
         let appraisals = ["ممتاز بجدارة", "ممتاز", "جيد جدا بجدارة", "جيد جدا", "جيد", "مقبول", "ضعيف", "جيد حكمي", "جيد جدا حكمي", "ممتاز حكمي"]
 
@@ -231,8 +226,6 @@ class EmpsAppraisal extends React.Component {
             transition: "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out"
 
         }
-
-        console.log(this.state.firstArg, this.state.secondArg);
         return (
             <div id="page-wrapper" >
                 {this.state.add ?

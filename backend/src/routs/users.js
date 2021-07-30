@@ -39,6 +39,7 @@ function handleRegister(req, res) {
             res.status(400).json({ success: false, msg: "username and password feilds are empty", data: rows });
 
         } else if (err) {
+            console.log(err);
             res.status(400).json({ success: false, msg: "ther's an error" });
         } else if (rows.length) {
             res.status(400).json({ success: false, msg: "user already exists" });
