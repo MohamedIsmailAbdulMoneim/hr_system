@@ -38,7 +38,7 @@ function getCates(req, res) {
 
 function getEmpNameById(req, res) {
     const empid = req.params.empid
-    const query = `SELECT employee.NAME_ARABIC, employee.EMPLOYEE_ID ,empmainbox.SUP_BOX_NAME, empmainbox.MAIN_BOX_ID, employee.NATIONAL_ID_CARD_NO FROM employee JOIN (SELECT a_job_trans.SUP_BOX_ID, a_sup_box.SUP_BOX_NAME , a_job_trans.NATIONAL_ID_CARD_NO, a_sup_box.MAIN_BOX_ID FROM a_job_trans JOIN a_sup_box ON a_job_trans.SUP_BOX_ID = a_sup_box.SUP_BOX_ID WHERE a_job_trans.INDICATOR = 2 ) AS empmainbox ON employee.NATIONAL_ID_CARD_NO = empmainbox.NATIONAL_ID_CARD_NO WHERE EMPLOYEE_ID = ${empid}`
+    const query = `SELECT employee.NAME_ARABIC, employee.EMPLOYEE_ID ,employee.NATIONAL_ID_CARD_NO ,empmainbox.SUP_BOX_NAME, empmainbox.MAIN_BOX_ID, employee.NATIONAL_ID_CARD_NO FROM employee JOIN (SELECT a_job_trans.SUP_BOX_ID, a_sup_box.SUP_BOX_NAME , a_job_trans.NATIONAL_ID_CARD_NO, a_sup_box.MAIN_BOX_ID FROM a_job_trans JOIN a_sup_box ON a_job_trans.SUP_BOX_ID = a_sup_box.SUP_BOX_ID WHERE a_job_trans.INDICATOR = 2 ) AS empmainbox ON employee.NATIONAL_ID_CARD_NO = empmainbox.NATIONAL_ID_CARD_NO WHERE EMPLOYEE_ID = ${empid}`
     db.query(query, (err, details) => {
         if (err) {
         } else {
@@ -49,7 +49,7 @@ function getEmpNameById(req, res) {
 
 function getEmpNameByName(req, res) {
     let empname = req.params.empname
-    let query = `SELECT NAME_ARABIC, EMPLOYEE_ID  FROM employee WHERE NAME_ARABIC  LIKE "%${empname}%"`
+    let query = `SELECT NAME_ARABIC, EMPLOYEE_ID, NATIONAL_ID_CARD_NO FROM employee WHERE NAME_ARABIC  LIKE "%${empname}%"`
     db.query(query, (err, details) => {
         if (err) {
         } else {
@@ -91,5 +91,5 @@ router
     .get('/empnamebyName/:empname', getEmpNameByName)
     .get('/specarabic', getQulSpeciality)
     .get('/uneschool', getUneSchool)
-    
+
 module.exports = router;

@@ -3,7 +3,7 @@ const db = require("../database/connection")
 
 let router = express.Router();
 
-function getEmpExprerience (req,res){
+function getEmpExprerience(req, res) {
     const empid = req.query.empid
     const empname = req.query.empname
 
@@ -426,6 +426,10 @@ function getUpJd(req, res) {
     })
 }
 
+function newEmpExp(req, res) {
+    console.log(req.body);
+}
+
 
 
 router
@@ -445,6 +449,7 @@ router
     .get('/getavailsupbox/:catname/:jdname', getAvailSupBox)
     .post('/postnewtrans', postnewtrans)
     .get('/getUpJd/:len/:supboxname', getUpJd)
-    .get ('/getempexp', getEmpExprerience)
+    .get('/getempexp', getEmpExprerience)
+    .post('newempexp', newEmpExp)
 
 module.exports = router;

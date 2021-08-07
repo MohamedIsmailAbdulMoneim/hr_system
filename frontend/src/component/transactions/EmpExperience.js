@@ -35,7 +35,7 @@ class EmpExperience extends React.Component {
         let nodes = document.getElementsByClassName(selectedArr);
         let index = Array.prototype.indexOf.call(nodes, e.target);
         let newArr = this.state[selectedArr].slice()
-        newArr[index] = {value:e.target.value, key: index,expType: e.target.getAttribute('uniqueIndex') }
+        newArr[index] = { value: e.target.value, key: index, expType: e.target.getAttribute('uniqueIndex') }
         this.setState({
             [selectedArr]: newArr
         })
@@ -49,7 +49,7 @@ class EmpExperience extends React.Component {
         let nodes = document.getElementsByClassName(selectedArr);
         let index = Array.prototype.indexOf.call(nodes, e.target);
         let newArr = this.state[selectedArr].slice()
-        newArr[index] = {value:e.target.value, key: index,expType: e.target.getAttribute('uniqueIndex') }
+        newArr[index] = { value: e.target.value, key: index, expType: e.target.getAttribute('uniqueIndex') }
         this.setState({
             [selectedArr]: newArr
         })
@@ -63,7 +63,7 @@ class EmpExperience extends React.Component {
         let nodes = document.getElementsByClassName(selectedArr);
         let index = Array.prototype.indexOf.call(nodes, e.target);
         let newArr = this.state[selectedArr].slice()
-        newArr[index] = {value:e.target.value, key: index,expType: e.target.getAttribute('uniqueIndex') }
+        newArr[index] = { value: e.target.value, key: index, expType: e.target.getAttribute('uniqueIndex') }
         this.setState({
             [selectedArr]: newArr
         })
@@ -77,7 +77,7 @@ class EmpExperience extends React.Component {
         let nodes = document.getElementsByClassName(selectedArr);
         let index = Array.prototype.indexOf.call(nodes, e.target);
         let newArr = this.state[selectedArr].slice()
-        newArr[index] = {value:e.target.value, key: index,expType: e.target.getAttribute('uniqueIndex') }
+        newArr[index] = { value: e.target.value, key: index, expType: e.target.getAttribute('uniqueIndex') }
         this.setState({
             [selectedArr]: newArr
         })
@@ -298,7 +298,7 @@ class EmpExperience extends React.Component {
                         <div style={{ display: "flex", justifyContent: "space-around" }}>
                             <div className="form-group" controlId="formBasicEmail">
                                 <label style={{ width: "100%", textAlign: "right" }}>من : </label>
-                                <input uniqueClass={'fromOfMiliter'} uniqueIndex={1} onChange={this.fromHandler} ref="nameinput" className="form-contro fromOfMiliterl" style={{ width: "100%", minWidth: "250px" }} type="date" />
+                                <input uniqueClass={'fromOfMiliter'} uniqueIndex={1} onChange={this.fromHandler} ref="nameinput" className="form-contro fromOfMiliter" style={{ width: "100%", minWidth: "250px" }} type="date" />
                             </div>
                             <div className="form-group" controlId="formBasicEmail">
                                 <label style={{ width: "100%", textAlign: "right" }}>إلى : </label>
@@ -314,14 +314,36 @@ class EmpExperience extends React.Component {
 
     handleArrToSend = (e) => {
         var state = this.state
-        var arrays = state.poeOfInner.concat(state.poeOfOuter, state.poeOfMiliter,state.jobOfInner,state.jobOfOuter,state.jobOfMiliter,state.fromOfInner,state.fromOfOuter,state.fromOfMiliter,state.toOfInner,state.toOfOuter,state.toOfMiliter)
-        console.log(arrays);
-        var emptyInputs =  arrays.find(i => i.length <= 1)
-        console.log(emptyInputs);
-        if(emptyInputs != undefined){
-            
-        }else if(emptyInputs == undefined){
-            console.log(false);
+        var arrays = state.poeOfInner.concat(state.poeOfOuter, state.poeOfMiliter, state.jobOfInner, state.jobOfOuter, state.jobOfMiliter, state.fromOfInner, state.fromOfOuter, state.fromOfMiliter, state.toOfInner, state.toOfOuter, state.toOfMiliter)
+        var emptyInputs = arrays.find(i => i.length <= 1)
+
+        if (emptyInputs != undefined) {
+
+
+        } else if (emptyInputs == undefined) {
+            let militerExp = arrays.filter(el => el.expType == 1)
+            console.log(militerExp);
+
+            if (militerExp.length > 0) {
+                let arr = []
+                let i = militerExp.length / 4
+                while (i > 0) {
+                    let obj = {}
+                    var arrloop = militerExp.filter(el => el.key == i - 1)
+                    console.log(arrloop);
+                    obj.PLACE_NAME = arrloop[0].value
+                    obj.JOB_NAME = arrloop[1].value
+                    obj.START_DATE = arrloop[2].value
+                    obj.END_DATE = arrloop[3].value
+                    obj.EXP_TYP_CODE = arrloop[0].expType
+                    obj.NATIONAL_ID_CARD_NO = this.props.empname.length >= 1 ? this.props.empname[0].NATIONAL_ID_CARD_NO : this.props.empNameByName.length >= 1 ? this.props.empNameByName[0].NATIONAL_ID_CARD_NO : null
+                    arr.push(obj)
+                    i--
+                }
+                console.log(arr);
+            }
+            let innerExp = arrays.filter(el => el.expType == 3)
+            let outerExp = arrays.filter(el => el.expType == 4)
         }
         // poeOfInner: [], poeOfOuter: [], poeOfMiliter: []
         // , jobOfInner: [], jobOfOuter: [], jobOfMiliter: [],
@@ -341,6 +363,7 @@ class EmpExperience extends React.Component {
     }
 
     nameInputAddHandler = (e) => {
+        this.props.getEmpNameByName(e.target.value)
         this.setState({ empname: e.target.value })
 
     }
@@ -367,7 +390,8 @@ class EmpExperience extends React.Component {
 
     nameInputHandler = (e) => {
         this.setState({ showNamesResults: true, showFamilyResult: false })
-        this.props.getEmpExp('', e.target.value)
+        console.log(e.target.value);
+        this.props.getEmpNameByName(e.target.value)
         this.refs.empid.value = ''
         if (e.key === 'Enter') {
             this.props.getEmpExp("", e.target.value)
@@ -378,7 +402,8 @@ class EmpExperience extends React.Component {
 
     namesOptionshandler = (e) => {
         document.getElementById('empname').value = e.target.value
-        if (document.getElementById('nameinputadd')) document.getElementById('nameinputadd').value = e.target.value
+        document.getElementById('nameinputadd').value = e.target.value
+        this.props.getEmpNameByName(e.target.value)
         this.setState({ showFamilyResult: true, empname: e.target.value })
     }
 
@@ -440,36 +465,36 @@ class EmpExperience extends React.Component {
             <div id="page-wrapper" >
                 {this.state.add ?
                     <div>
-                            <div class="row">
-                                <div className="col-lg-12" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                                    <span style={{ position: "relative", right: 50 }}>إضافة بيانات جديدة</span> {this.state.edit ? <i onClick={this.closeEditSectionHandler} style={{ fontSize: 15, position: "relative", left: 530 }} class="fas fa-times-circle"></i> : null}
-                                    <div style={{ height: "100%", minHeight: 400, width: "70%", minWidth: "450", overflow: "auto" }} class="panel panel-default">
-                                        <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }} class="panel-heading">
-                                            {this.state.add ? <i onClick={this.closeAddSectionHandler} style={{ fontSize: 15, float: "right" }} class="fas fa-times-circle"></i> : null}
-                                            {/* <input style={{ position: "relative", right: 250, fontSize: 20 }} type="submit" class="btn btn-primary" onSubmit={this.handelInsertNewTrans} value="Add" /> */}
-                                            <button style={{ height: "10%", minHeight: "20px", float: "left", marginRight: 7, background: "#062f07" }} onClick={this.addInnerExp} className="btn btn-primary"> <span style={{ marginLeft: 7 }}>إضافة خبرة داخل القطاع</span><i class="fas fa-user-plus"></i> </button>
-                                            <button style={{ height: "10%", minHeight: "20px", float: "left", marginRight: 7, background: "#062f07" }} onClick={this.addOuterExp} className="btn btn-primary"> <span style={{ marginLeft: 7 }}>إضافة خبرة خارج القطاع</span><i class="fas fa-user-plus"></i> </button>
-                                            <button style={{ height: "10%", minHeight: "20px", float: "left", marginRight: 7, background: "#062f07" }} onClick={this.addMiliterExp} className="btn btn-primary"> <span style={{ marginLeft: 7 }}>إضافة خدمة عسكرية</span><i class="fas fa-user-plus"></i> </button>
-                                        </div>
-
-                                        <div style={{ display: "flex", justifyContent: "space-around" }}>
-                                            <div className="form-group" controlId="formBasicEmail">
-                                                <label style={{ width: "100%", textAlign: "right" }}>رقم الأداء : </label>
-                                                <input ref="nameinput" className="form-control" style={{ width: "100%", minWidth: "250px" }} onChange={this.nameInputHandler} type="text" />
-                                            </div>
-                                            <div className="form-group" controlId="formBasicEmail">
-                                                <label style={{ width: "100%", textAlign: "right" }}>الإسم : </label>
-                                                <input ref="nameinput" className="form-control" style={{ width: "100%", minWidth: "250px" }} onChange={this.nameInputHandler} type="text" />
-                                            </div>
-                                        </div>
-                                        {this.state.innerLength === 0 ? null : this.innerExpHandler(this.state.innerLength)}
-                                        {this.state.outerLength === 0 ? null : this.outerExpHandler(this.state.outerLength)}
-                                        {this.state.militerLength === 0 ? null : this.militaryExpHandler(this.state.militerLength)}
-
-                                        <button onClick={this.handleArrToSend} style={{ float: "left" }} type="button" class="btn btn-primary">إضافة بيانات جديدة</button>
+                        <div class="row">
+                            <div className="col-lg-12" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                                <span style={{ position: "relative", right: 50 }}>إضافة بيانات جديدة</span> {this.state.edit ? <i onClick={this.closeEditSectionHandler} style={{ fontSize: 15, position: "relative", left: 530 }} class="fas fa-times-circle"></i> : null}
+                                <div style={{ height: "100%", minHeight: 400, width: "70%", minWidth: "450", overflow: "auto" }} class="panel panel-default">
+                                    <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }} class="panel-heading">
+                                        {this.state.add ? <i onClick={this.closeAddSectionHandler} style={{ fontSize: 15, float: "right" }} class="fas fa-times-circle"></i> : null}
+                                        {/* <input style={{ position: "relative", right: 250, fontSize: 20 }} type="submit" class="btn btn-primary" onSubmit={this.handelInsertNewTrans} value="Add" /> */}
+                                        <button style={{ height: "10%", minHeight: "20px", float: "left", marginRight: 7, background: "#062f07" }} onClick={this.addInnerExp} className="btn btn-primary"> <span style={{ marginLeft: 7 }}>إضافة خبرة داخل القطاع</span><i class="fas fa-user-plus"></i> </button>
+                                        <button style={{ height: "10%", minHeight: "20px", float: "left", marginRight: 7, background: "#062f07" }} onClick={this.addOuterExp} className="btn btn-primary"> <span style={{ marginLeft: 7 }}>إضافة خبرة خارج القطاع</span><i class="fas fa-user-plus"></i> </button>
+                                        <button style={{ height: "10%", minHeight: "20px", float: "left", marginRight: 7, background: "#062f07" }} onClick={this.addMiliterExp} className="btn btn-primary"> <span style={{ marginLeft: 7 }}>إضافة خدمة عسكرية</span><i class="fas fa-user-plus"></i> </button>
                                     </div>
+
+                                    <div style={{ display: "flex", justifyContent: "space-around" }}>
+                                        <div className="form-group" controlId="formBasicEmail">
+                                            <label style={{ width: "100%", textAlign: "right" }}>رقم الأداء : </label>
+                                            <input ref="nameinput" className="form-control" style={{ width: "100%", minWidth: "250px" }} type="text" />
+                                        </div>
+                                        <div className="form-group" controlId="formBasicEmail">
+                                            <label style={{ width: "100%", textAlign: "right" }}>الإسم : </label>
+                                            <input ref="nameinput" id="nameinputadd" className="form-control" style={{ width: "100%", minWidth: "250px" }} onChange={this.nameInputHandler} type="text" />
+                                        </div>
+                                    </div>
+                                    {this.state.innerLength === 0 ? null : this.innerExpHandler(this.state.innerLength)}
+                                    {this.state.outerLength === 0 ? null : this.outerExpHandler(this.state.outerLength)}
+                                    {this.state.militerLength === 0 ? null : this.militaryExpHandler(this.state.militerLength)}
+
+                                    <button onClick={this.handleArrToSend} style={{ float: "left" }} type="button" class="btn btn-primary">إضافة بيانات جديدة</button>
                                 </div>
                             </div>
+                        </div>
                     </div> : null
                 }
                 {
@@ -504,7 +529,7 @@ class EmpExperience extends React.Component {
                                     </div>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>الإسم : </label>
-                                        <input id="name" id="empname" className="form-control" onKeyUp={this.nameInputHandler} style={{ background: "white", width: "100%", minWidth: "250px", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
+                                        <input id="name" id="empname" className="form-control" onChange={this.nameInputHandler} style={{ background: "white", width: "100%", minWidth: "250px", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
                                     </div>
                                 </div>
                             </div>

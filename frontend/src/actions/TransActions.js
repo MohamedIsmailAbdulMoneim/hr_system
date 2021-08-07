@@ -1,4 +1,4 @@
-import { NEW_APPRAISAL, updatetrans, fetchEmpTrans, updateAppraisal, FETCHEMPEXP } from "../actions/ActionTypes";
+import { NEW_APPRAISAL, updatetrans, fetchEmpTrans, updateAppraisal, FETCHEMPEXP, NEW_EXP } from "../actions/ActionTypes";
 import axios from "axios";
 
 
@@ -63,12 +63,30 @@ export const updateEmpAppraisal = (obj) => (dispatch) => {
 }
 
 
-export const getEmpExp = (empid,empname) => (dispatch) => {
+export const getEmpExp = (empid, empname) => (dispatch) => {
   axios.get(`http://localhost:5000/getempexp/?empid=${empid}&empname=${empname}`).then(res => {
     console.log(res);
     dispatch({
       type: FETCHEMPEXP,
       payload: res.data
+    })
+  })
+}
+
+export const newEmpExp = (data) => (dispatch) => {
+  axios({
+    method: "POST",
+    data: data,
+    withCredentials: true,
+    url: "http://localhost:5000/newempexp",
+    headers: { "Content-Type": "application/json" },
+  }).then(res => {
+    dispatch({
+      type: NEW_EXP,
+      payload: {
+        data: res.data.data,
+        msg: res.data.msg
+      }
     })
   })
 }
