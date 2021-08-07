@@ -1,4 +1,4 @@
-import { NEW_APPRAISAL, updatetrans, fetchEmpTrans, updateAppraisal } from "../actions/ActionTypes";
+import { NEW_APPRAISAL, updatetrans, fetchEmpTrans, updateAppraisal, FETCHEMPEXP } from "../actions/ActionTypes";
 import axios from "axios";
 
 
@@ -58,6 +58,17 @@ export const updateEmpAppraisal = (obj) => (dispatch) => {
     dispatch({
       type: updateAppraisal,
       payload: { data: data.data, result: data.data.status }
+    })
+  })
+}
+
+
+export const getEmpExp = (empid,empname) => (dispatch) => {
+  axios.get(`http://localhost:5000/getempexp/?empid=${empid}&empname=${empname}`).then(res => {
+    console.log(res);
+    dispatch({
+      type: FETCHEMPEXP,
+      payload: res.data
     })
   })
 }

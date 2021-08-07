@@ -29,7 +29,8 @@ const initialState = {
   specarabic: [],
   uneshcool: [],
   emps: [],
-  gid: []
+  gid: [],
+  empname:[]
 
 
 };

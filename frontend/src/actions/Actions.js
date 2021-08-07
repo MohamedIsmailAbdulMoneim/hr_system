@@ -161,7 +161,6 @@ export const getEmpStationAndGovern = (val_1, val_2) => (dispatch) => {
 
 export const getEmpName = (val) => (dispatch) => {
   axios.get(`http://localhost:5000/empnamebyid/${val}`).then(res => {
-    console.log('hitempname');
     dispatch({
       type: fetchEmpName,
       payload: res.data
@@ -281,7 +280,6 @@ export const getUneSchool = (uneschool) => (dispatch) => {
 
 export const getemps = () => (dispatch) => {
   axios.get('http://localhost:5000/getemps').then(res => {
-    console.log(res.data);
     dispatch({
       type: fetchemps,
       payload: res.data
@@ -292,7 +290,6 @@ export const getemps = () => (dispatch) => {
 
 export const getGid = () => (dispatch) => {
   axios.get('http://localhost:5000/getgid').then(res => {
-    console.log(res.data);
     dispatch({
       type: fetchgid,
       payload: res.data

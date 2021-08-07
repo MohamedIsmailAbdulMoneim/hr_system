@@ -3,6 +3,27 @@ const db = require("../database/connection")
 
 let router = express.Router();
 
+function getEmpExprerience (req,res){
+    const empid = req.query.empid
+    const empname = req.query.empname
+
+
+    const query = `
+    SELECT * FROM employee_experince WHERE EXP_TYP_CODE = 1 AND NATIONAL_ID_CARD_NO = (SELECT NATIONAL_ID_CARD_NO  FROM employee WHERE ${empid || empid !== "undefined" ? `EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `NAME_ARABIC = "${empname}"` : null});
+    SELECT * FROM employee_experince WHERE EXP_TYP_CODE = 3 AND NATIONAL_ID_CARD_NO = (SELECT NATIONAL_ID_CARD_NO  FROM employee WHERE ${empid || empid !== "undefined" ? `EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `NAME_ARABIC = "${empname}"` : null});
+    SELECT * FROM employee_experince WHERE EXP_TYP_CODE = 4 AND NATIONAL_ID_CARD_NO = (SELECT NATIONAL_ID_CARD_NO  FROM employee WHERE ${empid || empid !== "undefined" ? `EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `NAME_ARABIC = "${empname}"` : null});
+    `
+    db.query(query, (err, details) => {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log(query);
+            res.send(details);
+        }
+
+    })
+}
+
 function getJobDgByCat(req, res) {
     const catId = req.params.catid
     const mainboxid = req.params.mainboxid
@@ -424,5 +445,6 @@ router
     .get('/getavailsupbox/:catname/:jdname', getAvailSupBox)
     .post('/postnewtrans', postnewtrans)
     .get('/getUpJd/:len/:supboxname', getUpJd)
+    .get ('/getempexp', getEmpExprerience)
 
 module.exports = router;

@@ -197,64 +197,67 @@ class EmpFamily extends React.Component {
 
         return (
             <div id="page-wrapper" >
-                {this.state.add ? <div> <form> <div class="row">
-                    <div className="col-lg-12" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                        <div style={{ height: "100%", minHeight: 400, width: "70%", minWidth: "450", overflow: "auto" }} class="panel panel-default">
-                            <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }} class="panel-heading">
-                                <span style={{ position: "relative", right: 50 }}>إضافة بيانات جديدة</span> {this.state.edit ? <i onClick={this.closeEditSectionHandler} style={{ fontSize: 15, position: "relative", left: 530 }} class="fas fa-times-circle"></i> : null}
-                                {this.state.add ? <i onClick={this.closeAddSectionHandler} style={{ fontSize: 15, float: "right" }} class="fas fa-times-circle"></i> : null}
-                                {/* <input style={{ position: "relative", right: 250, fontSize: 20 }} type="submit" class="btn btn-primary" onSubmit={this.handelInsertNewTrans} value="Add" /> */}
+                {this.state.add ?
+                    <div>
+                        <form>
+                            <div class="row">
+                                <div className="col-lg-12" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                                    <div style={{ height: "100%", minHeight: 400, width: "70%", minWidth: "450", overflow: "auto" }} class="panel panel-default">
+                                        <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }} class="panel-heading">
+                                            <span style={{ position: "relative", right: 50 }}>إضافة بيانات جديدة</span> {this.state.edit ? <i onClick={this.closeEditSectionHandler} style={{ fontSize: 15, position: "relative", left: 530 }} class="fas fa-times-circle"></i> : null}
+                                            {this.state.add ? <i onClick={this.closeAddSectionHandler} style={{ fontSize: 15, float: "right" }} class="fas fa-times-circle"></i> : null}
+                                            {/* <input style={{ position: "relative", right: 250, fontSize: 20 }} type="submit" class="btn btn-primary" onSubmit={this.handelInsertNewTrans} value="Add" /> */}
 
-                                <button style={{ height: "10%", minHeight: "20px", float: "left", marginRight: 7, background: "#062f07" }} onClick={this.addWifeHandler} className="btn btn-primary"> <span style={{ marginLeft: 7 }}>إضافة زوجة</span><i class="fas fa-user-plus"></i> </button>
-                                <button style={{ height: "10%", minHeight: "20px", float: "left", marginRight: 7, background: "#062f07" }} onClick={this.addChildHandler} className="btn btn-primary"> <span style={{ marginLeft: 7 }}>إضافة طفل</span><i class="fas fa-user-plus"></i> </button>
+                                            <button style={{ height: "10%", minHeight: "20px", float: "left", marginRight: 7, background: "#062f07" }} onClick={this.addWifeHandler} className="btn btn-primary"> <span style={{ marginLeft: 7 }}>إضافة زوجة</span><i class="fas fa-user-plus"></i> </button>
+                                            <button style={{ height: "10%", minHeight: "20px", float: "left", marginRight: 7, background: "#062f07" }} onClick={this.addChildHandler} className="btn btn-primary"> <span style={{ marginLeft: 7 }}>إضافة طفل</span><i class="fas fa-user-plus"></i> </button>
+                                        </div>
+
+
+                                        {this.state.addWife ?
+                                            <Fragment>
+
+                                                <div style={{ display: "flex", justifyContent: "space-around" }}>
+                                                    <div className="form-group" controlId="formBasicEmail">
+                                                        <label style={{ width: "100%", textAlign: "right" }}>اسم الزوجة : </label>
+                                                        <input ref="nameinput" className="form-control" style={{ width: "100%", minWidth: "250px" }} onChange={this.nameInputHandler} type="text" />
+                                                    </div>
+                                                    <div className="form-group" controlId="formBasicEmail">
+                                                        <label style={{ width: "100%", textAlign: "right" }}>تاريخ الميلاد : </label>
+                                                        <input ref="nameinput" className="form-control" style={{ width: "100%", minWidth: "250px" }} onChange={this.nameInputHandler} type="date" />
+                                                    </div>
+                                                </div>
+
+                                                <div style={{ display: "flex", justifyContent: "space-around" }}>
+                                                    <div className="form-group" controlId="formBasicEmail">
+                                                        <label style={{ width: "100%", textAlign: "right" }}>الرقم القومي : </label>
+                                                        <input ref="nameinput" className="form-control" style={{ width: "100%", minWidth: "250px" }} onChange={this.nameInputHandler} type="text" />
+                                                    </div>
+                                                    <div className="form-group" controlId="formBasicEmail">
+                                                        <label style={{ width: "100%", textAlign: "right" }}>حالة العمل : </label>
+                                                        <select required style={{ height: 30, width: "100%", minWidth: "190px" }} onChange={this.catClickHandeler}>
+                                                            <option selected>
+                                                                تعمل
+                                                            </option>
+                                                            <option selected>
+                                                                لاتعمل
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                            </Fragment>
+
+                                            : null}
+                                        {this.state.childLength === 0 ? null : this.childRender(this.state.childLength)}
+
+
+
+
+                                    </div>
+                                </div>
                             </div>
-
-
-                            {this.state.addWife ?
-                                <Fragment>
-
-                                    <div style={{ display: "flex", justifyContent: "space-around" }}>
-                                        <div className="form-group" controlId="formBasicEmail">
-                                            <label style={{ width: "100%", textAlign: "right" }}>اسم الزوجة : </label>
-                                            <input ref="nameinput" className="form-control" style={{ width: "100%", minWidth: "250px" }} onChange={this.nameInputHandler} type="text" />
-                                        </div>
-                                        <div className="form-group" controlId="formBasicEmail">
-                                            <label style={{ width: "100%", textAlign: "right" }}>تاريخ الميلاد : </label>
-                                            <input ref="nameinput" className="form-control" style={{ width: "100%", minWidth: "250px" }} onChange={this.nameInputHandler} type="date" />
-                                        </div>
-                                    </div>
-
-                                    <div style={{ display: "flex", justifyContent: "space-around" }}>
-                                        <div className="form-group" controlId="formBasicEmail">
-                                            <label style={{ width: "100%", textAlign: "right" }}>الرقم القومي : </label>
-                                            <input ref="nameinput" className="form-control" style={{ width: "100%", minWidth: "250px" }} onChange={this.nameInputHandler} type="text" />
-                                        </div>
-                                        <div className="form-group" controlId="formBasicEmail">
-                                            <label style={{ width: "100%", textAlign: "right" }}>حالة العمل : </label>
-                                            <select required style={{ height: 30, width: "100%", minWidth: "190px" }} onChange={this.catClickHandeler}>
-                                                <option selected>
-                                                    تعمل
-                                                </option>
-                                                <option selected>
-                                                    لاتعمل
-                                                </option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                </Fragment>
-
-                                : null}
-                            {this.state.childLength === 0 ? null : this.childRender(this.state.childLength)}
-
-
-
-
-                        </div>
-                    </div>
-                </div>
-                </form>
-                </div> : null
+                        </form>
+                    </div> : null
                 }
                 {
                     this.state.showNamesResults ? <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}>
@@ -292,8 +295,8 @@ class EmpFamily extends React.Component {
                     <div class="col-lg-12">
                         <div class="panel panel-default">
                             <div class="panel-heading" style={{ display: "flex", justifyContent: "space-evenly" }}>
-                                {this.state.edit ? <i onClick={this.closeEditSectionHandler} style={{ fontSize: 15, position: "relative", bottom: 10, left: 550 }} class="fas fa-times-circle"></i> : null}
-                                <i style={{ fontSize: 40, position: "relative", right: "90%" }} class="fas fa-file-excel"></i>
+                                {/* {this.state.edit ? <i onClick={this.closeEditSectionHandler} style={{ fontSize: 15, position: "relative", bottom: 10, left: 550 }} class="fas fa-times-circle"></i> : null} */}
+                                {/* <i style={{ fontSize: 40, position: "relative", right: "90%" }} class="fas fa-file-excel"></i> */}
                             </div>
                             <div class="panel-body">
                                 <div class="table-responsive">
