@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 import {
     getEmpDetails, getUpJd, getEmpAppraisal, getEmpEdu, getEmpFamily, getEmpNameByName
 } from "../../actions/Actions";
-import { getEmpTrans } from "../../actions/TransActions"
+import { getEmpTrans, getEmpExp } from "../../actions/TransActions"
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -56,6 +56,11 @@ class Employee extends React.Component {
 
     }
 
+    empExpHandler = (e) => {
+        this.props.getEmpExp("", this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].NAME_ARABIC : null : null)
+
+    }
+
     render() {
         console.log(this.props.empdetails);
         const styles = {
@@ -90,7 +95,7 @@ class Employee extends React.Component {
                             </div> : null}
 
                         <div className="col-lg-8">
-                            <div className="data-wrapper" style={{ background: "rgb(235 251 242)", boxShadow: "0 10px 6px -6px #777", borderRadius: 5, height: "100%", width: "100%" }} >
+                            <div className="data-wrapper" style={{ background: "transparent", height: "100%", width: "100%" }} >
                                 <h3 style={{ marginRight: 20, marginTop: 3, textAlign: "right", fontFamily: 'Markazi Text ,serif', fontWeight: 700 }}>البيانات الوظيفية</h3>
                                 <div className="data-wrapper" style={{ display: "flex", justifyContent: "space-around", marginRight: "-15%" }}>
                                     <div className="form-group" controlId="formBasicEmail">
@@ -105,7 +110,7 @@ class Employee extends React.Component {
                                 <div className="data-wrapper" style={{ display: "flex", justifyContent: "space-around", marginRight: "-15%" }}>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>تاريخ العقد : </label>
-                                        <input className="form-control" style={{ width: "100%" }} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].SECTOR_JOIN_DATE : null : null} type="text" disabled />
+                                        <input className="form-control" style={{ width: "100%", color:"red" }} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].SECTOR_JOIN_DATE : null : null} type="text" readonly="readonly" />
                                     </div>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>تاريخ التعيين : </label>
@@ -159,7 +164,7 @@ class Employee extends React.Component {
                                     </div>
                                 </div>
                             </div>
-                            <div className="data-wrapper" style={{ background: "rgb(235 251 242)", boxShadow: "0 10px 6px -6px #777", borderRadius: 5, height: "120%", width: "100%", marginTop: 5 }} >
+                            <div className="data-wrapper" style={{ background: "transparent", height: "120%", width: "100%", marginTop: 5 }} >
                                 <h3 style={{ marginRight: 20, marginTop: 3, textAlign: "right", fontFamily: 'Markazi Text ,serif', fontWeight: 700 }}>البيانات الشخصية</h3>
                                 <div className="data-wrapper" style={{ display: "flex", justifyContent: "space-around", marginRight: "-3%" }}>
                                     <div className="form-group" controlId="formBasicEmail">
@@ -386,12 +391,12 @@ class Employee extends React.Component {
 
                         </div>
                         <div style={{ display: "flex", height: "100%", minHeight:"1000px" }} className="col-lg-4">
-                            <div style={{ background: "rgb(235 251 242)",height:"100%", boxShadow: "0 10px 6px -6px #777", borderRadius: 5, height: 750, width: "100%" }} >
+                            <div style={{ background: "transparent", height: 750, width: "100%" }} >
                                 <img style={{ borderTop: 3 }} src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin" class="rounded-circle" width="150" />
                                 <div style={{ width: "100%", display: "flex", flexDirection: "column" , alignItems: "center", marginTop: 10 }}>
                                     <button style={{ display: "block", border: "1px solid black", marginTop: 5 , minWidth: 170 }} type="button" class="btn btn-outline btn-lg"><Link to={`/empedudeg`}><a onClick={this.empEduButtonHandler} href="/empedudeg">المؤهل</a></Link></button>
                                     <button style={{ display: "block", border: "1px solid black", marginTop: 5 , minWidth: 170 }} type="button" class="btn btn-outline btn-lg" ><Link to={`/EmpTrans`}><a onClick={this.empTransButtonHandler} href="/EmpTrans">التدرج</a></Link></button>
-                                    <button style={{ display: "block", border: "1px solid black", marginTop: 5 , minWidth: 170 }} type="button" class="btn btn-outline btn-lg">الخبرات</button>
+                                    <button style={{ display: "block", border: "1px solid black", marginTop: 5 , minWidth: 170 }} type="button" class="btn btn-outline btn-lg"><Link to={`/empexperience`}><a onClick={this.empExpHandler} href="/empexperience">الخبرات</a></Link></button>
                                     <button style={{ display: "block", border: "1px solid black", marginTop: 5 , minWidth: 170 }} type="button" class="btn btn-outline btn-lg"><Link to={`/empfamily`}><a onClick={this.empFamilyButtonHandler} href="/empfamily">العائلية</a></Link></button>
                                     <button style={{ display: "block", border: "1px solid black", marginTop: 5 , minWidth: 170 }} type="button" class="btn btn-outline btn-lg">التدريب</button>
                                     <button style={{ display: "block", border: "1px solid black", marginTop: 5 , minWidth: 170 }} type="button" class="btn btn-outline btn-lg">الجزاءات</button>
@@ -422,5 +427,5 @@ const mapStateToProps = (state) => {
     };
 };
 export default connect(mapStateToProps, {
-    getEmpDetails, getEmpTrans, getUpJd, getEmpAppraisal, getEmpEdu, getEmpFamily, getEmpNameByName
+    getEmpDetails, getEmpTrans, getUpJd, getEmpAppraisal, getEmpEdu, getEmpFamily, getEmpNameByName,getEmpExp
 })(Employee);

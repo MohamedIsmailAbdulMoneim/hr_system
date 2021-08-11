@@ -7,10 +7,6 @@ const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
 
-
-
-
-
 class Download extends React.Component {
     constructor(props) {
         super(props);

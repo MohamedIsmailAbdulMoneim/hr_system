@@ -83,7 +83,7 @@ class OrgStructre extends React.Component {
                                     </div>
                                 </div>
                                 <div className="row">
-                                    <div className="col-lg-6">
+                                    <div className="col-lg-12">
                                         <div className="panel panel-default">
                                             <div className="panel-heading">
                                                 Striped Rows
@@ -97,6 +97,11 @@ class OrgStructre extends React.Component {
                                                                 <th>المسمى الوظيفي</th>
                                                                 <th>اسم شاغل البوكس</th>
                                                                 <th>عدد شاغلي البوكس</th>
+                                                                <th>كود المستوى الإشرافي الأعلى</th>
+                                                                <th>المستوى الإشرافي الأعلى</th>
+                                                                <th>مفعل / عير مفعل</th>
+                                                                <th>مشغول / شاغر</th>
+                                                                <th>نوع الوظيفة</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -105,45 +110,14 @@ class OrgStructre extends React.Component {
                                                                     <td>{box.emp_box_id}</td>
                                                                     <td>{box.emp_box_name}</td>
                                                                     <td>{box.NAME_ARABIC}</td>
-                                                                </tr>
-                                                            )) : null}
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                    <div className="col-lg-6">
-                                        <div className="panel panel-default">
-                                            <div className="panel-heading">
-                                                Striped Rows
-                                            </div>
-                                            <div className="panel-body">
-                                                <div style={{ overflow: "scroll", height: 320 }} className="table-responsive">
-                                                    <table className="table table-striped">
-                                                        <thead style={{ textAlign: "center" }}>
-                                                            <tr>
-                                                                <th>كود المستوى الإشرافي الأعلى</th>
-                                                                <th>المستوى الإشرافي الأعلى</th>
-                                                                <th>مفعل / عير مفعل</th>
-                                                                <th>مشغول / شاغر</th>
-                                                                <th>نوع الوظيفة</th>
-
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            {this.props.supandmang ? this.props.supandmang.map(manag => (
-                                                                <tr>
-                                                                    <th>{manag.manager_box_id}</th>
-                                                                    <th>{manag.manager_box_name}</th>
-                                                                    <th></th>
-                                                                    <th></th>
-                                                                    <th></th>
+                                                                    <td></td>
+                                                                    <td>{box.manager_box_id}</td>
+                                                                    <td>{box.manager_box_name}</td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
 
                                                                 </tr>
-
                                                             )) : null}
                                                         </tbody>
                                                     </table>

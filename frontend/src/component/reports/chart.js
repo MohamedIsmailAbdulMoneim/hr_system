@@ -2,9 +2,9 @@ import React, { Component, Fragment } from "react";
 import { Bar, Line, Pie } from 'react-chartjs-2';
 import { connect } from "react-redux";
 import {
-     getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox, getUpJd, gitDownJd, getQn
+    getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox, getUpJd, gitDownJd, getQn
 } from "../../actions/Actions";
-import {updateEmpTrans, getEmpTrans} from "../../actions/TransActions";
+import { updateEmpTrans, getEmpTrans } from "../../actions/TransActions";
 
 
 class Chart extends Component {
@@ -50,8 +50,8 @@ class Chart extends Component {
                                 }
                             }}
 
-                            width={400}
-                            height={400}
+                            width={200}
+                            height={300}
                         />
                     </div>
                     <div style={{ width: "30%" }}>
@@ -84,46 +84,20 @@ class Chart extends Component {
                                 }
                             }}
 
-                            width={400}
-                            height={400}
+                            width={200}
+                            height={200}
                         />
                     </div>
-                    <div style={{ width: "30%" }}>
-                        <Line data={{
-                            labels: ['فني', 'إداري'],
-                            datasets: [
-                                {
-                                    label: 'فني / إداري',
-                                    data: [
-                                        this.props.gid[0] ? this.props.gid[0].length ? this.props.gid[0][0].Technical : null : null,
-                                        this.props.gid[1] ? this.props.gid[1].length ? this.props.gid[1][0].NON_Technical : null : null
-
-                                    ],
-                                    backgroundColor: [
-                                        'rgb(202, 184, 198)',
-                                        'rgb(76, 104, 72)',
-
-                                    ]
-                                }
-                            ]
-                        }}
-                            options={{
-                                maintainAspectRatio: false, legend: {
-                                    display: false
-                                }, tooltips: {
-                                    callbacks: {
-                                        label: function (tooltipItem) {
-                                            return tooltipItem.yLabel;
-                                        }
-                                    }
-                                }
-                            }}
-
-                            width={400}
-                            height={400}
-                        />
+                    <div style={{ width: "30%", display:"flex" }}>
+                        <div>
+                        <i class="fas fa-male" style={{fontSize: "150pt", color: "blue"}}></i>
+                        </div>
+                        <div>
+                        <i class="fas fa-female" style={{fontSize: "150pt", color: "pink"}}></i>
+                        </div>
                     </div>
                 </div>
+
 
             </Fragment>
 

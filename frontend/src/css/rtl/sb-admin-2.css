@@ -435,3 +435,9 @@ td {
   background-color: #ddd;
   border-radius: 5px;
 }
+
+input[type="text"]:read-only{
+  background-color:white;
+  color: black;
+  font-weight: bolder;
+}

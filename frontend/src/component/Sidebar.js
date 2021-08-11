@@ -37,6 +37,13 @@ class Sidebar extends React.Component {
                             <a onClick={this.handle} className="active" href="/"><i className="fa fa-dashboard fa-fw"></i> Dashboard</a>
                         </li>
                         <li>
+                        <NavLink style={styles} to={`/Employee`}>
+                                    <li>
+                                        <a href="/Employee">الشاشة الرئيسية</a>
+                                    </li>
+                                </NavLink>
+                        </li>
+                        <li>
                             <a href="#"><i className="fa fa-sitemap fa-fw"></i>  أكواد الوزارة<span className="fa arrow"></span></a>
                             <ul className="nav nav-second-level">
                                 <li>
@@ -186,11 +193,6 @@ class Sidebar extends React.Component {
                         <li>
                             <a href="#"><i className="fa fa-bar-chart-o fa-fw"></i> تقارير<span className="fa arrow"></span></a>
                             <ul className="nav nav-first-level">
-                                <NavLink style={styles} to={`/Employee`}>
-                                    <li>
-                                        <a href="/Employee">بيانات الموظفين</a>
-                                    </li>
-                                </NavLink>
                                 <NavLink style={styles} to={`/empbystation`}>
                                     <li>
                                         <a onClick={this.props.getJobGovern} href="/empbystation">الموظفون بالمحطات</a>
