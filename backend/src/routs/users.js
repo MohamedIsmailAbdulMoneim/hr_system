@@ -7,12 +7,13 @@ const passport = require('passport');
 
 let router = express.Router();
 
-function handleLogin(req, res) {
+function handleLogin(req, res, next) {
 
     let { uname, pw } = req.body
 
     db.query(`SELECT * FROM users WHERE username = "${uname}"`, function (err, rows) {
         if (err) {
+            next(err);
             console.log(err);
         }
         if (!rows.length) {
@@ -31,7 +32,7 @@ function handleLogin(req, res) {
 
 }
 
-function handleRegister(req, res) {
+function handleRegister(req, res, next) {
 
     let { uname, pw } = req.body
     db.query(`SELECT * FROM users WHERE username = "${uname}"`, function (err, rows) {
@@ -39,7 +40,7 @@ function handleRegister(req, res) {
             res.status(400).json({ success: false, msg: "username and password feilds are empty", data: rows });
 
         } else if (err) {
-            console.log(err);
+            next(err);
             res.status(400).json({ success: false, msg: "ther's an error" });
         } else if (rows.length) {
             res.status(400).json({ success: false, msg: "user already exists" });

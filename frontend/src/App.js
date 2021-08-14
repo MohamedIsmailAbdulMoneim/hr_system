@@ -24,6 +24,7 @@ import Login from './component/Login';
 import Register from './component/register';
 import { loadUser } from './actions/AuthActions';
 import { getemps, getGid } from './actions/Actions'
+import { countEmpsInGoverns } from './actions/ReportActions'
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 
@@ -37,6 +38,7 @@ class App extends React.Component {
     store.dispatch(loadUser())
     store.dispatch(getemps())
     store.dispatch(getGid())
+    store.dispatch(countEmpsInGoverns())
 
   }
 
@@ -70,7 +72,7 @@ class App extends React.Component {
               <Route path="/register" exact component={Register} />
               <Route path="/empexperience" exact component={EmpExperience} />
 
-              
+
 
 
 

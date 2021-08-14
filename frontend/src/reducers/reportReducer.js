@@ -1,11 +1,17 @@
-import { NEW_APPRAISAL } from "../actions/ActionTypes";
+import { fetchCountEmpsInGoverns } from "../actions/ActionTypes";
 const initialState = {
-    msg: null,
-    result: null
+    ceig: []
+
 };
 
 export default function (state = initialState, action) {
     switch (action.type) {
+
+        case fetchCountEmpsInGoverns:
+            return {
+                ...state,
+                ceig: action.payload
+            }
 
         default:
             return state

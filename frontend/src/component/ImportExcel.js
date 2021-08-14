@@ -1,43 +1,48 @@
 import React, { Fragment } from "react";
-import excelJs from 'exceljs'
-const workbook = new excelJs.Workbook();
+import Excel from 'exceljs'
 
 class Upload extends React.Component {
     constructor(props) {
         super(props);
-
     }
 
-    getExcelSheet = async (data) => {
-    await workbook.xlsx.readFile('./database.xlsx');
-    let sheet =  workbook.getWorksheet(1);
-    let sheet2= newWorkbook.getWorksheet(1)
 
-    let newIndex = 2
+    handleImport = (e) => {
+        const wb = new Excel.Workbook();
+        const reader = new FileReader();
+        let arr = [];
 
-    console.log(sheet.getColumn(1).values[50]);
 
-    for(let i = 2;i <= 411 ; i++){
-        var row =  sheet.getRow(i)
-        var newSheet_row = sheet2.getRow(newIndex)
-            var val = row.getCell(4).value
-            if(val === 'الإدارة العامة للتحويل'){
-                newSheet_row.values = row.values
-                newIndex++
+        try {
+            reader.readAsArrayBuffer(e.target.files[0])
 
+            reader.onload = () => {
+                const buffer = reader.result;
+                wb.xlsx.load(buffer).then(workbook => {
+                    let sheet = workbook.getWorksheet(1)
+                    sheet.eachRow((row) => {
+                        let smallArr = row.values
+                        smallArr.splice(0, 1)
+                        arr.push(smallArr);
+                    })
+                    arr.shift()
+                    this.props.data(arr)
+
+                })
             }
-        newSheet_row.commit();
-    }
-    newWorkbook.xlsx.writeFile('newfile2.xlsx');
+        } catch (e) {
+            console.error(e);
 
-}
+        }
+
+    }
+
+
 
     render() {
-        console.log(this.props);
         return (
             <Fragment>
-                <input type="file" id="myFile" name="filename" />
-                <input type="submit" />
+                <input onChange={this.handleImport} type="file" id="myFile" name="filename" />
             </Fragment>
         );
     }

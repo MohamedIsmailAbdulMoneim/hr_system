@@ -3,7 +3,7 @@ const db = require("../database/connection")
 
 let router = express.Router();
 
-function getEmpExprerience(req, res) {
+function getEmpExprerience(req, res, next) {
     const empid = req.query.empid
     const empname = req.query.empname
 
@@ -14,6 +14,7 @@ function getEmpExprerience(req, res) {
     `
     db.query(query, (err, details) => {
         if (err) {
+            next(err)
             console.log(err);
         } else {
             res.send(details);
@@ -22,14 +23,16 @@ function getEmpExprerience(req, res) {
     })
 }
 
-function getJobDgByCat(req, res) {
+function getJobDgByCat(req, res, next) {
     const catId = req.params.catid
     const mainboxid = req.params.mainboxid
     const query = `SELECT * FROM a_job_dgree JOIN a_main_box ON a_job_dgree.J_D_ID = a_main_box.J_D_ID WHERE a_main_box.CAT_ID = ${catId};`
     db.query(query, (err, details) => {
         if (err) {
+            next(err);
             db.query(`SELECT * ,maincate.MAIN_BOX_ID  FROM a_job_dgree JOIN( SELECT a_main_box.CAT_ID, a_main_box.MAIN_BOX_ID, a_main_box.J_D_ID, a_category.CAT_NAME FROM a_main_box JOIN a_category ON a_category.CAT_ID = a_main_box.CAT_ID ) AS maincate ON a_job_dgree.J_D_ID = maincate.J_D_ID WHERE maincate.CAT_NAME = "${catId}" `, (err, details) => {
                 if (err) {
+                    next(err)
                 } else {
                     res.send(details.reverse());
                 }
@@ -40,24 +43,26 @@ function getJobDgByCat(req, res) {
     })
 }
 
-function getSupBoxNames(req, res) {
+function getSupBoxNames(req, res, next) {
     const jdid = req.params.jdid
     const catid = req.params.catid
     const query = `SELECT * FROM a_sup_box WHERE MAIN_BOX_ID IN (SELECT MAIN_BOX_ID FROM A_MAIN_BOX WHERE J_D_ID = ${jdid} AND CAT_ID = ${catid})`
     db.query(query, (err, details) => {
         if (err) {
+            next(err)
         } else {
             res.send(details);
         }
     })
 }
 
-function getMaincode(req, res) {
+function getMaincode(req, res, next) {
     const jdid = req.params.jdid
     const catid = req.params.catid
     const query = `SELECT MAIN_BOX_ID FROM a_main_box WHERE J_D_ID = ${jdid} and CAT_ID = ${catid} `
     db.query(query, (err, details) => {
         if (err) {
+            next(err)
         } else {
             res.send(details);
         }
@@ -65,18 +70,19 @@ function getMaincode(req, res) {
     })
 }
 
-function getsupboxmangers(req, res) {
+function getsupboxmangers(req, res, next) {
     const mainid = req.params.mainid
     let query = `SELECT a_sup_box.SUP_BOX_NAME AS emp_box_name, emp.SUP_BOX_NAME AS manager_box_name,emp.SUP_BOX_ID AS manager_box_id, a_sup_box.SUP_BOX_ID AS emp_box_id, a_sup_box.SUP_BOX_NAME AS emp_box_name , latest.NAME_ARABIC FROM a_sup_box JOIN( SELECT * FROM a_sup_box ) AS emp JOIN( SELECT employee.NATIONAL_ID_CARD_NO, a_job_trans.TRANS_DATE, a_job_trans.SUP_BOX_ID, employee.NAME_ARABIC FROM a_job_trans JOIN employee ON a_job_trans.NATIONAL_ID_CARD_NO = employee.NATIONAL_ID_CARD_NO WHERE a_job_trans.INDICATOR = 2 ) AS latest ON a_sup_box.SUP_BOX_ID_P = emp.SUP_BOX_ID AND latest.SUP_BOX_ID = a_sup_box.SUP_BOX_ID WHERE a_sup_box.MAIN_BOX_ID = ${mainid}`
     db.query(query, (err, details) => {
         if (err) {
+            next(err)
         } else {
             res.send(details);
         }
     })
 }
 
-function getEmpApprails(req, res) {
+function getEmpApprails(req, res, next) {
 
     const empid = req.query.empid
     const empname = req.query.empname
@@ -95,14 +101,14 @@ function getEmpApprails(req, res) {
 
     db.query(query, (err, details) => {
         if (err) {
-            console.log(err);
+            next(err)
         } else {
             res.send(details);
         }
     })
 }
 
-function newAppraisal(req, res) {
+function newAppraisal(req, res, next) {
     const { appDate, appValue, empid, empname } = req.body
 
     if (empid == "null" && empname == "null") {
@@ -112,6 +118,7 @@ function newAppraisal(req, res) {
     let query = `INSERT INTO employee_appraisal (APPRAISAL_DATE, APPRAISAL , NATIONAL_ID_CARD_NO , ORGANIZATION) VALUES (${appDate},(select APPRAISAL FROM appraisal WHERE APPRAISAL_ARABIC = "${appValue}"),(select NATIONAL_ID_CARD_NO FROM employee WHERE ${empid != "null" ? `EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `NAME_ARABIC = "${empname}"` : null}),30)`
     db.query(query, (err, details) => {
         if (err) {
+            next(err)
             res.json({ data: null, msg: "يوجد خطاء بقاعدة البيانات" })
         } else {
             res.json({ data: details, msg: "تم إدخال التقييم بنجاح" });
@@ -120,12 +127,13 @@ function newAppraisal(req, res) {
 }
 
 
-function updateAppraisal(req, res) {
+function updateAppraisal(req, res, next) {
     let { appraisal, year, empNat } = req.body
     // let query = `UPDATE employee_appraisal JOIN employee ON employee_appraisal.NATIONAL_ID_CARD_NO = employee.NATIONAL_ID_CARD_NO JOIN appraisal SET employee_appraisal.APPRAISAL = appraisal.APPRAISAL WHERE appraisal.APPRAISAL_ARABIC = "${req.body.appraisal}" AND employee_appraisal.APPRAISAL_DATE = ${req.body.year} AND employee_appraisal.NATIONAL_ID_CARD_NO = ${req.body.empNat}`
     let query = `UPDATE employee_appraisal SET APPRAISAL = (SELECT APPRAISAL FROM appraisal WHERE APPRAISAL_ARABIC = "${appraisal}"), APPRAISAL_DATE = ${year} WHERE NATIONAL_ID_CARD_NO = ${empNat} AND APPRAISAL_DATE = ${year}`
-    db.query(query, (err, details) => {
+    db.query(query, (err, details, next) => {
         if (err) {
+            next(err)
             res.json({ data: null, status: 400 })
         } else {
             res.json({ data: details, status: 200 });
@@ -146,7 +154,7 @@ function updateAppraisal(req, res) {
 //     })
 // }
 
-function getEmpTrans(req, res) {
+function getEmpTrans(req, res, next) {
     const empid = req.query.empid
     const empname = req.query.empname
 
@@ -154,14 +162,14 @@ function getEmpTrans(req, res) {
 
     db.query(query, (err, details) => {
         if (err) {
-            console.log(err);
+            next(err);
         } else {
             res.send(details);
         }
     })
 }
 
-function getEmpAvljd(req, res) {
+function getEmpAvljd(req, res, next) {
     const catname = req.params.catname;
     const mainboxid = req.params.mainboxid
     let d = `WHERE id < 5
@@ -172,13 +180,14 @@ LIMIT 1`
     let query = `SELECT * FROM a_job_dgree JOIN( SELECT a_main_box.CAT_ID, a_main_box.J_D_ID, a_category.CAT_NAME FROM a_main_box JOIN a_category ON a_category.CAT_ID = a_main_box.CAT_ID ) AS maincate ON a_job_dgree.J_D_ID = maincate.J_D_ID WHERE maincate.CAT_NAME = "${catname}" AND a_job_dgree.J_D_ID = ${mainboxid} ORDER BY a_job_dgree.J_D_ID LIMIT 1`
     db.query(query, (err, details) => {
         if (err) {
+            next(err);
         } else {
             res.send(details);
         }
     })
 }
 
-function getCurrentJD(req, res) {
+function getCurrentJD(req, res, next) {
     let empid = req.params.empid
     let query = `SELECT
     *
@@ -200,6 +209,7 @@ WHERE
     employee.EMPLOYEE_ID = ${empid} AND a_job_trans.INDICATOR = 2 `
     db.query(query, (err, details) => {
         if (err) {
+            next(err);
         } else {
             res.send(details);
         }
@@ -207,7 +217,7 @@ WHERE
 }
 
 
-function getEmpEdu(req, res) {
+function getEmpEdu(req, res, next) {
     let empid = req.query.empid
     let empname = req.query.empname
 
@@ -215,13 +225,14 @@ function getEmpEdu(req, res) {
 
     db.query(query, (err, details) => {
         if (err) {
+            next(err);
         } else {
             res.send(details);
         }
     })
 }
 
-function getEmpFamily(req, res) {
+function getEmpFamily(req, res, next) {
     let empid = req.query.empid
     let empname = req.query.empname
 
@@ -229,6 +240,7 @@ function getEmpFamily(req, res) {
 
     db.query(query, (err, details) => {
         if (err) {
+            next(err);
         } else {
             res.send(details);
 
@@ -237,7 +249,7 @@ function getEmpFamily(req, res) {
 
 }
 
-function postnewtrans(req, res) {
+function postnewtrans(req, res, next) {
 
     let query = `
     update a_job_trans set INDICATOR = 3 WHERE INDICATOR = 2 AND NATIONAL_ID_CARD_NO = (SELECT NATIONAL_ID_CARD_NO FROM employee WHERE EMPLOYEE_ID = ${req.body.empid});
@@ -350,6 +362,7 @@ function postnewtrans(req, res) {
 
     db.query(query, (err, details) => {
         if (err) {
+            next(err);
         } else {
             res.send(details);
         }
@@ -357,7 +370,10 @@ function postnewtrans(req, res) {
 
 }
 
-function updateEmpTrans(req, res) {
+
+
+
+function updateEmpTrans(req, res, next) {
     let query;
     if (!req.body.empname || req.body.empname == "null" || req.body.empname == "undefined") {
         query = `UPDATE a_job_trans SET SUP_BOX_NAME = "${req.body.catname}", MAIN_BOX_NAME = "${req.body.jdname}", SUP_BOX_ID = (
@@ -398,47 +414,63 @@ function updateEmpTrans(req, res) {
 
     db.query(query, (err, details) => {
         if (err) {
-            console.log(err);
+            next(err);
         } else {
             res.send(details);
         }
     })
 }
 
-function getAvailSupBox(req, res) {
+function getAvailSupBox(req, res, next) {
     const catname = req.params.catname
     const jdname = req.params.jdname
 
     let query = `SELECT SUP_BOX_NAME, SUP_BOX_ID from a_sup_box WHERE MAIN_BOX_ID IN(SELECT a_main_box.MAIN_BOX_ID FROM a_main_box JOIN a_job_dgree JOIN a_category ON a_main_box.J_D_ID = a_job_dgree.J_D_ID AND a_main_box.CAT_ID = a_category.CAT_ID WHERE a_category.CAT_NAME = "${catname}" AND a_job_dgree.J_D_NAME = "${jdname}")`
     db.query(query, (err, details) => {
         if (err) {
+            next(err);
         } else {
             res.send(details);
         }
     })
 }
 
-function getUpJd(req, res) {
+function getUpJd(req, res, next) {
     const len = req.params.len
     const supboxname = req.params.supboxname
     let query = `CALL GTT(${len}, (SELECT SUP_BOX_ID FROM a_sup_box WHERE SUP_BOX_NAME = "${supboxname}"))`
     db.query(query, (err, details) => {
         if (err) {
+            next(err);
         } else {
             res.send(details.reverse());
         }
     })
 }
 
-function newEmpExp(req, res) {
+function newEmpExp(req, res, next) {
     let data = req.body
-    db.query("INSERT INTO employee_experince (PLACE_NAME, JOB_NAME, START_DATE, END_DATE, EXP_TYP_CODE, NATIONAL_ID_CARD_NO) VALUES ?",[data],function(err, data){
-        if(err){
+    db.query("INSERT INTO employee_experince (PLACE_NAME, JOB_NAME, START_DATE, END_DATE, EXP_TYP_CODE, NATIONAL_ID_CARD_NO) VALUES ?", [data], function (err, data) {
+        if (err) {
+            next(err);
             res.json({ data: null, msg: "يوجد خطاء بقاعدة البيانات" });
-            }else{
+        } else {
             res.json({ data: data, msg: "تم إدخال البيانات بنجاح" });
-             }
+        }
 
+    })
+}
+
+function postBulkTrans(req, res, next) {
+    console.log(req.body);
+    let data = req.body
+    db.query(`INSERT INTO a_job_trans (NATIONAL_ID_CARD_NO, TRANS_DATE, CAT_ID) VALUES ${data}`, function (err, data) {
+        if (err) {
+            next(err);
+            res.json({ data: null, msg: "يوجد خطاء بقاعدة البيانات" });
+        } else {
+            res.json({ data: data, msg: "تم إدخال البيانات بنجاح" });
+        }
     })
 }
 
@@ -463,5 +495,6 @@ router
     .get('/getUpJd/:len/:supboxname', getUpJd)
     .get('/getempexp', getEmpExprerience)
     .post('/newempexp', newEmpExp)
+    .post('/newbulktrans', postBulkTrans)
 
 module.exports = router;

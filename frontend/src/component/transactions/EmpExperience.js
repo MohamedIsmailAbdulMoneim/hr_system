@@ -52,8 +52,6 @@ class EmpExperience extends React.Component {
         this.setState({
             [selectedArr]: newArr
         })
-
-
     }
 
     fromHandler = (e) => {
@@ -128,7 +126,7 @@ class EmpExperience extends React.Component {
             if (i > 0) {
                 exp.push(
                     <div div className="form-group" controlId="formBasicEmail" >
-                        {this.state.add ? <div style={{ height: 50 }}> <i uClass={'innerExp'} uIndex={4} onClick={this.deleteExp} style={{ fontSize: 15, float: "right", marginRight: 20 }} class="fas fa-times-circle innerExp"></i></div> : null}
+                        {this.state.add ? <div style={{ height: 50 }}> <i uClass={'Exp'} uIndex={4} onClick={this.deleteExp} style={{ fontSize: 15, float: "right", marginRight: 20 }} class="fas fa-times-circle Exp"></i></div> : null}
                         <div style={{ display: "flex", justifyContent: "space-around" }}>
                             <div className="form-group" controlId="formBasicEmail">
                                 <label style={{ minWidth: 315, width: "100%", textAlign: "right" }}>نوع الخبرة : </label>
@@ -151,21 +149,21 @@ class EmpExperience extends React.Component {
                         <div style={{ display: "flex", justifyContent: "space-around" }}>
                             <div className="form-group" controlId="formBasicEmail">
                                 <label style={{ width: "100%", textAlign: "right" }}>جهة الخبرة : </label>
-                                <input onChange={this.poeHandler} uniqueClass={'poeOfInner'} uniqueIndex={4} ref="nameinput" className="form-control poeOfInner" style={{ width: "100%", minWidth: "250px" }} type="text" required />
+                                <input onChange={this.poeHandler} uniqueClass={'poe'} uniqueIndex={4} ref="nameinput" className="form-control poe" style={{ width: "100%", minWidth: "250px" }} type="text" required />
                             </div>
                             <div className="form-group" controlId="formBasicEmail">
                                 <label style={{ width: "100%", textAlign: "right" }}>الوظيفة : </label>
-                                <input onChange={this.jobHandler} uniqueClass={'jobOfInner'} uniqueIndex={4} ref="nameinput" className="form-control jobOfInner" style={{ width: "100%", minWidth: "250px" }} type="text" />
+                                <input onChange={this.jobHandler} uniqueClass={'job'} uniqueIndex={4} ref="nameinput" className="form-control job" style={{ width: "100%", minWidth: "250px" }} type="text" />
                             </div>
                         </div>
                         <div style={{ display: "flex", justifyContent: "space-around" }}>
                             <div className="form-group" controlId="formBasicEmail">
                                 <label style={{ width: "100%", textAlign: "right" }}>من : </label>
-                                <input onChange={this.fromHandler} uniqueClass={'fromOfInner'} uniqueIndex={4} ref="nameinput" className="form-control fromOfInner" style={{ width: "100%", minWidth: "250px" }} type="date" />
+                                <input onChange={this.fromHandler} uniqueClass={'from'} uniqueIndex={4} ref="nameinput" className="form-control from" style={{ width: "100%", minWidth: "250px" }} type="date" />
                             </div>
                             <div className="form-group" controlId="formBasicEmail">
                                 <label style={{ width: "100%", textAlign: "right" }}>إلى : </label>
-                                <input onChange={this.toHandler} uniqueClass={'toOfInner'} uniqueIndex={4} ref="nameinput" className="form-control toOfInner" style={{ width: "100%", minWidth: "250px" }} type="date" />
+                                <input onChange={this.toHandler} uniqueClass={'to'} uniqueIndex={4} ref="nameinput" className="form-control to" style={{ width: "100%", minWidth: "250px" }} type="date" />
                             </div>
                         </div>
                     </div >)
@@ -461,7 +459,7 @@ class EmpExperience extends React.Component {
                                                 <th>حذف</th>
                                             </tr>
                                         </thead>
-                                        {this.props.empexp.length >= 1 ? this.props.empexp[2].length >= 1  ? this.props.empexp[2].map(emp => (
+                                        {this.props.empexp.length >= 1 ? this.props.empexp[2].length >= 1 ? this.props.empexp[2].map(emp => (
                                             <tbody>
                                                 <tr>
                                                     <td></td>
@@ -482,7 +480,7 @@ class EmpExperience extends React.Component {
                                                     <td colspan="9">لاتوجد بيانات</td>
                                                 </tr>
                                             </tbody>
-                                           : null }
+                                            : null}
 
                                     </table>
                                 </div>
@@ -523,13 +521,13 @@ class EmpExperience extends React.Component {
                                                 </tr>
                                             </tbody>
                                         ))
-                                            : 
+                                            :
                                             <tbody>
                                                 <tr>
                                                     <td colspan="9">لاتوجد بيانات</td>
                                                 </tr>
                                             </tbody>
-                                           : null }
+                                            : null}
 
                                     </table>
                                 </div>
@@ -570,7 +568,7 @@ class EmpExperience extends React.Component {
                                                 </tr>
                                             </tbody>
                                         ))
-                                            : 
+                                            :
                                             <tbody>
                                                 <tr>
                                                     <td colspan="9">لاتوجد بيانات</td>

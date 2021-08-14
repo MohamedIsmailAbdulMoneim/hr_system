@@ -1,10 +1,6 @@
 import React, { Component, Fragment } from "react";
 import { Bar, Line, Pie } from 'react-chartjs-2';
 import { connect } from "react-redux";
-import {
-    getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox, getUpJd, gitDownJd, getQn
-} from "../../actions/Actions";
-import { updateEmpTrans, getEmpTrans } from "../../actions/TransActions";
 
 
 class Chart extends Component {
@@ -23,7 +19,7 @@ class Chart extends Component {
                                     {
                                         label: 'مؤهلات',
                                         data: [
-                                            this.props.qn.length ? this.props.qn[0][0].postgraduate : null, this.props.qn.length ? this.props.qn[1][0].academicqualifications : null, this.props.qn.length ? this.props.qn[2][0].aboveaverage : null, this.props.qn.length ? this.props.qn[3][0].averagequalification : null, this.props.qn.length ? this.props.qn[4][0].preparatory : null, this.props.qn.length ? this.props.qn[5][0].primarydg : null, this.props.qn.length ? this.props.qn[6][0].literacy : null, this.props.qn.length ? this.props.qn[7][0].without : null
+                                            this.props.qn.length ? this.props.qn[0][0].result : null, this.props.qn.length ? this.props.qn[1][0].result : null, this.props.qn.length ? this.props.qn[2][0].result : null, this.props.qn.length ? this.props.qn[3][0].result : null, this.props.qn.length ? this.props.qn[4][0].result : null, this.props.qn.length ? this.props.qn[5][0].result : null, this.props.qn.length ? this.props.qn[6][0].result : null, this.props.qn.length ? this.props.qn[7][0].result : null
                                         ],
                                         backgroundColor: [
                                             '#d1830e',
@@ -88,14 +84,62 @@ class Chart extends Component {
                             height={200}
                         />
                     </div>
-                    <div style={{ width: "30%", display:"flex" }}>
+                    <div style={{ width: "30%", display: "flex" }}>
                         <div>
-                        <i class="fas fa-male" style={{fontSize: "150pt", color: "blue"}}></i>
+                            <i class="fas fa-male" style={{ fontSize: "150pt", color: "blue" }}></i>
                         </div>
                         <div>
-                        <i class="fas fa-female" style={{fontSize: "150pt", color: "pink"}}></i>
+                            <i class="fas fa-female" style={{ fontSize: "150pt", color: "pink" }}></i>
                         </div>
                     </div>
+                </div>
+                <div style={{ width: "30%" }}>
+                    <Bar
+                        data={{
+                            labels: ['القاهرة', 'الأسكندرية', 'بورسعيد', 'السويس', 'الإسماعيلية', 'الدقهلية', 'الشرقية', 'الغربية', 'القليوبية', 'المنوفية', 'دمياط', 'الجيزة', 'الفيوم', 'بني سويف', 'المنيا', 'سوهاج', 'شمال سيناء'],
+                            datasets: [
+                                {
+                                    label: 'عدد العمالين بالمحافظات',
+                                    data: [
+                                        this.props.ceig.length ? this.props.ceig[0][0].result : null, this.props.ceig.length ? this.props.ceig[1][0].result : null, this.props.ceig.length ? this.props.ceig[2][0].result : null, this.props.ceig.length ? this.props.ceig[3][0].result : null, this.props.ceig.length ? this.props.ceig[4][0].result : null, this.props.ceig.length ? this.props.ceig[5][0].result : null, this.props.ceig.length ? this.props.ceig[6][0].result : null, this.props.ceig.length ? this.props.ceig[7][0].result : null, this.props.ceig.length ? this.props.ceig[8][0].result : null, , this.props.ceig.length ? this.props.ceig[9][0].result : null, this.props.ceig.length ? this.props.ceig[10][0].result : null, this.props.ceig.length ? this.props.ceig[11][0].result : null, this.props.ceig.length ? this.props.ceig[12][0].result : null, this.props.ceig.length ? this.props.ceig[13][0].result : null, this.props.ceig.length ? this.props.ceig[14][0].result : null, this.props.ceig.length ? this.props.ceig[15][0].result : null, this.props.ceig.length ? this.props.ceig[16][0].result : null
+                                    ],
+                                    backgroundColor: [
+                                        '#d1830e',
+                                        'rgb(76, 104, 72)',
+                                        '#0e92d1',
+                                        'rgb(72, 106, 114)',
+                                        '#7d0ed1',
+                                        '#d10e8c',
+                                        '#d10e0e',
+                                        '#b3d10e',
+                                        '#b3d10e',
+                                        '#b3d10e',
+                                        '#b3d10e',
+                                        '#b3d10e',
+                                        '#b3d10e',
+                                        '#b3d10e',
+                                        '#b3d10e',
+                                        '#b3d10e',
+                                        '#b3d10e',
+                                    ]
+                                }
+                            ]
+                        }}
+                        options={{
+                            maintainAspectRatio: false, legend: {
+                                display: false
+                            }, tooltips: {
+                                callbacks: {
+                                    label: function (tooltipItem) {
+                                        return tooltipItem.yLabel;
+                                    }
+                                }
+                            }
+                        }}
+
+                        width={200}
+                        height={300}
+                    />
                 </div>
 
 
@@ -107,21 +151,12 @@ class Chart extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        cates: state.posts.cates,
-        jobdgbycat: state.posts.jobdgbycat,
-        empTrans: state.posts.empTrans,
-        empname: state.posts.empname,
-        empNameByName: state.posts.empNameByName,
-        empcurrentjd: state.posts.empcurrentjd,
-        empavailsup: state.posts.empavailsup,
-        upjd: state.posts.upjd,
-        downJd: state.posts.downJd,
+
         qn: state.posts.qn,
         emps: state.posts.emps,
-        gid: state.posts.gid
+        ceig: state.reports.ceig
     };
 };
 
 export default connect(mapStateToProps, {
-    getEmpTrans, getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox, getUpJd, gitDownJd, getQn
 })(Chart);

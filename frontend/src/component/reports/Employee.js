@@ -18,7 +18,11 @@ class Employee extends React.Component {
 
 
     empidHandler = (e) => {
-        this.props.getEmpDetails(e.target.value)
+        if (e.key === 'Enter') {
+
+            this.props.getEmpDetails(e.target.value)
+
+        }
     }
 
     nameInputHandler = (e) => {
@@ -82,6 +86,30 @@ class Employee extends React.Component {
 
         return (
             <div id="page-wrapper">
+
+                <div className="row">
+                    <div className="col-lg-12" style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: 10 }}>
+                        <div style={{ height: "100%", width: 600 }} class="panel panel-default">
+                            <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }} class="panel-heading">
+                                <span>بيانات العاملين</span>
+                                <button onClick={this.addButtonClickHandeler} style={{ float: "left" }} type="button" class="btn btn-primary">إضافة بيانات جديدة</button>
+                            </div>
+                            <div style={{ marginRight: 20, display: "flex", justifyContent: "center", alignItems: "center", marginLeft: 40 }}>
+                                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                                    <div className="form-group" controlId="formBasicEmail">
+                                        <label style={{ width: "100%", textAlign: "right" }}>رقم الأداء : </label>
+                                        <input id="empid" ref="empid" className="form-control" onKeyDown={this.empidHandler} style={{ background: "white", width: "40%", marginBottom: 5, marginRight: 5, border: "1px solid black" }} type="text" name="first_name" />
+                                    </div>
+                                    <div className="form-group" controlId="formBasicEmail">
+                                        <label style={{ width: "100%", textAlign: "right" }}>الإسم : </label>
+                                        <input id="name" id="empname" className="form-control" onKeyDown={this.nameInputHandler} style={{ background: "white", width: "100%", minWidth: "250px", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div className="row">
                     <div className="col-lg-12">
                         <h1 className="page-header"><span ref="empname">{this.props.empdetails ? this.props.empdetails.length ? ` الإسم :  ${this.props.empdetails[0].NAME_ARABIC} -  رقم الأداء :${this.props.empdetails[0].EMPLOYEE_ID}` : null : null}</span> <span></span> </h1>
@@ -100,37 +128,37 @@ class Employee extends React.Component {
                                 <div className="data-wrapper" style={{ display: "flex", justifyContent: "space-around", marginRight: "-15%" }}>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>رقم الأداء : </label>
-                                        <input className="form-control" style={{ width: "70%" }} onChange={this.empidHandler} type="number" />
+                                        <input className="form-control" style={{ width: "70%" }} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].EMPLOYEE_ID : null : null} readonly="readonly" type="number" />
                                     </div>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>الإسم : </label>
-                                        <input ref="nameinput" className="form-control" style={{ width: "130%", marginLeft: 30 }} onChange={this.nameInputHandler} type="text" />
+                                        <input ref="nameinput" className="form-control" style={{ width: "130%", marginLeft: 30 }} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].NAME_ARABIC : null : null} readonly="readonly" type="text" />
                                     </div>
                                 </div>
                                 <div className="data-wrapper" style={{ display: "flex", justifyContent: "space-around", marginRight: "-15%" }}>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>تاريخ العقد : </label>
-                                        <input className="form-control" style={{ width: "100%", color:"red" }} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].SECTOR_JOIN_DATE : null : null} type="text" readonly="readonly" />
+                                        <input className="form-control" style={{ width: "100%", color: "red" }} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].SECTOR_JOIN_DATE : null : null} type="text" readonly="readonly" />
                                     </div>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>تاريخ التعيين : </label>
-                                        <input className="form-control" style={{ width: "100%", marginLeft: 30 }} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].TRANS_DATE : null : null} type="text" disabled />
+                                        <input className="form-control" style={{ width: "100%", marginLeft: 30 }} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].TRANS_DATE : null : null} type="text" readonly="readonly" />
                                     </div>
                                 </div>
                                 <div className="data-wrapper" style={{ display: "flex", justifyContent: "space-around", marginRight: "-15%" }}>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>الوظيفة الحالية : </label>
-                                        <input className="form-control" style={{ width: "120%" }} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].SUP_BOX_NAME : null : null} type="text" disabled />
+                                        <input className="form-control" style={{ width: "120%" }} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].SUP_BOX_NAME : null : null} type="text" readonly="readonly" />
                                     </div>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>طريقة شغلها : </label>
-                                        <input className="form-control" style={{ width: "120%", marginLeft: 30 }} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].WOG : null : null} type="text" disabled />
+                                        <input className="form-control" style={{ width: "120%", marginLeft: 30 }} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].WOG : null : null} type="text" readonly="readonly" />
                                     </div>
                                 </div>
                                 <div className="data-wrapper" style={{ display: "flex", marginRight: 25 }}>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>الإدارة : </label>
-                                        <input className="form-control" style={{ width: "100%", minWidth: 600 }} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].cat_name : null : null} type="text" disabled />
+                                        <input className="form-control" style={{ width: "100%", minWidth: 600 }} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].cat_name : null : null} type="text" readonly="readonly" />
                                     </div>
                                 </div>
                                 <div className="data-wrapper" style={{ display: "flex", marginRight: 25 }}>
@@ -142,15 +170,15 @@ class Employee extends React.Component {
                                 <div className="data-wrapper" style={{ display: "flex", justifyContent: "space-around", marginRight: "-3%" }}>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>المحطة : </label>
-                                        <input className="form-control" style={{ width: "80%" }} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].JOB_LOCATION : null : null} type="text" disabled />
+                                        <input className="form-control" style={{ width: "80%" }} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].JOB_LOCATION : null : null} type="text" readonly="readonly" />
                                     </div>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>المنطقة : </label>
-                                        <input className="form-control" style={{ width: "80%", marginLeft: 30 }} type="text" disabled />
+                                        <input className="form-control" style={{ width: "80%", marginLeft: 30 }} type="text" readonly="readonly" />
                                     </div>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>المحافظة : </label>
-                                        <input className="form-control" style={{ width: "78%", marginLeft: 30 }} type="text" disabled />
+                                        <input className="form-control" style={{ width: "78%", marginLeft: 30 }} type="text" readonly="readonly" />
                                     </div>
                                 </div>
                                 <div className="data-wrapper" style={{ display: "flex", justifyContent: "space-around", marginRight: "-15%" }}>
@@ -160,7 +188,7 @@ class Employee extends React.Component {
                                     </div>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>التقسيم السنوي للعام الحالي : </label>
-                                        <input className="form-control" style={{ width: "120%", marginLeft: 30 }} type="text" disabled />
+                                        <input className="form-control" style={{ width: "120%", marginLeft: 30 }} type="text" readonly="readonly" />
                                     </div>
                                 </div>
                             </div>
@@ -169,15 +197,15 @@ class Employee extends React.Component {
                                 <div className="data-wrapper" style={{ display: "flex", justifyContent: "space-around", marginRight: "-3%" }}>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>الرقم القومي : </label>
-                                        <input className="form-control" style={{ width: "80%" }} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].NATIONAL_ID_CARD_NO : null : null} type="text" disabled />
+                                        <input className="form-control" style={{ width: "80%" }} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].NATIONAL_ID_CARD_NO : null : null} type="text" readonly="readonly" />
                                     </div>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>جهة الإصدار : </label>
-                                        <input className="form-control" style={{ width: "80%", marginLeft: 30 }} type="text" disabled />
+                                        <input className="form-control" style={{ width: "80%", marginLeft: 30 }} type="text" readonly="readonly" />
                                     </div>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>تاريخ الإصدار : </label>
-                                        <input className="form-control" style={{ width: "78%", marginLeft: 30 }} type="text" disabled />
+                                        <input className="form-control" style={{ width: "78%", marginLeft: 30 }} type="text" readonly="readonly" />
                                     </div>
                                 </div>
                                 <div className="data-wrapper" style={{ display: "flex", justifyContent: "space-around", marginRight: "-15%" }}>
@@ -187,97 +215,97 @@ class Employee extends React.Component {
                                     </div>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>مكتب التأمينات : </label>
-                                        <input className="form-control" style={{ width: "100%", marginLeft: 30 }} type="text" disabled />
+                                        <input className="form-control" style={{ width: "100%", marginLeft: 30 }} type="text" readonly="readonly" />
                                     </div>
                                 </div>
                                 <div className="data-wrapper" style={{ display: "flex", marginRight: 25 }}>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>العنوان : </label>
-                                        <input className="form-control" style={{ width: "100%", minWidth: 600 }} type="text" disabled />
+                                        <input className="form-control" style={{ width: "100%", minWidth: 600 }} type="text" readonly="readonly" />
                                     </div>
                                 </div>
                                 <div className="data-wrapper" style={{ display: "flex", justifyContent: "space-around", marginRight: "-3%" }}>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>الموبايل : </label>
-                                        <input className="form-control" style={{ width: "80%" }} type="text" disabled />
+                                        <input className="form-control" style={{ width: "80%" }} type="text" readonly="readonly" />
                                     </div>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>تليفون المنزل : </label>
-                                        <input className="form-control" style={{ width: "80%", marginLeft: 30 }} type="text" disabled />
+                                        <input className="form-control" style={{ width: "80%", marginLeft: 30 }} type="text" readonly="readonly" />
                                     </div>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>تليفون المكتب : </label>
-                                        <input className="form-control" style={{ width: "78%", marginLeft: 30 }} type="text" disabled />
+                                        <input className="form-control" style={{ width: "78%", marginLeft: 30 }} type="text" readonly="readonly" />
                                     </div>
                                 </div>
                                 <div className="data-wrapper" style={{ display: "flex", justifyContent: "space-around", marginRight: "-15%" }}>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>البريد الأليكتروني : </label>
-                                        <input className="form-control" style={{ width: "100%" }} type="text" disabled />
+                                        <input className="form-control" style={{ width: "100%" }} type="text" readonly="readonly" />
                                     </div>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>الحالة الإجتماعية : </label>
-                                        <input className="form-control" style={{ width: "100%", marginLeft: 30 }} type="text" disabled />
+                                        <input className="form-control" style={{ width: "100%", marginLeft: 30 }} type="text" readonly="readonly" />
                                     </div>
                                 </div>
                                 <div className="data-wrapper" style={{ display: "flex", justifyContent: "space-around", marginRight: "-3%" }}>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>نوع النقابة : </label>
-                                        <input className="form-control" style={{ width: "80%" }} type="text" disabled />
+                                        <input className="form-control" style={{ width: "80%" }} type="text" readonly="readonly" />
                                     </div>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>رقم العضوية : </label>
-                                        <input className="form-control" style={{ width: "80%", marginLeft: 30 }} type="text" disabled />
+                                        <input className="form-control" style={{ width: "80%", marginLeft: 30 }} type="text" readonly="readonly" />
                                     </div>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>تاريخ العضوية : </label>
-                                        <input className="form-control" style={{ width: "78%", marginLeft: 30 }} type="text" disabled />
+                                        <input className="form-control" style={{ width: "78%", marginLeft: 30 }} type="text" readonly="readonly" />
                                     </div>
                                 </div>
                                 <div className="data-wrapper" style={{ display: "flex", justifyContent: "space-around", marginRight: "3%" }}>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>الموقف من التجنيد : </label>
-                                        <input className="form-control" style={{ width: "50%" }} type="text" disabled />
+                                        <input className="form-control" style={{ width: "50%" }} type="text" readonly="readonly" />
                                     </div>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>يوم : </label>
-                                        <input className="form-control" style={{ width: "30%", marginLeft: 30 }} type="text" disabled />
+                                        <input className="form-control" style={{ width: "30%", marginLeft: 30 }} type="text" readonly="readonly" />
                                     </div>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>شهر : </label>
-                                        <input className="form-control" style={{ width: "30%", marginLeft: 30 }} type="text" disabled />
+                                        <input className="form-control" style={{ width: "30%", marginLeft: 30 }} type="text" readonly="readonly" />
                                     </div>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>سنة : </label>
-                                        <input className="form-control" style={{ width: "30%", marginLeft: 30 }} type="text" disabled />
+                                        <input className="form-control" style={{ width: "30%", marginLeft: 30 }} type="text" readonly="readonly" />
                                     </div>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>تاريخ التقاعد : </label>
-                                        <input className="form-control" style={{ width: "40%", marginLeft: 30 }} type="text" disabled />
+                                        <input className="form-control" style={{ width: "40%", marginLeft: 30 }} type="text" readonly="readonly" />
                                     </div>
                                 </div>
                                 <div className="data-wrapper" style={{ display: "flex", justifyContent: "space-around", marginRight: "-15%" }}>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>النوع : </label>
-                                        <input className="form-control" style={{ width: "100%" }} type="text" disabled />
+                                        <input className="form-control" style={{ width: "100%" }} type="text" readonly="readonly" />
                                     </div>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>الديانة : </label>
-                                        <input className="form-control" style={{ width: "100%", marginLeft: 30 }} type="text" disabled />
+                                        <input className="form-control" style={{ width: "100%", marginLeft: 30 }} type="text" readonly="readonly" />
                                     </div>
                                 </div>
                                 <div className="data-wrapper" style={{ display: "flex", justifyContent: "space-around", marginRight: "-3%" }}>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>تاريخ الميلاد : </label>
-                                        <input className="form-control" style={{ width: "80%" }} type="text" disabled />
+                                        <input className="form-control" style={{ width: "80%" }} type="text" readonly="readonly" />
                                     </div>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>جهة الميلاد : </label>
-                                        <input className="form-control" style={{ width: "80%", marginLeft: 30 }} type="text" disabled />
+                                        <input className="form-control" style={{ width: "80%", marginLeft: 30 }} type="text" readonly="readonly" />
                                     </div>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>محافظة الميلاد : </label>
-                                        <input className="form-control" style={{ width: "78%", marginLeft: 30 }} type="text" disabled />
+                                        <input className="form-control" style={{ width: "78%", marginLeft: 30 }} type="text" readonly="readonly" />
                                     </div>
                                 </div>
                             </div>
@@ -390,20 +418,20 @@ class Employee extends React.Component {
                                 </div> */}
 
                         </div>
-                        <div style={{ display: "flex", height: "100%", minHeight:"1000px" }} className="col-lg-4">
+                        <div style={{ display: "flex", height: "100%", minHeight: "1000px" }} className="col-lg-4">
                             <div style={{ background: "transparent", height: 750, width: "100%" }} >
                                 <img style={{ borderTop: 3 }} src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin" class="rounded-circle" width="150" />
-                                <div style={{ width: "100%", display: "flex", flexDirection: "column" , alignItems: "center", marginTop: 10 }}>
-                                    <button style={{ display: "block", border: "1px solid black", marginTop: 5 , minWidth: 170 }} type="button" class="btn btn-outline btn-lg"><Link to={`/empedudeg`}><a onClick={this.empEduButtonHandler} href="/empedudeg">المؤهل</a></Link></button>
-                                    <button style={{ display: "block", border: "1px solid black", marginTop: 5 , minWidth: 170 }} type="button" class="btn btn-outline btn-lg" ><Link to={`/EmpTrans`}><a onClick={this.empTransButtonHandler} href="/EmpTrans">التدرج</a></Link></button>
-                                    <button style={{ display: "block", border: "1px solid black", marginTop: 5 , minWidth: 170 }} type="button" class="btn btn-outline btn-lg"><Link to={`/empexperience`}><a onClick={this.empExpHandler} href="/empexperience">الخبرات</a></Link></button>
-                                    <button style={{ display: "block", border: "1px solid black", marginTop: 5 , minWidth: 170 }} type="button" class="btn btn-outline btn-lg"><Link to={`/empfamily`}><a onClick={this.empFamilyButtonHandler} href="/empfamily">العائلية</a></Link></button>
-                                    <button style={{ display: "block", border: "1px solid black", marginTop: 5 , minWidth: 170 }} type="button" class="btn btn-outline btn-lg">التدريب</button>
-                                    <button style={{ display: "block", border: "1px solid black", marginTop: 5 , minWidth: 170 }} type="button" class="btn btn-outline btn-lg">الجزاءات</button>
-                                    <button style={{ display: "block", border: "1px solid black", marginTop: 5 , minWidth: 170 }} type="button" class="btn btn-outline btn-lg">الهيكل</button>
-                                    <button style={{ display: "block", border: "1px solid black", marginTop: 5 , minWidth: 170 }} type="button" class="btn btn-outline btn-lg">بطاقة الوصف</button>
-                                    <button style={{ display: "block", border: "1px solid black", marginTop: 5 , minWidth: 170 }} type="button" class="btn btn-outline btn-lg"><Link to={`/empsappraisal`}><a onClick={this.empAppraisalHandler} href="/empsappraisal">التقييمات السنوية</a></Link></button>
-                                    <button style={{ display: "block", border: "1px solid black", marginTop: 5 , minWidth: 170 }} type="button" class="btn btn-outline btn-lg">طباعة البيانات الوظيفية</button>
+                                <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", marginTop: 10 }}>
+                                    <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg"><Link to={`/empedudeg`}><a onClick={this.empEduButtonHandler} href="/empedudeg">المؤهل</a></Link></button>
+                                    <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg" ><Link to={`/EmpTrans`}><a onClick={this.empTransButtonHandler} href="/EmpTrans">التدرج</a></Link></button>
+                                    <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg"><Link to={`/empexperience`}><a onClick={this.empExpHandler} href="/empexperience">الخبرات</a></Link></button>
+                                    <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg"><Link to={`/empfamily`}><a onClick={this.empFamilyButtonHandler} href="/empfamily">العائلية</a></Link></button>
+                                    <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg">التدريب</button>
+                                    <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg">الجزاءات</button>
+                                    <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg">الهيكل</button>
+                                    <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg">بطاقة الوصف</button>
+                                    <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg"><Link to={`/empsappraisal`}><a onClick={this.empAppraisalHandler} href="/empsappraisal">التقييمات السنوية</a></Link></button>
+                                    <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg">طباعة البيانات الوظيفية</button>
                                 </div>
                             </div>
                         </div>
@@ -427,5 +455,5 @@ const mapStateToProps = (state) => {
     };
 };
 export default connect(mapStateToProps, {
-    getEmpDetails, getEmpTrans, getUpJd, getEmpAppraisal, getEmpEdu, getEmpFamily, getEmpNameByName,getEmpExp
+    getEmpDetails, getEmpTrans, getUpJd, getEmpAppraisal, getEmpEdu, getEmpFamily, getEmpNameByName, getEmpExp
 })(Employee);

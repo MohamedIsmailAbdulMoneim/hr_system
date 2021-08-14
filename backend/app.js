@@ -10,6 +10,7 @@ const bodyParser = require("body-parser")
 const passport = require('passport');
 const ExcelJS = require('exceljs');
 var session = require('express-session');
+const e = require("express");
 // var MySQLStore = require('express-mysql-session')(session);
 
 app.use(session({
@@ -53,11 +54,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 
-
 app.use(mainCodes)
 app.use(planandorg)
 app.use(report)
 app.use(users)
+
+app.use((error, req, res, next) => {
+  next(error)
+})
+
+
 
 
 var port = process.env.PORT || 5000;
