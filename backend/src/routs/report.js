@@ -248,6 +248,24 @@ function countEmpsInGoverns(req, res, next) {
     })
 }
 
+function gethierarchicaldata(req,res,next){
+
+    jobdesc = req.query.jobdesc
+    console.log(jobdesc);
+    let query = `SELECT * FROM hierarchicaldata where level_1 = "${jobdesc}"`
+    db.query(query, (err,data)=>{
+        if(err){
+            next(err)
+        }else{
+            for(let i = 0; i< 1436; i++){
+               var ob =  data.filter(el => el.level_2 = "مدير ادارة الخدمات الاجتماعية")
+            }
+            console.log(ob);
+
+        }
+    })
+}
+
 router
     .get('/getdeps', getDeps)
     .get('/getempbydeps/:dep', getEmpByDeps)
@@ -259,6 +277,8 @@ router
     .get('/getemps', getEmps)
     .get('/getgid', getgid)
     .get('/countempsingoverns', countEmpsInGoverns)
+    .get('/gethierarchicaldata', gethierarchicaldata)
+
 
 
 

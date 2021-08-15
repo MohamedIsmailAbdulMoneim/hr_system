@@ -22,6 +22,7 @@ import EmpTraining from './component/transactions/EmpTraining';
 import EmpFamily from './component/transactions/EmpFamily';
 import Login from './component/Login';
 import Register from './component/register';
+import EmpPenalty from './component/transactions/EmpPenalty';
 import { loadUser } from './actions/AuthActions';
 import { getemps, getGid } from './actions/Actions'
 import { countEmpsInGoverns } from './actions/ReportActions'
@@ -71,10 +72,7 @@ class App extends React.Component {
               <Route path="/login" exact component={Login} />
               <Route path="/register" exact component={Register} />
               <Route path="/empexperience" exact component={EmpExperience} />
-
-
-
-
+              <Route path="/emppenalty" exact component={EmpPenalty} />
 
             </Switch>
 

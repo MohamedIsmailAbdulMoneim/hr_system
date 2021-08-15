@@ -37,11 +37,11 @@ class Sidebar extends React.Component {
                             <a onClick={this.handle} className="active" href="/"><i className="fa fa-dashboard fa-fw"></i> Dashboard</a>
                         </li>
                         <li>
-                        <NavLink style={styles} to={`/Employee`}>
-                                    <li>
-                                        <a href="/Employee">الشاشة الرئيسية</a>
-                                    </li>
-                                </NavLink>
+                            <NavLink style={styles} to={`/Employee`}>
+                                <li>
+                                    <a href="/Employee">الشاشة الرئيسية</a>
+                                </li>
+                            </NavLink>
                         </li>
                         <li>
                             <a href="#"><i className="fa fa-sitemap fa-fw"></i>  أكواد الوزارة<span className="fa arrow"></span></a>
@@ -175,14 +175,16 @@ class Sidebar extends React.Component {
                                 {/* <li>
                                     <a href="morris.html">سفر</a>
                                 </li> */}
-                                {/* <li>
-                                    <a href="morris.html">جزاءات</a>
-                                </li> */}
+                                <NavLink style={styles} to={`/emppenalty`}>
+                                    <li>
+                                        <a href="/emppenalty">جزاءات</a>
+                                    </li>
+                                </NavLink>
                                 <NavLink style={styles} to={`/empfamily`}>
                                     <li >
                                         <a href="/empfamily">البيانات العائلية</a>
                                     </li>
-                                </NavLink >
+                                </NavLink>
                                 <NavLink style={styles} to={`/orgstructure`}>
                                     <li>
                                         <a href="/orgstructure">الهيكل</a>
