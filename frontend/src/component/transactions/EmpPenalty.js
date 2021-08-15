@@ -1,10 +1,6 @@
 import React, { Fragment } from "react";
-import {
 
-    
-
-} from "../../actions/Actions";
-import {  } from "../../actions/TransActions"
+import { } from "../../actions/TransActions"
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -208,7 +204,7 @@ class EmpPenalty extends React.Component {
         }
 
 
-        let appraisals = ["ممتاز بجدارة", "ممتاز", "جيد جدا بجدارة", "جيد جدا", "جيد", "مقبول", "ضعيف", "جيد حكمي", "جيد جدا حكمي", "ممتاز حكمي"]
+        let penalty = ["أخرى", "ممتاز", "خصم", "إنذار", "جزاء إداري", "خفض أجر", "للفت نظر", "رفت", "تنبيه", "لوم", "احالة للمعاش", "تأجيل علاوة", "تأجيل ترقية", "خفض درجة ادارية", "إيقاف عن العمل", "الحرمان من العلاوة", "حرمان من نصف علاوة", "انذار كتابي بالفصل", "استبعاد", "حفظ التحقيق", "خصم من الحافز"]
 
         const styles = {
             display: "block",
@@ -235,10 +231,10 @@ class EmpPenalty extends React.Component {
                                 <div style={{ height: "100%", minHeight: 250, width: "50%", minWidth: "750px", overflow: "auto" }} class="panel panel-default">
                                     <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt", display: "flex", justifyContent: "space-between" }} class="panel-heading">
                                         {this.state.add ? <i onClick={this.closeAddSectionHandler} class="fas fa-times-circle"></i> : null}
-                                        <span>إضافة تقييم جديد</span>
+                                        <span>إضافة جزاء جديد</span>
                                         <div></div>
                                     </div>
-                                    {this.state.showMsg ? this.props.msg == "تم إدخال التقييم بنجاح" ? <div id="showmsg" className="alert alert-success" role="alert"> {this.props.msg}</div> : this.props.msg == "يوجد خطاء بقاعدة البيانات" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.props.msg}</div> : this.props.msg == "يجب إدخال أي من الإسم ورقم الأداء" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.props.msg}</div> : null : null}
+                                    {this.state.showMsg ? this.props.msg == "تم إدخال الجزاء بنجاح" ? <div id="showmsg" className="alert alert-success" role="alert"> {this.props.msg}</div> : this.props.msg == "يوجد خطاء بقاعدة البيانات" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.props.msg}</div> : this.props.msg == "يجب إدخال أي من الإسم ورقم الأداء" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.props.msg}</div> : null : null}
                                     <div style={{ display: "flex", justifyContent: "space-around" }}>
                                         <div className="form-group" controlId="formBasicEmail">
                                             <label style={{ width: "100%", textAlign: "right" }}>رقم الأداء : </label>
@@ -251,16 +247,16 @@ class EmpPenalty extends React.Component {
                                     </div>
                                     <div style={{ display: "flex", justifyContent: "space-around" }}>
                                         <div className="form-group" controlId="formBasicEmail">
-                                            <label style={{ width: "100%", textAlign: "right" }}>التقدير : </label>
+                                            <label style={{ width: "100%", textAlign: "right" }}>الجزاء : </label>
                                             <select onChange={this.handelAppraisal} id="empapp" style={{ height: 30, width: "100%", minWidth: "215px" }}>
-                                                {appraisals.map(apprsl => (
+                                                {penalty.map(apprsl => (
                                                     <option>{apprsl}</option>
                                                 ))}
-                                                <option selected>اختر التقدير</option>
+                                                <option selected>اختر ...</option>
                                             </select>
                                         </div>
                                         <div className="form-group" controlId="formBasicEmail">
-                                            <label style={{ width: "100%", textAlign: "right" }}>السنة : </label>
+                                            <label style={{ width: "100%", textAlign: "right" }}>التاريخ : </label>
                                             <input onChange={this.handelYear} className="form-control" style={{ width: "100%", minWidth: "250px" }} onKeyDown={this.nameInputHandler} type="text" />
                                         </div>
                                     </div>
@@ -296,7 +292,7 @@ class EmpPenalty extends React.Component {
 
                             <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt", display: "flex", justifyContent: "space-between" }} class="panel-heading">
                                 <div></div>
-                                <span style={{ marginRight: 70 }}>تقييمات العاملين</span>
+                                <span style={{ marginRight: 70 }}>جزاءات العاملين</span>
                                 <button onClick={this.addButtonClickHandeler} type="button" class="btn btn-primary">إضافة تقييم جديد</button>
                             </div>
                             <div style={{ marginRight: 20, display: "flex", justifyContent: "center", alignItems: "center", marginLeft: 40 }}>
@@ -329,12 +325,12 @@ class EmpPenalty extends React.Component {
                                     </select>
                                 </div>
                                 <div className="form-group" controlId="formBasicEmail">
-                                    <label style={{ width: "80%", textAlign: "right" }}>التقدير : </label>
+                                    <label style={{ width: "80%", textAlign: "right" }}>الجزاء : </label>
                                     <select id="empapp" style={{ width: "80%", height: 30 }}>
-                                        {appraisals.map(apprsl => (
+                                        {penalty.map(apprsl => (
                                             <option>{apprsl}</option>
                                         ))}
-                                        <option selected>اختر التقدير</option>
+                                        <option selected>اختر ...</option>
 
                                     </select>
                                 </div>
@@ -363,8 +359,8 @@ class EmpPenalty extends React.Component {
                                         <thead>
                                             <tr>
                                                 <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>الإسم</th>
-                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>التقدير</th>
-                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>السنة</th>
+                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>الجزاء</th>
+                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>التاريخ</th>
                                                 <th>تعديل</th>
                                                 <th>حذف</th>
                                             </tr>
@@ -374,7 +370,7 @@ class EmpPenalty extends React.Component {
                                                 <tr id={emp.id}>
                                                     <td>{emp.NAME_ARABIC}</td>
                                                     <td>{this.state.edit && this.state.rowAppraisal == emp.id ? <select onChange={this.handelAppraisal} id="empapp" style={{ width: "50%", height: 30 }}>
-                                                        {appraisals.map(apprsl => (
+                                                        {penalty.map(apprsl => (
                                                             <option>{apprsl}</option>
                                                         ))}
                                                         <option selected>اختر التقدير</option>
@@ -417,5 +413,5 @@ const mapStateToProps = (state) => {
     };
 };
 export default connect(mapStateToProps, {
-    
+
 })(EmpPenalty);
