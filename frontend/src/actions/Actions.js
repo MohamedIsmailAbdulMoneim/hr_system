@@ -90,7 +90,7 @@ export const getCates = () => (dispatch) => {
 
 // planandorganize folder
 export const getJobDgByCat = (val, mainboxid) => (dispatch) => {
-  axios.get(`http://localhost:5000/getjobdgbycat/${val}/${mainboxid}`).then((res => {
+  axios.get(`http://localhost:5000/getjobdgbycat/${val}`).then((res => {
     dispatch({
       type: fetchJobByCat,
       payload: { data: res.data }

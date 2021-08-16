@@ -24,23 +24,29 @@ function getEmpExprerience(req, res, next) {
 }
 
 function getJobDgByCat(req, res, next) {
-    const catId = req.params.catid
-    const mainboxid = req.params.mainboxid
-    const query = `SELECT * FROM a_job_dgree JOIN a_main_box ON a_job_dgree.J_D_ID = a_main_box.J_D_ID WHERE a_main_box.CAT_ID = ${catId};`
+    const catName = req.params.catname
+    const query = `SELECT * FROM a_job_dgree JOIN a_main_box ON a_job_dgree.J_D_ID = a_main_box.J_D_ID WHERE a_main_box.CAT_ID = (SELECT CAT_ID FROM a_category WHERE CAT_NAME = "${catName}");`
     db.query(query, (err, details) => {
         if (err) {
             next(err);
-            db.query(`SELECT * ,maincate.MAIN_BOX_ID  FROM a_job_dgree JOIN( SELECT a_main_box.CAT_ID, a_main_box.MAIN_BOX_ID, a_main_box.J_D_ID, a_category.CAT_NAME FROM a_main_box JOIN a_category ON a_category.CAT_ID = a_main_box.CAT_ID ) AS maincate ON a_job_dgree.J_D_ID = maincate.J_D_ID WHERE maincate.CAT_NAME = "${catId}" `, (err, details) => {
-                if (err) {
-                    next(err)
-                } else {
-                    res.send(details.reverse());
-                }
-            })
         } else {
             res.send(details);
         }
     })
+    // db.query(query, (err, details) => {
+    //     if (err) {
+    //         next(err);
+    //         db.query(`SELECT * ,maincate.MAIN_BOX_ID  FROM a_job_dgree JOIN( SELECT a_main_box.CAT_ID, a_main_box.MAIN_BOX_ID, a_main_box.J_D_ID, a_category.CAT_NAME FROM a_main_box JOIN a_category ON a_category.CAT_ID = a_main_box.CAT_ID ) AS maincate ON a_job_dgree.J_D_ID = maincate.J_D_ID WHERE maincate.CAT_NAME = "${catId}" `, (err, details) => {
+    //             if (err) {
+    //                 next(err)
+    //             } else {
+    //                 res.send(details.reverse());
+    //             }
+    //         })
+    //     } else {
+    //         res.send(details);
+    //     }
+    // })
 }
 
 function getSupBoxNames(req, res, next) {
@@ -477,7 +483,7 @@ function postBulkTrans(req, res, next) {
 
 
 router
-    .get('/getjobdgbycat/:catid/:mainboxid', getJobDgByCat)
+    .get('/getjobdgbycat/:catname', getJobDgByCat)
     .get(`/getsupboxnames/:jdid /:catid`, getSupBoxNames)
     .get(`/getboxandmangers/:mainid`, getsupboxmangers)
     .get(`/getmaincode/:jdid/:catid`, getMaincode)

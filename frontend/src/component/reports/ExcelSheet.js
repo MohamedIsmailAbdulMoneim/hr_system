@@ -12,9 +12,7 @@ class Download extends React.Component {
         super(props);
 
     }
-
     render() {
-        console.log(this.props);
         return (
             <ExcelFile element={<img src={ExcelLogo} style={{ width: 50,height:50, float: "left"}} /> }>
                 <ExcelSheet data={this.props.data} name="Leaves">

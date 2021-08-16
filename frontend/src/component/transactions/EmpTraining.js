@@ -1,137 +1,212 @@
 import React, { Fragment } from "react";
-import {
-    getEmpEdu
-} from "../../actions/Actions";
+
+import { } from "../../actions/TransActions"
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import moment from 'react-moment';
 import 'moment-timezone';
+import Pagination from "../Pagination";
 
-class EmpEduDeg extends React.Component {
+class EmpTraining extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { empId: "null", empName: null, empAppraisal: "null", appraisalYear: "null" }
-
+        this.state = { confirmAdd: false, showMsg: false, errorAdd: false, empAppraisal: "null", appraisalYear: "null", rowAppraisal: false, add: false, edit: false, empid: null, empname: null, empnat: null, showNamesResults: false, updated: false, firstArg: 0, secondArg: 20, currentPage: 1, firstArgPerBtn: 0, secondArgPerBtn: 10 };
     }
-    clickHandler = (e) => {
+
+    changeArgs = (i) => (e) => {
         e.preventDefault()
-        this.props.getEmpEdu(e.target.value)
+        this.setState({ currentPage: i })
+        if (i == 1) {
+            this.setState({ firstArg: (i - 1) * 20, secondArg: i * 20 })
+
+        }
+        else if (i > 1) {
+            this.setState({ firstArg: (i - 1) * 20 + 1, secondArg: i * 20 })
+
+
+        }
+
     }
-    componentDidMount() {
+
+    addButtonClickHandeler = (e) => {
+        this.setState({ add: true })
     }
-    // onSubmit = (e) => {
-    //     e.preventDefault();
 
-    //     const fd = {
-    //       subject: this.state.subject,
-    //       type: this.state.type,
-    //       giver: this.state.giver,
-    //       state: this.state.status,
-    //       creationdate: this.state.doc,
-    //       required: this.state.required,
-    //       summary: this.state.summary,
-    //       bais: this.state.posttype,
-    //     };
+    minusFirstArg = (e) => {
+        e.preventDefault()
+        if (this.state.firstArgPerBtn > 0) {
+            this.setState(prevState => {
+                return { firstArgPerBtn: prevState.firstArgPerBtn - 1, secondArgPerBtn: prevState.secondArgPerBtn - 1, currentPage: prevState.currentPage - 1, firstArg: prevState.firstArg - 10, secondArg: prevState.secondArg - 10 }
+            })
+        }
 
-    //     if (this.state.posttype === "outdocs") {
-    //       axios({
-    //         method: "POST",
-    //         data: fd,
-    //         withCredentials: true,
-    //         url: "http://localhost:3000/outdocspost",
-    //         headers: { "Content-Type": "application/json" },
-    //       })
-    //         .then((res) => {
-    //           axios
-    //           .get(`http://localhost:3000/newCreatedpost/${res.data.insertId}/${this.state.posttype}`)
-    //           .then((data) => {
-    //             let newdata;
-    //             data.data[0].length > 0 ? newdata = data.data[0] : newdata = data.data[1]
-    //             console.log(newdata);
-    //             this.setState({
-    //               newCreatedData: newdata[0]
-    //             })
-    //           });
-    //           return res.data.insertId;
-    //         })
-    //         .then((data) => {
-    //           this.setState({
-    //             newpostid: data,
-    //           });
-    //           const img = new FormData();
-    //           img.append("data", data);
-    //           console.log(data);
+        this.changeArgs(this.state.currentPage - 1)
+    }
 
-    //           // for(let i = 0; i < this.state.imageSelected; i++){
-    //           //   img.append(`image`, this.state.imageSelected, `default`);
+    plusSecondArg = (e) => {
+        e.preventDefault()
+        let itemsPerPage = Math.ceil(this.props.empApp.length / 20)
+        if (this.state.secondArgPerBtn < itemsPerPage) {
+            this.setState(prevState => {
+                return { firstArgPerBtn: prevState.firstArgPerBtn + 1, secondArgPerBtn: prevState.secondArgPerBtn + 1, currentPage: prevState.currentPage + 1, firstArg: prevState.firstArg + 10, secondArg: prevState.secondArg + 10 }
+            })
 
-    //           // }
-    //           for (let i = 0; i < this.state.imageSelected.length; i++) {
-    //             img.append("image", this.state.imageSelected[i], `default${i}`);
-    //           }
+        }
+        this.changeArgs(this.state.currentPage + 1)
 
-    //           axios({
-    //             method: "POST",
-    //             data: img,
-    //             url: "http://localhost:3000/outdocsimage",
-    //             headers: { "Content-Type": "multipart/form-data" },
-    //             cancelToken: source.token,
-    //           }).then((res) => {
-    //             console.log(res);
-    //             this.componentDidMount()
-    //           });
-    //         });
-    //     } else if (this.state.posttype === "intdocs") {
-    //       axios({
-    //         method: "POST",
-    //         data: fd,
-    //         withCredentials: true,
-    //         url: "http://localhost:3000/intdocspost",
-    //         headers: { "Content-Type": "application/json" },
-    //       })
-    //         .then((res) => {
-    //           axios
-    //             .get(`http://localhost:3000/newCreatedpost/${res.data.insertId}/${this.state.posttype}`)
-    //             .then((data) => {
-    //               let newdata;
-    //               data.data[0].length > 0 ? newdata = data.data[0] : newdata = data.data[1]
-    //               console.log(newdata);
-    //               this.setState({
-    //                 newCreatedData: newdata[0]
-    //               })
-    //             });
-    //           return res.data.insertId;
-    //         })
-    //         .then((data) => {
-    //           const img = new FormData();
-    //           img.append("data", data);
-    //           for (let i = 0; i < this.state.imageSelected.length; i++) {
-    //             img.append("image", this.state.imageSelected[i], `default${i}`);
-    //           }
-    //           axios({
-    //             method: "POST",
-    //             data: img,
-    //             url: "http://localhost:3000/intdocsimage",
-    //             headers: { "Content-Type": "multipart/form-data" },
-    //           }).then((res) => {});
-    //           this.componentDidMount()
+    }
 
-    //         });
+
+    idInputAddHandler = (e) => {
+        this.setState({ empid: e.target.value })
+    }
+
+    nameInputAddHandler = (e) => {
+        this.setState({ empname: e.target.value })
+
+    }
+
+    submitButtonHandler = (e) => {
+        if (!this.state.confirmAdd) {
+            this.setState({ confirmAdd: true })
+        } else if (this.state.confirmAdd) {
+            this.setState({ confirmAdd: false })
+        }
+    }
+
+    handleNewAppraisal = (e) => {
+        let obj = {
+            appDate: this.state.appraisalYear, appValue: this.state.empAppraisal, empid: this.state.empid, empname: this.state.empname
+        }
+
+        obj.empid = this.state.empid || "null"
+        obj.empname = this.state.empname || "null"
+        this.props.newAppraisal(obj)
+        this.setState({ showMsg: true })
+
+        setTimeout(() => {
+            this.setState({ showMsg: false })
+        }, 3000)
+    }
+
+    idInputHandler = (e) => {
+
+        this.props.getEmpName(e.target.value)
+        this.setState({ showStruct: false, showStructWAdd: false, edit: false, empid: e.target.value, showTransResult: true, showMaritalstate: true })
+
+    }
+
+
+
+    nameInputHandler = (e) => {
+        this.setState({ showNamesResults: true })
+        this.props.getEmpNameByName(e.target.value)
+        this.refs.empid.value = ''
+
+    }
+
+
+    namesOptionshandler = (e) => {
+        document.getElementById('empname').value = e.target.value
+        if (document.getElementById('nameinputadd')) document.getElementById('nameinputadd').value = e.target.value
+        this.setState({ showFamilyResult: true, empname: e.target.value })
+    }
+
+
+    handelAppraisal = (e) => {
+        e.preventDefault()
+        this.setState({ empAppraisal: e.target.value })
+    }
+
+    handelYear = (e) => {
+        e.preventDefault()
+        this.setState({ appraisalYear: e.target.value })
+    }
+
+    handelSearch = () => {
+        this.setState({ edit: false, updated: false, firstArg: 0, secondArg: 20, currentPage: 1, firstArgPerBtn: 0, secondArgPerBtn: 10 })
+        this.props.getEmpAppraisal(document.getElementById("empid").value, document.getElementById("empname").value, document.getElementById("empapp").value, document.getElementById("year1").value)
+    }
+
+    handelEdit_1 = (e) => {
+        this.setState({ edit: true, rowAppraisal: e.target.getAttribute("tableId"), empAppraisal: e.target.getAttribute("empApp"), appraisalYear: e.target.getAttribute("empDate"), empnat: e.target.getAttribute("empnatid") })
+        let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
+        for (let i = 0; i < tds.length; i++) {
+            tds[i].style.background = "white"
+            tds[tds.length - 2].childNodes[0].classList.remove("fa-edit")
+            tds[tds.length - 2].childNodes[0].classList.add("fa-check")
+            tds[tds.length - 1].childNodes[0].classList.remove("fa-backspace")
+            tds[tds.length - 1].childNodes[0].classList.add("fa-times")
+        }
+    }
+
+    closeEditSectionHandler = (e) => {
+        let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
+        for (let i = 0; i < tds.length; i++) {
+            tds[i].style.background = "transparent"
+            tds[tds.length - 2].childNodes[0].classList.remove("fa-check")
+            tds[tds.length - 2].childNodes[0].classList.add("fa-edit")
+            tds[tds.length - 1].childNodes[0].classList.remove("fa-times")
+            tds[tds.length - 1].childNodes[0].classList.add("fa-backspace")
+        }
+        this.setState({ edit: false })
+    }
+
+
+    handelEdit_2 = (e) => {
+        e.preventDefault()
+        // let data = { , appraisal: this.refs.newAppraisal.value, year: document.getElementById("year").placeholder }
+        let data = { empNat: this.state.empnat, appraisal: this.state.empAppraisal, year: this.state.appraisalYear }
+        this.props.updateEmpAppraisal(data)
+        let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
+        for (let i = 0; i < tds.length; i++) {
+            tds[i].style.background = "transparent"
+            tds[tds.length - 2].childNodes[0].classList.remove("fa-check")
+            tds[tds.length - 2].childNodes[0].classList.add("fa-edit")
+            tds[tds.length - 1].childNodes[0].classList.remove("fa-times")
+            tds[tds.length - 1].childNodes[0].classList.add("fa-backspace")
+        }
+        this.setState({
+            edit: false
+        })
+        if (this.props.result == 200) {
+            this.setState({ updated: true })
+        }
+    }
+
+    closeAddSectionHandler = (e) => {
+        this.setState({
+            add: false
+        })
+    }
+
+    // catClickHandeler = (e) => {
+
+    //     this.setState({ catname: e.target.value })
+    //     if (this.refs.selected) {
+    //         if (this.refs.selected.options) {
+    //             this.refs.selected.options.selectedIndex = 2
+    //         }
     //     }
-    //     this.componentDidMount();
-    //   };
 
+    // }
 
 
     render() {
+        var dates = [];
+        let start = 1996;
+        let end = 2021;
 
-        console.log(this.props.empEdu);
+        while (start != end) {
+            dates.push(start);
+            start++;
+        }
 
         const styles = {
             display: "block",
             padding: "0.375rem 2.25rem 0.375rem 0.75rem",
-            width: "100%",
+            width: "55%",
             height: 250,
             backgroundColor: "#fff",
             color: "#212529",
@@ -144,112 +219,185 @@ class EmpEduDeg extends React.Component {
             transition: "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out"
 
         }
-
         return (
             <div id="page-wrapper" >
-                <div style={{ display: "none" }} class="row">
-                    <div className="col-lg-12" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                        <div style={{ height: 200, width: 750 }} class="panel panel-default">
-                            <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }} class="panel-heading">
-                                إضافة تدريب جديد
-                            </div>
-                            <div style={{ display: "flex", marginTop: 5 }}>
-                                <div style={{ marginRight: 20, marginTop: 5 }}>
-                                    <div class="input-group">
-                                        <span >رقم الأداء :  </span><input style={{ background: "white", marginBottom: 5, marginRight: 35, border: "1px solid black" }} type="text" name="first_name" />
+                {this.state.add ?
+                    <Fragment>
+                        <div class="row">
+                            <div className="col-lg-12" style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: "5px" }}>
+                                <div style={{ height: "100%", minHeight: 250, width: "50%", minWidth: "750px", overflow: "auto" }} class="panel panel-default">
+                                    <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt", display: "flex", justifyContent: "space-between" }} class="panel-heading">
+                                        {this.state.add ? <i onClick={this.closeAddSectionHandler} class="fas fa-times-circle"></i> : null}
+                                        <span>إضافة تدريب جديد</span>
+                                        <div></div>
                                     </div>
-                                    <div class="input-group">
-                                        <span>الإسم :  </span><input style={{ background: "white", marginBottom: 5, marginRight: 55, border: "1px solid black" }} type="text" name="first_name" />
+                                    {this.state.showMsg ? this.props.msg == "تم إدخال التدريب بنجاح" ? <div id="showmsg" className="alert alert-success" role="alert"> {this.props.msg}</div> : this.props.msg == "يوجد خطاء بقاعدة البيانات" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.props.msg}</div> : this.props.msg == "يجب إدخال أي من الإسم ورقم الأداء" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.props.msg}</div> : null : null}
+                                    <div style={{ display: "flex", justifyContent: "space-around" }}>
+                                        <div className="form-group" controlId="formBasicEmail">
+                                            <label style={{ width: "100%", textAlign: "right" }}>رقم الأداء : </label>
+                                            <input onChange={this.idInputAddHandler} className="form-control" style={{ width: "100%", minWidth: "250px" }} onKeyDown={this.nameInputHandler} type="text" />
+                                        </div>
+                                        <div className="form-group" controlId="formBasicEmail">
+                                            <label style={{ width: "100%", textAlign: "right" }}>الأسم : </label>
+                                            <input onKeyDown={this.nameInputAddHandler} id="nameinputadd" className="form-control" style={{ width: "100%", minWidth: "250px" }} onChange={this.nameInputHandler} type="text" />
+                                        </div>
                                     </div>
+                                    <div style={{ display: "flex", justifyContent: "space-around" }}>
+                                        <div className="form-group" controlId="formBasicEmail">
+                                            <label style={{ width: "100%", textAlign: "right" }}>اسم المكان باللغة العربية: </label>
+                                            <input onChange={this.handelYear} className="form-control" style={{ width: "100%", minWidth: "250px" }} onKeyDown={this.nameInputHandler} type="text" />
+                                        </div>
+                                        <div className="form-group" controlId="formBasicEmail">
+                                            <label style={{ width: "100%", textAlign: "right" }}>اسم المكان باللغة الإنجليزية: </label>
+                                            <input onChange={this.handelYear} className="form-control" style={{ width: "100%", minWidth: "250px" }} onKeyDown={this.nameInputHandler} type="text" />
+                                        </div>
+                                    </div>
+                                    <div style={{ display: "flex", justifyContent: "space-around" }}>
+                                        <div className="form-group" controlId="formBasicEmail">
+                                            <label style={{ width: "100%", textAlign: "right" }}>من: </label>
+                                            <input onChange={this.handelYear} className="form-control" style={{ width: "100%", minWidth: "250px" }} onKeyDown={this.nameInputHandler} type="date" />
+                                        </div>
+                                        <div className="form-group" controlId="formBasicEmail">
+                                            <label style={{ width: "100%", textAlign: "right" }}>إلى: </label>
+                                            <input onChange={this.handelYear} className="form-control" style={{ width: "100%", minWidth: "250px" }} onKeyDown={this.nameInputHandler} type="date" />
+                                        </div>
+                                    </div>
+                                    <div style={{ display: "flex", justifyContent: "space-around" }}>
+                                        <div className="form-group" controlId="formBasicEmail">
+                                            <label style={{ width: "100%", textAlign: "right" }}>نوع التدريب : </label>
+                                            <select onChange={this.handelAppraisal} id="empapp" style={{ height: 30, width: "100%", minWidth: "215px" }}>
+                                                <option selected>أخرى</option>
+                                                <option selected>مؤتمر</option>
+                                                <option selected>ملتقى</option>
+                                                <option selected>محاضرة</option>
+                                                <option selected>دورة تدريبية</option>
+                                                <option selected>اختر ...</option>
+                                            </select>
+                                        </div>
+                                        <div className="form-group" controlId="formBasicEmail">
+                                            <label style={{ width: "100%", textAlign: "right" }}>مكان التدريب : </label>
+                                            <select onChange={this.handelAppraisal} id="empapp" style={{ height: 30, width: "100%", minWidth: "215px" }}>
+                                                <option >داخلي</option>
+                                                <option >خارجي</option>
 
-                                    <div class="input-group">
-                                        <span>السنة :  </span><input style={{ background: "white", marginBottom: 5, marginRight: 53, width: 178, border: "1px solid black" }} type="text" name="first_name" />
+
+                                                <option selected>اختر ...</option>
+                                            </select>
+                                        </div>
                                     </div>
-                                </div>
-                                <div>
+                                    <button onClick={this.submitButtonHandler} style={{ width: "92%", margin: "0 auto" }} type="button" class="btn btn-primary btn-block">إضافة تدريب جديد</button>
+
+                                    {this.state.confirmAdd ? <div style={{ width: "100%" }} class="alert alert-warning" role="alert"> هل انت متأكد من إضافة تدريب جديد ؟ <button onClick={this.handleNewAppraisal} style={{ float: "left" }} type="button" class="btn btn-warning">تأكيد</button> <i onClick={this.submitButtonHandler} style={{ fontSize: 15, float: "right" }} class="fas fa-times-circle"></i></div> : null}
+
 
                                 </div>
                             </div>
                         </div>
 
-                    </div>
-                </div>
+                    </Fragment> : null
+                }
+                {
+                    this.state.showNamesResults ?
+                        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}>
+                            <select onClick={this.namesOptionshandler} style={styles} multiple name="pets" id="pet-select">
+                                {this.props.empNameByName.map((name => (
+                                    <option>{name.NAME_ARABIC}</option>
+                                )))}
+                            </select>
+                        </div> : null
+                }
+
                 <div class="row">
                     <div class="col-lg-12">
-                        <h1 class="page-header">Tables</h1>
                     </div>
                 </div>
                 <div className="row">
-                    <div className="col-lg-12" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                        <div style={{ height: 150, width: 600 }} class="panel panel-default">
-                            <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }} class="panel-heading">
-                                تدريبات الموظفين
+                    <div className="col-lg-12" style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: 10 }}>
+                        <div style={{ height: "100%", width: 600 }} class="panel panel-default">
+
+                            <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt", display: "flex", justifyContent: "space-between" }} class="panel-heading">
+                                <div></div>
+                                <span style={{ marginRight: 70 }}>تدريب العاملين</span>
+                                <button onClick={this.addButtonClickHandeler} type="button" class="btn btn-primary">إضافة تدريب جديد</button>
                             </div>
                             <div style={{ marginRight: 20, display: "flex", justifyContent: "center", alignItems: "center", marginLeft: 40 }}>
-                                <div style={{ marginTop: 20 }} class="input-group">
-                                    <span>رقم الأداء  </span><input style={{ background: "white", width: 20, marginBottom: 5, marginRight: 5, border: "1px solid black", width: 120 }} onDoubleClick={this.clickHandler} type="text" name="first_name" />
+                                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                                    <div className="form-group" controlId="formBasicEmail">
+                                        <label style={{ width: "100%", textAlign: "right" }}>رقم الأداء : </label>
+                                        <input id="empid" ref="empid" className="form-control" onKeyDown={this.idInputHandler} style={{ background: "white", width: "40%", marginBottom: 5, marginRight: 5, border: "1px solid black" }} type="text" name="first_name" />
+                                    </div>
+                                    <div className="form-group" controlId="formBasicEmail">
+                                        <label style={{ width: "100%", textAlign: "right" }}>الإسم : </label>
+                                        <input id="name" id="empname" className="form-control" onKeyUp={this.nameInputHandler} style={{ background: "white", width: "100%", minWidth: "250px", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
+                                    </div>
+                                    <div className="form-group" controlId="formBasicEmail">
+                                        <label style={{ width: "100%", textAlign: "right" }}></label>
+                                        <button onClick={this.handelSearch} type="button" style={{ marginRight: 30, marginTop: 6 }} >
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
                                 </div>
-                                <button onClick={this.handelSubmit} style={{ position: "relative", right: 10, top: 8 }} type="button" class="btn btn-primary">
-                                    <i class="fas fa-search"></i>
-                                </button>
-                                <button style={{ position: "relative", right: 20, top: 8 }} type="button" class="btn btn-primary">إضافة تدريب جديد</button>
                             </div>
+                            <div style={{ display: "flex", justifyContent: "space-around" }}>
+                                <div className="form-group" controlId="formBasicEmail">
+                                    <label style={{ width: "80%", textAlign: "right" }}>السنة : </label>
+                                    <select id="year1" style={{ width: "80%", height: 30 }} onKeyDown={this.handelYear}>
+                                        {dates.map(year => (
+                                            <option year={year} >{year}</option>
+                                        ))}
+                                        <option selected>اختر السنة</option>
 
+                                    </select>
+                                </div>
+                                <div className="form-group" controlId="formBasicEmail">
+                                    <label style={{ width: "80%", textAlign: "right" }}>التدريب : </label>
+                                    <select id="empapp" style={{ width: "80%", height: 30 }}>
+                                        
+                                        <option selected>اختر ...</option>
+
+                                    </select>
+                                </div>
+
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-lg-12">
                         <div className="panel panel-default">
-                            <div className="panel-heading">
-                                Striped Rows
+                            <div className="panel-heading" style={{ minHeight: 40 }}>
                             </div>
                             <div class="panel-body">
                                 <div class="table-responsive">
-                                    {/* <table class="table table-striped table-bordered table-hover" id="dataTables-example">
+                                    <table class="table table-striped table-bordered table-hover" id="dataTables-example">
                                         <thead>
                                             <tr>
                                                 <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>الإسم</th>
-                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>المؤهل</th>
-                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>التخصص</th>
-                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>جهة التخرج</th>
-                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>التقدير</th>
-                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>مرتبة الشرف</th>
-                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>تفصيل المؤهل</th>
-                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>سنة التخرج</th>
-
-
-
-
-
+                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>التدريب</th>
+                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>التاريخ</th>
+                                                <th>تعديل</th>
+                                                <th>حذف</th>
                                             </tr>
                                         </thead>
-
-                                        {this.props.empEdu.map(emp => (
+                                        {this.props.empApp.slice(this.state.firstArg, this.state.secondArg).map(emp => (
                                             <tbody>
-                                                <td>{emp.NAME_ARABIC}</td>
-                                                <td>{emp.DEGREE_ARABIC}</td>
-                                                <td>{emp.SPECIALITY_ARABIC}</td>
-                                                <td>{emp.UNIVERSITY_SCHOOL_ARABIC}</td>
-                                                <td>{emp.GRADE_ARABIC}</td>
-                                                <td>{emp.WITH_HONORS_IND}</td>
-                                                <td>{emp.SPECIALITY_DETAIL_ARABIC}</td>
-                                                <td>{emp.GRADUATION_YEAR}</td>
+                                                <tr id={emp.id}>
+                                                    <td>{emp.NAME_ARABIC}</td>
+                                                    <td>{this.state.edit && this.state.rowAppraisal == emp.id ? <select onChange={this.handelAppraisal} id="empapp" style={{ width: "50%", height: 30 }}>
 
+                                                        <option selected>اختر التقدير</option>
 
-
-
-
-
-
-
-
-
+                                                    </select> : this.state.updated && this.state.rowAppraisal == emp.id ? this.state.empAppraisal : emp.APPRAISAL_ARABIC}</td>
+                                                    <td style={{ width: "10%" }}>{this.state.edit && this.state.rowAppraisal == emp.id ? <input onChange={this.handelYear} value={this.state.appraisalYear} className="form-control" style={{ width: "100%" }} type="text" /> :
+                                                        this.state.updated && this.state.rowAppraisal == emp.id ? this.state.appraisalYear : emp.APPRAISAL_DATE}</td>
+                                                    <td><i onClick={this.state.edit ? this.handelEdit_2 : this.handelEdit_1} tableId={emp.id} style={{ fontSize: 20 }} empName={emp.NAME_ARABIC} empApp={emp.APPRAISAL_ARABIC} empDate={emp.APPRAISAL_DATE} empnatid={emp.NATIONAL_ID_CARD_NO} class="fas fa-edit"></i></td>
+                                                    <td><i onClick={this.state.edit ? this.closeEditSectionHandler : null} tableId={emp.id} class="fas fa-backspace"></i></td>
+                                                </tr>
                                             </tbody>
-                                        ))}
-
-                                    </table> */}
-                                    <p>{this.props.empEdu.length}</p>
+                                        ))
+                                        }
+                                    </table>
+                                    <Pagination minusFirstArg={this.minusFirstArg} plusSecondArg={this.plusSecondArg} firstArgPerBtn={this.state.firstArgPerBtn} secondArgPerBtn={this.state.secondArgPerBtn} changargs={this.changeArgs} pagesLength={this.props.empApp.length} currentPage={this.state.currentPage} />
                                 </div>
                             </div>
                         </div>
@@ -263,12 +411,19 @@ class EmpEduDeg extends React.Component {
 const mapStateToProps = (state) => {
     return {
 
-
-        empEdu: state.posts.empEdu
-
+        deps: state.posts.deps,
+        empdep: state.posts.empdep,
+        empname: state.posts.empname,
+        empNameByName: state.posts.empNameByName,
+        empApp: state.posts.empApp,
+        cates: state.posts.cates,
+        result: state.trans.result,
+        msg: state.trans.msg,
+        updatedInf: state.trans.updatedInf,
+        result: state.trans.result
 
     };
 };
 export default connect(mapStateToProps, {
-    getEmpEdu
-})(EmpEduDeg);
+
+})(EmpTraining);

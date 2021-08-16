@@ -260,7 +260,7 @@ class EmpPenalty extends React.Component {
                                             <input onChange={this.handelYear} className="form-control" style={{ width: "100%", minWidth: "250px" }} onKeyDown={this.nameInputHandler} type="text" />
                                         </div>
                                     </div>
-                                    <button onClick={this.submitButtonHandler} style={{ width: "92%", margin: "0 auto" }} type="button" class="btn btn-primary btn-block">إضافة تقييم جديد</button>
+                                    <button onClick={this.submitButtonHandler} style={{ width: "92%", margin: "0 auto" }} type="button" class="btn btn-primary btn-block">إضافة جزاء جديد</button>
 
                                     {this.state.confirmAdd ? <div style={{ width: "100%" }} class="alert alert-warning" role="alert"> هل انت متأكد من إضافة تدرج جديد ؟ <button onClick={this.handleNewAppraisal} style={{ float: "left" }} type="button" class="btn btn-warning">تأكيد</button> <i onClick={this.submitButtonHandler} style={{ fontSize: 15, float: "right" }} class="fas fa-times-circle"></i></div> : null}
 
@@ -293,7 +293,7 @@ class EmpPenalty extends React.Component {
                             <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt", display: "flex", justifyContent: "space-between" }} class="panel-heading">
                                 <div></div>
                                 <span style={{ marginRight: 70 }}>جزاءات العاملين</span>
-                                <button onClick={this.addButtonClickHandeler} type="button" class="btn btn-primary">إضافة تقييم جديد</button>
+                                <button onClick={this.addButtonClickHandeler} type="button" class="btn btn-primary">إضافة جزاء جديد</button>
                             </div>
                             <div style={{ marginRight: 20, display: "flex", justifyContent: "center", alignItems: "center", marginLeft: 40 }}>
                                 <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -373,7 +373,7 @@ class EmpPenalty extends React.Component {
                                                         {penalty.map(apprsl => (
                                                             <option>{apprsl}</option>
                                                         ))}
-                                                        <option selected>اختر التقدير</option>
+                                                        <option selected>اختر الجزاء</option>
 
                                                     </select> : this.state.updated && this.state.rowAppraisal == emp.id ? this.state.empAppraisal : emp.APPRAISAL_ARABIC}</td>
                                                     <td style={{ width: "10%" }}>{this.state.edit && this.state.rowAppraisal == emp.id ? <input onChange={this.handelYear} value={this.state.appraisalYear} className="form-control" style={{ width: "100%" }} type="text" /> :

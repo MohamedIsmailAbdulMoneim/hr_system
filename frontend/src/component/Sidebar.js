@@ -185,11 +185,18 @@ class Sidebar extends React.Component {
                                         <a href="/empfamily">البيانات العائلية</a>
                                     </li>
                                 </NavLink>
+                                <NavLink style={styles} to={`/EmpTraining`}>
+                                    <li>
+                                        <a href="/EmpTraining">تدريب العاملين</a>
+                                    </li>
+                                </NavLink>
                                 <NavLink style={styles} to={`/orgstructure`}>
                                     <li>
                                         <a href="/orgstructure">الهيكل</a>
                                     </li>
                                 </NavLink>
+
+                                
                             </ul>
                         </li>
                         <li>

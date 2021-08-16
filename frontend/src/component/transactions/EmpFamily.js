@@ -13,7 +13,7 @@ import Reactmoment from "react-moment"
 class EmpFamily extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { addChild: false, childLength: 0, addWife: false, showFamilyResult: true, add: false, edit: false, empid: null, empname: null, showMaritalstate: false, jdname: null, supboxname: null, gname: null, jasi: null, indname: null, catname: null, catid: null, supboxid: null, levels: null, showStructWAdd: false, showStruct: false, showNamesResults: false };
+        this.state = {finalData: [], addMaritalType: [" "], addMaritalName: [" "], addMaritalNId: [" "], addMaritalBod: [" "], addMaritalWorkStatus: [" "], addMarital: false, maritalLength: 0, showFamilyResult: true, add: false, edit: false, empid: null, empname: null, showMaritalstate: false, showNamesResults: false };
 
     }
 
@@ -27,61 +27,195 @@ class EmpFamily extends React.Component {
         if (e.key === 'Enter') {
             this.props.getEmpName(e.target.value)
             this.props.getEmpFamily(e.target.value, "")
-            this.setState({ showStruct: false, showStructWAdd: false, edit: false, empid: e.target.value, showTransResult: true, showMaritalstate: true })
+            this.setState({ edit: false, empid: e.target.value, showMaritalstate: true })
         }
     }
 
-
-
-    addWifeHandler = (e) => {
+    addMaritalTypeHandler = (e) => {
         e.preventDefault()
-        this.setState({ addWife: true })
+        let nodes = document.getElementsByClassName("maritaltype");
+        let index = Array.prototype.indexOf.call(nodes, e.target);
+        let newArr = this.state.addMaritalType.slice()
+        newArr[index] = { value: e.target.value, type: e.target.getAttribute('type') }
+        this.setState({
+            addMaritalType: newArr
+        })
+
     }
 
-    deleteChildHandler = (e) => {
-        this.setState(prevState => {
-            return { childLength: prevState.childLength - 1 }
+    addMaritalNameHandler = (e) => {
+        e.preventDefault()
+        let nodes = document.getElementsByClassName("maritalname");
+        let index = Array.prototype.indexOf.call(nodes, e.target);
+        let newArr = this.state.addMaritalName.slice()
+        newArr[index] = { value: e.target.value }
+        this.setState({
+            addMaritalName: newArr
+        })
+
+    }
+
+    addMaritalNIdHandler = (e) => {
+        let nodes = document.getElementsByClassName("maritalnid");
+        let index = Array.prototype.indexOf.call(nodes, e.target);
+        let newArr = this.state.addMaritalNId.slice()
+        newArr[index] = { value: e.target.value }
+        this.setState({
+            addMaritalNId: newArr
         })
     }
 
-    addChildHandler = (e) => {
-        e.preventDefault()
-        this.setState(prevState => {
-            return { childLength: prevState.childLength + 1 }
+    addMaritalBodHandler = (e) => {
+        let nodes = document.getElementsByClassName("maritalbod");
+        let index = Array.prototype.indexOf.call(nodes, e.target);
+        let newArr = this.state.addMaritalBod.slice()
+        newArr[index] = { value: e.target.value }
+        this.setState({
+            addMaritalBod: newArr
+        })
+    }
+
+    addMaritalWorkStatus = (e) => {
+        let nodes = document.getElementsByClassName("maritalws");
+        let index = Array.prototype.indexOf.call(nodes, e.target);
+        
+        let newArr = this.state.addMaritalWorkStatus.slice()
+        newArr[index] = { value: e.target.value }
+        this.setState({
+            addMaritalWorkStatus: newArr
         })
     }
 
 
-    childRender = (childs) => {
+    tabhandler = (e) => {
+        let nodes = document.getElementsByClassName("maritalws");
+        let index = Array.prototype.indexOf.call(nodes, e.target);
+        if (e.key === 'Tab' && index == nodes.length - 1) {
+            this.setState(prevState => {
+                return {
+                    maritalLength: prevState.maritalLength + 1,
+                    addMaritalName: [...this.state.addMaritalType, " "],
+                    addMaritalName: [...this.state.addMaritalName, " "],
+                    addMaritalNId: [...this.state.addMaritalNId, " "],
+                    addMaritalBod: [...this.state.addMaritalBod, " "],
+                    addMaritalWorkStatus: [...this.state.addMaritalWorkStatus, " "],
+                }
+            })
+        }
+    }
 
-        let child = []
-        for (let i = 0; i <= childs; i++) {
-            if (i > 0) {
-                child.push(
+    addMaritaldHandler = (e) => {
+        e.preventDefault()
+        this.setState(prevState => {
+            return {
+                maritalLength: prevState.maritalLength + 1,
+                addMaritalName: [...this.state.addMaritalType, " "],
+                addMaritalName: [...this.state.addMaritalName, " "],
+                addMaritalNId: [...this.state.addMaritalNId, " "],
+                addMaritalBod: [...this.state.addMaritalBod, " "],
+                addMaritalWorkStatus: [...this.state.addMaritalWorkStatus, " "],
+            }
+        })
+    }
 
+    deleteMaritaldHandler = (e) => {
+        e.preventDefault()
+        let newArrOfMType = [...this.state.addMaritalType]
+        let newArrOfMName = [...this.state.addMaritalName]
+        let newArrOfMNid = [...this.state.addMaritalNId]
+        let newArrOfMBod = [...this.state.addMaritalBod]
+        let newArrOfMworkState = [...this.state.addMaritalWorkStatus]
+        newArrOfMType.shift()
+        newArrOfMName.shift()
+        newArrOfMNid.shift()
+        newArrOfMBod.shift()
+        newArrOfMworkState.shift()
+        if (this.state.maritalLength !== 0) {
+            this.setState(prevState => {
+                return {
+                    maritalLength: prevState.maritalLength - 1,
+                    addMaritalType: newArrOfMType,
+                    addMaritalName: newArrOfMName,
+                    addMaritalNId: newArrOfMNid,
+                    addMaritalBod: newArrOfMBod,
+                    addMaritalWorkStatus: newArrOfMworkState
+                }
+            })
+        }
+    }
 
-                    <div div className="form-group" controlId="formBasicEmail" >
-                        {this.state.add ? <i onClick={this.deleteChildHandler} style={{ fontSize: 15, float: "right" }} class="fas fa-times-circle"></i> : null}
-                        <div style={{ marginRight: 3, width: "100%", display: "flex", }}>
-                            <div className="form-group" controlId="formBasicEmail" style={{ margin: "0 auto" }}>
-                                <label style={{ width: "100%", textAlign: "right" }}>اسم الإبن : </label>
-                                <input ref="nameinput" className="form-control" style={{ width: "100%", minWidth: "500px" }} onChange={this.nameInputHandler} type="text" />
-                            </div>
-                        </div>
-                        <div style={{ display: "flex", justifyContent: "space-around" }}>
-                            <div className="form-group" controlId="formBasicEmail">
-                                <label style={{ width: "100%", textAlign: "right" }}>تاريخ الميلاد : </label>
-                                <input ref="nameinput" className="form-control" style={{ width: "100%", minWidth: "250px" }} onChange={this.nameInputHandler} type="date" />
-                            </div>
-                            <div className="form-group" controlId="formBasicEmail">
-                                <label style={{ width: "100%", textAlign: "right" }}>الرقم القومي : </label>
-                                <input ref="nameinput" className="form-control" style={{ width: "100%", minWidth: "250px" }} onChange={this.nameInputHandler} type="text" />
-                            </div>
-                        </div>
-                    </div >)
+    handleArrToSend = (e) => {
+        e.preventDefault()
+        var state = this.state
+        var arrays = state.addMaritalType.concat(state.addMaritalName, state.addMaritalNId, state.addMaritalBod, state.addMaritalWorkStatus)
+        var emptyInputs = arrays.find(i => i.length <= 1) || null
+        let arr = []
+
+        if (emptyInputs != undefined) {
+        } else if (emptyInputs == undefined) {
+            console.log(arrays);
+            let marital = arrays.filter(el => el.expType == 1)
+            if (marital.length > 0) {
+                let i = marital.length / 4
+                while (i > 0) {
+                    let smallArr = []
+                    var arrloop = marital.filter(el => el.key == i - 1)
+                    console.log(arrloop);
+                    smallArr.push(arrloop[0].value)
+                    smallArr.push(arrloop[1].value)
+                    smallArr.push(arrloop[2].value)
+                    smallArr.push(arrloop[3].value)
+                    smallArr.push(arrloop[0].expType)
+                    smallArr.push(this.props.empname.length >= 1 ? this.props.empname[0].NATIONAL_ID_CARD_NO : this.props.empNameByName.length >= 1 ? this.props.empNameByName[0].NATIONAL_ID_CARD_NO : null)
+                    arr.push(smallArr)
+                    i--
+                }
             }
         }
-        return child;
+        console.log(arr);
+
+        this.setState({
+            confirmAdd: true, finalData: arr
+        })
+    }
+
+
+
+    martialRender = (maritals) => {
+
+        let trnas = []
+        for (let i = 0; i <= maritals; i++) {
+            if (i > 0) {
+                trnas.push(
+                    <tr>
+                        <td>
+                            <select onChange={this.addMaritalTypeHandler} className="maritaltype" required ref="selected">
+                                <option type="1" selected>الزوجة</option>
+                                <option type="2" selected>الأبن</option>
+                                <option selected>اختر ...</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input required className="maritalname" onChange={this.addMaritalNameHandler} type="text" style={{ fontSize: "10pt", background: "white", marginTop: 5, marginRight: 5, height: 25, width: 130, border: "1px solid black" }} />
+                        </td>
+                        <td>
+                            <input required className="maritalnid" onChange={this.addMaritalNIdHandler} type="text" style={{ fontSize: "10pt", background: "white", marginTop: 5, marginRight: 5, height: 25, width: 130, border: "1px solid black" }} />
+                        </td>
+                        <td>
+                            <input required className="maritalbod" onChange={this.addMaritalBodHandler} type="date" style={{ fontSize: "10pt", background: "white", marginTop: 5, marginRight: 5, height: 25, width: 130, border: "1px solid black" }} />
+                        </td>
+                        <td>
+                            <select onKeyDown={this.tabhandler} onChange={this.addMaritalWorkStatus} className="maritalws" required ref="selected" style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 120 }}>
+                                <option selected>تعمل</option>
+                                <option selected>لا تعمل</option>
+                                <option selected>اختر ...</option>
+                            </select>
+                        </td>
+                    </tr>
+                )
+            }
+        }
+        return trnas;
     };
 
 
@@ -139,17 +273,6 @@ class EmpFamily extends React.Component {
         }).then((res) => {
         })
     }
-    getNameAndCurrent = (e) => {
-        this.setState({
-            empid: e.target.value, showStruct: false, showStructWAdd: false
-        })
-        this.props.getEmpName(e.target.value)
-        this.props.getCurrentJd(e.target.value)
-    }
-
-    handelDateClick = (e) => {
-        this.setState({ transdate: e.target.value })
-    }
 
     handelEdit_1 = (e) => {
         var myCurrentDate = e.target.getAttribute("transdate") ? e.target.getAttribute("transdate").slice(0, 10) : null
@@ -177,7 +300,6 @@ class EmpFamily extends React.Component {
 
 
     render() {
-        console.log(this.state.childLength);
         const styles = {
             display: "block",
             padding: "0.375rem 2.25rem 0.375rem 0.75rem",
@@ -199,64 +321,88 @@ class EmpFamily extends React.Component {
             <div id="page-wrapper" >
                 {this.state.add ?
                     <div>
-                        <form>
-                            <div class="row">
-                                <div className="col-lg-12" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                                    <div style={{ height: "100%", minHeight: 400, width: "70%", minWidth: "450", overflow: "auto" }} class="panel panel-default">
-                                        <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }} class="panel-heading">
+                        <div class="row">
+                            {/* <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }} class="panel-heading">
                                             <span style={{ position: "relative", right: 50 }}>إضافة بيانات جديدة</span> {this.state.edit ? <i onClick={this.closeEditSectionHandler} style={{ fontSize: 15, position: "relative", left: 530 }} class="fas fa-times-circle"></i> : null}
                                             {this.state.add ? <i onClick={this.closeAddSectionHandler} style={{ fontSize: 15, float: "right" }} class="fas fa-times-circle"></i> : null}
-                                            {/* <input style={{ position: "relative", right: 250, fontSize: 20 }} type="submit" class="btn btn-primary" onSubmit={this.handelInsertNewTrans} value="Add" /> */}
+                                            <input style={{ position: "relative", right: 250, fontSize: 20 }} type="submit" class="btn btn-primary" onSubmit={this.handelInsertNewTrans} value="Add" />
 
                                             <button style={{ height: "10%", minHeight: "20px", float: "left", marginRight: 7, background: "#062f07" }} onClick={this.addWifeHandler} className="btn btn-primary"> <span style={{ marginLeft: 7 }}>إضافة زوجة</span><i class="fas fa-user-plus"></i> </button>
                                             <button style={{ height: "10%", minHeight: "20px", float: "left", marginRight: 7, background: "#062f07" }} onClick={this.addChildHandler} className="btn btn-primary"> <span style={{ marginLeft: 7 }}>إضافة طفل</span><i class="fas fa-user-plus"></i> </button>
-                                        </div>
+                                        </div> */}
 
-
-                                        {this.state.addWife ?
-                                            <Fragment>
-
-                                                <div style={{ display: "flex", justifyContent: "space-around" }}>
-                                                    <div className="form-group" controlId="formBasicEmail">
-                                                        <label style={{ width: "100%", textAlign: "right" }}>اسم الزوجة : </label>
-                                                        <input ref="nameinput" className="form-control" style={{ width: "100%", minWidth: "250px" }} onChange={this.nameInputHandler} type="text" />
-                                                    </div>
-                                                    <div className="form-group" controlId="formBasicEmail">
-                                                        <label style={{ width: "100%", textAlign: "right" }}>تاريخ الميلاد : </label>
-                                                        <input ref="nameinput" className="form-control" style={{ width: "100%", minWidth: "250px" }} onChange={this.nameInputHandler} type="date" />
-                                                    </div>
-                                                </div>
-
-                                                <div style={{ display: "flex", justifyContent: "space-around" }}>
-                                                    <div className="form-group" controlId="formBasicEmail">
-                                                        <label style={{ width: "100%", textAlign: "right" }}>الرقم القومي : </label>
-                                                        <input ref="nameinput" className="form-control" style={{ width: "100%", minWidth: "250px" }} onChange={this.nameInputHandler} type="text" />
-                                                    </div>
-                                                    <div className="form-group" controlId="formBasicEmail">
-                                                        <label style={{ width: "100%", textAlign: "right" }}>حالة العمل : </label>
-                                                        <select required style={{ height: 30, width: "100%", minWidth: "190px" }} onChange={this.catClickHandeler}>
-                                                            <option selected>
-                                                                تعمل
-                                                            </option>
-                                                            <option selected>
-                                                                لاتعمل
-                                                            </option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-
-                                            </Fragment>
-
-                                            : null}
-                                        {this.state.childLength === 0 ? null : this.childRender(this.state.childLength)}
-
-
-
+                            <div className="col-lg-12" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                                <div style={{ height: "100%", minWidth: 1000 }} class="panel panel-default">
+                                    <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt", display: "flex", justifyContent: "space-between" }} class="panel-heading">
+                                        {this.state.add ? <i onClick={this.closeAddSectionHandler} style={{ fontSize: 15, float: "right" }} class="fas fa-times-circle"></i> : null}
+                                        <span>إضافة بيانات جديد</span>
+                                        <h3></h3>
 
                                     </div>
+                                    {/* <ImportExcel data={this.ImportExcelHandler} /> */}
+                                    <div style={{ marginRight: 20, display: "flex", justifyContent: "center", alignItems: "center", marginLeft: 40 }}>
+                                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                                            <div className="form-group" controlId="formBasicEmail">
+                                                <label style={{ width: "100%", textAlign: "right" }}>رقم الأداء : </label>
+                                                <input id="empid" ref="empid" className="form-control" onKeyDown={this.idInputHandler} style={{ background: "white", width: "40%", marginBottom: 5, marginRight: 5, border: "1px solid black" }} type="text" name="first_name" />
+                                            </div>
+                                            <div className="form-group" controlId="formBasicEmail">
+                                                <label style={{ width: "100%", textAlign: "right" }}>الإسم : </label>
+                                                <input id="name" id="empname" className="form-control" onChange={this.nameInputHandler} style={{ background: "white", width: "100%", minWidth: "250px", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <table class="table table-striped table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>القرابة</th>
+                                                <th>الإسم</th>
+                                                <th>الرقم القومي</th>
+                                                <th>تاريخ الميلاد</th>
+                                                <th>حالة العمل</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <select onChange={this.addMaritalTypeHandler} className="maritaltype" required ref="selected">
+                                                        <option type="1" selected>الزوجة</option>
+                                                        <option type="2" selected>الأبن</option>
+                                                        <option selected>اختر ...</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <input required className="maritalname " onChange={this.addMaritalNameHandler} type="text" style={{ fontSize: "10pt", background: "white", marginTop: 5, marginRight: 5, height: 25, width: 130, border: "1px solid black" }} />
+                                                </td>
+                                                <td>
+                                                    <input required className="maritalnid " onChange={this.addMaritalNIdHandler} type="text" style={{ fontSize: "10pt", background: "white", marginTop: 5, marginRight: 5, height: 25, width: 130, border: "1px solid black" }} />
+                                                </td>
+                                                <td>
+                                                    <input required className="maritalbod " onChange={this.addMaritalBodHandler} type="date" style={{ fontSize: "10pt", background: "white", marginTop: 5, marginRight: 5, height: 25, width: 130, border: "1px solid black" }} />
+                                                </td>
+                                                <td>
+                                                    <select onKeyDown={this.tabhandler} onChange={this.addMaritalWorkStatus} className="maritalws" required ref="selected" style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 120 }}>
+                                                        <option selected>تعمل</option>
+                                                        <option selected>لا تعمل</option>
+                                                        <option selected>اختر ...</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            {this.state.maritalLength === 0 ? null : this.martialRender(this.state.maritalLength)}
+                                        </tbody>
+                                    </table>
+                                    <button onClick={this.addMaritaldHandler} style={{ float: "right", minWidth: 50, marginBottom: 5, marginRight: 12, maxHeight: 25 }}><i class="fas fa-plus"></i>
+                                    </button>
+                                    <button onClick={this.deleteMaritaldHandler} style={{ float: "left", minWidth: 50, marginBottom: 5, marginLeft: 12, maxHeight: 25 }}><i class="fas fa-minus"></i>
+                                    </button>
+                                    <button onClick={this.handleArrToSend} className="btn btn-block">إضافة</button>
+
                                 </div>
+                                {this.state.addConfirmed ? <div style={{ width: "70%" }} class="alert alert-warning" role="alert"> هل انت متأكد من إضافة بيانات جديد ؟ <button onClick={this.handelInsertNewTrans} style={{ position: "absolute", left: "17%", top: "80%" }} type="button" class="btn btn-warning">تأكيد</button> <i onClick={this.closeAddConfirmHandler} style={{ fontSize: 15, position: "relative", top: "5%", left: "62%" }} class="fas fa-times-circle"></i></div> : null}
                             </div>
-                        </form>
+
+                        </div>
+
                     </div> : null
                 }
                 {
@@ -286,7 +432,7 @@ class EmpFamily extends React.Component {
                                 <div style={{ marginTop: 20, marginRight: 0, width: "70%" }} class="input-group">
                                     <span >الإسم : </span><input ref="name" onKeyUp={this.nameInputHandler} placeholder={this.props.empname && !this.state.edit ? this.props.empname.length >= 1 ? this.props.empname[0].NAME_ARABIC : null : null} style={{ background: "white", width: "80%", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
                                 </div>
-                                <button onClick={this.addButtonClickHandeler} style={{ position: "relative", right: 20, top: 8 }} type="button" class="btn btn-primary">إضافة تدرج جديد</button>
+                                <button onClick={this.addButtonClickHandeler} style={{ position: "relative", right: 20, top: 8 }} type="button" class="btn btn-primary">إضافة بيانات جديد</button>
                             </div>
                         </div>
                     </div>

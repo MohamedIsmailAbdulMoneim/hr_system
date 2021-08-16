@@ -176,6 +176,7 @@ class EmpExperience extends React.Component {
         var state = this.state
         var arrays = state.poe.concat(state.job, state.from, state.to)
         var emptyInputs = arrays.find(i => i.length <= 1) || null
+        console.log(arrays[0].length, arrays);
         let arr = []
 
         if (emptyInputs != undefined) {
