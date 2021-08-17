@@ -56,20 +56,63 @@ class EmpTrans extends React.Component {
         })
     }
 
+    tabhandler = (e) => {
+        let nodes = document.getElementsByClassName("ind");
+        let index = Array.prototype.indexOf.call(nodes, e.target);
+        if (e.key === 'Tab' && index == nodes.length - 1) {
+            this.setState(prevState => {
+                return {
+                    trnasLength: prevState.trnasLength + 1,
+                    addDate: [...this.state.addDate, " "],
+                    catnameAdd: [...this.state.catnameAdd, " "],
+                    jdNameAdd: [...this.state.jdNameAdd, " "],
+                    addSupbox: [...this.state.addSupbox, " "],
+                    addGName: [...this.state.addGName, " "],
+                    addJasi: [...this.state.addJasi, " "],
+                    addInd: [...this.state.addInd, " "],
+                }
+            })
+        }
+    }
+
+    addTrans = (e) => {
+        e.preventDefault()
+        length++
+        this.setState(prevState => {
+            return {
+                trnasLength: prevState.trnasLength + 1,
+                addDate: [...this.state.addDate, " "],
+                catnameAdd: [...this.state.catnameAdd, " "],
+                jdNameAdd: [...this.state.jdNameAdd, " "],
+                addSupbox: [...this.state.addSupbox, " "],
+                addGName: [...this.state.addGName, " "],
+                addJasi: [...this.state.addJasi, " "],
+                addInd: [...this.state.addInd, " "],
+            }
+        })
+
+    }
+
     addCatClickHandeler = (e) => {
         this.props.getJobDgByCat(e.target.value)
         let nodes = document.getElementsByClassName("cate");
         let index = Array.prototype.indexOf.call(nodes, e.target);
-        console.log(e.target);
-        // e.target.parentNode.nextSibling.childNodes[0].options.selectedIndex = this.refs.ddd.options.length - 1
+        e.target.parentNode.nextSibling.childNodes[0].setAttribute('id', this.state.trnasLength)
+        console.log(e.target.parentNode.nextSibling.childNodes[0].getAttribute('id'));
+        if(this.state.trnasLength != 1){
+            document.getElementById(e.target.parentNode.nextSibling.childNodes[0].getAttribute('id')).innerHTML = `${this.props.jobdgbycat.map(job => (
+                `<option>${job.J_D_NAME}</option>`
+            ))}`
+        }
+
         let newArrOfjd = this.state.jdNameAdd.slice()
         let newArr = this.state.catnameAdd.slice()
         newArr[index] = { value: e.target.value, key: index }
-        newArrOfjd[index] = {value: "", key: index}
+        newArrOfjd[index] = { value: "", key: index }
         this.setState({
             catnameAdd: newArr,
             jdNameAdd: newArrOfjd,
-            index: index
+            index: index,
         })
         // if (this.refs.selected) {
         //     if (this.refs.selected.options) {
@@ -88,7 +131,7 @@ class EmpTrans extends React.Component {
         this.props.getAvailSupBox(this.state.catnameAdd[index].value, e.target.value)
         let newArr = this.state.catnameAdd.slice()
         newArr[index] = { value: e.target.value, key: index }
-        newArrOfSb[index] = {value: "", key: index}
+        newArrOfSb[index] = { value: "", key: index }
 
         this.setState({
             jdNameAdd: newArr,
@@ -155,21 +198,20 @@ class EmpTrans extends React.Component {
 
         if (emptyInputs != undefined) {
         } else if (emptyInputs == undefined) {
-            console.log(arrays);
-                let i = arrays.length / 7
-                while (i > 0) {
-                    let smallArr = []
-                    var arrloop = arrays.filter(el => el.key == i - 1)
-                    smallArr.push(arrloop[0].value)
-                    smallArr.push(arrloop[1].value)
-                    smallArr.push(arrloop[2].value)
-                    smallArr.push(arrloop[3].value)
-                    smallArr.push(arrloop[4].value)
-                    smallArr.push(arrloop[5].value)
-                    smallArr.push(arrloop[6].value)
-                    arr.push(smallArr)
-                    i--
-                }
+            let i = arrays.length / 7
+            while (i > 0) {
+                let smallArr = []
+                var arrloop = arrays.filter(el => el.key == i - 1)
+                smallArr.push(arrloop[0].value)
+                smallArr.push(arrloop[1].value)
+                smallArr.push(arrloop[2].value)
+                smallArr.push(arrloop[3].value)
+                smallArr.push(arrloop[4].value)
+                smallArr.push(arrloop[5].value)
+                smallArr.push(arrloop[6].value)
+                arr.push(smallArr)
+                i--
+            }
         }
         console.log(arr);
 
@@ -267,14 +309,14 @@ class EmpTrans extends React.Component {
 
 
 
-     makeClouser = (i) => {
+    makeClouser = (i) => {
         let index = i
         function typeIndex(y) {
-          return i + y
+            return i + y
         }
         return typeIndex;
-      }
-      
+    }
+
     handleDataSet = () => {
         const dataSet = [];
         this.props.empTrans.map(inf => {
@@ -530,43 +572,7 @@ class EmpTrans extends React.Component {
 
     }
 
-    tabhandler = (e) => {
-        let nodes = document.getElementsByClassName("ind");
-        let index = Array.prototype.indexOf.call(nodes, e.target);
-        if (e.key === 'Tab' && index == nodes.length - 1) {
-            this.setState(prevState => {
-                return {
-                    trnasLength: prevState.trnasLength + 1,
-                    addDate: [...this.state.addDate, " "],
-                    catnameAdd: [...this.state.catnameAdd, " "],
-                    jdNameAdd: [...this.state.jdNameAdd, " "],
-                    addSupbox: [...this.state.addSupbox, " "],
-                    addGName: [...this.state.addGName, " "],
-                    addJasi: [...this.state.addJasi, " "],
-                    addInd: [...this.state.addInd, " "],
-                }
-            })
-        }
-    }
 
-    addTrans = (e) => {
-        e.preventDefault()
-
-        length++
-        this.setState(prevState => {
-            return {
-                trnasLength: prevState.trnasLength + 1,
-                addDate: [...this.state.addDate, " "],
-                catnameAdd: [...this.state.catnameAdd, " "],
-                jdNameAdd: [...this.state.jdNameAdd, " "],
-                addSupbox: [...this.state.addSupbox, " "],
-                addGName: [...this.state.addGName, " "],
-                addJasi: [...this.state.addJasi, " "],
-                addInd: [...this.state.addInd, " "],
-            }
-        })
-
-    }
 
     deleteTrans = (e) => {
         e.preventDefault()
@@ -601,7 +607,7 @@ class EmpTrans extends React.Component {
         }
     }
 
-    
+
 
     transRender = (transes) => {
 
@@ -628,12 +634,10 @@ class EmpTrans extends React.Component {
                             </select>
                         </td>
                         <td>
-                            <select  ref="ddd" className="jd" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 120 }} onChange={this.addJdNameClickHandeler}>
-                                { this.props.jobdgbycat.map(job => (
-                                    <option selected={this.state.index == this.state.trnasLength - 1 ? true : false}>
-                                        {job.J_D_NAME}
-                                    </option>
-                                ))}
+                            <select className="jd transaddidjd" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 120 }} onChange={this.addJdNameClickHandeler}>
+                                {this.state.trnasLength == 1 ? this.props.jobdgbycat.map(job => (
+                                    <option>{job.J_D_NAME}</option>
+                                )): null}
                                 <option selected>اختر ...</option>
 
                             </select>
@@ -644,7 +648,7 @@ class EmpTrans extends React.Component {
                                     <option supboxid={job.SUP_BOX_ID}>
                                         {job.SUP_BOX_NAME}
                                     </option>
-                                )): null}
+                                )) : null}
                                 <option selected>اختر ...</option>
                             </select>
                         </td>

@@ -15,7 +15,6 @@ function getEmpExprerience(req, res, next) {
     db.query(query, (err, details) => {
         if (err) {
             next(err)
-            console.log(err);
         } else {
             res.send(details);
         }
@@ -227,7 +226,7 @@ function getEmpEdu(req, res, next) {
     let empid = req.query.empid
     let empname = req.query.empname
 
-    let query = `SELECT * FROM employee_education_degree JOIN education_degree JOIN dgree_speciality JOIN dgree_speciality_detail JOIN UNIVERSITY_SCHOOL JOIN GRADUATION_GRADE JOIN (SELECT employee.EMPLOYEE_ID,employee.NATIONAL_ID_CARD_NO FROM employee ) AS detofemp ON employee_education_degree.DEGREE = education_degree.DEGREE AND employee_education_degree.SPECIALITY = dgree_speciality.SPECIALITY AND employee_education_degree.SPECIALITY_DETAIL = dgree_speciality_detail.SPECIALITY_DETAIL AND employee_education_degree.UNIVERSITY_SCHOOL = university_school.UNIVERSITY_SCHOOL AND employee_education_degree.GRADUATION_GRADE = graduation_grade.GRADUATION_GRADE AND employee_education_degree.NATIONAL_ID_CARD_NO = detofemp.NATIONAL_ID_CARD_NO WHERE ${empid || empid !== "undefined" ? `detofemp.EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `detofemp.NAME_ARABIC = "${empname}"` : null}`
+    let query = `SELECT * FROM employee_education_degree JOIN education_degree JOIN dgree_speciality JOIN dgree_speciality_detail JOIN UNIVERSITY_SCHOOL JOIN GRADUATION_GRADE JOIN (SELECT employee.EMPLOYEE_ID,employee.NATIONAL_ID_CARD_NO FROM employee ) AS detofemp ON employee_education_degree.DEGREE = education_degree.DEGREE AND employee_education_degree.SPECIALITY = dgree_speciality.SPECIALITY AND employee_education_degree.SPECIALITY_DETAIL = dgree_speciality_detail.SPECIALITY_DETAIL AND employee_education_degree.UNIVERSITY_SCHOOL = university_school.UNIVERSITY_SCHOOL AND employee_education_degree.GRADUATION_GRADE = graduation_grade.GRADUATION_GRADE AND employee_education_degree.NATIONAL_ID_CARD_NO = detofemp.NATIONAL_ID_CARD_NO WHERE ${empid.length !== 0 ? `detofemp.EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `detofemp.NAME_ARABIC = "${empname}"` : null}`
 
     db.query(query, (err, details) => {
         if (err) {
@@ -241,9 +240,7 @@ function getEmpEdu(req, res, next) {
 function getEmpFamily(req, res, next) {
     let empid = req.query.empid
     let empname = req.query.empname
-
-    let query = `SELECT *, detofemp.EMPLOYEE_ID, detofemp.NAME_ARABIC FROM employee_family_member JOIN(SELECT employee.EMPLOYEE_ID, employee.NAME_ARABIC, employee.NATIONAL_ID_CARD_NO FROM employee) AS detofemp ON employee_family_member.NATIONAL_ID_CARD_NO = detofemp.NATIONAL_ID_CARD_NO WHERE ${empid || empid !== "undefined" ? `detofemp.EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `detofemp.NAME_ARABIC = "${empname}"` : null} `
-
+    let query = `SELECT *, detofemp.EMPLOYEE_ID, detofemp.NAME_ARABIC FROM employee_family_member JOIN(SELECT employee.EMPLOYEE_ID, employee.NAME_ARABIC, employee.NATIONAL_ID_CARD_NO FROM employee) AS detofemp ON employee_family_member.NATIONAL_ID_CARD_NO = detofemp.NATIONAL_ID_CARD_NO WHERE ${empid.length !== 0 ? `detofemp.EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `detofemp.NAME_ARABIC = "${empname}"` : null} `
     db.query(query, (err, details) => {
         if (err) {
             next(err);
@@ -415,9 +412,6 @@ function updateEmpTrans(req, res, next) {
         );select *, a_job_trans.SUP_BOX_NAME AS catename from a_job_trans JOIN employee JOIN job_assignment_form JOIN indicators JOIN a_sup_box JOIN a_category JOIN a_job_groups ON a_job_trans.G_ID = a_job_groups.G_ID AND a_category.CAT_ID = a_job_trans.CAT_ID AND a_sup_box.SUP_BOX_ID = a_job_trans.SUP_BOX_ID AND a_job_trans.NATIONAL_ID_CARD_NO = employee.NATIONAL_ID_CARD_NO AND a_job_trans.JOB_ASSIGNMENT_FORM = JOB_ASSIGNMENT_FORM.JOB_ASSIGNMENT_FORM AND a_job_trans.INDICATOR = indicators.INDICATOR WHERE ${req.body.empid || req.body.empid !== "undefined" ? `employee.EMPLOYEE_ID = ${req.body.empid}` : req.body.empname || req.body.empname !== "undefined" ? `employee.NAME_ARABIC = "${req.body.empname}"` : null} ORDER by a_job_trans.TRANS_DATE;`
     }
 
-
-    console.log(req.body.empname, req.body.empid);
-
     db.query(query, (err, details) => {
         if (err) {
             next(err);
@@ -468,7 +462,6 @@ function newEmpExp(req, res, next) {
 }
 
 function postBulkTrans(req, res, next) {
-    console.log(req.body);
     let data = req.body
     db.query(`INSERT INTO a_job_trans (NATIONAL_ID_CARD_NO, TRANS_DATE, CAT_ID) VALUES ${data}`, function (err, data) {
         if (err) {
@@ -476,6 +469,19 @@ function postBulkTrans(req, res, next) {
             res.json({ data: null, msg: "يوجد خطاء بقاعدة البيانات" });
         } else {
             res.json({ data: data, msg: "تم إدخال البيانات بنجاح" });
+        }
+    })
+}
+
+function newFamily(req, res, next) {
+    let data = req.body
+    let query = `INSERT INTO employee_family_member (NATIONAL_ID_CARD_NO,RELATION_TYPE, FAMILY_NAME, NATIONAL_ID_NUMBER, BIRTH_DATE, JOB, ORGANIZATION) VALUES ${data}`
+    db.query(query, function (err, data) {
+        if (err) {
+            next(err)
+            res.json({msg: "يوجد خطاء بقاعدة البيانات",data: null})
+        } else {
+            res.json({msg: "تم إدخال البيانات بنجاح",data: data})
         }
     })
 }
@@ -502,5 +508,6 @@ router
     .get('/getempexp', getEmpExprerience)
     .post('/newempexp', newEmpExp)
     .post('/newbulktrans', postBulkTrans)
+    .post('/newfamily', newFamily)
 
 module.exports = router;

@@ -13,16 +13,21 @@ import Reactmoment from "react-moment"
 class EmpFamily extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {finalData: [], addMaritalType: [" "], addMaritalName: [" "], addMaritalNId: [" "], addMaritalBod: [" "], addMaritalWorkStatus: [" "], addMarital: false, maritalLength: 0, showFamilyResult: true, add: false, edit: false, empid: null, empname: null, showMaritalstate: false, showNamesResults: false };
+        this.state = {
+            finalData: [], messege: null ,addMaritalType: [{value: " ", type: null, key: null}], addMaritalName: [{value: " ", key: null}], addMaritalNId: [{value: " ", key: null}],
+            addMaritalBod: [{value: " ", key: null}], addMaritalWorkStatus: [{value: " ", key: null}], addMarital: false, maritalLength: 0,
+            showFamilyResult: true, add: false, edit: false, empid: null,
+            empname: null, showMaritalstate: false, showNamesResultsForSearch: false, showNamesResultsForAdd: false,
+            empnameForAdd: null, empidForAdd: null, showMsg: false
+        };
 
     }
 
     componentDidMount() {
     }
 
-    idInputHandler = (e) => {
+    idInputHandlerForSearch = (e) => {
         this.refs.name.value = ''
-        this.refs.name.placeholder = ''
         this.setState({ showFamilyResult: false })
         if (e.key === 'Enter') {
             this.props.getEmpName(e.target.value)
@@ -31,12 +36,38 @@ class EmpFamily extends React.Component {
         }
     }
 
+    idInputHandlerForAdd = (e) => {
+        this.refs.nameadd.value = ''
+            this.setState({ empidForAdd: e.target.value, empnameForAdd: null })
+            if(e.target.value.length == 0){
+                this.setState({empidForAdd: null})
+            }
+    }
+
+    nameInputHandlerForAdd = (e) => {
+        this.setState({ showNamesResultsForAdd: true, empidForAdd: null, empnameForAdd: e.target.value })
+        this.props.getEmpNameByName(e.target.value)
+        if(e.target.value.length == 0){
+            this.setState({empnameForAdd: null})
+        }
+
+        this.refs.idadd.value = ''
+
+    }
+    namesOptionshandlerForAdd = (e) => {
+         this.setState({
+             empnameForAdd: e.target.value, empidForAdd: null
+         })
+         if(this.refs.nameadd) this.refs.nameadd.value = e.target.value
+
+     }
+
     addMaritalTypeHandler = (e) => {
         e.preventDefault()
         let nodes = document.getElementsByClassName("maritaltype");
         let index = Array.prototype.indexOf.call(nodes, e.target);
         let newArr = this.state.addMaritalType.slice()
-        newArr[index] = { value: e.target.value, type: e.target.getAttribute('type') }
+        newArr[index] = { value: e.target.value, type: e.target.value == "الزوجة" ? 1 : 2, key: index }
         this.setState({
             addMaritalType: newArr
         })
@@ -48,7 +79,7 @@ class EmpFamily extends React.Component {
         let nodes = document.getElementsByClassName("maritalname");
         let index = Array.prototype.indexOf.call(nodes, e.target);
         let newArr = this.state.addMaritalName.slice()
-        newArr[index] = { value: e.target.value }
+        newArr[index] = { value: e.target.value, key: index }
         this.setState({
             addMaritalName: newArr
         })
@@ -59,7 +90,7 @@ class EmpFamily extends React.Component {
         let nodes = document.getElementsByClassName("maritalnid");
         let index = Array.prototype.indexOf.call(nodes, e.target);
         let newArr = this.state.addMaritalNId.slice()
-        newArr[index] = { value: e.target.value }
+        newArr[index] = { value: e.target.value, key: index }
         this.setState({
             addMaritalNId: newArr
         })
@@ -69,7 +100,7 @@ class EmpFamily extends React.Component {
         let nodes = document.getElementsByClassName("maritalbod");
         let index = Array.prototype.indexOf.call(nodes, e.target);
         let newArr = this.state.addMaritalBod.slice()
-        newArr[index] = { value: e.target.value }
+        newArr[index] = { value: e.target.value, key: index }
         this.setState({
             addMaritalBod: newArr
         })
@@ -78,9 +109,9 @@ class EmpFamily extends React.Component {
     addMaritalWorkStatus = (e) => {
         let nodes = document.getElementsByClassName("maritalws");
         let index = Array.prototype.indexOf.call(nodes, e.target);
-        
+        let insertedVal = e.target.value == "اختر ..." ? " " : e.target.value
         let newArr = this.state.addMaritalWorkStatus.slice()
-        newArr[index] = { value: e.target.value }
+        newArr[index] = { value: e.target.value, key: index }
         this.setState({
             addMaritalWorkStatus: newArr
         })
@@ -94,11 +125,11 @@ class EmpFamily extends React.Component {
             this.setState(prevState => {
                 return {
                     maritalLength: prevState.maritalLength + 1,
-                    addMaritalName: [...this.state.addMaritalType, " "],
-                    addMaritalName: [...this.state.addMaritalName, " "],
-                    addMaritalNId: [...this.state.addMaritalNId, " "],
-                    addMaritalBod: [...this.state.addMaritalBod, " "],
-                    addMaritalWorkStatus: [...this.state.addMaritalWorkStatus, " "],
+                    addMaritalName: [...this.state.addMaritalType, {value: " ", type: null, key: null}],
+                    addMaritalName: [...this.state.addMaritalName, {value: " ", key: null}],
+                    addMaritalNId: [...this.state.addMaritalNId, {value: " ", key: null}],
+                    addMaritalBod: [...this.state.addMaritalBod, {value: " ", key: null}],
+                    addMaritalWorkStatus: [...this.state.addMaritalWorkStatus, {value: " ", key: null}],
                 }
             })
         }
@@ -109,11 +140,11 @@ class EmpFamily extends React.Component {
         this.setState(prevState => {
             return {
                 maritalLength: prevState.maritalLength + 1,
-                addMaritalName: [...this.state.addMaritalType, " "],
-                addMaritalName: [...this.state.addMaritalName, " "],
-                addMaritalNId: [...this.state.addMaritalNId, " "],
-                addMaritalBod: [...this.state.addMaritalBod, " "],
-                addMaritalWorkStatus: [...this.state.addMaritalWorkStatus, " "],
+                addMaritalName: [...this.state.addMaritalType, {value: " ", type: null, key: null}],
+                addMaritalName: [...this.state.addMaritalName, {value: " ", key: null}],
+                addMaritalNId: [...this.state.addMaritalNId, {value: " ", key: null}],
+                addMaritalBod: [...this.state.addMaritalBod, {value: " ", key: null}],
+                addMaritalWorkStatus: [...this.state.addMaritalWorkStatus, {value: " ", key: null}],
             }
         })
     }
@@ -125,11 +156,11 @@ class EmpFamily extends React.Component {
         let newArrOfMNid = [...this.state.addMaritalNId]
         let newArrOfMBod = [...this.state.addMaritalBod]
         let newArrOfMworkState = [...this.state.addMaritalWorkStatus]
-        newArrOfMType.shift()
-        newArrOfMName.shift()
-        newArrOfMNid.shift()
-        newArrOfMBod.shift()
-        newArrOfMworkState.shift()
+        newArrOfMType.pop()
+        newArrOfMName.pop()
+        newArrOfMNid.pop()
+        newArrOfMBod.pop()
+        newArrOfMworkState.pop()
         if (this.state.maritalLength !== 0) {
             this.setState(prevState => {
                 return {
@@ -148,35 +179,42 @@ class EmpFamily extends React.Component {
         e.preventDefault()
         var state = this.state
         var arrays = state.addMaritalType.concat(state.addMaritalName, state.addMaritalNId, state.addMaritalBod, state.addMaritalWorkStatus)
-        var emptyInputs = arrays.find(i => i.length <= 1) || null
+        var emptyInputs = arrays.find(i => i.value.length <= 1) || null
         let arr = []
 
-        if (emptyInputs != undefined) {
-        } else if (emptyInputs == undefined) {
-            console.log(arrays);
-            let marital = arrays.filter(el => el.expType == 1)
-            if (marital.length > 0) {
-                let i = marital.length / 4
-                while (i > 0) {
-                    let smallArr = []
-                    var arrloop = marital.filter(el => el.key == i - 1)
-                    console.log(arrloop);
-                    smallArr.push(arrloop[0].value)
-                    smallArr.push(arrloop[1].value)
-                    smallArr.push(arrloop[2].value)
-                    smallArr.push(arrloop[3].value)
-                    smallArr.push(arrloop[0].expType)
-                    smallArr.push(this.props.empname.length >= 1 ? this.props.empname[0].NATIONAL_ID_CARD_NO : this.props.empNameByName.length >= 1 ? this.props.empNameByName[0].NATIONAL_ID_CARD_NO : null)
-                    arr.push(smallArr)
-                    i--
-                }
-            }
-        }
-        console.log(arr);
 
-        this.setState({
-            confirmAdd: true, finalData: arr
-        })
+        if (emptyInputs != undefined) {
+            console.log("there are emptyInputs");
+        } else if (emptyInputs == undefined && (this.state.empnameForAdd || this.state.empidForAdd) ) {
+            let i = arrays.length / 5
+            console.log('hit');
+            while (i > 0) {
+                let smallArr = []
+                var arrloop = arrays.filter(el => el.key == i - 1)
+                let nameOrId;
+                if(this.state.empnameForAdd){
+                    nameOrId = `((SELECT NATIONAL_ID_CARD_NO FROM employee WHERE NAME_ARABIC = "${this.state.empnameForAdd}")`
+                }else if(this.state.empidForAdd){
+                    nameOrId = `((SELECT NATIONAL_ID_CARD_NO FROM employee WHERE EMPLOYEE_ID = ${this.state.empidForAdd})`
+                }
+                smallArr.push(nameOrId)
+                smallArr.push(arrloop[0].type)
+                smallArr.push(`"${arrloop[1].value}"`)
+                smallArr.push(arrloop[2].value)
+                smallArr.push(`"${arrloop[3].value}"`)
+                smallArr.push(`"${arrloop[4].value}"`)
+                smallArr.push("30)")
+
+                arr.push(smallArr)
+                i--
+            }
+            this.setState({
+                finalData: arr,
+                addConfirmed: true
+            })
+
+        }
+
     }
 
 
@@ -190,8 +228,8 @@ class EmpFamily extends React.Component {
                     <tr>
                         <td>
                             <select onChange={this.addMaritalTypeHandler} className="maritaltype" required ref="selected">
-                                <option type="1" selected>الزوجة</option>
-                                <option type="2" selected>الأبن</option>
+                                <option selected>الزوجة</option>
+                                <option selected>الأبن</option>
                                 <option selected>اختر ...</option>
                             </select>
                         </td>
@@ -206,8 +244,8 @@ class EmpFamily extends React.Component {
                         </td>
                         <td>
                             <select onKeyDown={this.tabhandler} onChange={this.addMaritalWorkStatus} className="maritalws" required ref="selected" style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 120 }}>
-                                <option selected>تعمل</option>
-                                <option selected>لا تعمل</option>
+                                <option selected>يعمل</option>
+                                <option selected>لا يعمل</option>
                                 <option selected>اختر ...</option>
                             </select>
                         </td>
@@ -218,12 +256,8 @@ class EmpFamily extends React.Component {
         return trnas;
     };
 
-
-
-
-
-    nameInputHandler = (e) => {
-        this.setState({ showNamesResults: true, showFamilyResult: false })
+    nameInputHandlerForSearch = (e) => {
+        this.setState({ showNamesResultsForSearch: true, showFamilyResult: false })
         this.props.getEmpNameByName(e.target.value)
         this.refs.empid.value = ''
         if (e.key === 'Enter') {
@@ -233,7 +267,8 @@ class EmpFamily extends React.Component {
     }
 
 
-    namesOptionshandler = (e) => {
+
+    namesOptionshandlerForSearch = (e) => {
         this.refs.name.value = e.target.value
         this.props.getEmpFamily("", e.target.value)
         this.setState({ showFamilyResult: true, showMaritalstate: true })
@@ -252,25 +287,21 @@ class EmpFamily extends React.Component {
         this.setState({ add: true })
         this.setState({ empid: null, empname: null, transdate: null, catname: null, jdname: null, supboxname: null, gname: null, jasi: null, indname: null, shoshowStructWAddw: false, showStruct: false })
     }
-    handelInsertNewTrans = (e) => {
+    submitNewFamily = (e) => {
         e.preventDefault()
-        const fd = {
-            empid: this.state.empid,
-            transdate: this.state.transdate,
-            jdname: this.state.jdname,
-            supboxname: this.state.supboxname,
-            gname: this.state.gname,
-            jasi: this.state.jasi,
-            indname: this.state.indname,
-            catname: this.state.catname,
-        };
+
         axios({
             method: "POST",
-            data: fd,
+            data: this.state.finalData,
             withCredentials: true,
-            url: "http://localhost:5000/postnewtrans",
+            url: "http://localhost:5000/newfamily",
             headers: { "Content-Type": "application/json" },
         }).then((res) => {
+            console.log(res.data);
+            this.setState({
+                messege : res.data.data,
+                showMsg: true
+            })
         })
     }
 
@@ -295,6 +326,11 @@ class EmpFamily extends React.Component {
             url: `http://localhost:5000/updateemptrans`,
             headers: { "Content-Type": "application/json" },
         }).then(data => {
+        })
+    }
+    closeAddConfirmHandler = (e) => {
+        this.setState({
+            addConfirmed: false
         })
     }
 
@@ -322,36 +358,41 @@ class EmpFamily extends React.Component {
                 {this.state.add ?
                     <div>
                         <div class="row">
-                            {/* <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }} class="panel-heading">
-                                            <span style={{ position: "relative", right: 50 }}>إضافة بيانات جديدة</span> {this.state.edit ? <i onClick={this.closeEditSectionHandler} style={{ fontSize: 15, position: "relative", left: 530 }} class="fas fa-times-circle"></i> : null}
-                                            {this.state.add ? <i onClick={this.closeAddSectionHandler} style={{ fontSize: 15, float: "right" }} class="fas fa-times-circle"></i> : null}
-                                            <input style={{ position: "relative", right: 250, fontSize: 20 }} type="submit" class="btn btn-primary" onSubmit={this.handelInsertNewTrans} value="Add" />
-
-                                            <button style={{ height: "10%", minHeight: "20px", float: "left", marginRight: 7, background: "#062f07" }} onClick={this.addWifeHandler} className="btn btn-primary"> <span style={{ marginLeft: 7 }}>إضافة زوجة</span><i class="fas fa-user-plus"></i> </button>
-                                            <button style={{ height: "10%", minHeight: "20px", float: "left", marginRight: 7, background: "#062f07" }} onClick={this.addChildHandler} className="btn btn-primary"> <span style={{ marginLeft: 7 }}>إضافة طفل</span><i class="fas fa-user-plus"></i> </button>
-                                        </div> */}
-
                             <div className="col-lg-12" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                                 <div style={{ height: "100%", minWidth: 1000 }} class="panel panel-default">
                                     <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt", display: "flex", justifyContent: "space-between" }} class="panel-heading">
                                         {this.state.add ? <i onClick={this.closeAddSectionHandler} style={{ fontSize: 15, float: "right" }} class="fas fa-times-circle"></i> : null}
                                         <span>إضافة بيانات جديد</span>
                                         <h3></h3>
-
                                     </div>
+                                    {this.state.showMsg ? this.props.msg == "تم إدخال البيانات بنجاح" ? <div id="showmsg" className="alert alert-success" role="alert"> {this.props.msg}</div> : this.props.msg == "يوجد خطاء بقاعدة البيانات" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.props.msg}</div> : this.props.msg == "يجب إدخال أي من الإسم ورقم الأداء" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.props.msg}</div> : null : null}
+
                                     {/* <ImportExcel data={this.ImportExcelHandler} /> */}
                                     <div style={{ marginRight: 20, display: "flex", justifyContent: "center", alignItems: "center", marginLeft: 40 }}>
                                         <div style={{ display: "flex", justifyContent: "space-between" }}>
                                             <div className="form-group" controlId="formBasicEmail">
                                                 <label style={{ width: "100%", textAlign: "right" }}>رقم الأداء : </label>
-                                                <input id="empid" ref="empid" className="form-control" onKeyDown={this.idInputHandler} style={{ background: "white", width: "40%", marginBottom: 5, marginRight: 5, border: "1px solid black" }} type="text" name="first_name" />
+                                                <input ref="idadd" id="empid" className="form-control" onChange={this.idInputHandlerForAdd} style={{ background: "white", width: "40%", marginBottom: 5, marginRight: 5, border: "1px solid black" }} type="text" name="first_name" />
                                             </div>
                                             <div className="form-group" controlId="formBasicEmail">
                                                 <label style={{ width: "100%", textAlign: "right" }}>الإسم : </label>
-                                                <input id="name" id="empname" className="form-control" onChange={this.nameInputHandler} style={{ background: "white", width: "100%", minWidth: "250px", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
+                                                <input ref="nameadd" id="name" id="empname" className="form-control" onChange={this.nameInputHandlerForAdd} style={{ background: "white", width: "100%", minWidth: "250px", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
                                             </div>
                                         </div>
                                     </div>
+                                    {
+                                        this.state.showNamesResultsForAdd ?
+                                            <div style={{ marginRight: 20, display: "flex", justifyContent: "center", alignItems: "center", marginLeft: 40 }}>
+                                                <div></div>
+                                                <select onClick={this.namesOptionshandlerForAdd} style={{ marginTop: 20, marginRight: 15, marginBottom: 5, width: "40%", background: "transparent", border: "none" }} multiple name="pets" id="pet-select">
+                                                    {this.props.empNameByName.map((name => (
+                                                        <option>{name.NAME_ARABIC}</option>
+                                                    )))}
+                                                </select>
+                                                <div></div>
+                                            </div>
+                                            : null
+                                    }
                                     <table class="table table-striped table-bordered table-hover">
                                         <thead>
                                             <tr>
@@ -382,8 +423,8 @@ class EmpFamily extends React.Component {
                                                 </td>
                                                 <td>
                                                     <select onKeyDown={this.tabhandler} onChange={this.addMaritalWorkStatus} className="maritalws" required ref="selected" style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 120 }}>
-                                                        <option selected>تعمل</option>
-                                                        <option selected>لا تعمل</option>
+                                                        <option selected>يعمل</option>
+                                                        <option selected>لا يعمل</option>
                                                         <option selected>اختر ...</option>
                                                     </select>
                                                 </td>
@@ -398,22 +439,14 @@ class EmpFamily extends React.Component {
                                     <button onClick={this.handleArrToSend} className="btn btn-block">إضافة</button>
 
                                 </div>
-                                {this.state.addConfirmed ? <div style={{ width: "70%" }} class="alert alert-warning" role="alert"> هل انت متأكد من إضافة بيانات جديد ؟ <button onClick={this.handelInsertNewTrans} style={{ position: "absolute", left: "17%", top: "80%" }} type="button" class="btn btn-warning">تأكيد</button> <i onClick={this.closeAddConfirmHandler} style={{ fontSize: 15, position: "relative", top: "5%", left: "62%" }} class="fas fa-times-circle"></i></div> : null}
+                                {this.state.addConfirmed ? <div style={{ width: "70%" }} class="alert alert-warning" role="alert"> هل انت متأكد من إضافة بيانات جديد ؟ <button onClick={this.submitNewFamily} style={{ position: "absolute", left: "17%", top: "80%" }} type="button" class="btn btn-warning">تأكيد</button> <i onClick={this.closeAddConfirmHandler} style={{ fontSize: 15, position: "relative", top: "5%", left: "62%" }} class="fas fa-times-circle"></i></div> : null}
                             </div>
 
                         </div>
 
                     </div> : null
                 }
-                {
-                    this.state.showNamesResults ? <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}>
-                        <select onClick={this.namesOptionshandler} style={styles} multiple name="pets" id="pet-select">
-                            {this.props.empNameByName.map((name => (
-                                <option>{name.NAME_ARABIC}</option>
-                            )))}
-                        </select>
-                    </div> : null
-                }
+
 
                 <div class="row">
                     <div class="col-lg-12">
@@ -421,19 +454,33 @@ class EmpFamily extends React.Component {
                 </div>
                 <div className="row">
                     <div className="col-lg-12" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                        <div style={{ height: 150, width: 600 }} class="panel panel-default">
+                        <div style={{ height: "100%", minHeight: 150, width: 600 }} class="panel panel-default">
                             <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }} class="panel-heading">
                                 البيانات العائلية
                             </div>
                             <div style={{ marginRight: 20, display: "flex", justifyContent: "center", alignItems: "center", marginLeft: 40 }}>
                                 <div style={{ marginTop: 20, marginLeft: 0, width: "30%" }} class="input-group">
-                                    <span>رقم الأداء : </span><input ref="empid" onKeyDown={this.idInputHandler} style={{ background: "white", width: "40%", marginBottom: 5, marginRight: 5, border: "1px solid black" }} type="text" name="first_name" />
+                                    <span>رقم الأداء : </span><input ref="empid" onKeyDown={this.idInputHandlerForSearch} style={{ background: "white", width: "40%", marginBottom: 5, marginRight: 5, border: "1px solid black" }} type="text" name="first_name" />
                                 </div>
                                 <div style={{ marginTop: 20, marginRight: 0, width: "70%" }} class="input-group">
-                                    <span >الإسم : </span><input ref="name" onKeyUp={this.nameInputHandler} placeholder={this.props.empname && !this.state.edit ? this.props.empname.length >= 1 ? this.props.empname[0].NAME_ARABIC : null : null} style={{ background: "white", width: "80%", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
+                                    <span >الإسم : </span><input ref="name" onKeyUp={this.nameInputHandlerForSearch} placeholder={this.props.empname && !this.state.edit ? this.props.empname.length >= 1 ? this.props.empname[0].NAME_ARABIC : null : null} style={{ background: "white", width: "80%", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
                                 </div>
+
                                 <button onClick={this.addButtonClickHandeler} style={{ position: "relative", right: 20, top: 8 }} type="button" class="btn btn-primary">إضافة بيانات جديد</button>
                             </div>
+                            {
+                                this.state.showNamesResultsForSearch ?
+                                    <div style={{ marginRight: 20, display: "flex", justifyContent: "center", alignItems: "center", marginLeft: 40 }}>
+                                        <div></div>
+                                        <select onClick={this.namesOptionshandlerForSearch} style={{ marginTop: 20, marginRight: 15, marginBottom: 5, width: "40%", background: "transparent", border: "none" }} multiple name="pets" id="pet-select">
+                                            {this.props.empNameByName.map((name => (
+                                                <option>{name.NAME_ARABIC}</option>
+                                            )))}
+                                        </select>
+                                        <div></div>
+                                    </div>
+                                    : null
+                            }
                         </div>
                     </div>
                 </div>
@@ -463,7 +510,7 @@ class EmpFamily extends React.Component {
                                                 <th>حذف</th>
                                             </tr>
                                         </thead>
-                                        {this.props.empfamily ? this.props.empfamily.map((fam) => (
+                                        {this.props.empfamily.map((fam) => (
                                             <tbody>
                                                 <tr>
                                                     <td>{fam.RELATION_TYPE == 1 ? "الزوجة" : "الأبن"}</td>
@@ -479,7 +526,7 @@ class EmpFamily extends React.Component {
                                                     <td><i class="fas fa-backspace"></i></td>
                                                 </tr>
                                             </tbody>
-                                        )) : null}
+                                        ))}
 
 
                                     </table>

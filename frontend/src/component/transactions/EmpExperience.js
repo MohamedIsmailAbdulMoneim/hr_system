@@ -271,23 +271,20 @@ class EmpExperience extends React.Component {
         if (e.key === 'Enter') {
             this.props.getEmpName(e.target.value)
             this.props.getEmpExp(e.target.value, "")
-            this.setState({ showStruct: false, showStructWAdd: false, edit: false, empid: e.target.value, showTransResult: true, showMaritalstate: true })
+            this.setState({ edit: false, empid: e.target.value, showTransResult: true, showMaritalstate: true })
         }
     }
 
-
-
     nameInputHandler = (e) => {
-        this.setState({ showNamesResults: true, showFamilyResult: false })
+        this.setState({ showNamesResults: true })
         console.log(e.target.value);
         this.props.getEmpNameByName(e.target.value)
         this.refs.empid.value = ''
         if (e.key === 'Enter') {
             this.props.getEmpExp("", e.target.value)
-            this.setState({ showFamilyResult: true, showMaritalstate: true })
+            this.setState({ showMaritalstate: true })
         }
     }
-
 
     namesOptionshandler = (e) => {
         document.getElementById('empname').value = e.target.value
@@ -315,8 +312,6 @@ class EmpExperience extends React.Component {
         })
 
         window.location.reload();
-
-
     }
 
     handleExpTime = (startDate, endDate) => {
@@ -325,22 +320,17 @@ class EmpExperience extends React.Component {
         const end = moment(endDate);
         const diff = end.diff(start);
         const diffDuration = moment.duration(diff);
-
         return diffDuration;
-
     }
 
     handleNewExp = (e) => {
         this.props.newEmpExp(this.state.finalData)
-
         this.setState({
             confirmAdd: false, showMsg: true
         })
     }
 
     render() {
-
-
         const styles = {
             display: "block",
             padding: "0.375rem 2.25rem 0.375rem 0.75rem",
