@@ -14,8 +14,8 @@ class EmpFamily extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            finalData: [], messege: null ,addMaritalType: [{value: " ", type: null, key: null}], addMaritalName: [{value: " ", key: null}], addMaritalNId: [{value: " ", key: null}],
-            addMaritalBod: [{value: " ", key: null}], addMaritalWorkStatus: [{value: " ", key: null}], addMarital: false, maritalLength: 0,
+            finalData: [], messege: null, addMaritalType: [{ value: " ", type: null, key: null }], addMaritalName: [{ value: " ", key: null }], addMaritalNId: [{ value: " ", key: null }],
+            addMaritalBod: [{ value: " ", key: null }], addMaritalWorkStatus: [{ value: " ", key: null }], addMarital: false, maritalLength: 0,
             showFamilyResult: true, add: false, edit: false, empid: null,
             empname: null, showMaritalstate: false, showNamesResultsForSearch: false, showNamesResultsForAdd: false,
             empnameForAdd: null, empidForAdd: null, showMsg: false
@@ -38,29 +38,29 @@ class EmpFamily extends React.Component {
 
     idInputHandlerForAdd = (e) => {
         this.refs.nameadd.value = ''
-            this.setState({ empidForAdd: e.target.value, empnameForAdd: null })
-            if(e.target.value.length == 0){
-                this.setState({empidForAdd: null})
-            }
+        this.setState({ empidForAdd: e.target.value, empnameForAdd: null })
+        if (e.target.value.length == 0) {
+            this.setState({ empidForAdd: null })
+        }
     }
 
     nameInputHandlerForAdd = (e) => {
         this.setState({ showNamesResultsForAdd: true, empidForAdd: null, empnameForAdd: e.target.value })
         this.props.getEmpNameByName(e.target.value)
-        if(e.target.value.length == 0){
-            this.setState({empnameForAdd: null})
+        if (e.target.value.length == 0) {
+            this.setState({ empnameForAdd: null })
         }
 
         this.refs.idadd.value = ''
 
     }
     namesOptionshandlerForAdd = (e) => {
-         this.setState({
-             empnameForAdd: e.target.value, empidForAdd: null
-         })
-         if(this.refs.nameadd) this.refs.nameadd.value = e.target.value
+        this.setState({
+            empnameForAdd: e.target.value, empidForAdd: null
+        })
+        if (this.refs.nameadd) this.refs.nameadd.value = e.target.value
 
-     }
+    }
 
     addMaritalTypeHandler = (e) => {
         e.preventDefault()
@@ -125,11 +125,11 @@ class EmpFamily extends React.Component {
             this.setState(prevState => {
                 return {
                     maritalLength: prevState.maritalLength + 1,
-                    addMaritalName: [...this.state.addMaritalType, {value: " ", type: null, key: null}],
-                    addMaritalName: [...this.state.addMaritalName, {value: " ", key: null}],
-                    addMaritalNId: [...this.state.addMaritalNId, {value: " ", key: null}],
-                    addMaritalBod: [...this.state.addMaritalBod, {value: " ", key: null}],
-                    addMaritalWorkStatus: [...this.state.addMaritalWorkStatus, {value: " ", key: null}],
+                    addMaritalName: [...this.state.addMaritalType, { value: " ", type: null, key: null }],
+                    addMaritalName: [...this.state.addMaritalName, { value: " ", key: null }],
+                    addMaritalNId: [...this.state.addMaritalNId, { value: " ", key: null }],
+                    addMaritalBod: [...this.state.addMaritalBod, { value: " ", key: null }],
+                    addMaritalWorkStatus: [...this.state.addMaritalWorkStatus, { value: " ", key: null }],
                 }
             })
         }
@@ -140,11 +140,11 @@ class EmpFamily extends React.Component {
         this.setState(prevState => {
             return {
                 maritalLength: prevState.maritalLength + 1,
-                addMaritalName: [...this.state.addMaritalType, {value: " ", type: null, key: null}],
-                addMaritalName: [...this.state.addMaritalName, {value: " ", key: null}],
-                addMaritalNId: [...this.state.addMaritalNId, {value: " ", key: null}],
-                addMaritalBod: [...this.state.addMaritalBod, {value: " ", key: null}],
-                addMaritalWorkStatus: [...this.state.addMaritalWorkStatus, {value: " ", key: null}],
+                addMaritalName: [...this.state.addMaritalType, { value: " ", type: null, key: null }],
+                addMaritalName: [...this.state.addMaritalName, { value: " ", key: null }],
+                addMaritalNId: [...this.state.addMaritalNId, { value: " ", key: null }],
+                addMaritalBod: [...this.state.addMaritalBod, { value: " ", key: null }],
+                addMaritalWorkStatus: [...this.state.addMaritalWorkStatus, { value: " ", key: null }],
             }
         })
     }
@@ -185,16 +185,16 @@ class EmpFamily extends React.Component {
 
         if (emptyInputs != undefined) {
             console.log("there are emptyInputs");
-        } else if (emptyInputs == undefined && (this.state.empnameForAdd || this.state.empidForAdd) ) {
+        } else if (emptyInputs == undefined && (this.state.empnameForAdd || this.state.empidForAdd)) {
             let i = arrays.length / 5
             console.log('hit');
             while (i > 0) {
                 let smallArr = []
                 var arrloop = arrays.filter(el => el.key == i - 1)
                 let nameOrId;
-                if(this.state.empnameForAdd){
+                if (this.state.empnameForAdd) {
                     nameOrId = `((SELECT NATIONAL_ID_CARD_NO FROM employee WHERE NAME_ARABIC = "${this.state.empnameForAdd}")`
-                }else if(this.state.empidForAdd){
+                } else if (this.state.empidForAdd) {
                     nameOrId = `((SELECT NATIONAL_ID_CARD_NO FROM employee WHERE EMPLOYEE_ID = ${this.state.empidForAdd})`
                 }
                 smallArr.push(nameOrId)
@@ -299,7 +299,7 @@ class EmpFamily extends React.Component {
         }).then((res) => {
             console.log(res.data);
             this.setState({
-                messege : res.data.data,
+                messege: res.data.data,
                 showMsg: true
             })
         })
@@ -365,7 +365,7 @@ class EmpFamily extends React.Component {
                                         <span>إضافة بيانات جديد</span>
                                         <h3></h3>
                                     </div>
-                                    {this.state.showMsg ? this.props.msg == "تم إدخال البيانات بنجاح" ? <div id="showmsg" className="alert alert-success" role="alert"> {this.props.msg}</div> : this.props.msg == "يوجد خطاء بقاعدة البيانات" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.props.msg}</div> : this.props.msg == "يجب إدخال أي من الإسم ورقم الأداء" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.props.msg}</div> : null : null}
+                                    {this.state.showMsg ? this.state.messege == "تم إدخال البيانات بنجاح" ? <div id="showmsg" className="alert alert-success" role="alert"> {this.state.messege}</div> : this.state.messege == "يوجد خطاء بقاعدة البيانات" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege}</div> : null : null}
 
                                     {/* <ImportExcel data={this.ImportExcelHandler} /> */}
                                     <div style={{ marginRight: 20, display: "flex", justifyContent: "center", alignItems: "center", marginLeft: 40 }}>
