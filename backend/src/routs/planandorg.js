@@ -476,12 +476,13 @@ function postBulkTrans(req, res, next) {
 function newFamily(req, res, next) {
     let data = req.body
     let query = `INSERT INTO employee_family_member (NATIONAL_ID_CARD_NO,RELATION_TYPE, FAMILY_NAME, NATIONAL_ID_NUMBER, BIRTH_DATE, JOB, ORGANIZATION) VALUES ${data}`
+    console.log(query);
     db.query(query, function (err, data) {
         if (err) {
             next(err)
-            res.json({msg: "يوجد خطاء بقاعدة البيانات",data: null})
+            res.json({ msg: "يوجد خطاء بقاعدة البيانات", data: null })
         } else {
-            res.json({msg: "تم إدخال البيانات بنجاح",data: data})
+            res.json({ msg: "تم إدخال البيانات بنجاح", data: data })
         }
     })
 }

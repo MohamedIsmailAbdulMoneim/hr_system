@@ -14,10 +14,16 @@ class EmpFamily extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+<<<<<<< HEAD
             finalData: [], messege: null, addMaritalType: [{ value: " ", type: null, key: null }],
             addMaritalName: [{ value: " ", key: null }], addMaritalNId: [{ value: " ", key: null }],
             addMaritalBod: [{ value: " ", key: null }], addMaritalWorkStatus: [{ value: " ", key: null }],
             addMarital: false, editMaritalType: null, editMaritalName: null, editMaritalNid: null, editMaritalBod: null, maritalLength: 0, showFamilyResult: true, add: false, edit: false, empid: null,
+=======
+            finalData: [], messege: null, addMaritalType: [{ value: " ", type: null, key: null }], addMaritalName: [{ value: " ", key: null }], addMaritalNId: [{ value: " ", key: null }],
+            addMaritalBod: [{ value: " ", key: null }], addMaritalWorkStatus: [{ value: " ", key: null }], addMarital: false, maritalLength: 0,
+            showFamilyResult: true, add: false, edit: false, empid: null,
+>>>>>>> 97c6d203f39b2e3e9087c83b0824b84873e09ce1
             empname: null, showMaritalstate: false, showNamesResultsForSearch: false, showNamesResultsForAdd: false,
             empnameForAdd: null, empidForAdd: null, showMsg: false, rowFam: null
 
@@ -187,6 +193,7 @@ class EmpFamily extends React.Component {
         var arrays = state.addMaritalType.concat(state.addMaritalName, state.addMaritalNId, state.addMaritalBod, state.addMaritalWorkStatus)
         var emptyInputs = arrays.find(i => i.value.length <= 1) || null
         let arr = []
+<<<<<<< HEAD
         if (emptyInputs != undefined || state.addMaritalNId[0].value.length !== 14) {
             if (emptyInputs != undefined) {
                 console.log('hit');
@@ -198,6 +205,12 @@ class EmpFamily extends React.Component {
                     messege: { msg: "رقم البطاقة غير صحيح" }
                 })
             }
+=======
+
+
+        if (emptyInputs != undefined) {
+            console.log("there are emptyInputs");
+>>>>>>> 97c6d203f39b2e3e9087c83b0824b84873e09ce1
         } else if (emptyInputs == undefined && (this.state.empnameForAdd || this.state.empidForAdd)) {
             let i = arrays.length / 5
             while (i > 0) {
@@ -309,7 +322,11 @@ class EmpFamily extends React.Component {
         }).then((res) => {
             console.log(res.data);
             this.setState({
+<<<<<<< HEAD
                 messege: res.data,
+=======
+                messege: res.data.data,
+>>>>>>> 97c6d203f39b2e3e9087c83b0824b84873e09ce1
                 showMsg: true
             })
         })
@@ -430,7 +447,11 @@ class EmpFamily extends React.Component {
                                         <span>إضافة بيانات جديد</span>
                                         <h3></h3>
                                     </div>
+<<<<<<< HEAD
                                     {this.state.showMsg ? this.state.messege.msg == "تم إدخال البيانات بنجاح" ? <div id="showmsg" className="alert alert-success" role="alert"> {this.state.messege.msg}</div> : this.state.messege.msg == "يوجد خطاء بقاعدة البيانات" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege.msg}</div> : this.state.messege.msg == "رقم البطاقة غير صحيح" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege.msg}</div> : this.state.messege.msg == "البيانات غير كاملة" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege.msg}</div> : null : null}
+=======
+                                    {this.state.showMsg ? this.state.messege == "تم إدخال البيانات بنجاح" ? <div id="showmsg" className="alert alert-success" role="alert"> {this.state.messege}</div> : this.state.messege == "يوجد خطاء بقاعدة البيانات" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege}</div> : null : null}
+>>>>>>> 97c6d203f39b2e3e9087c83b0824b84873e09ce1
 
                                     {/* <ImportExcel data={this.ImportExcelHandler} /> */}
                                     <div style={{ marginRight: 20, display: "flex", justifyContent: "center", alignItems: "center", marginLeft: 40 }}>
