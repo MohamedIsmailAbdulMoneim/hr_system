@@ -446,7 +446,6 @@ class EmpTrans extends React.Component {
         this.setState({ editConfirmed: true })
     }
 
-
     closeEditSectionHandler = (e) => {
         let tds = document.getElementById(e.target.getAttribute("transdate")).childNodes
         for (let i = 0; i < tds.length; i++) {
@@ -458,9 +457,6 @@ class EmpTrans extends React.Component {
         }
         this.setState({ edit: false })
     }
-
-
-
 
     handelDateClick = (e) => {
         this.setState({ transdate: e.target.value })
@@ -516,25 +512,15 @@ class EmpTrans extends React.Component {
 
     handelEdit_1 = (e) => {
         this.setState({ edit: true, rowTrans: e.target.getAttribute("transdate") })
-
-
-
         let tds = document.getElementById(e.target.getAttribute("transdate")).childNodes
-
         for (let i = 0; i < tds.length; i++) {
-
-
             tds[i].style.background = "white"
             tds[tds.length - 2].childNodes[0].classList.remove("fa-edit")
             tds[tds.length - 2].childNodes[0].classList.add("fa-check")
             tds[tds.length - 1].childNodes[0].classList.remove("fa-backspace")
             tds[tds.length - 1].childNodes[0].classList.add("fa-times")
-
-
         }
-
         this.setState({ edit: true, mainboxid: e.target.getAttribute("mainboxid"), edit: true, empname: e.target.getAttribute("empname"), transdate: e.target.getAttribute("transdate"), catname: e.target.getAttribute("catname"), catid: e.target.getAttribute("catid"), jdname: e.target.getAttribute("jdname"), supboxname: e.target.getAttribute("supboxname"), gname: e.target.getAttribute("jobgroup"), jasi: e.target.getAttribute("jasform"), indname: e.target.getAttribute("indname") })
-
     }
 
     editDate = (e) => {

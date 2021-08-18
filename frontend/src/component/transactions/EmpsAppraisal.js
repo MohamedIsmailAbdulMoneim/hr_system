@@ -7,7 +7,6 @@ import {
 import { newAppraisal, updateEmpAppraisal } from "../../actions/TransActions"
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
-import axios from "axios";
 import moment from 'react-moment';
 import 'moment-timezone';
 import Pagination from "../Pagination";
@@ -33,6 +32,25 @@ class EmpsAppraisal extends React.Component {
 
     }
 
+    namesOptionshandlerForAdd = (e) => {
+        this.setState({
+            empnameForAdd: e.target.value, empidForAdd: null
+        })
+        if (this.refs.nameadd) this.refs.nameadd.value = e.target.value
+    }
+
+    namesOptionshandlerForSearch = (e) => {
+        this.refs.name.value = e.target.value
+        this.props.getEmpFamily("", e.target.value)
+        this.setState({ showFamilyResult: true, showMaritalstate: true })
+    }
+
+    namesOptionshandler = (e) => {
+        document.getElementById('empname').value = e.target.value
+        if (document.getElementById('nameinputadd')) document.getElementById('nameinputadd').value = e.target.value
+        this.setState({ showFamilyResult: true, empname: e.target.value })
+    }
+
     addButtonClickHandeler = (e) => {
         this.setState({ add: true })
     }
@@ -44,7 +62,6 @@ class EmpsAppraisal extends React.Component {
                 return { firstArgPerBtn: prevState.firstArgPerBtn - 1, secondArgPerBtn: prevState.secondArgPerBtn - 1, currentPage: prevState.currentPage - 1, firstArg: prevState.firstArg - 10, secondArg: prevState.secondArg - 10 }
             })
         }
-
         this.changeArgs(this.state.currentPage - 1)
     }
 
@@ -100,24 +117,12 @@ class EmpsAppraisal extends React.Component {
         this.setState({ showStruct: false, showStructWAdd: false, edit: false, empid: e.target.value, showTransResult: true, showMaritalstate: true })
 
     }
-
-
-
     nameInputHandler = (e) => {
         this.setState({ showNamesResults: true })
         this.props.getEmpNameByName(e.target.value)
         this.refs.empid.value = ''
 
     }
-
-
-    namesOptionshandler = (e) => {
-        document.getElementById('empname').value = e.target.value
-        if (document.getElementById('nameinputadd')) document.getElementById('nameinputadd').value = e.target.value
-        this.setState({ showFamilyResult: true, empname: e.target.value })
-    }
-
-
     handelAppraisal = (e) => {
         e.preventDefault()
         this.setState({ empAppraisal: e.target.value })

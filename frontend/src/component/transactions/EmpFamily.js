@@ -14,16 +14,15 @@ class EmpFamily extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            finalData: [], messege: null ,addMaritalType: [{value: " ", type: null, key: null}], addMaritalName: [{value: " ", key: null}], addMaritalNId: [{value: " ", key: null}],
-            addMaritalBod: [{value: " ", key: null}], addMaritalWorkStatus: [{value: " ", key: null}], addMarital: false, maritalLength: 0,
-            showFamilyResult: true, add: false, edit: false, empid: null,
+            finalData: [], messege: null, addMaritalType: [{ value: " ", type: null, key: null }],
+            addMaritalName: [{ value: " ", key: null }], addMaritalNId: [{ value: " ", key: null }],
+            addMaritalBod: [{ value: " ", key: null }], addMaritalWorkStatus: [{ value: " ", key: null }],
+            addMarital: false, editMaritalType: null, editMaritalName: null, editMaritalNid: null, editMaritalBod: null, maritalLength: 0, showFamilyResult: true, add: false, edit: false, empid: null,
             empname: null, showMaritalstate: false, showNamesResultsForSearch: false, showNamesResultsForAdd: false,
-            empnameForAdd: null, empidForAdd: null, showMsg: false
+            empnameForAdd: null, empidForAdd: null, showMsg: false, rowFam: null
+
         };
 
-    }
-
-    componentDidMount() {
     }
 
     idInputHandlerForSearch = (e) => {
@@ -38,36 +37,40 @@ class EmpFamily extends React.Component {
 
     idInputHandlerForAdd = (e) => {
         this.refs.nameadd.value = ''
-            this.setState({ empidForAdd: e.target.value, empnameForAdd: null })
-            if(e.target.value.length == 0){
-                this.setState({empidForAdd: null})
-            }
+        this.setState({ empidForAdd: e.target.value, empnameForAdd: null })
+        if (e.target.value.length == 0) {
+            this.setState({ empidForAdd: null })
+        }
     }
 
     nameInputHandlerForAdd = (e) => {
         this.setState({ showNamesResultsForAdd: true, empidForAdd: null, empnameForAdd: e.target.value })
         this.props.getEmpNameByName(e.target.value)
-        if(e.target.value.length == 0){
-            this.setState({empnameForAdd: null})
+        if (e.target.value.length == 0) {
+            this.setState({ empnameForAdd: null })
         }
-
         this.refs.idadd.value = ''
-
     }
     namesOptionshandlerForAdd = (e) => {
-         this.setState({
-             empnameForAdd: e.target.value, empidForAdd: null
-         })
-         if(this.refs.nameadd) this.refs.nameadd.value = e.target.value
+        this.setState({
+            empnameForAdd: e.target.value, empidForAdd: null
+        })
+        if (this.refs.nameadd) this.refs.nameadd.value = e.target.value
 
-     }
+    }
 
     addMaritalTypeHandler = (e) => {
         e.preventDefault()
         let nodes = document.getElementsByClassName("maritaltype");
         let index = Array.prototype.indexOf.call(nodes, e.target);
         let newArr = this.state.addMaritalType.slice()
-        newArr[index] = { value: e.target.value, type: e.target.value == "الزوجة" ? 1 : 2, key: index }
+        let type;
+        if (e.target.value == "الزوجة") {
+            type = 1
+        } else if (e.target.value == "الأبن") {
+            type = 2
+        }
+        newArr[index] = { value: e.target.value, type, key: index }
         this.setState({
             addMaritalType: newArr
         })
@@ -125,11 +128,11 @@ class EmpFamily extends React.Component {
             this.setState(prevState => {
                 return {
                     maritalLength: prevState.maritalLength + 1,
-                    addMaritalName: [...this.state.addMaritalType, {value: " ", type: null, key: null}],
-                    addMaritalName: [...this.state.addMaritalName, {value: " ", key: null}],
-                    addMaritalNId: [...this.state.addMaritalNId, {value: " ", key: null}],
-                    addMaritalBod: [...this.state.addMaritalBod, {value: " ", key: null}],
-                    addMaritalWorkStatus: [...this.state.addMaritalWorkStatus, {value: " ", key: null}],
+                    addMaritalName: [...this.state.addMaritalType, { value: " ", type: null, key: null }],
+                    addMaritalName: [...this.state.addMaritalName, { value: " ", key: null }],
+                    addMaritalNId: [...this.state.addMaritalNId, { value: " ", key: null }],
+                    addMaritalBod: [...this.state.addMaritalBod, { value: " ", key: null }],
+                    addMaritalWorkStatus: [...this.state.addMaritalWorkStatus, { value: " ", key: null }],
                 }
             })
         }
@@ -140,11 +143,11 @@ class EmpFamily extends React.Component {
         this.setState(prevState => {
             return {
                 maritalLength: prevState.maritalLength + 1,
-                addMaritalName: [...this.state.addMaritalType, {value: " ", type: null, key: null}],
-                addMaritalName: [...this.state.addMaritalName, {value: " ", key: null}],
-                addMaritalNId: [...this.state.addMaritalNId, {value: " ", key: null}],
-                addMaritalBod: [...this.state.addMaritalBod, {value: " ", key: null}],
-                addMaritalWorkStatus: [...this.state.addMaritalWorkStatus, {value: " ", key: null}],
+                addMaritalName: [...this.state.addMaritalType, { value: " ", type: null, key: null }],
+                addMaritalName: [...this.state.addMaritalName, { value: " ", key: null }],
+                addMaritalNId: [...this.state.addMaritalNId, { value: " ", key: null }],
+                addMaritalBod: [...this.state.addMaritalBod, { value: " ", key: null }],
+                addMaritalWorkStatus: [...this.state.addMaritalWorkStatus, { value: " ", key: null }],
             }
         })
     }
@@ -178,23 +181,32 @@ class EmpFamily extends React.Component {
     handleArrToSend = (e) => {
         e.preventDefault()
         var state = this.state
+        this.setState({
+            showMsg: true
+        })
         var arrays = state.addMaritalType.concat(state.addMaritalName, state.addMaritalNId, state.addMaritalBod, state.addMaritalWorkStatus)
         var emptyInputs = arrays.find(i => i.value.length <= 1) || null
         let arr = []
-
-
-        if (emptyInputs != undefined) {
-            console.log("there are emptyInputs");
-        } else if (emptyInputs == undefined && (this.state.empnameForAdd || this.state.empidForAdd) ) {
+        if (emptyInputs != undefined || state.addMaritalNId[0].value.length !== 14) {
+            if (emptyInputs != undefined) {
+                console.log('hit');
+                this.setState({
+                    messege: { msg: "البيانات غير كاملة" }
+                })
+            } else if (state.addMaritalNId[0].value.length !== 14) {
+                this.setState({
+                    messege: { msg: "رقم البطاقة غير صحيح" }
+                })
+            }
+        } else if (emptyInputs == undefined && (this.state.empnameForAdd || this.state.empidForAdd)) {
             let i = arrays.length / 5
-            console.log('hit');
             while (i > 0) {
                 let smallArr = []
                 var arrloop = arrays.filter(el => el.key == i - 1)
                 let nameOrId;
-                if(this.state.empnameForAdd){
+                if (this.state.empnameForAdd) {
                     nameOrId = `((SELECT NATIONAL_ID_CARD_NO FROM employee WHERE NAME_ARABIC = "${this.state.empnameForAdd}")`
-                }else if(this.state.empidForAdd){
+                } else if (this.state.empidForAdd) {
                     nameOrId = `((SELECT NATIONAL_ID_CARD_NO FROM employee WHERE EMPLOYEE_ID = ${this.state.empidForAdd})`
                 }
                 smallArr.push(nameOrId)
@@ -212,13 +224,12 @@ class EmpFamily extends React.Component {
                 finalData: arr,
                 addConfirmed: true
             })
+            console.log(arr);
+
 
         }
 
     }
-
-
-
     martialRender = (maritals) => {
 
         let trnas = []
@@ -265,9 +276,6 @@ class EmpFamily extends React.Component {
             this.setState({ showFamilyResult: true, showMaritalstate: true })
         }
     }
-
-
-
     namesOptionshandlerForSearch = (e) => {
         this.refs.name.value = e.target.value
         this.props.getEmpFamily("", e.target.value)
@@ -276,7 +284,7 @@ class EmpFamily extends React.Component {
 
 
     closeAddSectionHandler = (e) => {
-        this.setState({ add: false, showStructWAdd: false })
+        this.setState({ add: false })
     }
 
     closeEditSectionHandler = (e) => {
@@ -285,11 +293,13 @@ class EmpFamily extends React.Component {
 
     addButtonClickHandeler = () => {
         this.setState({ add: true })
-        this.setState({ empid: null, empname: null, transdate: null, catname: null, jdname: null, supboxname: null, gname: null, jasi: null, indname: null, shoshowStructWAddw: false, showStruct: false })
+        this.setState({
+            empid: null, empname: null, transdate: null, catname: null,
+            jdname: null, supboxname: null, gname: null, jasi: null, indname: null, shoshowStructWAddw: false, showStruct: false
+        })
     }
     submitNewFamily = (e) => {
         e.preventDefault()
-
         axios({
             method: "POST",
             data: this.state.finalData,
@@ -299,43 +309,98 @@ class EmpFamily extends React.Component {
         }).then((res) => {
             console.log(res.data);
             this.setState({
-                messege : res.data.data,
+                messege: res.data,
                 showMsg: true
             })
         })
     }
 
-    handelEdit_1 = (e) => {
-        var myCurrentDate = e.target.getAttribute("transdate") ? e.target.getAttribute("transdate").slice(0, 10) : null
-        var myFutureDate = new Date(myCurrentDate);
-        myFutureDate.setDate(myFutureDate.getDate() + 1);//myFutureDate is now 8 days in the future
-        let newDate = myFutureDate.getUTCFullYear() + "-" + (myFutureDate.getUTCMonth() + 1) + "-" + myFutureDate.getUTCDate()
-        this.setState({ edit: true, empname: e.target.getAttribute("empname"), transdate: newDate, catname: e.target.getAttribute("catname"), catid: e.target.getAttribute("catid"), jdname: e.target.getAttribute("jdname"), supboxname: e.target.getAttribute("supboxname"), gname: e.target.getAttribute("jobgroup"), jasi: e.target.getAttribute("jasform"), indname: e.target.getAttribute("indname") })
-        // new Date(this.props.empdetails[0].SECTOR_JOIN_DATE.slice(0, 10)).setDate(this.props.empdetails[0].SECTOR_JOIN_DATE.slice(0, 10).getDate() + 1).getUTCFullYear() + "-" + (this.props.empdetails[0].SECTOR_JOIN_DATE.slice(0, 10).getUTCMonth() + 1) + "-" + this.props.empdetails[0].SECTOR_JOIN_DATE.slice(0, 10).getUTCDate()
-
-    }
-
-    handelEdit_2 = (e) => {
-        e.preventDefault()
-        // let data = { empNat: this.state.empNat, appraisal: this.refs.newAppraisal.value, year: document.getElementById("year").placeholder }
-
-        let data = { date: this.state.transdate, catname: this.state.catname, jdname: this.state.jdname, supboxname: this.state.supboxname, gname: this.state.gname, jasi: this.state.jasi, indname: this.state.indname, empid: this.state.empid }
-        axios({
-            method: "PUT",
-            data: data,
-            url: `http://localhost:5000/updateemptrans`,
-            headers: { "Content-Type": "application/json" },
-        }).then(data => {
-        })
-    }
     closeAddConfirmHandler = (e) => {
         this.setState({
             addConfirmed: false
         })
     }
 
+    handelEdit_1 = (e) => {
+        this.setState({
+            edit: true, rowFam: e.target.getAttribute("tableId"),
+            editMaritalType: e.target.getAttribute("relType") == 1 ? "الزوجة" : "الأبن", editMaritalName: e.target.getAttribute("famName"),
+            editMaritalNid: e.target.getAttribute("natIdCard"), editMaritalBod: e.target.getAttribute("birthDate")
+        })
+        let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
+        for (let i = 0; i < tds.length; i++) {
+            tds[i].style.background = "white"
+            tds[tds.length - 2].childNodes[0].classList.remove("fa-edit")
+            tds[tds.length - 2].childNodes[0].classList.add("fa-check")
+            tds[tds.length - 1].childNodes[0].classList.remove("fa-backspace")
+            tds[tds.length - 1].childNodes[0].classList.add("fa-times")
+        }
+    }
+
+    handleMarType = (e) => {
+        this.setState({
+            editMaritalType: e.target.value
+        })
+    }
+    handleMarName = (e) => {
+        this.setState({
+            editMaritalName: e.target.value
+        })
+    }
+    handleNid = (e) => {
+        this.setState({
+            editMaritalNid: e.target.value
+        })
+    }
+    handleBod = (e) => {
+        this.setState({
+            editMaritalBod: e.target.value
+        })
+    }
+
+    handelEdit_2 = (e) => {
+        e.preventDefault()
+        let data = { 
+            empid: this.state.empid,
+            empname: this.props.empNameByName ? this.props.empNameByName.length >= 1 ? this.props.empNameByName[0].NAME_ARABIC : null : null,
+            type: this.state.editMaritalType, marName: this.state.editMaritalName, nat: this.state.editMaritalNid, bod: this.state.editMaritalBod
+        }
+        axios({
+            method: "PUT",
+            data: data,
+            url: `http://localhost:5000/editFamily`,
+            headers: { "Content-Type": "application/json" },
+          }).then(data => {
+            console.log(data);
+          })
+        let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
+        for (let i = 0; i < tds.length; i++) {
+            tds[i].style.background = "transparent"
+            tds[tds.length - 2].childNodes[0].classList.remove("fa-check")
+            tds[tds.length - 2].childNodes[0].classList.add("fa-edit")
+            tds[tds.length - 1].childNodes[0].classList.remove("fa-times")
+            tds[tds.length - 1].childNodes[0].classList.add("fa-backspace")
+        }
+        this.setState({
+            edit: false
+        })
+    }
+
+    closeEditSectionHandler = (e) => {
+        let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
+        for (let i = 0; i < tds.length; i++) {
+            tds[i].style.background = "transparent"
+            tds[tds.length - 2].childNodes[0].classList.remove("fa-check")
+            tds[tds.length - 2].childNodes[0].classList.add("fa-edit")
+            tds[tds.length - 1].childNodes[0].classList.remove("fa-times")
+            tds[tds.length - 1].childNodes[0].classList.add("fa-backspace")
+        }
+        this.setState({ edit: false })
+    }
+
 
     render() {
+        console.log(this.state.messege);
         const styles = {
             display: "block",
             padding: "0.375rem 2.25rem 0.375rem 0.75rem",
@@ -365,7 +430,7 @@ class EmpFamily extends React.Component {
                                         <span>إضافة بيانات جديد</span>
                                         <h3></h3>
                                     </div>
-                                    {this.state.showMsg ? this.props.msg == "تم إدخال البيانات بنجاح" ? <div id="showmsg" className="alert alert-success" role="alert"> {this.props.msg}</div> : this.props.msg == "يوجد خطاء بقاعدة البيانات" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.props.msg}</div> : this.props.msg == "يجب إدخال أي من الإسم ورقم الأداء" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.props.msg}</div> : null : null}
+                                    {this.state.showMsg ? this.state.messege.msg == "تم إدخال البيانات بنجاح" ? <div id="showmsg" className="alert alert-success" role="alert"> {this.state.messege.msg}</div> : this.state.messege.msg == "يوجد خطاء بقاعدة البيانات" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege.msg}</div> : this.state.messege.msg == "رقم البطاقة غير صحيح" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege.msg}</div> : this.state.messege.msg == "البيانات غير كاملة" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege.msg}</div> : null : null}
 
                                     {/* <ImportExcel data={this.ImportExcelHandler} /> */}
                                     <div style={{ marginRight: 20, display: "flex", justifyContent: "center", alignItems: "center", marginLeft: 40 }}>
@@ -488,8 +553,6 @@ class EmpFamily extends React.Component {
                     <div class="col-lg-12">
                         <div class="panel panel-default">
                             <div class="panel-heading" style={{ display: "flex", justifyContent: "space-evenly" }}>
-                                {/* {this.state.edit ? <i onClick={this.closeEditSectionHandler} style={{ fontSize: 15, position: "relative", bottom: 10, left: 550 }} class="fas fa-times-circle"></i> : null} */}
-                                {/* <i style={{ fontSize: 40, position: "relative", right: "90%" }} class="fas fa-file-excel"></i> */}
                             </div>
                             <div class="panel-body">
                                 <div class="table-responsive">
@@ -512,18 +575,23 @@ class EmpFamily extends React.Component {
                                         </thead>
                                         {this.props.empfamily.map((fam) => (
                                             <tbody>
-                                                <tr>
-                                                    <td>{fam.RELATION_TYPE == 1 ? "الزوجة" : "الأبن"}</td>
-                                                    <td>{fam.FAMILY_NAME}</td>
-                                                    <td>{fam.BIRTH_DATE}</td>
-                                                    <td>{fam.NATIONAL_ID_CARD_NO}</td>
+                                                <tr id={fam.id}>
+                                                    <td>{this.state.edit && this.state.rowFam == fam.id ?
+                                                        <select onChange={this.handleMarType} style={{ width: "100%", height: 30 }}>
+                                                            <option type={1}>الزوجة</option>
+                                                            <option type={2}>الأبن</option>
+                                                            <option selected>{this.state.editMaritalType == 1 ? "الزوجة" : "الأبن"}</option>
+                                                        </select> : fam.RELATION_TYPE == 1 ? "الزوجة" : "الأبن"}</td>
+                                                    <td>{this.state.edit && this.state.rowFam == fam.id ? <input onChange={this.handleMarName} value={this.state.editMaritalName} className="form-control" style={{ width: "100%" }} type="text" /> : fam.FAMILY_NAME}</td>
+                                                    <td>{this.state.edit && this.state.rowFam == fam.id ? <input onChange={this.handleBod} value={this.state.editMaritalBod} className="form-control" style={{ width: "100%" }} type="date" /> : fam.BIRTH_DATE}</td>
+                                                    <td>{this.state.edit && this.state.rowFam == fam.id ? <input onChange={this.handleNid} value={this.state.editMaritalNid} className="form-control" style={{ width: "100%" }} type="text" /> : fam.NATIONAL_ID_CARD_NO}</td>
                                                     <td></td>
                                                     <td></td>
                                                     <td></td>
                                                     <td></td>
 
-                                                    <td ><i class="fas fa-edit"></i></td>
-                                                    <td><i class="fas fa-backspace"></i></td>
+                                                    <td><i onClick={this.state.edit ? this.handelEdit_2 : this.handelEdit_1} tableId={fam.id} relType={fam.RELATION_TYPE} famName={fam.FAMILY_NAME} birthDate={fam.BIRTH_DATE} natIdCard={fam.NATIONAL_ID_CARD_NO} class="fas fa-edit"></i></td>
+                                                    <td><i onClick={this.state.edit ? this.closeEditSectionHandler : null} tableId={fam.id} class="fas fa-backspace"></i></td>
                                                 </tr>
                                             </tbody>
                                         ))}

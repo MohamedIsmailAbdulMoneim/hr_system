@@ -487,6 +487,11 @@ function newFamily(req, res, next) {
 }
 
 
+function editFamily(req,res,next){
+    console.log(req.body);
+}
+
+
 
 router
     .get('/getjobdgbycat/:catname', getJobDgByCat)
@@ -509,5 +514,6 @@ router
     .post('/newempexp', newEmpExp)
     .post('/newbulktrans', postBulkTrans)
     .post('/newfamily', newFamily)
+    .put('/editFamily', editFamily)
 
 module.exports = router;
