@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-
+import { getEmpName, getEmpNameByName } from "../../actions/Actions"
 import { } from "../../actions/TransActions"
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
@@ -11,8 +11,159 @@ import Pagination from "../Pagination";
 class EmpTraining extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { confirmAdd: false, showMsg: false, errorAdd: false, empAppraisal: "null", appraisalYear: "null", rowAppraisal: false, add: false, edit: false, empid: null, empname: null, empnat: null, showNamesResults: false, updated: false, firstArg: 0, secondArg: 20, currentPage: 1, firstArgPerBtn: 0, secondArgPerBtn: 10 };
+        this.state = {
+            confirmAdd: false, showMsg: false,
+            appraisalYear: "null", rowTrainning: false, add: false, edit: false, empid: null, messege: null,
+            addTrainingArabicName: "", addTrainingEnglishName: "", addTrainingFromDate: "", addTrainingToDate: "",addTrainingType: "", addTrainingPlace: "",
+            empnameadd: "", empidadd: "", showNamesResultsForSearch: false, showNamesResultsForAdd: false, finalData: null,
+            empname: null, updated: false, firstArg: 0,
+            secondArg: 20, currentPage: 1, firstArgPerBtn: 0, secondArgPerBtn: 10
+        };
     }
+
+    handleDataToSend = () => {
+        let nameOrId;
+        if (this.state.empnameadd) {
+            nameOrId = `((SELECT NATIONAL_ID_CARD_NO FROM employee WHERE NAME_ARABIC = "${this.state.empnameadd}")`
+        } else if (this.state.empidadd) {
+            nameOrId = `((SELECT NATIONAL_ID_CARD_NO FROM employee WHERE EMPLOYEE_ID = ${this.state.empidadd})`
+        }
+        let trainingArabicName = `"${this.state.addTrainingArabicName}"`
+        let trainingEnglishName = `"${this.state.addTrainingEnglishName}"`
+        let trainingFromDate = `"${this.state.addTrainingFromDate}"`
+        let trainingToDate = `"${this.state.addDayesOfPenalty}"`
+        let trainingType = `(SELECT TRAINING_TYPE FROM training_type WHERE TRAINING_TYPE_NAME = "${this.state.addTrainingType}")`
+        let trainingPlace = `(SELECT LOCATION_TYPE FROM location_type WHERE LOCATION_TYPE_NAME = "${this.state.addTrainingPlace}")`
+        let organization = '30)'
+
+console.log(this.state.empidadd.length, this.state.empnameadd.length,this.state.trainingArabicName.length, this.state.trainingEnglishName.length,this.state.trainingFromDate.length,this.state.trainingToDate.length, this.state.trainingType.length , this.state.trainingPlace.length);
+        let data = [nameOrId, trainingArabicName, trainingEnglishName, trainingFromDate, trainingToDate, trainingType, trainingPlace, organization]
+        if ((this.state.empidadd.length < 1 && this.state.empnameadd.length < 1) || this.state.trainingArabicName.length < 1 ||
+        this.state.trainingEnglishName.length < 1 || this.state.trainingFromDate.length < 1 || this.state.trainingToDate.length < 1 || this.state.trainingType.length < 1 || this.state.trainingPlace.length < 1) {
+            this.setState({
+                messege: { msg: "البيانات غير كاملة" }
+            })
+            console.log('inputs are not completed');
+        } else {
+            console.log('done');
+            this.setState({ finalData: data, confirmAdd: true })
+        }
+    }
+    /* ------------------------------------------------------ */
+
+    idInputHandlerForAdd = (e) => {
+        this.refs.nameadd.value = ''
+        this.setState({ empidadd: e.target.value, empnameadd: "" })
+        if (e.target.value.length == 0) {
+            this.setState({ empidadd: "" })
+        }
+    }
+
+    nameInputHandlerForAdd = (e) => {
+        this.setState({ showNamesResultsForAdd: true, empidadd: "", empnameadd: e.target.value })
+        this.props.getEmpNameByName(e.target.value)
+        if (e.target.value.length == 0) {
+            this.setState({ empnameadd: "" })
+        }
+        this.refs.idadd.value = ''
+    }
+
+    namesOptionshandlerForAdd = (e) => {
+        this.setState({
+            empnameadd: e.target.value, empidadd: ""
+        })
+        if (this.refs.nameadd) this.refs.nameadd.value = e.target.value
+    }
+
+    addTrainingArabicNameHandler = (e) => {
+        this.setState({
+            addTrainingArabicName: e.target.value
+        })
+    }
+    addTrainingEnglishNameHandler = (e) => {
+        this.setState({
+            addTrainingEnglishName: e.target.value
+        })
+    }
+    addTrainingFromDateHandler = (e) => {
+        this.setState({
+            addTrainingFromDate: e.target.value
+        })
+    
+    }
+    addTrainingToDateHandler = (e) => {
+        this.setState({
+            addTrainingToDate: e.target.value
+        })
+    }
+    addTrainingTypeHandler = (e) => {
+        this.setState({
+            addTrainingType: e.target.value
+        })
+    }
+    addTrainingPlaceHandler = (e) => {
+        this.setState({
+            addTrainingPlace: e.target.value
+        })
+    }
+
+    /* -----------------------------------------------------------------*/
+
+    idInputHandlerForSearch = (e) => {
+        this.refs.name.value = ''
+        if (e.key === 'Enter') {
+            this.props.getEmpName(e.target.value)
+            this.setState({ edit: false, empid: e.target.value })
+        }
+    }
+
+    nameInputHandlerForSearch = (e) => {
+        this.setState({ showNamesResultsForSearch: true })
+        this.props.getEmpNameByName(e.target.value)
+        this.refs.empid.value = ''
+    }
+
+    namesOptionshandlerForSearch = (e) => {
+        this.refs.name.value = e.target.value
+    }
+
+    searchPenaltyTypeHandler = (e) => {
+        this.setState({
+            searchPenaltyType: e.target.value
+        })
+    }
+
+    searchPenaltyYearHandler = (e) => {
+        this.setState({
+            searchPenaltyYear: e.target.value
+        })
+    }
+
+
+    /* ------------------------------------------------------------------*/
+
+
+
+
+
+    submitNewPenalty = (e) => {
+        e.preventDefault()
+        axios({
+            method: "POST",
+            data: this.state.finalData,
+            withCredentials: true,
+            url: "http://localhost:5000/postnewpenalty",
+            headers: { "Content-Type": "application/json" },
+        }).then((res) => {
+            console.log(res.data);
+            this.setState({
+                messege: res.data,
+                showMsg: true
+            })
+        })
+    }
+
+    /* ------------------------  */
 
     changeArgs = (i) => (e) => {
         e.preventDefault()
@@ -235,37 +386,50 @@ class EmpTraining extends React.Component {
                                     <div style={{ display: "flex", justifyContent: "space-around" }}>
                                         <div className="form-group" controlId="formBasicEmail">
                                             <label style={{ width: "100%", textAlign: "right" }}>رقم الأداء : </label>
-                                            <input onChange={this.idInputAddHandler} className="form-control" style={{ width: "100%", minWidth: "250px" }} onKeyDown={this.nameInputHandler} type="text" />
+                                            <input ref="idadd" onChange={this.idInputHandlerForAdd} className="form-control" style={{ width: "100%", minWidth: "250px" }} onKeyDown={this.nameInputHandler} type="number" />
                                         </div>
                                         <div className="form-group" controlId="formBasicEmail">
                                             <label style={{ width: "100%", textAlign: "right" }}>الأسم : </label>
-                                            <input onKeyDown={this.nameInputAddHandler} id="nameinputadd" className="form-control" style={{ width: "100%", minWidth: "250px" }} onChange={this.nameInputHandler} type="text" />
+                                            <input ref="nameadd" onKeyDown={this.nameInputHandlerForAdd} id="nameinputadd" className="form-control" style={{ width: "100%", minWidth: "250px" }} onChange={this.nameInputHandler} type="text" />
                                         </div>
                                     </div>
+                                    {
+                                        this.state.showNamesResultsForAdd ?
+                                            <div style={{ marginRight: 20, display: "flex", justifyContent: "center", alignItems: "center", marginLeft: 40 }}>
+                                                <div></div>
+                                                <select onClick={this.namesOptionshandlerForAdd} style={{ marginTop: 20, marginRight: 15, marginBottom: 5, width: "40%", background: "transparent", border: "none" }} multiple name="pets" id="pet-select">
+                                                    {this.props.empNameByName.map((name => (
+                                                        <option>{name.NAME_ARABIC}</option>
+                                                    )))}
+                                                </select>
+                                                <div></div>
+                                            </div>
+                                            : null
+                                    }
                                     <div style={{ display: "flex", justifyContent: "space-around" }}>
                                         <div className="form-group" controlId="formBasicEmail">
-                                            <label style={{ width: "100%", textAlign: "right" }}>اسم المكان باللغة العربية: </label>
-                                            <input onChange={this.handelYear} className="form-control" style={{ width: "100%", minWidth: "250px" }} onKeyDown={this.nameInputHandler} type="text" />
+                                            <label style={{ width: "100%", textAlign: "right" }}>اسم البرنامج باللغة العربية: </label>
+                                            <input onChange={this.addTrainingArabicNameHandler} className="form-control" style={{ width: "100%", minWidth: "250px" }} onKeyDown={this.nameInputHandler} type="text" />
                                         </div>
                                         <div className="form-group" controlId="formBasicEmail">
-                                            <label style={{ width: "100%", textAlign: "right" }}>اسم المكان باللغة الإنجليزية: </label>
-                                            <input onChange={this.handelYear} className="form-control" style={{ width: "100%", minWidth: "250px" }} onKeyDown={this.nameInputHandler} type="text" />
+                                            <label style={{ width: "100%", textAlign: "right" }}>اسم البرنامج باللغة الإنجليزية: </label>
+                                            <input onChange={this.addTrainingEnglishNameHandler} className="form-control" style={{ width: "100%", minWidth: "250px" }} onKeyDown={this.nameInputHandler} type="text" />
                                         </div>
                                     </div>
                                     <div style={{ display: "flex", justifyContent: "space-around" }}>
                                         <div className="form-group" controlId="formBasicEmail">
                                             <label style={{ width: "100%", textAlign: "right" }}>من: </label>
-                                            <input onChange={this.handelYear} className="form-control" style={{ width: "100%", minWidth: "250px" }} onKeyDown={this.nameInputHandler} type="date" />
+                                            <input onChange={this.addTrainingFromDateHandler} className="form-control" style={{ width: "100%", minWidth: "250px" }} onKeyDown={this.nameInputHandler} type="date" />
                                         </div>
                                         <div className="form-group" controlId="formBasicEmail">
                                             <label style={{ width: "100%", textAlign: "right" }}>إلى: </label>
-                                            <input onChange={this.handelYear} className="form-control" style={{ width: "100%", minWidth: "250px" }} onKeyDown={this.nameInputHandler} type="date" />
+                                            <input onChange={this.addTrainingToDateHandler} className="form-control" style={{ width: "100%", minWidth: "250px" }} onKeyDown={this.nameInputHandler} type="date" />
                                         </div>
                                     </div>
                                     <div style={{ display: "flex", justifyContent: "space-around" }}>
                                         <div className="form-group" controlId="formBasicEmail">
                                             <label style={{ width: "100%", textAlign: "right" }}>نوع التدريب : </label>
-                                            <select onChange={this.handelAppraisal} id="empapp" style={{ height: 30, width: "100%", minWidth: "215px" }}>
+                                            <select onChange={this.addTrainingTypeHandler} id="empapp" style={{ height: 30, width: "100%", minWidth: "215px" }}>
                                                 <option selected>أخرى</option>
                                                 <option selected>مؤتمر</option>
                                                 <option selected>ملتقى</option>
@@ -276,16 +440,14 @@ class EmpTraining extends React.Component {
                                         </div>
                                         <div className="form-group" controlId="formBasicEmail">
                                             <label style={{ width: "100%", textAlign: "right" }}>مكان التدريب : </label>
-                                            <select onChange={this.handelAppraisal} id="empapp" style={{ height: 30, width: "100%", minWidth: "215px" }}>
+                                            <select onChange={this.addTrainingPlaceHandler} id="empapp" style={{ height: 30, width: "100%", minWidth: "215px" }}>
                                                 <option >داخلي</option>
                                                 <option >خارجي</option>
-
-
                                                 <option selected>اختر ...</option>
                                             </select>
                                         </div>
                                     </div>
-                                    <button onClick={this.submitButtonHandler} style={{ width: "92%", margin: "0 auto" }} type="button" class="btn btn-primary btn-block">إضافة تدريب جديد</button>
+                                    <button onClick={this.handleDataToSend} style={{ width: "92%", margin: "0 auto" }} type="button" class="btn btn-primary btn-block">إضافة تدريب جديد</button>
 
                                     {this.state.confirmAdd ? <div style={{ width: "100%" }} class="alert alert-warning" role="alert"> هل انت متأكد من إضافة تدريب جديد ؟ <button onClick={this.handleNewAppraisal} style={{ float: "left" }} type="button" class="btn btn-warning">تأكيد</button> <i onClick={this.submitButtonHandler} style={{ fontSize: 15, float: "right" }} class="fas fa-times-circle"></i></div> : null}
 
@@ -296,17 +458,6 @@ class EmpTraining extends React.Component {
 
                     </Fragment> : null
                 }
-                {
-                    this.state.showNamesResults ?
-                        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}>
-                            <select onClick={this.namesOptionshandler} style={styles} multiple name="pets" id="pet-select">
-                                {this.props.empNameByName.map((name => (
-                                    <option>{name.NAME_ARABIC}</option>
-                                )))}
-                            </select>
-                        </div> : null
-                }
-
                 <div class="row">
                     <div class="col-lg-12">
                     </div>
@@ -324,11 +475,11 @@ class EmpTraining extends React.Component {
                                 <div style={{ display: "flex", justifyContent: "space-between" }}>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>رقم الأداء : </label>
-                                        <input id="empid" ref="empid" className="form-control" onKeyDown={this.idInputHandler} style={{ background: "white", width: "40%", marginBottom: 5, marginRight: 5, border: "1px solid black" }} type="text" name="first_name" />
+                                        <input id="empid" ref="empid" className="form-control" onKeyDown={this.idInputHandlerForSearch} style={{ background: "white", width: "40%", marginBottom: 5, marginRight: 5, border: "1px solid black" }} type="text" name="first_name" />
                                     </div>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>الإسم : </label>
-                                        <input id="name" id="empname" className="form-control" onKeyUp={this.nameInputHandler} style={{ background: "white", width: "100%", minWidth: "250px", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
+                                        <input ref="name" id="name" id="empname" className="form-control" onKeyUp={this.nameInputHandlerForSearch} style={{ background: "white", width: "100%", minWidth: "250px", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
                                     </div>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}></label>
@@ -338,6 +489,19 @@ class EmpTraining extends React.Component {
                                     </div>
                                 </div>
                             </div>
+                            {
+                                this.state.showNamesResultsForSearch ?
+                                    <div style={{ marginRight: 20, display: "flex", justifyContent: "center", alignItems: "center", marginLeft: 40 }}>
+                                        <div></div>
+                                        <select onClick={this.namesOptionshandlerForSearch} style={{ marginTop: 20, marginRight: 15, marginBottom: 5, width: "40%", background: "transparent", border: "none" }} multiple name="pets" id="pet-select">
+                                            {this.props.empNameByName.map((name => (
+                                                <option>{name.NAME_ARABIC}</option>
+                                            )))}
+                                        </select>
+                                        <div></div>
+                                    </div>
+                                    : null
+                            }
                             <div style={{ display: "flex", justifyContent: "space-around" }}>
                                 <div className="form-group" controlId="formBasicEmail">
                                     <label style={{ width: "80%", textAlign: "right" }}>السنة : </label>
@@ -352,12 +516,11 @@ class EmpTraining extends React.Component {
                                 <div className="form-group" controlId="formBasicEmail">
                                     <label style={{ width: "80%", textAlign: "right" }}>التدريب : </label>
                                     <select id="empapp" style={{ width: "80%", height: 30 }}>
-                                        
+
                                         <option selected>اختر ...</option>
 
                                     </select>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -379,7 +542,7 @@ class EmpTraining extends React.Component {
                                                 <th>حذف</th>
                                             </tr>
                                         </thead>
-                                        {this.props.empApp.slice(this.state.firstArg, this.state.secondArg).map(emp => (
+                                        {/* {this.props.empApp.slice(this.state.firstArg, this.state.secondArg).map(emp => (
                                             <tbody>
                                                 <tr id={emp.id}>
                                                     <td>{emp.NAME_ARABIC}</td>
@@ -395,9 +558,9 @@ class EmpTraining extends React.Component {
                                                 </tr>
                                             </tbody>
                                         ))
-                                        }
+                                        } */}
                                     </table>
-                                    <Pagination minusFirstArg={this.minusFirstArg} plusSecondArg={this.plusSecondArg} firstArgPerBtn={this.state.firstArgPerBtn} secondArgPerBtn={this.state.secondArgPerBtn} changargs={this.changeArgs} pagesLength={this.props.empApp.length} currentPage={this.state.currentPage} />
+                                    {/* <Pagination minusFirstArg={this.minusFirstArg} plusSecondArg={this.plusSecondArg} firstArgPerBtn={this.state.firstArgPerBtn} secondArgPerBtn={this.state.secondArgPerBtn} changargs={this.changeArgs} pagesLength={this.props.empApp.length} currentPage={this.state.currentPage} /> */}
                                 </div>
                             </div>
                         </div>
@@ -411,19 +574,13 @@ class EmpTraining extends React.Component {
 const mapStateToProps = (state) => {
     return {
 
-        deps: state.posts.deps,
-        empdep: state.posts.empdep,
+
         empname: state.posts.empname,
         empNameByName: state.posts.empNameByName,
-        empApp: state.posts.empApp,
-        cates: state.posts.cates,
-        result: state.trans.result,
-        msg: state.trans.msg,
-        updatedInf: state.trans.updatedInf,
-        result: state.trans.result
+
 
     };
 };
 export default connect(mapStateToProps, {
-
+    getEmpName, getEmpNameByName,
 })(EmpTraining);

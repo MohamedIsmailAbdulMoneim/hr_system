@@ -492,6 +492,50 @@ function editFamily(req,res,next){
     console.log(req.body);
 }
 
+function getEmpsPenalties(req,res,next){
+    let query = `
+    SELECT
+    employee.NAME_ARABIC,
+    penalty_type.PENALTY_TYPE_AR,
+    PENALTY_DATE
+FROM
+    employee_penalty
+JOIN employee JOIN penalty_type ON employee.NATIONAL_ID_CARD_NO = employee_penalty.NATIONAL_ID_CARD_NO AND penalty_type.PENALTY_ID = employee_penalty.PENALTY_TYPE
+WHERE
+    PENALTY_TYPE != 1;
+    SELECT
+    employee.NAME_ARABIC,
+    PEN_NUM,
+    PENALTY_DATE
+FROM
+    employee_penalty
+JOIN employee JOIN penalty_type ON employee.NATIONAL_ID_CARD_NO = employee_penalty.NATIONAL_ID_CARD_NO AND penalty_type.PENALTY_ID = employee_penalty.PENALTY_TYPE
+WHERE
+    PENALTY_TYPE = 1
+    `
+    db.query(query, (err,data)=> {
+        if(err){
+            next(err)
+        }else{
+            res.send(data)
+        }
+    })
+}
+
+function postNewPenalty(req,res,next){
+    let query = `INSERT INTO employee_penalty (NATIONAL_ID_CARD_NO, PENALTY_TYPE, PENALTY_DATE, PENALTY_YEAR, ORGANIZATION, PENALTY_REASON${req.body.length == 7 ? `,PEN_NUM` : ''}) VALUES ${req.body} `
+    console.log(query);
+    
+    db.query(query, (err,data)=> {
+        if(err){
+            next(err)
+        }else{
+            console.log(data);
+        }
+    })
+    console.log(req.body);
+}
+
 
 
 router
@@ -516,5 +560,7 @@ router
     .post('/newbulktrans', postBulkTrans)
     .post('/newfamily', newFamily)
     .put('/editFamily', editFamily)
+    .post('/postnewpenalty', postNewPenalty)
+    .get('/getempspenalties', getEmpsPenalties)
 
 module.exports = router;

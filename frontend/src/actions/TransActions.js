@@ -1,4 +1,4 @@
-import { NEW_APPRAISAL, updatetrans, fetchEmpTrans, updateAppraisal, FETCHEMPEXP, NEW_EXP } from "../actions/ActionTypes";
+import { NEW_APPRAISAL, updatetrans, fetchEmpTrans, updateAppraisal, FETCHEMPEXP, NEW_EXP,fetchEmpPenalties } from "../actions/ActionTypes";
 import axios from "axios";
 
 
@@ -89,4 +89,15 @@ export const newEmpExp = (data) => (dispatch) => {
       }
     })
   })
+}
+
+export const getempspenalties = (nameOrId, penalty, year) => (dispatch) => {
+  
+  axios.get(`http://localhost:5000/getempspenalties/?nameorid=${nameOrId}&penalty=${penalty}&year=${year}`).then(res=> {
+    dispatch({
+      type: fetchEmpPenalties,
+      payload: res.data
+    })
+  })
+
 }

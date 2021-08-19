@@ -1,10 +1,11 @@
-import { NEW_APPRAISAL, fetchEmpTrans, updatetrans, updateAppraisal, FETCHEMPEXP, NEW_EXP } from "../actions/ActionTypes";
+import { NEW_APPRAISAL, fetchEmpTrans, updatetrans, updateAppraisal, FETCHEMPEXP, NEW_EXP,fetchEmpPenalties } from "../actions/ActionTypes";
 const initialState = {
     empTrans: [],
     msg: null,
     result: null,
     updatedInf: null,
-    empexp: []
+    empexp: [],
+    empsPenalties: []
 
 };
 
@@ -49,6 +50,11 @@ export default function (state = initialState, action) {
                 ...state,
                 result: action.payload.data,
                 msg: action.payload.msg
+            }
+        case fetchEmpPenalties:
+            return {
+                ...state,
+                empsPenalties: action.payload
             }
 
 

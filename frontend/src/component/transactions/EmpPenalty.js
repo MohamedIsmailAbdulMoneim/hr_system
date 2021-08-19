@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
-
-import { } from "../../actions/TransActions"
+import { getEmpName, getEmpNameByName } from "../../actions/Actions"
+import { getempspenalties } from "../../actions/TransActions"
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -11,8 +11,156 @@ import Pagination from "../Pagination";
 class EmpPenalty extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { confirmAdd: false, showMsg: false, errorAdd: false, empAppraisal: "null", appraisalYear: "null", rowAppraisal: false, add: false, edit: false, empid: null, empname: null, empnat: null, showNamesResults: false, updated: false, firstArg: 0, secondArg: 20, currentPage: 1, firstArgPerBtn: 0, secondArgPerBtn: 10 };
+        this.state = {
+            confirmAdd: false, showMsg: false, addPenaltyType: "", addPenaltyDate: "", addDayesOfPenalty: "",
+            empname: null, updated: false, firstArg: 0, addReasonOfPenalty: "", searchPenaltyType: "" ,searchPenaltyYear: "" ,messege: null,
+            secondArg: 20, currentPage: 1, firstArgPerBtn: 0, secondArgPerBtn: 10, empnameadd: "", empidadd: "",
+            showNamesResultsForSearch: false, showNamesResultsForAdd: false, finalData: null, penIsdisDeduct: false
+        };
     }
+
+    /* ------------------------------------------------------ */
+
+    AddPenaltyTypeHandler = (e) => {
+        this.setState({ addPenaltyType: e.target.value })
+        let numOfPen = document.getElementById('numofpen')
+        if (e.target.value == "خصم") {
+            numOfPen.style.display = "block"
+            this.setState({ penIsdisDeduct: true })
+        } else {
+            numOfPen.style.display = "none"
+            this.setState({ penIsdisDeduct: false })
+
+        }
+    }
+
+    addDateHandler = (e) => {
+        this.setState({ addPenaltyDate: e.target.value })
+    }
+    addDayesOfPenaltyHandler = (e) => {
+        this.setState({
+            addDayesOfPenalty: e.target.value
+        })
+    }
+    addReasonOfPenaltyHandler = (e) => {
+        this.setState({
+            addReasonOfPenalty: e.target.value
+        })
+    }
+
+    /* -----------------------------------------------------------------*/
+
+    idInputHandlerForSearch = (e) => {
+        this.refs.name.value = ''
+        if (e.key === 'Enter') {
+            this.props.getEmpName(e.target.value)
+            this.setState({ edit: false, empid: e.target.value })
+        }
+    }
+
+    nameInputHandlerForSearch = (e) => {
+        this.setState({ showNamesResultsForSearch: true })
+        this.props.getEmpNameByName(e.target.value)
+        this.refs.empid.value = ''
+    }
+
+    namesOptionshandlerForSearch = (e) => {
+        this.refs.name.value = e.target.value
+    }
+
+    searchPenaltyTypeHandler = (e) => {
+        this.setState({
+            searchPenaltyType: e.target.value
+        })
+    }
+
+    searchPenaltyYearHandler = (e) => {
+        this.setState({
+            searchPenaltyYear: e.target.value
+        })
+    }
+
+
+
+    /* ------------------------------------------------------------------*/
+
+    idInputHandlerForAdd = (e) => {
+        this.refs.nameadd.value = ''
+        this.setState({ empidadd: e.target.value, empnameadd: "" })
+        if (e.target.value.length == 0) {
+            this.setState({ empidadd: "" })
+        }
+    }
+
+    nameInputHandlerForAdd = (e) => {
+        this.setState({ showNamesResultsForAdd: true, empidadd: "", empnameadd: e.target.value })
+        this.props.getEmpNameByName(e.target.value)
+        if (e.target.value.length == 0) {
+            this.setState({ empnameadd: "" })
+        }
+        this.refs.idadd.value = ''
+    }
+
+    namesOptionshandlerForAdd = (e) => {
+        this.setState({
+            empnameadd: e.target.value, empidadd: ""
+        })
+        if (this.refs.nameadd) this.refs.nameadd.value = e.target.value
+    }
+
+    /* ------------------------------------------------------------------*/
+
+
+    handleDataToSend = () => {
+        let nameOrId;
+        console.log(this.state.addPenaltyType);
+        if (this.state.empnameadd) {
+            nameOrId = `((SELECT NATIONAL_ID_CARD_NO FROM employee WHERE NAME_ARABIC = "${this.state.empnameadd}")`
+        } else if (this.state.empidadd) {
+            nameOrId = `((SELECT NATIONAL_ID_CARD_NO FROM employee WHERE EMPLOYEE_ID = ${this.state.empidadd})`
+        }
+        let penaltyType = `(SELECT PENALTY_ID FROM penalty_type WHERE PENALTY_TYPE_AR = "${this.state.addPenaltyType}")`
+        let penaltyDate = `"${this.state.addPenaltyDate}"`
+        let yearOfDate = `YEAR("${this.state.addPenaltyDate}")`
+        let numOfPen = this.state.addDayesOfPenalty
+        let organization = 30
+        let reasonForPen = `"${this.state.addReasonOfPenalty}")`
+
+
+        let data = [nameOrId, penaltyType, penaltyDate, yearOfDate, organization, reasonForPen]
+        if (numOfPen.length > 1) data.push(numOfPen)
+        console.log(this.state.empidadd.length, this.state.addPenaltyType.length, this.state.addPenaltyDate.length, reasonForPen.length);
+        if ((this.state.empidadd.length < 1 && this.state.empnameadd.length < 1) || this.state.addPenaltyType.length < 1 ||
+            penaltyDate.length < 1 || (this.state.penIsdisDeduct === true && numOfPen.length < 1) || this.state.addReasonOfPenalty.length < 1) {
+            this.setState({
+                messege: { msg: "البيانات غير كاملة" }
+            })
+            console.log('inputs are not completed');
+        } else {
+            console.log('done');
+            this.setState({ finalData: data, confirmAdd: true })
+        }
+    }
+
+
+    submitNewPenalty = (e) => {
+        e.preventDefault()
+        axios({
+            method: "POST",
+            data: this.state.finalData,
+            withCredentials: true,
+            url: "http://localhost:5000/postnewpenalty",
+            headers: { "Content-Type": "application/json" },
+        }).then((res) => {
+            console.log(res.data);
+            this.setState({
+                messege: res.data,
+                showMsg: true
+            })
+        })
+    }
+
+    /* ------------------------  */
 
     changeArgs = (i) => (e) => {
         e.preventDefault()
@@ -29,10 +177,6 @@ class EmpPenalty extends React.Component {
 
     }
 
-    addButtonClickHandeler = (e) => {
-        this.setState({ add: true })
-    }
-
     minusFirstArg = (e) => {
         e.preventDefault()
         if (this.state.firstArgPerBtn > 0) {
@@ -42,6 +186,17 @@ class EmpPenalty extends React.Component {
         }
 
         this.changeArgs(this.state.currentPage - 1)
+    }
+
+    handelSearch = () => {
+        this.setState({ edit: false, updated: false, firstArg: 0, secondArg: 20, currentPage: 1, firstArgPerBtn: 0, secondArgPerBtn: 10 })
+        this.props.getempspenalties()
+    }
+
+    /* ------------------------  */
+
+    addButtonClickHandeler = (e) => {
+        this.setState({ add: true })
     }
 
     plusSecondArg = (e) => {
@@ -57,16 +212,6 @@ class EmpPenalty extends React.Component {
 
     }
 
-
-    idInputAddHandler = (e) => {
-        this.setState({ empid: e.target.value })
-    }
-
-    nameInputAddHandler = (e) => {
-        this.setState({ empname: e.target.value })
-
-    }
-
     submitButtonHandler = (e) => {
         if (!this.state.confirmAdd) {
             this.setState({ confirmAdd: true })
@@ -75,59 +220,6 @@ class EmpPenalty extends React.Component {
         }
     }
 
-    handleNewAppraisal = (e) => {
-        let obj = {
-            appDate: this.state.appraisalYear, appValue: this.state.empAppraisal, empid: this.state.empid, empname: this.state.empname
-        }
-
-        obj.empid = this.state.empid || "null"
-        obj.empname = this.state.empname || "null"
-        this.props.newAppraisal(obj)
-        this.setState({ showMsg: true })
-
-        setTimeout(() => {
-            this.setState({ showMsg: false })
-        }, 3000)
-    }
-
-    idInputHandler = (e) => {
-
-        this.props.getEmpName(e.target.value)
-        this.setState({ showStruct: false, showStructWAdd: false, edit: false, empid: e.target.value, showTransResult: true, showMaritalstate: true })
-
-    }
-
-
-
-    nameInputHandler = (e) => {
-        this.setState({ showNamesResults: true })
-        this.props.getEmpNameByName(e.target.value)
-        this.refs.empid.value = ''
-
-    }
-
-
-    namesOptionshandler = (e) => {
-        document.getElementById('empname').value = e.target.value
-        if (document.getElementById('nameinputadd')) document.getElementById('nameinputadd').value = e.target.value
-        this.setState({ showFamilyResult: true, empname: e.target.value })
-    }
-
-
-    handelAppraisal = (e) => {
-        e.preventDefault()
-        this.setState({ empAppraisal: e.target.value })
-    }
-
-    handelYear = (e) => {
-        e.preventDefault()
-        this.setState({ appraisalYear: e.target.value })
-    }
-
-    handelSearch = () => {
-        this.setState({ edit: false, updated: false, firstArg: 0, secondArg: 20, currentPage: 1, firstArgPerBtn: 0, secondArgPerBtn: 10 })
-        this.props.getEmpAppraisal(document.getElementById("empid").value, document.getElementById("empname").value, document.getElementById("empapp").value, document.getElementById("year1").value)
-    }
 
     handelEdit_1 = (e) => {
         this.setState({ edit: true, rowAppraisal: e.target.getAttribute("tableId"), empAppraisal: e.target.getAttribute("empApp"), appraisalYear: e.target.getAttribute("empDate"), empnat: e.target.getAttribute("empnatid") })
@@ -175,22 +267,12 @@ class EmpPenalty extends React.Component {
         }
     }
 
-    closeAddSectionHandler = (e) => {
+    closeAddConfirmHandler = (e) => {
         this.setState({
-            add: false
+            confirmAdd: false
         })
     }
 
-    // catClickHandeler = (e) => {
-
-    //     this.setState({ catname: e.target.value })
-    //     if (this.refs.selected) {
-    //         if (this.refs.selected.options) {
-    //             this.refs.selected.options.selectedIndex = 2
-    //         }
-    //     }
-
-    // }
 
 
     render() {
@@ -203,8 +285,7 @@ class EmpPenalty extends React.Component {
             start++;
         }
 
-
-        let penalty = ["أخرى", "ممتاز", "خصم", "إنذار", "جزاء إداري", "خفض أجر", "للفت نظر", "رفت", "تنبيه", "لوم", "احالة للمعاش", "تأجيل علاوة", "تأجيل ترقية", "خفض درجة ادارية", "إيقاف عن العمل", "الحرمان من العلاوة", "حرمان من نصف علاوة", "انذار كتابي بالفصل", "استبعاد", "حفظ التحقيق", "خصم من الحافز"]
+        let penalties = ["أخرى", "ممتاز", "خصم", "إنذار", "جزاء إداري", "خفض أجر", "للفت نظر", "رفت", "تنبيه", "لوم", "احالة للمعاش", "تأجيل علاوة", "تأجيل ترقية", "خفض درجة ادارية", "إيقاف عن العمل", "الحرمان من العلاوة", "حرمان من نصف علاوة", "انذار كتابي بالفصل", "استبعاد", "حفظ التحقيق", "خصم من الحافز"]
 
         const styles = {
             display: "block",
@@ -238,31 +319,55 @@ class EmpPenalty extends React.Component {
                                     <div style={{ display: "flex", justifyContent: "space-around" }}>
                                         <div className="form-group" controlId="formBasicEmail">
                                             <label style={{ width: "100%", textAlign: "right" }}>رقم الأداء : </label>
-                                            <input onChange={this.idInputAddHandler} className="form-control" style={{ width: "100%", minWidth: "250px" }} onKeyDown={this.nameInputHandler} type="text" />
+                                            <input ref="idadd" onChange={this.idInputHandlerForAdd} className="form-control" style={{ width: "100%", minWidth: "250px" }} onKeyDown={this.nameInputHandler} type="number" />
                                         </div>
                                         <div className="form-group" controlId="formBasicEmail">
                                             <label style={{ width: "100%", textAlign: "right" }}>الأسم : </label>
-                                            <input onKeyDown={this.nameInputAddHandler} id="nameinputadd" className="form-control" style={{ width: "100%", minWidth: "250px" }} onChange={this.nameInputHandler} type="text" />
+                                            <input ref="nameadd" onKeyDown={this.nameInputHandlerForAdd} id="nameinputadd" className="form-control" style={{ width: "100%", minWidth: "250px" }} onChange={this.nameInputHandler} type="text" />
                                         </div>
                                     </div>
+                                    {
+                                        this.state.showNamesResultsForAdd ?
+                                            <div style={{ marginRight: 20, display: "flex", justifyContent: "center", alignItems: "center", marginLeft: 40 }}>
+                                                <div></div>
+                                                <select onClick={this.namesOptionshandlerForAdd} style={{ marginTop: 20, marginRight: 15, marginBottom: 5, width: "40%", background: "transparent", border: "none" }} multiple name="pets" id="pet-select">
+                                                    {this.props.empNameByName.map((name => (
+                                                        <option>{name.NAME_ARABIC}</option>
+                                                    )))}
+                                                </select>
+                                                <div></div>
+                                            </div>
+                                            : null
+                                    }
                                     <div style={{ display: "flex", justifyContent: "space-around" }}>
                                         <div className="form-group" controlId="formBasicEmail">
                                             <label style={{ width: "100%", textAlign: "right" }}>الجزاء : </label>
-                                            <select onChange={this.handelAppraisal} id="empapp" style={{ height: 30, width: "100%", minWidth: "215px" }}>
-                                                {penalty.map(apprsl => (
-                                                    <option>{apprsl}</option>
+                                            <select onChange={this.AddPenaltyTypeHandler} id="empapp" style={{ height: 30, width: "100%", minWidth: "215px" }}>
+                                                {penalties.map(penalty => (
+                                                    <option>{penalty}</option>
                                                 ))}
                                                 <option selected>اختر ...</option>
                                             </select>
                                         </div>
                                         <div className="form-group" controlId="formBasicEmail">
                                             <label style={{ width: "100%", textAlign: "right" }}>التاريخ : </label>
-                                            <input onChange={this.handelYear} className="form-control" style={{ width: "100%", minWidth: "250px" }} onKeyDown={this.nameInputHandler} type="text" />
+                                            <input onChange={this.addDateHandler} className="form-control" style={{ width: "100%", minWidth: "250px" }} onKeyDown={this.nameInputHandler} type="date" />
                                         </div>
                                     </div>
-                                    <button onClick={this.submitButtonHandler} style={{ width: "92%", margin: "0 auto" }} type="button" class="btn btn-primary btn-block">إضافة جزاء جديد</button>
+                                    <div style={{ display: "flex", justifyContent: "space-around" }}>
+                                        <div id="numofpen" style={{ display: "none" }} className="form-group" controlId="formBasicEmail">
+                                            <label style={{ width: "100%", textAlign: "right" }}>عدد أيام الجزاء : </label>
+                                            <input onChange={this.addDayesOfPenaltyHandler} className="form-control" style={{ width: "100%", minWidth: "250px" }} onKeyDown={this.nameInputHandler} type="number" />
+                                        </div>
+                                        <div className="form-group" controlId="formBasicEmail">
+                                            <label style={{ width: "100%", textAlign: "right" }}>سبب الجزاء : </label>
+                                            <input onChange={this.addReasonOfPenaltyHandler} className="form-control" style={{ width: "70%", minWidth: "250px" }} onKeyDown={this.nameInputHandler} type="text" />
+                                        </div>
+                                    </div>
 
-                                    {this.state.confirmAdd ? <div style={{ width: "100%" }} class="alert alert-warning" role="alert"> هل انت متأكد من إضافة تدرج جديد ؟ <button onClick={this.handleNewAppraisal} style={{ float: "left" }} type="button" class="btn btn-warning">تأكيد</button> <i onClick={this.submitButtonHandler} style={{ fontSize: 15, float: "right" }} class="fas fa-times-circle"></i></div> : null}
+                                    <button onClick={this.handleDataToSend} style={{ width: "92%", margin: "0 auto" }} type="button" class="btn btn-primary btn-block">إضافة جزاء جديد</button>
+
+                                    {this.state.confirmAdd ? <div style={{ width: "100%" }} class="alert alert-warning" role="alert"> هل انت متأكد من إضافة جزاء جديد ؟ <button onClick={this.submitNewPenalty} style={{ float: "left" }} type="button" class="btn btn-warning">تأكيد</button> <i onClick={this.closeAddConfirmHandler} style={{ fontSize: 15, float: "right" }} class="fas fa-times-circle"></i></div> : null}
 
 
                                 </div>
@@ -271,17 +376,6 @@ class EmpPenalty extends React.Component {
 
                     </Fragment> : null
                 }
-                {
-                    this.state.showNamesResults ?
-                        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}>
-                            <select onClick={this.namesOptionshandler} style={styles} multiple name="pets" id="pet-select">
-                                {this.props.empNameByName.map((name => (
-                                    <option>{name.NAME_ARABIC}</option>
-                                )))}
-                            </select>
-                        </div> : null
-                }
-
                 <div class="row">
                     <div class="col-lg-12">
                     </div>
@@ -299,11 +393,11 @@ class EmpPenalty extends React.Component {
                                 <div style={{ display: "flex", justifyContent: "space-between" }}>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>رقم الأداء : </label>
-                                        <input id="empid" ref="empid" className="form-control" onKeyDown={this.idInputHandler} style={{ background: "white", width: "40%", marginBottom: 5, marginRight: 5, border: "1px solid black" }} type="text" name="first_name" />
+                                        <input id="empid" ref="empid" className="form-control" onKeyDown={this.idInputHandlerForSearch} style={{ background: "white", width: "40%", marginBottom: 5, marginRight: 5, border: "1px solid black" }} type="text" name="first_name" />
                                     </div>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>الإسم : </label>
-                                        <input id="name" id="empname" className="form-control" onKeyUp={this.nameInputHandler} style={{ background: "white", width: "100%", minWidth: "250px", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
+                                        <input ref="name" id="name" id="empname" className="form-control" onKeyUp={this.nameInputHandlerForSearch} style={{ background: "white", width: "100%", minWidth: "250px", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
                                     </div>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}></label>
@@ -313,11 +407,24 @@ class EmpPenalty extends React.Component {
                                     </div>
                                 </div>
                             </div>
+                            {
+                                this.state.showNamesResultsForSearch ?
+                                    <div style={{ marginRight: 20, display: "flex", justifyContent: "center", alignItems: "center", marginLeft: 40 }}>
+                                        <div></div>
+                                        <select onClick={this.namesOptionshandlerForSearch} style={{ marginTop: 20, marginRight: 15, marginBottom: 5, width: "40%", background: "transparent", border: "none" }} multiple name="pets" id="pet-select">
+                                            {this.props.empNameByName.map((name => (
+                                                <option>{name.NAME_ARABIC}</option>
+                                            )))}
+                                        </select>
+                                        <div></div>
+                                    </div>
+                                    : null
+                            }
                             <div style={{ display: "flex", justifyContent: "space-around" }}>
                                 <div className="form-group" controlId="formBasicEmail">
                                     <label style={{ width: "80%", textAlign: "right" }}>السنة : </label>
                                     <select id="year1" style={{ width: "80%", height: 30 }} onKeyDown={this.handelYear}>
-                                        {dates.map(year => (
+                                    {dates.map(year => (
                                             <option year={year} >{year}</option>
                                         ))}
                                         <option selected>اختر السنة</option>
@@ -327,23 +434,14 @@ class EmpPenalty extends React.Component {
                                 <div className="form-group" controlId="formBasicEmail">
                                     <label style={{ width: "80%", textAlign: "right" }}>الجزاء : </label>
                                     <select id="empapp" style={{ width: "80%", height: 30 }}>
-                                        {penalty.map(apprsl => (
-                                            <option>{apprsl}</option>
-                                        ))}
+                                    {penalties.map(penalty => (
+                                                    <option>{penalty}</option>
+                                                ))}
                                         <option selected>اختر ...</option>
 
                                     </select>
                                 </div>
-                                <div className="form-group" controlId="formBasicEmail">
-                                    <label style={{ width: "100%", textAlign: "right" }}>الإدارة : </label>
-                                    <select disabled style={{ width: "100%", minWidth: "120px", height: 30 }}>
-                                        {this.props.cates.map(cate => (
-                                            <option id={cate.CAT_ID}>
-                                                {cate.CAT_NAME}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
+                                <div></div>
                             </div>
                         </div>
                     </div>
@@ -352,6 +450,7 @@ class EmpPenalty extends React.Component {
                     <div class="col-lg-12">
                         <div className="panel panel-default">
                             <div className="panel-heading" style={{ minHeight: 40 }}>
+                                جزاءات
                             </div>
                             <div class="panel-body">
                                 <div class="table-responsive">
@@ -365,27 +464,67 @@ class EmpPenalty extends React.Component {
                                                 <th>حذف</th>
                                             </tr>
                                         </thead>
-                                        {this.props.empApp.slice(this.state.firstArg, this.state.secondArg).map(emp => (
+                                        {this.props.empsPenalties.length >= 1 ? this.props.empsPenalties[0].length >= 1 ? this.props.empsPenalties[0].map(emp => (
                                             <tbody>
                                                 <tr id={emp.id}>
                                                     <td>{emp.NAME_ARABIC}</td>
-                                                    <td>{this.state.edit && this.state.rowAppraisal == emp.id ? <select onChange={this.handelAppraisal} id="empapp" style={{ width: "50%", height: 30 }}>
-                                                        {penalty.map(apprsl => (
-                                                            <option>{apprsl}</option>
-                                                        ))}
-                                                        <option selected>اختر الجزاء</option>
-
-                                                    </select> : this.state.updated && this.state.rowAppraisal == emp.id ? this.state.empAppraisal : emp.APPRAISAL_ARABIC}</td>
-                                                    <td style={{ width: "10%" }}>{this.state.edit && this.state.rowAppraisal == emp.id ? <input onChange={this.handelYear} value={this.state.appraisalYear} className="form-control" style={{ width: "100%" }} type="text" /> :
-                                                        this.state.updated && this.state.rowAppraisal == emp.id ? this.state.appraisalYear : emp.APPRAISAL_DATE}</td>
+                                                    <td>{emp.PENALTY_TYPE_AR}</td>
+                                                    <td>{emp.PENALTY_DATE}</td>
                                                     <td><i onClick={this.state.edit ? this.handelEdit_2 : this.handelEdit_1} tableId={emp.id} style={{ fontSize: 20 }} empName={emp.NAME_ARABIC} empApp={emp.APPRAISAL_ARABIC} empDate={emp.APPRAISAL_DATE} empnatid={emp.NATIONAL_ID_CARD_NO} class="fas fa-edit"></i></td>
                                                     <td><i onClick={this.state.edit ? this.closeEditSectionHandler : null} tableId={emp.id} class="fas fa-backspace"></i></td>
                                                 </tr>
                                             </tbody>
-                                        ))
-                                        }
+                                        )) : <tbody>
+                                            <tr>
+                                                <td colspan="9">لاتوجد بيانات</td>
+                                            </tr>
+                                        </tbody>
+                                        : null}
+
                                     </table>
-                                    <Pagination minusFirstArg={this.minusFirstArg} plusSecondArg={this.plusSecondArg} firstArgPerBtn={this.state.firstArgPerBtn} secondArgPerBtn={this.state.secondArgPerBtn} changargs={this.changeArgs} pagesLength={this.props.empApp.length} currentPage={this.state.currentPage} />
+                                    {/* <Pagination minusFirstArg={this.minusFirstArg} plusSecondArg={this.plusSecondArg} firstArgPerBtn={this.state.firstArgPerBtn} secondArgPerBtn={this.state.secondArgPerBtn} changargs={this.changeArgs} pagesLength={this.props.empApp.length} currentPage={this.state.currentPage} /> */}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div className="panel panel-default">
+                            <div className="panel-heading" style={{ minHeight: 40 }}>
+                                جزاءات بالخصم
+                            </div>
+                            <div class="panel-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-bordered table-hover" id="dataTables-example">
+                                        <thead>
+                                            <tr>
+                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>الإسم</th>
+                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>عدد أيام الخصم</th>
+                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>التاريخ</th>
+                                                <th>تعديل</th>
+                                                <th>حذف</th>
+                                            </tr>
+                                        </thead>
+                                        {this.props.empsPenalties.length >= 1 ? this.props.empsPenalties[1].length >= 1 ? this.props.empsPenalties[1].map(emp => (
+                                            <tbody>
+                                                <tr id={emp.id}>
+                                                    <td>{emp.NAME_ARABIC}</td>
+                                                    <td>{emp.PEN_NUM}</td>
+                                                    <td>{emp.PENALTY_DATE}</td>
+                                                    <td><i onClick={this.state.edit ? this.handelEdit_2 : this.handelEdit_1} tableId={emp.id} style={{ fontSize: 20 }} empName={emp.NAME_ARABIC} empApp={emp.APPRAISAL_ARABIC} empDate={emp.APPRAISAL_DATE} empnatid={emp.NATIONAL_ID_CARD_NO} class="fas fa-edit"></i></td>
+                                                    <td><i onClick={this.state.edit ? this.closeEditSectionHandler : null} tableId={emp.id} class="fas fa-backspace"></i></td>
+                                                </tr>
+                                            </tbody>
+                                        )) : <tbody>
+                                            <tr>
+                                                <td colspan="9">لاتوجد بيانات</td>
+                                            </tr>
+                                        </tbody>
+                                        : null}
+                                    </table>
+                                    {/* <Pagination minusFirstArg={this.minusFirstArg} plusSecondArg={this.plusSecondArg} firstArgPerBtn={this.state.firstArgPerBtn} secondArgPerBtn={this.state.secondArgPerBtn} changargs={this.changeArgs} pagesLength={this.props.empApp.length} currentPage={this.state.currentPage} /> */}
                                 </div>
                             </div>
                         </div>
@@ -398,20 +537,11 @@ class EmpPenalty extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-
-        deps: state.posts.deps,
-        empdep: state.posts.empdep,
         empname: state.posts.empname,
         empNameByName: state.posts.empNameByName,
-        empApp: state.posts.empApp,
-        cates: state.posts.cates,
-        result: state.trans.result,
-        msg: state.trans.msg,
-        updatedInf: state.trans.updatedInf,
-        result: state.trans.result
-
+        empsPenalties: state.trans.empsPenalties
     };
 };
 export default connect(mapStateToProps, {
-
+    getEmpName, getEmpNameByName, getempspenalties
 })(EmpPenalty);

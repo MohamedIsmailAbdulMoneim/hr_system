@@ -401,7 +401,6 @@ class EmpTrans extends React.Component {
     nameInputHandler = (e) => {
         this.setState({ showNamesResults: true, showTransResult: false, edit: false })
         this.props.getEmpNameByName(e.target.value)
-        this.props.getCurrentJd(e.target.value)
         this.refs.empid.value = ''
         if (this.refs.searchName) {
             if (this.refs.searchName.placeholder) {
@@ -410,6 +409,8 @@ class EmpTrans extends React.Component {
         }
         if (e.key === 'Enter') {
             this.props.getEmpTrans("", e.target.value)
+            this.props.getCurrentJd(e.target.value)
+
             this.setState({ showTransResult: true, empid: e.target.value })
             // window.history.replaceState(null, "New Page Title", "/emptrans/goes/here")
             // this.props.history.push(window.location.pathname + "?" + currentUrlParams.toString());

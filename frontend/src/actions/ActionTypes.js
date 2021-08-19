@@ -41,6 +41,7 @@ export const updateAppraisal = "UPDATE-APPRAISAL"
 export const FETCHEMPEXP = "FETCH-EMP-EXP"
 export const NEW_EXP = "NEW-EMP-EXP"
 export const fetchCountEmpsInGoverns = "FETCH-COUNT-EMPS-IN-GOVERNS"
+export const fetchEmpPenalties = "FETCH-EMPS-PENALTIES"
 
 
 
