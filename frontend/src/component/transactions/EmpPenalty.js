@@ -13,7 +13,7 @@ class EmpPenalty extends React.Component {
         super(props);
         this.state = {
             confirmAdd: false, showMsg: false, addPenaltyType: "", addPenaltyDate: "", addDayesOfPenalty: "",
-            empname: null, updated: false, firstArg: 0, addReasonOfPenalty: "", searchPenaltyType: "" ,searchPenaltyYear: "" ,messege: null,
+            empname: null, updated: false, firstArg: 0, addReasonOfPenalty: "", searchPenaltyType: "", searchPenaltyYear: "", messege: null,
             secondArg: 20, currentPage: 1, firstArgPerBtn: 0, secondArgPerBtn: 10, empnameadd: "", empidadd: "",
             showNamesResultsForSearch: false, showNamesResultsForAdd: false, finalData: null, penIsdisDeduct: false
         };
@@ -424,7 +424,7 @@ class EmpPenalty extends React.Component {
                                 <div className="form-group" controlId="formBasicEmail">
                                     <label style={{ width: "80%", textAlign: "right" }}>السنة : </label>
                                     <select id="year1" style={{ width: "80%", height: 30 }} onKeyDown={this.handelYear}>
-                                    {dates.map(year => (
+                                        {dates.map(year => (
                                             <option year={year} >{year}</option>
                                         ))}
                                         <option selected>اختر السنة</option>
@@ -434,9 +434,9 @@ class EmpPenalty extends React.Component {
                                 <div className="form-group" controlId="formBasicEmail">
                                     <label style={{ width: "80%", textAlign: "right" }}>الجزاء : </label>
                                     <select id="empapp" style={{ width: "80%", height: 30 }}>
-                                    {penalties.map(penalty => (
-                                                    <option>{penalty}</option>
-                                                ))}
+                                        {penalties.map(penalty => (
+                                            <option>{penalty}</option>
+                                        ))}
                                         <option selected>اختر ...</option>
 
                                     </select>
@@ -479,7 +479,7 @@ class EmpPenalty extends React.Component {
                                                 <td colspan="9">لاتوجد بيانات</td>
                                             </tr>
                                         </tbody>
-                                        : null}
+                                            : null}
 
                                     </table>
                                     {/* <Pagination minusFirstArg={this.minusFirstArg} plusSecondArg={this.plusSecondArg} firstArgPerBtn={this.state.firstArgPerBtn} secondArgPerBtn={this.state.secondArgPerBtn} changargs={this.changeArgs} pagesLength={this.props.empApp.length} currentPage={this.state.currentPage} /> */}
@@ -522,7 +522,7 @@ class EmpPenalty extends React.Component {
                                                 <td colspan="9">لاتوجد بيانات</td>
                                             </tr>
                                         </tbody>
-                                        : null}
+                                            : null}
                                     </table>
                                     {/* <Pagination minusFirstArg={this.minusFirstArg} plusSecondArg={this.plusSecondArg} firstArgPerBtn={this.state.firstArgPerBtn} secondArgPerBtn={this.state.secondArgPerBtn} changargs={this.changeArgs} pagesLength={this.props.empApp.length} currentPage={this.state.currentPage} /> */}
                                 </div>

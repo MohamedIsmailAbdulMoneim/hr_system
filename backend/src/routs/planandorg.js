@@ -488,11 +488,11 @@ function newFamily(req, res, next) {
 }
 
 
-function editFamily(req,res,next){
+function editFamily(req, res, next) {
     console.log(req.body);
 }
 
-function getEmpsPenalties(req,res,next){
+function getEmpsPenalties(req, res, next) {
     let query = `
     SELECT
     employee.NAME_ARABIC,
@@ -513,29 +513,40 @@ JOIN employee JOIN penalty_type ON employee.NATIONAL_ID_CARD_NO = employee_penal
 WHERE
     PENALTY_TYPE = 1
     `
-    db.query(query, (err,data)=> {
-        if(err){
+    db.query(query, (err, data) => {
+        if (err) {
             next(err)
-        }else{
+        } else {
             res.send(data)
         }
     })
 }
 
-function postNewPenalty(req,res,next){
+function postNewPenalty(req, res, next) {
     let query = `INSERT INTO employee_penalty (NATIONAL_ID_CARD_NO, PENALTY_TYPE, PENALTY_DATE, PENALTY_YEAR, ORGANIZATION, PENALTY_REASON${req.body.length == 7 ? `,PEN_NUM` : ''}) VALUES ${req.body} `
     console.log(query);
-    
-    db.query(query, (err,data)=> {
-        if(err){
+
+    db.query(query, (err, data) => {
+        if (err) {
             next(err)
-        }else{
+        } else {
             console.log(data);
         }
     })
     console.log(req.body);
 }
 
+function postNewTraining(req, res, next) {
+    let query = `INSERT INTO employee_training (NATIONAL_ID_CARD_NO,TRAINING_PROGRAM_ARABIC,TRAINING_PROGRAM_ENGLISH,TRAINING_START_DATE, TRAINING_COMPLETION_DATE, TRAINING_TYPE ,LOCATION_TYPE, LOCATION_NAME, ORGANIZATION) VALUES ${req.body}`
+    console.log(query);
+    db.query(query, (err, data) => {
+        if (err) {
+            next(err)
+        } else {
+            console.log(data);
+        }
+    })
+}
 
 
 router
@@ -562,5 +573,6 @@ router
     .put('/editFamily', editFamily)
     .post('/postnewpenalty', postNewPenalty)
     .get('/getempspenalties', getEmpsPenalties)
+    .post('/postnewtraining', postNewTraining)
 
 module.exports = router;

@@ -14,7 +14,7 @@ class EmpTraining extends React.Component {
         this.state = {
             confirmAdd: false, showMsg: false,
             appraisalYear: "null", rowTrainning: false, add: false, edit: false, empid: null, messege: null,
-            addTrainingArabicName: "", addTrainingEnglishName: "", addTrainingFromDate: "", addTrainingToDate: "",addTrainingType: "", addTrainingPlace: "",
+            addTrainingArabicName: "", addTrainingEnglishName: "", addTrainingFromDate: "", addTrainingToDate: "", addTrainingType: "", addTrainingPlaceType: "", addTrainingPlace: "",
             empnameadd: "", empidadd: "", showNamesResultsForSearch: false, showNamesResultsForAdd: false, finalData: null,
             empname: null, updated: false, firstArg: 0,
             secondArg: 20, currentPage: 1, firstArgPerBtn: 0, secondArgPerBtn: 10
@@ -31,15 +31,16 @@ class EmpTraining extends React.Component {
         let trainingArabicName = `"${this.state.addTrainingArabicName}"`
         let trainingEnglishName = `"${this.state.addTrainingEnglishName}"`
         let trainingFromDate = `"${this.state.addTrainingFromDate}"`
-        let trainingToDate = `"${this.state.addDayesOfPenalty}"`
+        let trainingToDate = `"${this.state.addTrainingToDate}"`
         let trainingType = `(SELECT TRAINING_TYPE FROM training_type WHERE TRAINING_TYPE_NAME = "${this.state.addTrainingType}")`
-        let trainingPlace = `(SELECT LOCATION_TYPE FROM location_type WHERE LOCATION_TYPE_NAME = "${this.state.addTrainingPlace}")`
+        let TrainingPlaceType = `(SELECT LOCATION_TYPE FROM location_type WHERE LOCATION_TYPE_NAME = "${this.state.addTrainingPlaceType}")`
+        let trainingPlace = `"${this.state.addTrainingPlace}"`
         let organization = '30)'
-
-console.log(this.state.empidadd.length, this.state.empnameadd.length,this.state.trainingArabicName.length, this.state.trainingEnglishName.length,this.state.trainingFromDate.length,this.state.trainingToDate.length, this.state.trainingType.length , this.state.trainingPlace.length);
-        let data = [nameOrId, trainingArabicName, trainingEnglishName, trainingFromDate, trainingToDate, trainingType, trainingPlace, organization]
-        if ((this.state.empidadd.length < 1 && this.state.empnameadd.length < 1) || this.state.trainingArabicName.length < 1 ||
-        this.state.trainingEnglishName.length < 1 || this.state.trainingFromDate.length < 1 || this.state.trainingToDate.length < 1 || this.state.trainingType.length < 1 || this.state.trainingPlace.length < 1) {
+        // this.state.trainingArabicName.length, this.state.trainingEnglishName.length, this.state.trainingFromDate.length, this.state.trainingToDate.length, this.state.trainingType.length, this.state.trainingPlace.length
+        // console.log(this.state.addTrainingArabicName.length);
+        let data = [nameOrId, trainingArabicName, trainingEnglishName, trainingFromDate, trainingToDate, trainingType, TrainingPlaceType, trainingPlace, organization]
+        if ((this.state.empidadd.length < 1 && this.state.empnameadd.length < 1) || this.state.addTrainingArabicName.length < 1 ||
+            this.state.addTrainingEnglishName.length < 1 || this.state.addTrainingFromDate.length < 1 || this.state.addTrainingToDate.length < 1 || this.state.addTrainingType.length < 1 || this.state.addTrainingPlaceType.length < 1 || this.state.addTrainingPlace.length < 1) {
             this.setState({
                 messege: { msg: "البيانات غير كاملة" }
             })
@@ -49,6 +50,24 @@ console.log(this.state.empidadd.length, this.state.empnameadd.length,this.state.
             this.setState({ finalData: data, confirmAdd: true })
         }
     }
+
+    submitNewPenalty = (e) => {
+        e.preventDefault()
+        axios({
+            method: "POST",
+            data: this.state.finalData,
+            withCredentials: true,
+            url: "http://localhost:5000/postnewtraining",
+            headers: { "Content-Type": "application/json" },
+        }).then((res) => {
+            console.log(res.data);
+            this.setState({
+                messege: res.data,
+                showMsg: true
+            })
+        })
+    }
+
     /* ------------------------------------------------------ */
 
     idInputHandlerForAdd = (e) => {
@@ -89,7 +108,7 @@ console.log(this.state.empidadd.length, this.state.empnameadd.length,this.state.
         this.setState({
             addTrainingFromDate: e.target.value
         })
-    
+
     }
     addTrainingToDateHandler = (e) => {
         this.setState({
@@ -101,6 +120,13 @@ console.log(this.state.empidadd.length, this.state.empnameadd.length,this.state.
             addTrainingType: e.target.value
         })
     }
+
+    addTrainingPlaceTypeHandler = (e) => {
+        this.setState({
+            addTrainingPlaceType: e.target.value
+        })
+    }
+
     addTrainingPlaceHandler = (e) => {
         this.setState({
             addTrainingPlace: e.target.value
@@ -146,22 +172,6 @@ console.log(this.state.empidadd.length, this.state.empnameadd.length,this.state.
 
 
 
-    submitNewPenalty = (e) => {
-        e.preventDefault()
-        axios({
-            method: "POST",
-            data: this.state.finalData,
-            withCredentials: true,
-            url: "http://localhost:5000/postnewpenalty",
-            headers: { "Content-Type": "application/json" },
-        }).then((res) => {
-            console.log(res.data);
-            this.setState({
-                messege: res.data,
-                showMsg: true
-            })
-        })
-    }
 
     /* ------------------------  */
 
@@ -429,7 +439,7 @@ console.log(this.state.empidadd.length, this.state.empnameadd.length,this.state.
                                     <div style={{ display: "flex", justifyContent: "space-around" }}>
                                         <div className="form-group" controlId="formBasicEmail">
                                             <label style={{ width: "100%", textAlign: "right" }}>نوع التدريب : </label>
-                                            <select onChange={this.addTrainingTypeHandler} id="empapp" style={{ height: 30, width: "100%", minWidth: "215px" }}>
+                                            <select onChange={this.addTrainingTypeHandler} id="empapp" style={{ height: 30, width: "100%", minWidth: "200px" }}>
                                                 <option selected>أخرى</option>
                                                 <option selected>مؤتمر</option>
                                                 <option selected>ملتقى</option>
@@ -439,17 +449,23 @@ console.log(this.state.empidadd.length, this.state.empnameadd.length,this.state.
                                             </select>
                                         </div>
                                         <div className="form-group" controlId="formBasicEmail">
-                                            <label style={{ width: "100%", textAlign: "right" }}>مكان التدريب : </label>
-                                            <select onChange={this.addTrainingPlaceHandler} id="empapp" style={{ height: 30, width: "100%", minWidth: "215px" }}>
+                                            <label style={{ width: "100%", textAlign: "right" }}> نوع المكان : </label>
+                                            <select onChange={this.addTrainingPlaceTypeHandler} id="empapp" style={{ height: 30, width: "100%", minWidth: "200px" }}>
                                                 <option >داخلي</option>
                                                 <option >خارجي</option>
                                                 <option selected>اختر ...</option>
                                             </select>
                                         </div>
                                     </div>
+                                    <div style={{ display: "flex", justifyContent: "space-around" }}>
+                                        <div className="form-group" controlId="formBasicEmail">
+                                            <label style={{ width: "100%", textAlign: "right" }}>مكان التدريب : </label>
+                                            <input onChange={this.addTrainingPlaceHandler} className="form-control" style={{ width: "100%", minWidth: "650px" }} type="text" />
+                                        </div>
+                                    </div>
                                     <button onClick={this.handleDataToSend} style={{ width: "92%", margin: "0 auto" }} type="button" class="btn btn-primary btn-block">إضافة تدريب جديد</button>
 
-                                    {this.state.confirmAdd ? <div style={{ width: "100%" }} class="alert alert-warning" role="alert"> هل انت متأكد من إضافة تدريب جديد ؟ <button onClick={this.handleNewAppraisal} style={{ float: "left" }} type="button" class="btn btn-warning">تأكيد</button> <i onClick={this.submitButtonHandler} style={{ fontSize: 15, float: "right" }} class="fas fa-times-circle"></i></div> : null}
+                                    {this.state.confirmAdd ? <div style={{ width: "100%" }} class="alert alert-warning" role="alert"> هل انت متأكد من إضافة تدريب جديد ؟ <button onClick={this.submitNewPenalty} style={{ float: "left" }} type="button" class="btn btn-warning">تأكيد</button> <i onClick={this.submitButtonHandler} style={{ fontSize: 15, float: "right" }} class="fas fa-times-circle"></i></div> : null}
 
 
                                 </div>
@@ -465,28 +481,37 @@ console.log(this.state.empidadd.length, this.state.empnameadd.length,this.state.
                 <div className="row">
                     <div className="col-lg-12" style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: 10 }}>
                         <div style={{ height: "100%", width: 600 }} class="panel panel-default">
-
                             <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt", display: "flex", justifyContent: "space-between" }} class="panel-heading">
                                 <div></div>
                                 <span style={{ marginRight: 70 }}>تدريب العاملين</span>
                                 <button onClick={this.addButtonClickHandeler} type="button" class="btn btn-primary">إضافة تدريب جديد</button>
                             </div>
-                            <div style={{ marginRight: 20, display: "flex", justifyContent: "center", alignItems: "center", marginLeft: 40 }}>
-                                <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                    <div className="form-group" controlId="formBasicEmail">
-                                        <label style={{ width: "100%", textAlign: "right" }}>رقم الأداء : </label>
-                                        <input id="empid" ref="empid" className="form-control" onKeyDown={this.idInputHandlerForSearch} style={{ background: "white", width: "40%", marginBottom: 5, marginRight: 5, border: "1px solid black" }} type="text" name="first_name" />
-                                    </div>
-                                    <div className="form-group" controlId="formBasicEmail">
-                                        <label style={{ width: "100%", textAlign: "right" }}>الإسم : </label>
-                                        <input ref="name" id="name" id="empname" className="form-control" onKeyUp={this.nameInputHandlerForSearch} style={{ background: "white", width: "100%", minWidth: "250px", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
-                                    </div>
-                                    <div className="form-group" controlId="formBasicEmail">
-                                        <label style={{ width: "100%", textAlign: "right" }}></label>
-                                        <button onClick={this.handelSearch} type="button" style={{ marginRight: 30, marginTop: 6 }} >
-                                            <i class="fas fa-search"></i>
-                                        </button>
-                                    </div>
+                            <h3>معايير البحث</h3>
+                            <div style={{ display: "flex", justifyContent: "center" }} >
+                                <label style={{ marginLeft: 10, marginRight: 10 }} for="vehicle1">الموظف</label><br />
+                                <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike" />
+                                <label style={{ marginLeft: 10, marginRight: 10 }} for="vehicle2">نوع التدريب</label><br />
+                                <input type="checkbox" id="vehicle2" name="vehicle2" value="Car" />
+                                <label style={{ marginLeft: 10, marginRight: 10 }} for="vehicle3">مكان التدريب</label><br />
+                                <input type="checkbox" id="vehicle3" name="vehicle3" value="Boat" />
+                                <label style={{ marginLeft: 10, marginRight: 10 }} for="vehicle3">نوع المكان</label><br />
+                                <input type="checkbox" id="vehicle3" name="vehicle3" value="Boat" />
+                                <label style={{ marginLeft: 10, marginRight: 10 }} for="vehicle3">اسم البرنامج</label><br />
+                                <input type="checkbox" id="vehicle3" name="vehicle3" value="Boat" />
+                                <label style={{ marginLeft: 10, marginRight: 10 }} for="vehicle3">السنة</label><br />
+                                <input type="checkbox" id="vehicle3" name="vehicle3" value="Boat" />
+                            </div>
+                            <div style={{ display: "flex", justifyContent: "right" }} >
+                                <hr style={{ boxShadow: "rgb(136 136 136) 1px 1px 8px 1px;", width: "90%", border: "1px solid black" }} />
+                            </div>
+                            <div style={{ display: "flex", justifyContent: "space-around" }}>
+                                <div className="form-group" controlId="formBasicEmail">
+                                    <label style={{ width: "100%", textAlign: "right" }}>رقم الأداء : </label>
+                                    <input id="empid" ref="empid" className="form-control" onKeyDown={this.idInputHandlerForSearch} style={{ background: "white", width: "70%", marginBottom: 5, marginRight: 5, border: "1px solid black" }} type="text" name="first_name" />
+                                </div>
+                                <div className="form-group" controlId="formBasicEmail">
+                                    <label style={{ width: "100%", textAlign: "right" }}>الإسم : </label>
+                                    <input ref="name" id="name" id="empname" className="form-control" onKeyUp={this.nameInputHandlerForSearch} style={{ background: "white", width: "100%", minWidth: "250px", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
                                 </div>
                             </div>
                             {
@@ -504,24 +529,48 @@ console.log(this.state.empidadd.length, this.state.empnameadd.length,this.state.
                             }
                             <div style={{ display: "flex", justifyContent: "space-around" }}>
                                 <div className="form-group" controlId="formBasicEmail">
-                                    <label style={{ width: "80%", textAlign: "right" }}>السنة : </label>
-                                    <select id="year1" style={{ width: "80%", height: 30 }} onKeyDown={this.handelYear}>
+                                    <label style={{ width: "100%", textAlign: "right" }}>نوع التدريب : </label>
+                                    <select onChange={this.addTrainingTypeHandler} id="empapp" style={{ height: 30, width: "100%", minWidth: "190px" }}>
+                                        <option selected>أخرى</option>
+                                        <option selected>مؤتمر</option>
+                                        <option selected>ملتقى</option>
+                                        <option selected>محاضرة</option>
+                                        <option selected>دورة تدريبية</option>
+                                        <option selected>اختر ...</option>
+                                    </select>
+                                </div>
+                                <div className="form-group" controlId="formBasicEmail">
+                                    <label style={{ width: "100%", textAlign: "right" }}> نوع المكان : </label>
+                                    <select onChange={this.addTrainingPlaceTypeHandler} id="empapp" style={{ height: 30, width: "100%", minWidth: "190px" }}>
+                                        <option >داخلي</option>
+                                        <option >خارجي</option>
+                                        <option selected>اختر ...</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div style={{ display: "flex", justifyContent: "space-around" }}>
+                                <div className="form-group" controlId="formBasicEmail">
+                                    <label style={{ width: "100%", textAlign: "right" }}>مكان التدريب : </label>
+                                    <input onChange={this.addTrainingPlaceHandler} className="form-control" style={{ width: "100%", minWidth: "250px", background: "white", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" />
+                                </div>
+                                <div className="form-group" controlId="formBasicEmail">
+                                    <label style={{ width: "100%", textAlign: "right" }}>اسم البرنامج : </label>
+                                    <input ref="name" id="name" id="empname" className="form-control" onKeyUp={this.nameInputHandlerForSearch} style={{ background: "white", width: "50%", minWidth: "250px", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
+                                </div>
+                            </div>
+                            <div style={{ display: "flex", justifyContent: "space-around" }}>
+                                <div className="form-group" controlId="formBasicEmail">
+                                    <label style={{ width: "100%", textAlign: "right" }}>السنة : </label>
+                                    <select onChange={this.addTrainingTypeHandler} id="empapp" style={{ height: 30, width: "100%", minWidth: "520px" }}>
                                         {dates.map(year => (
                                             <option year={year} >{year}</option>
                                         ))}
                                         <option selected>اختر السنة</option>
-
-                                    </select>
-                                </div>
-                                <div className="form-group" controlId="formBasicEmail">
-                                    <label style={{ width: "80%", textAlign: "right" }}>التدريب : </label>
-                                    <select id="empapp" style={{ width: "80%", height: 30 }}>
-
-                                        <option selected>اختر ...</option>
-
                                     </select>
                                 </div>
                             </div>
+                            <button onClick={this.handleDataToSend} style={{ width: "92%", margin: "0 auto" }} type="button" class="btn btn-primary btn-block">بحث <i style={{ float: 'left' }} class="fas fa-search"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
