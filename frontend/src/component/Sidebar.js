@@ -37,7 +37,7 @@ class Sidebar extends React.Component {
                             <a onClick={this.handle} className="active" href="/"><i className="fa fa-dashboard fa-fw"></i> Dashboard</a>
                         </li>
                         <li>
-                            <NavLink style={styles} to={`/Employee`}>
+                            <NavLink to={`/Employee`}>
                                 <li>
                                     <a href="/Employee">الشاشة الرئيسية</a>
                                 </li>
@@ -196,7 +196,7 @@ class Sidebar extends React.Component {
                                     </li>
                                 </NavLink>
 
-                                
+
                             </ul>
                         </li>
                         <li>
