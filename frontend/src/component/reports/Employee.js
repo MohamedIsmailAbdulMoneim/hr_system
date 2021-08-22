@@ -12,9 +12,131 @@ import { Form, FormGroup, FormLabel, FormControl, FormText, FormCheck, Button, R
 class Employee extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { showNamesResults: false };
+        this.state = {
+
+            add: false, showNamesResults: false, addDoc: "", addDoj: "", addCj: "", addJasf: "", addMangement: "",
+            addaos: "", addStation: "", addArea: "", addGovern: "", addJS: "", addAnnualAppraisal: "", addEmpNid: "",
+            addPOIssuance: "", addDOIssuance: "", addinsuranceNum: "", addinsuranceOffice: "", addAddress: "", addMPhoneNum: "",
+            addHPhoneNum: "", addOPhoneNum: ""
+
+        };
 
     }
+
+    addDocHandler = (e) => {
+        this.setState({
+            addDoc: e.target.value
+        })
+    }
+
+    addDojHandler = (e) => {
+        this.setState({
+            addDoj: e.target.value
+        })
+    }
+
+    addCjHandler = (e) => {
+        this.setState({ addCj: e.target.value })
+    }
+
+    addJasfHandler = (e) => {
+        this.setState({ addJasf: e.target.value })
+
+    }
+
+    addMangementHandler = (e) => {
+        this.setState({ addMangement: e.target.value })
+    }
+
+    addaosHandler = (e) => {
+        this.setState({ addaos: e.target.value })
+
+    }
+
+    addStationHandler = (e) => {
+        this.setState({ addStation: e.target.value })
+
+    }
+
+    addAreaHandler = (e) => {
+        this.setState({ addArea: e.target.value })
+
+    }
+
+    addGovernHandler = (e) => {
+        this.setState({ addGovern: e.target.value })
+
+    }
+
+    addGovernHandler = (e) => {
+        this.setState({ addGovern: e.target.value })
+
+    }
+
+    addJSHandler = (e) => {
+        this.setState({ addJS: e.target.value })
+
+    }
+
+    addJSHandler = (e) => {
+        this.setState({ addJS: e.target.value })
+
+    }
+
+    addAnnualAppraisalHandler = (e) => {
+        this.setState({ addAnnualAppraisal: e.target.value })
+
+    }
+
+    addEmpNidHandler = (e) => {
+        this.setState({ addEmpNid: e.target.value })
+
+    }
+
+    addPOIssuanceHandler = (e) => {
+        this.setState({ addPOIssuance: e.target.value })
+
+    }
+
+    addDOIssuanceHandler = (e) => {
+        this.setState({ addDOIssuance: e.target.value })
+
+    }
+
+    addinsuranceNumHandler = (e) => {
+        this.setState({ addinsuranceNum: e.target.value })
+
+    }
+
+    addinsuranceOfficeHandler = (e) => {
+        this.setState({ addinsuranceOffice: e.target.value })
+
+    }
+
+    addAddressHandler = (e) => {
+        this.setState({ addAddress: e.target.value })
+
+    }
+
+    addMPhoneNumHandler = (e) => {
+        this.setState({ addMPhoneNum: e.target.value })
+
+    }
+
+    addHPhoneNumHandler = (e) => {
+        this.setState({ addHPhoneNum: e.target.value })
+
+    }
+
+    addOPhoneNumHandler = (e) => {
+        this.setState({ addOPhoneNum: e.target.value })
+
+    }
+    /* _____________________________________________________ */
+
+
+
+
 
 
     empidHandler = (e) => {
@@ -24,6 +146,7 @@ class Employee extends React.Component {
 
         }
     }
+
 
     nameInputHandler = (e) => {
         this.setState({ showNamesResults: true, showFamilyResult: false })
@@ -122,6 +245,199 @@ class Employee extends React.Component {
                                 </select>
                             </div> : null}
 
+                        {this.state.add ?
+                            <Fragment>
+                                <div className="col-lg-8">
+                                    <div className="data-wrapper" style={{ background: "transparent", height: "100%", width: "100%" }} >
+                                        <h3 style={{ marginRight: 20, marginTop: 3, textAlign: "right", fontFamily: 'Markazi Text ,serif', fontWeight: 700 }}>البيانات الوظيفية</h3>
+                                        <div className="data-wrapper" style={{ display: "flex", justifyContent: "space-around", marginRight: "-15%" }}>
+                                            <div className="form-group" controlId="formBasicEmail">
+                                                <label style={{ width: "100%", textAlign: "right" }}>رقم الأداء : </label>
+                                                <input className="form-control" style={{ width: "70%" }} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].EMPLOYEE_ID : null : null} readonly="readonly" type="number" />
+                                            </div>
+                                            <div className="form-group" controlId="formBasicEmail">
+                                                <label style={{ width: "100%", textAlign: "right" }}>الإسم : </label>
+                                                <input ref="nameinput" className="form-control" style={{ width: "130%", marginLeft: 30 }} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].NAME_ARABIC : null : null} readonly="readonly" type="text" />
+                                            </div>
+                                        </div>
+                                        <div className="data-wrapper" style={{ display: "flex", justifyContent: "space-around", marginRight: "-15%" }}>
+                                            <div className="form-group" controlId="formBasicEmail">
+                                                <label style={{ width: "100%", textAlign: "right" }}>تاريخ العقد : </label>
+                                                <input className="form-control" style={{ width: "100%", color: "red" }} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].SECTOR_JOIN_DATE : null : null} type="text" readonly="readonly" />
+                                            </div>
+                                            <div className="form-group" controlId="formBasicEmail">
+                                                <label style={{ width: "100%", textAlign: "right" }}>تاريخ التعيين : </label>
+                                                <input className="form-control" style={{ width: "100%", marginLeft: 30 }} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].TRANS_DATE : null : null} type="text" readonly="readonly" />
+                                            </div>
+                                        </div>
+                                        <div className="data-wrapper" style={{ display: "flex", justifyContent: "space-around", marginRight: "-15%" }}>
+                                            <div className="form-group" controlId="formBasicEmail">
+                                                <label style={{ width: "100%", textAlign: "right" }}>الوظيفة الحالية : </label>
+                                                <input className="form-control" style={{ width: "120%" }} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].SUP_BOX_NAME : null : null} type="text" readonly="readonly" />
+                                            </div>
+                                            <div className="form-group" controlId="formBasicEmail">
+                                                <label style={{ width: "100%", textAlign: "right" }}>طريقة شغلها : </label>
+                                                <input className="form-control" style={{ width: "120%", marginLeft: 30 }} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].WOG : null : null} type="text" readonly="readonly" />
+                                            </div>
+                                        </div>
+                                        <div className="data-wrapper" style={{ display: "flex", marginRight: 25 }}>
+                                            <div className="form-group" controlId="formBasicEmail">
+                                                <label style={{ width: "100%", textAlign: "right" }}>الإدارة : </label>
+                                                <input className="form-control" style={{ width: "100%", minWidth: 600 }} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].cat_name : null : null} type="text" readonly="readonly" />
+                                            </div>
+                                        </div>
+                                        <div className="data-wrapper" style={{ display: "flex", marginRight: 25 }}>
+                                            <div className="form-group" controlId="formBasicEmail">
+                                                <label style={{ width: "100%", textAlign: "right" }}>النطاق الإشرافي : </label>
+                                                <input className="form-control" style={{ width: "100%", minWidth: 600 }} type="text" disabled />
+                                            </div>
+                                        </div>
+                                        <div className="data-wrapper" style={{ display: "flex", justifyContent: "space-around", marginRight: "-3%" }}>
+                                            <div className="form-group" controlId="formBasicEmail">
+                                                <label style={{ width: "100%", textAlign: "right" }}>المحطة : </label>
+                                                <input className="form-control" style={{ width: "80%" }} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].JOB_LOCATION : null : null} type="text" readonly="readonly" />
+                                            </div>
+                                            <div className="form-group" controlId="formBasicEmail">
+                                                <label style={{ width: "100%", textAlign: "right" }}>المنطقة : </label>
+                                                <input className="form-control" style={{ width: "80%", marginLeft: 30 }} type="text" readonly="readonly" />
+                                            </div>
+                                            <div className="form-group" controlId="formBasicEmail">
+                                                <label style={{ width: "100%", textAlign: "right" }}>المحافظة : </label>
+                                                <input className="form-control" style={{ width: "78%", marginLeft: 30 }} type="text" readonly="readonly" />
+                                            </div>
+                                        </div>
+                                        <div className="data-wrapper" style={{ display: "flex", justifyContent: "space-around", marginRight: "-15%" }}>
+                                            <div className="form-group" controlId="formBasicEmail">
+                                                <label style={{ width: "100%", textAlign: "right" }}>الحالة الوظيفية : </label>
+                                                <input className="form-control" style={{ width: "120%" }} type="text" disabled />
+                                            </div>
+                                            <div className="form-group" controlId="formBasicEmail">
+                                                <label style={{ width: "100%", textAlign: "right" }}>التقييم السنوي للعام الحالي : </label>
+                                                <input className="form-control" style={{ width: "120%", marginLeft: 30 }} type="text" readonly="readonly" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="data-wrapper" style={{ background: "transparent", height: "120%", width: "100%", marginTop: 5 }} >
+                                        <h3 style={{ marginRight: 20, marginTop: 3, textAlign: "right", fontFamily: 'Markazi Text ,serif', fontWeight: 700 }}>البيانات الشخصية</h3>
+                                        <div className="data-wrapper" style={{ display: "flex", justifyContent: "space-around", marginRight: "-3%" }}>
+                                            <div className="form-group" controlId="formBasicEmail">
+                                                <label style={{ width: "100%", textAlign: "right" }}>الرقم القومي : </label>
+                                                <input className="form-control" style={{ width: "80%" }} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].NATIONAL_ID_CARD_NO : null : null} type="text" readonly="readonly" />
+                                            </div>
+                                            <div className="form-group" controlId="formBasicEmail">
+                                                <label style={{ width: "100%", textAlign: "right" }}>جهة الإصدار : </label>
+                                                <input className="form-control" style={{ width: "80%", marginLeft: 30 }} type="text" readonly="readonly" />
+                                            </div>
+                                            <div className="form-group" controlId="formBasicEmail">
+                                                <label style={{ width: "100%", textAlign: "right" }}>تاريخ الإصدار : </label>
+                                                <input className="form-control" style={{ width: "78%", marginLeft: 30 }} type="text" readonly="readonly" />
+                                            </div>
+                                        </div>
+                                        <div className="data-wrapper" style={{ display: "flex", justifyContent: "space-around", marginRight: "-15%" }}>
+                                            <div className="form-group" controlId="formBasicEmail">
+                                                <label style={{ width: "100%", textAlign: "right" }}>الرقم التأميني : </label>
+                                                <input className="form-control" style={{ width: "100%" }} type="text" disabled />
+                                            </div>
+                                            <div className="form-group" controlId="formBasicEmail">
+                                                <label style={{ width: "100%", textAlign: "right" }}>مكتب التأمينات : </label>
+                                                <input className="form-control" style={{ width: "100%", marginLeft: 30 }} type="text" readonly="readonly" />
+                                            </div>
+                                        </div>
+                                        <div className="data-wrapper" style={{ display: "flex", marginRight: 25 }}>
+                                            <div className="form-group" controlId="formBasicEmail">
+                                                <label style={{ width: "100%", textAlign: "right" }}>العنوان : </label>
+                                                <input className="form-control" style={{ width: "100%", minWidth: 600 }} type="text" readonly="readonly" />
+                                            </div>
+                                        </div>
+                                        <div className="data-wrapper" style={{ display: "flex", justifyContent: "space-around", marginRight: "-3%" }}>
+                                            <div className="form-group" controlId="formBasicEmail">
+                                                <label style={{ width: "100%", textAlign: "right" }}>الموبايل : </label>
+                                                <input className="form-control" style={{ width: "80%" }} type="text" readonly="readonly" />
+                                            </div>
+                                            <div className="form-group" controlId="formBasicEmail">
+                                                <label style={{ width: "100%", textAlign: "right" }}>تليفون المنزل : </label>
+                                                <input className="form-control" style={{ width: "80%", marginLeft: 30 }} type="text" readonly="readonly" />
+                                            </div>
+                                            <div className="form-group" controlId="formBasicEmail">
+                                                <label style={{ width: "100%", textAlign: "right" }}>تليفون المكتب : </label>
+                                                <input className="form-control" style={{ width: "78%", marginLeft: 30 }} type="text" readonly="readonly" />
+                                            </div>
+                                        </div>
+                                        <div className="data-wrapper" style={{ display: "flex", justifyContent: "space-around", marginRight: "-15%" }}>
+                                            <div className="form-group" controlId="formBasicEmail">
+                                                <label style={{ width: "100%", textAlign: "right" }}>البريد الأليكتروني : </label>
+                                                <input className="form-control" style={{ width: "100%" }} type="text" readonly="readonly" />
+                                            </div>
+                                            <div className="form-group" controlId="formBasicEmail">
+                                                <label style={{ width: "100%", textAlign: "right" }}>الحالة الإجتماعية : </label>
+                                                <input className="form-control" style={{ width: "100%", marginLeft: 30 }} type="text" readonly="readonly" />
+                                            </div>
+                                        </div>
+                                        <div className="data-wrapper" style={{ display: "flex", justifyContent: "space-around", marginRight: "-3%" }}>
+                                            <div className="form-group" controlId="formBasicEmail">
+                                                <label style={{ width: "100%", textAlign: "right" }}>نوع النقابة : </label>
+                                                <input className="form-control" style={{ width: "80%" }} type="text" readonly="readonly" />
+                                            </div>
+                                            <div className="form-group" controlId="formBasicEmail">
+                                                <label style={{ width: "100%", textAlign: "right" }}>رقم العضوية : </label>
+                                                <input className="form-control" style={{ width: "80%", marginLeft: 30 }} type="text" readonly="readonly" />
+                                            </div>
+                                            <div className="form-group" controlId="formBasicEmail">
+                                                <label style={{ width: "100%", textAlign: "right" }}>تاريخ العضوية : </label>
+                                                <input className="form-control" style={{ width: "78%", marginLeft: 30 }} type="text" readonly="readonly" />
+                                            </div>
+                                        </div>
+                                        <div className="data-wrapper" style={{ display: "flex", justifyContent: "space-around", marginRight: "3%" }}>
+                                            <div className="form-group" controlId="formBasicEmail">
+                                                <label style={{ width: "100%", textAlign: "right" }}>الموقف من التجنيد : </label>
+                                                <input className="form-control" style={{ width: "50%" }} type="text" readonly="readonly" />
+                                            </div>
+                                            <div className="form-group" controlId="formBasicEmail">
+                                                <label style={{ width: "100%", textAlign: "right" }}>يوم : </label>
+                                                <input className="form-control" style={{ width: "30%", marginLeft: 30 }} type="text" readonly="readonly" />
+                                            </div>
+                                            <div className="form-group" controlId="formBasicEmail">
+                                                <label style={{ width: "100%", textAlign: "right" }}>شهر : </label>
+                                                <input className="form-control" style={{ width: "30%", marginLeft: 30 }} type="text" readonly="readonly" />
+                                            </div>
+                                            <div className="form-group" controlId="formBasicEmail">
+                                                <label style={{ width: "100%", textAlign: "right" }}>سنة : </label>
+                                                <input className="form-control" style={{ width: "30%", marginLeft: 30 }} type="text" readonly="readonly" />
+                                            </div>
+                                            <div className="form-group" controlId="formBasicEmail">
+                                                <label style={{ width: "100%", textAlign: "right" }}>تاريخ التقاعد : </label>
+                                                <input className="form-control" style={{ width: "40%", marginLeft: 30 }} type="text" readonly="readonly" />
+                                            </div>
+                                        </div>
+                                        <div className="data-wrapper" style={{ display: "flex", justifyContent: "space-around", marginRight: "-15%" }}>
+                                            <div className="form-group" controlId="formBasicEmail">
+                                                <label style={{ width: "100%", textAlign: "right" }}>النوع : </label>
+                                                <input className="form-control" style={{ width: "100%" }} type="text" readonly="readonly" />
+                                            </div>
+                                            <div className="form-group" controlId="formBasicEmail">
+                                                <label style={{ width: "100%", textAlign: "right" }}>الديانة : </label>
+                                                <input className="form-control" style={{ width: "100%", marginLeft: 30 }} type="text" readonly="readonly" />
+                                            </div>
+                                        </div>
+                                        <div className="data-wrapper" style={{ display: "flex", justifyContent: "space-around", marginRight: "-3%" }}>
+                                            <div className="form-group" controlId="formBasicEmail">
+                                                <label style={{ width: "100%", textAlign: "right" }}>تاريخ الميلاد : </label>
+                                                <input className="form-control" style={{ width: "80%" }} type="text" readonly="readonly" />
+                                            </div>
+                                            <div className="form-group" controlId="formBasicEmail">
+                                                <label style={{ width: "100%", textAlign: "right" }}>جهة الميلاد : </label>
+                                                <input className="form-control" style={{ width: "80%", marginLeft: 30 }} type="text" readonly="readonly" />
+                                            </div>
+                                            <div className="form-group" controlId="formBasicEmail">
+                                                <label style={{ width: "100%", textAlign: "right" }}>محافظة الميلاد : </label>
+                                                <input className="form-control" style={{ width: "78%", marginLeft: 30 }} type="text" readonly="readonly" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </Fragment>
+                            : null}
+
                         <div className="col-lg-8">
                             <div className="data-wrapper" style={{ background: "transparent", height: "100%", width: "100%" }} >
                                 <h3 style={{ marginRight: 20, marginTop: 3, textAlign: "right", fontFamily: 'Markazi Text ,serif', fontWeight: 700 }}>البيانات الوظيفية</h3>
@@ -187,7 +503,7 @@ class Employee extends React.Component {
                                         <input className="form-control" style={{ width: "120%" }} type="text" disabled />
                                     </div>
                                     <div className="form-group" controlId="formBasicEmail">
-                                        <label style={{ width: "100%", textAlign: "right" }}>التقسيم السنوي للعام الحالي : </label>
+                                        <label style={{ width: "100%", textAlign: "right" }}>التقييم السنوي للعام الحالي : </label>
                                         <input className="form-control" style={{ width: "120%", marginLeft: 30 }} type="text" readonly="readonly" />
                                     </div>
                                 </div>
@@ -432,6 +748,8 @@ class Employee extends React.Component {
                                     <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg">بطاقة الوصف</button>
                                     <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg"><Link to={`/empsappraisal`}><a onClick={this.empAppraisalHandler} href="/empsappraisal">التقييمات السنوية</a></Link></button>
                                     <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg">طباعة البيانات الوظيفية</button>
+                                    <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170, background: "#4f4f63", color: "white" }} type="button" class="btn btn-outline btn-lg btn-primary">إضافة موظف جديد</button>
+
                                 </div>
                             </div>
                         </div>
