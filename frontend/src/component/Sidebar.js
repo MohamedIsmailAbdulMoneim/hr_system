@@ -214,17 +214,6 @@ class Sidebar extends React.Component {
                                 </NavLink >
                             </ul>
                         </li>
-                        <li>
-                            <a href="#"><i className="fa fa-files-o fa-fw"></i> Sample Pages<span className="fa arrow"></span></a>
-                            <ul className="nav nav-second-level">
-                                <li>
-                                    <a href="blank.html">Blank Page</a>
-                                </li>
-                                <li>
-                                    <a href="login.html">Login Page</a>
-                                </li>
-                            </ul>
-                        </li>
                     </ul>
                 </div>
             </div>
