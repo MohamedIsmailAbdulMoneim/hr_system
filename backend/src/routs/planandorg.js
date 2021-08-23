@@ -549,6 +549,8 @@ function postNewTraining(req, res, next) {
 }
 
 
+
+
 router
     .get('/getjobdgbycat/:catname', getJobDgByCat)
     .get(`/getsupboxnames/:jdid /:catid`, getSupBoxNames)

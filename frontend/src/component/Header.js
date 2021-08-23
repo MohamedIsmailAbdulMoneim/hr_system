@@ -40,13 +40,9 @@ class Header extends React.Component {
                         <span className="icon-bar"></span>
                         <span className="icon-bar"></span>
                     </button>
-
                     <a className="navbar-brand" href="/">لوحة التحكم</a>
 
                 </div>
-
-
-
                 <ul className="nav navbar-top-links navbar-right">
                     <li className="dropdown">
                         <a className="dropdown-toggle" data-toggle="dropdown" href="#">

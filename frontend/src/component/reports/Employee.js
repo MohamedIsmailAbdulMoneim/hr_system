@@ -15,7 +15,7 @@ class Employee extends React.Component {
         this.state = {
 
             add: false, showNamesResults: false, addDoc: "", addDoj: "", addCj: "", addJasf: "", addMangement: "",
-            addaos: "", addStation: "", addArea: "", addGovern: "", addJS: "", addAnnualAppraisal: "", addEmpNid: "",
+            addaos: "", addStation: "", addArea: "", addGovern: "", addJS: "", addEmpNid: "",
             addPOIssuance: "", addDOIssuance: "", addinsuranceNum: "", addinsuranceOffice: "", addAddress: "", addMPhoneNum: "",
             addHPhoneNum: "", addOPhoneNum: "", addEmail: "", addMarStatus: "", addSyndicateType: "", addMemberShipNum: "",
             addMemberShipDate: "", addMirStatus: "", addDaysCountMir: "", addMonthsCountMir: "", addYearsCountMir: "",
@@ -23,6 +23,25 @@ class Employee extends React.Component {
 
         };
 
+    }
+
+    handleArrToSend = (e) => {
+        let state = this.state
+        let doc = `"${state.addDoc}"`
+        let doj = `"${state.addDoj}"`
+        let addcj = `"${state.addCj}"`
+        if (
+            state.addDoc.length < 1 || state.addDoj.length < 1 || state.addCj.length < 1 || state.addJasf.length < 1 || state.addMangement.length < 1 ||
+            state.addaos.length < 1 || state.addStation.length < 1 || state.addArea.length < 1 || state.addGovern.length < 1 || state.addJS.length < 1 ||
+            state.addEmpNid.length < 1 || state.addPOIssuance.length < 1 || state.addDOIssuance.length < 1 || state.addinsuranceNum.length < 1 ||
+            state.addinsuranceOffice.length < 1 || state.addAddress.length < 1 || state.addMPhoneNum.length < 1 || state.addHPhoneNum.length < 1 ||
+            state.addOPhoneNum.length < 1 || state.addEmail.length < 1 || state.addMarStatus.length < 1 || state.addSyndicateType.length < 11 ||
+            state.addMemberShipNum.length < 1 || state.addMemberShipDate.length < 1 || state.addMirStatus.length < 1 || state.addDaysCountMir.length < 1 ||
+            state.addMonthsCountMir.length < 1 || state.addYearsCountMir.length < 1 || state.addRetirementDate.length < 1 || state.addSexType.length < 1 ||
+            state.addReligous.length < 1 || state.addDob.length < 1 || state.addPob.length < 1 || state.addGob.length < 1
+        ) {
+
+        }
     }
 
     addButtonHandler = (e) => {
@@ -78,11 +97,6 @@ class Employee extends React.Component {
 
     addJSHandler = (e) => {
         this.setState({ addJS: e.target.value })
-
-    }
-
-    addAnnualAppraisalHandler = (e) => {
-        this.setState({ addAnnualAppraisal: e.target.value })
 
     }
 
@@ -362,7 +376,7 @@ class Employee extends React.Component {
                                                 <label style={{ marginRight: 60 }}>الإدارة</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addMangementHandler} style={{ marginRight: 90 }} className="form-control chodt giant-input" type="text"/>
+                                                <input onChange={this.addMangementHandler} style={{ marginRight: 90 }} className="form-control chodt giant-input" type="text" />
                                             </div>
                                         </div>
                                     </div>
@@ -372,7 +386,7 @@ class Employee extends React.Component {
                                                 <label className="medium-lable" style={{ marginRight: 30 }}>النطاق الإشرافي</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addaosHandler} style={{ marginRight: 50 }} className="form-control chodt giant-input" type="text"/>
+                                                <input onChange={this.addaosHandler} style={{ marginRight: 50 }} className="form-control chodt giant-input" type="text" />
                                             </div>
                                         </div>
                                     </div>
@@ -383,35 +397,29 @@ class Employee extends React.Component {
                                                 <label className="small-lable" style={{ marginRight: 40 }}>المحطة</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addStationHandler} style={{ marginRight: 70 }} className="form-control  small-input" type="text"/>
+                                                <input onChange={this.addStationHandler} style={{ marginRight: 70 }} className="form-control  small-input" type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label style={{ marginRight: 70, marginTop: 20 }} className="small-lable">المنطقة</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addAreaHandler} style={{ marginRight: 70 }} className="form-control  small-input" type="text"/>
+                                                <input onChange={this.addAreaHandler} style={{ marginRight: 70 }} className="form-control  small-input" type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label style={{ marginRight: 60 }} className="small-lable">المحاظة</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addGovernHandler} style={{ marginRight: 70 }} className="form-control  small-input" type="text"/>
+                                                <input onChange={this.addGovernHandler} style={{ marginRight: 70 }} className="form-control  small-input" type="text" />
                                             </div>
                                         </div>
                                     </div>
                                     <div style={{ display: "table" }}>
                                         <div style={{ display: "table-row" }}>
                                             <div style={{ display: "table-cell" }}>
-                                                <label className="chodt medium-lable">الحالة الوظيفية</label>
+                                                <label className="medium-lable" style={{ marginRight: 30 }}>الحالة الوظيفية</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addJSHandler} className="form-control chodt medium-input" type="text" />
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label className="chodt nf medium-lable">تقييم العام</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addAnnualAppraisalHandler} className="form-control chodt medium-input" type="text" />
+                                                <input onChange={this.addaosHandler} style={{ marginRight: 50 }} className="form-control chodt giant-input" type="text" />
                                             </div>
                                         </div>
                                     </div>
@@ -470,13 +478,13 @@ class Employee extends React.Component {
                                                 <label className="small-lable" style={{ marginRight: 40 }}>ت. المنزل</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addHPhoneNumHandler} style={{ marginRight: 70 }} className="form-control medium-medium-input" type="text"/>
+                                                <input onChange={this.addHPhoneNumHandler} style={{ marginRight: 70 }} className="form-control medium-medium-input" type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label style={{ marginRight: 10, marginTop: 20 }} className="small-lable">ت. المكتب</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addOPhoneNumHandler} style={{ marginRight: 20 }} className="form-control  medium-medium-input" type="text"/>
+                                                <input onChange={this.addOPhoneNumHandler} style={{ marginRight: 20 }} className="form-control  medium-medium-input" type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label style={{ marginRight: 10 }} className="small-lable">الموبايل</label>
@@ -508,19 +516,19 @@ class Employee extends React.Component {
                                                 <label className="small-lable" style={{ marginRight: 40 }}>نوع النقابة</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addSyndicateTypeNumHandler} style={{ marginRight: 70 }} className="form-control medium-medium-input" type="text"/>
+                                                <input onChange={this.addSyndicateTypeNumHandler} style={{ marginRight: 70 }} className="form-control medium-medium-input" type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label style={{ marginRight: 10, marginTop: 20 }} className="small-lable">رقم العضوية</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addMemberShipNumHandler} style={{ marginRight: 20 }} className="form-control  medium-medium-input" type="text"/>
+                                                <input onChange={this.addMemberShipNumHandler} style={{ marginRight: 20 }} className="form-control  medium-medium-input" type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label style={{ marginRight: 10 }} className="small-lable">تاريخ العضوية </label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addMemberShipDateHandler} style={{ marginRight: 20 }} className="form-control  medium-medium-input" type="text"/>
+                                                <input onChange={this.addMemberShipDateHandler} style={{ marginRight: 20 }} className="form-control  medium-medium-input" type="text" />
                                             </div>
                                         </div>
                                     </div>
@@ -536,13 +544,13 @@ class Employee extends React.Component {
                                                 <label className="small-lable" style={{ marginRight: 30 }}>مدة التجنيد</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addDaysCountMirHandler} style={{ marginRight: 10 }} className="form-control  small-input" type="text"/>
+                                                <input onChange={this.addDaysCountMirHandler} style={{ marginRight: 10 }} className="form-control  small-input" type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addMonthsCountMirHandler} style={{ marginRight: 10 }} className="form-control  small-input" type="text"/>
+                                                <input onChange={this.addMonthsCountMirHandler} style={{ marginRight: 10 }} className="form-control  small-input" type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addYearsCountMirHandler} style={{ marginRight: 10 }} className="form-control  small-input" type="text"/>
+                                                <input onChange={this.addYearsCountMirHandler} style={{ marginRight: 10 }} className="form-control  small-input" type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label style={{ marginRight: 40, marginTop: 20 }} className="small-lable">تاريخ التقاعد</label>
@@ -558,13 +566,13 @@ class Employee extends React.Component {
                                                 <label className="chodt medium-lable">النوع</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addSexTypeHandler} className="form-control chodt medium-input" type="text"/>
+                                                <input onChange={this.addSexTypeHandler} className="form-control chodt medium-input" type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="chodt nf medium-lable">الديانة</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addReligousHandler} className="form-control chodt medium-input" type="text"/>
+                                                <input onChange={this.addReligousHandler} className="form-control chodt medium-input" type="text" />
                                             </div>
                                         </div>
                                     </div>
@@ -574,7 +582,7 @@ class Employee extends React.Component {
                                                 <label className="small-lable" style={{ marginRight: 40 }}>تاريخ الميلاد</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addDobHandler} style={{ marginRight: 70 }} className="form-control medium-medium-input"type="text" />
+                                                <input onChange={this.addDobHandler} style={{ marginRight: 70 }} className="form-control medium-medium-input" type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label style={{ marginRight: 10, marginTop: 20 }} className="small-lable">جهة الميلاد</label>
@@ -586,292 +594,292 @@ class Employee extends React.Component {
                                                 <label style={{ marginRight: 10 }} className="small-lable">محافظة الميلاد</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addGobHandler} style={{ marginRight: 20 }} className="form-control  medium-medium-input" type="text"/>
+                                                <input onChange={this.addGobHandler} style={{ marginRight: 20 }} className="form-control  medium-medium-input" type="text" />
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div> : <div className="col-lg-8">
-                                    <div className="data-wrapper" style={{ background: "transparent", height: "100%", width: "100%" }} >
-                                        <h3 style={{ marginRight: 20, marginTop: 3, textAlign: "right", fontFamily: 'Markazi Text ,serif', fontWeight: 700 }}>البيانات الوظيفية</h3>
-                                        <div style={{ display: "table" }}>
-                                            <div style={{ display: "table-row" }}>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <label className="chodt small-lable">رقم الأداء</label>
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <input className="form-control chodt small-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].EMPLOYEE_ID : null : null} readonly="readonly" type="number" />
-                                                </div>
+                                <div className="data-wrapper" style={{ background: "transparent", height: "100%", width: "100%" }} >
+                                    <h3 style={{ marginRight: 20, marginTop: 3, textAlign: "right", fontFamily: 'Markazi Text ,serif', fontWeight: 700 }}>البيانات الوظيفية</h3>
+                                    <div style={{ display: "table" }}>
+                                        <div style={{ display: "table-row" }}>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="chodt small-lable">رقم الأداء</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input className="form-control chodt small-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].EMPLOYEE_ID : null : null} readonly="readonly" type="number" />
+                                            </div>
 
-                                                <div style={{ display: "table-cell" }}>
-                                                    <label className="chodt nf" >الإسم</label>
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <input ref="nameinput" className="form-control chodt medium-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].NAME_ARABIC : null : null} type="text" />
-                                                </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="chodt nf" >الإسم</label>
                                             </div>
-                                            <div style={{ display: "table-row" }}>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <label className="chodt small-lable" >تاريخ العقد</label>
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <input className="chodt form-control medium-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].SECTOR_JOIN_DATE : null : null} type="text" readonly="readonly" />
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <label className="chodt nf small-lable">تاريخ التعيين</label>
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <input className="chodt form-control medium-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].TRANS_DATE : null : null} type="text" readonly="readonly" />
-                                                </div>
-                                            </div>
-                                            <div style={{ display: "table-row" }}>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <label className="chodt medium-lable">الوظيفة الحالية</label>
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <input className="form-control chodt medium-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].SUP_BOX_NAME : null : null} type="text" readonly="readonly" />
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <label className="chodt nf medium-lable">طريقة شغلها</label>
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <input className="form-control chodt medium-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].WOG : null : null} type="text" readonly="readonly" />
-                                                </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input ref="nameinput" className="form-control chodt medium-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].NAME_ARABIC : null : null} type="text" />
                                             </div>
                                         </div>
-                                        <div style={{ display: "table" }}>
-                                            <div style={{ display: "table-row" }}>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <label style={{ marginRight: 60 }}>الإدارة</label>
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <input style={{ marginRight: 90 }} className="form-control chodt giant-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].cat_name : null : null} type="text" readonly="readonly" />
-                                                </div>
+                                        <div style={{ display: "table-row" }}>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="chodt small-lable" >تاريخ العقد</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input className="chodt form-control medium-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].SECTOR_JOIN_DATE : null : null} type="text" readonly="readonly" />
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="chodt nf small-lable">تاريخ التعيين</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input className="chodt form-control medium-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].TRANS_DATE : null : null} type="text" readonly="readonly" />
                                             </div>
                                         </div>
-                                        <div style={{ display: "table" }}>
-                                            <div style={{ display: "table-row" }}>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <label className="medium-lable" style={{ marginRight: 30 }}>النطاق الإشرافي</label>
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <input style={{ marginRight: 50 }} className="form-control chodt giant-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].cat_name : null : null} type="text" readonly="readonly" />
-                                                </div>
+                                        <div style={{ display: "table-row" }}>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="chodt medium-lable">الوظيفة الحالية</label>
                                             </div>
-                                        </div>
-
-                                        <div style={{ display: "table" }}>
-                                            <div style={{ display: "table-row" }}>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <label className="small-lable" style={{ marginRight: 40 }}>المحطة</label>
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <input style={{ marginRight: 70 }} className="form-control  small-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].JOB_LOCATION : null : null} type="text" readonly="readonly" />
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <label style={{ marginRight: 70, marginTop: 20 }} className="small-lable">المنطقة</label>
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <input style={{ marginRight: 70 }} className="form-control  small-input" type="text" readonly="readonly" />
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <label style={{ marginRight: 60 }} className="small-lable">المحاظة</label>
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <input style={{ marginRight: 70 }} className="form-control  small-input" type="text" readonly="readonly" />
-                                                </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input className="form-control chodt medium-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].SUP_BOX_NAME : null : null} type="text" readonly="readonly" />
                                             </div>
-                                        </div>
-                                        <div style={{ display: "table" }}>
-                                            <div style={{ display: "table-row" }}>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <label className="chodt medium-lable">الوظيفة الحالية</label>
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <input className="form-control chodt medium-input" type="text" disabled />
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <label className="chodt nf medium-lable">تقييم العام</label>
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <input className="form-control chodt medium-input" type="text" disabled />
-                                                </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="chodt nf medium-lable">طريقة شغلها</label>
                                             </div>
-                                        </div>
-                                        <h3 style={{ marginRight: 20, marginTop: 20, textAlign: "right", fontFamily: 'Markazi Text ,serif', fontWeight: 700 }}>البيانات الشخصية</h3>
-                                        <div style={{ display: "table" }}>
-                                            <div style={{ display: "table-row" }}>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <label className="small-lable" style={{ marginRight: 40 }}>الرقم القومي</label>
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <input style={{ marginRight: 70 }} className="form-control medium-medium-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].JOB_LOCATION : null : null} type="text" readonly="readonly" />
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <label style={{ marginRight: 10, marginTop: 20 }} className="small-lable">المنطقة</label>
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <input style={{ marginRight: 20 }} className="form-control  medium-medium-input" type="text" readonly="readonly" />
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <label style={{ marginRight: 10 }} className="small-lable">المحاظة</label>
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <input style={{ marginRight: 20 }} className="form-control  medium-medium-input" type="text" readonly="readonly" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div style={{ display: "table" }}>
-                                            <div style={{ display: "table-row" }}>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <label className="chodt medium-lable">الرقم التأميني</label>
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <input className="form-control chodt medium-input" type="text" disabled />
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <label className="chodt nf medium-lable">مكتب التأمينات</label>
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <input className="form-control chodt medium-input" type="text" disabled />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div style={{ display: "table" }}>
-                                            <div style={{ display: "table-row" }}>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <label style={{ marginRight: 55 }}>العنوان</label>
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <input style={{ marginRight: 90 }} className="form-control chodt giant-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].cat_name : null : null} type="text" readonly="readonly" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div style={{ display: "table" }}>
-                                            <div style={{ display: "table-row" }}>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <label className="small-lable" style={{ marginRight: 40 }}>ت. المنزل</label>
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <input style={{ marginRight: 70 }} className="form-control medium-medium-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].JOB_LOCATION : null : null} type="text" readonly="readonly" />
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <label style={{ marginRight: 10, marginTop: 20 }} className="small-lable">ت. المكتب</label>
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <input style={{ marginRight: 20 }} className="form-control  medium-medium-input" type="text" readonly="readonly" />
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <label style={{ marginRight: 10 }} className="small-lable">الموبايل</label>
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <input style={{ marginRight: 20 }} className="form-control  medium-medium-input" type="text" readonly="readonly" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div style={{ display: "table" }}>
-                                            <div style={{ display: "table-row" }}>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <label className="chodt medium-lable">البريد الأليكتروني</label>
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <input className="form-control chodt medium-input" type="text" disabled />
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <label className="chodt nf medium-lable">الحالة الإجتماعية</label>
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <input className="form-control chodt medium-input" type="text" disabled />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div style={{ display: "table" }}>
-                                            <div style={{ display: "table-row" }}>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <label className="small-lable" style={{ marginRight: 40 }}>نوع النقابة</label>
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <input style={{ marginRight: 70 }} className="form-control medium-medium-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].JOB_LOCATION : null : null} type="text" readonly="readonly" />
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <label style={{ marginRight: 10, marginTop: 20 }} className="small-lable">رقم العضوية</label>
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <input style={{ marginRight: 20 }} className="form-control  medium-medium-input" type="text" readonly="readonly" />
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <label style={{ marginRight: 10 }} className="small-lable">تاريخ العضوية </label>
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <input style={{ marginRight: 20 }} className="form-control  medium-medium-input" type="text" readonly="readonly" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div style={{ display: "table" }}>
-                                            <div style={{ display: "table-row" }}>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <label className="small-lable" style={{ marginRight: 40 }}>موقف التجنيد</label>
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <input style={{ marginRight: 70 }} className="form-control small-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].JOB_LOCATION : null : null} type="text" readonly="readonly" />
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <input style={{ marginRight: 100 }} className="form-control  small-input" type="text" readonly="readonly" />
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <input style={{ marginRight: 20 }} className="form-control  small-input" type="text" readonly="readonly" />
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <input style={{ marginRight: 20 }} className="form-control  small-input" type="text" readonly="readonly" />
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <label style={{ marginRight: 20, marginTop: 20 }} className="small-lable">تاريخ التقاعد</label>
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <input style={{ marginRight: 20 }} className="form-control  small-input" type="text" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div style={{ display: "table" }}>
-                                            <div style={{ display: "table-row" }}>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <label className="chodt medium-lable">النوع</label>
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <input className="form-control chodt medium-input" type="text" disabled />
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <label className="chodt nf medium-lable">الديانة</label>
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <input className="form-control chodt medium-input" type="text" disabled />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div style={{ display: "table" }}>
-                                            <div style={{ display: "table-row" }}>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <label className="small-lable" style={{ marginRight: 40 }}>تاريخ الميلاد</label>
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <input style={{ marginRight: 70 }} className="form-control medium-medium-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].JOB_LOCATION : null : null} type="text" readonly="readonly" />
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <label style={{ marginRight: 10, marginTop: 20 }} className="small-lable">جهة الميلاد</label>
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <input style={{ marginRight: 20 }} className="form-control  medium-medium-input" type="text" readonly="readonly" />
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <label style={{ marginRight: 10 }} className="small-lable">محافظة الميلاد</label>
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <input style={{ marginRight: 20 }} className="form-control  medium-medium-input" type="text" readonly="readonly" />
-                                                </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input className="form-control chodt medium-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].WOG : null : null} type="text" readonly="readonly" />
                                             </div>
                                         </div>
                                     </div>
-                                </div>}
+                                    <div style={{ display: "table" }}>
+                                        <div style={{ display: "table-row" }}>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label style={{ marginRight: 60 }}>الإدارة</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input style={{ marginRight: 90 }} className="form-control chodt giant-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].cat_name : null : null} type="text" readonly="readonly" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style={{ display: "table" }}>
+                                        <div style={{ display: "table-row" }}>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="medium-lable" style={{ marginRight: 30 }}>النطاق الإشرافي</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input style={{ marginRight: 50 }} className="form-control chodt giant-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].cat_name : null : null} type="text" readonly="readonly" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div style={{ display: "table" }}>
+                                        <div style={{ display: "table-row" }}>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="small-lable" style={{ marginRight: 40 }}>المحطة</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input style={{ marginRight: 70 }} className="form-control  small-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].JOB_LOCATION : null : null} type="text" readonly="readonly" />
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label style={{ marginRight: 70, marginTop: 20 }} className="small-lable">المنطقة</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input style={{ marginRight: 70 }} className="form-control  small-input" type="text" readonly="readonly" />
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label style={{ marginRight: 60 }} className="small-lable">المحاظة</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input style={{ marginRight: 70 }} className="form-control  small-input" type="text" readonly="readonly" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style={{ display: "table" }}>
+                                        <div style={{ display: "table-row" }}>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="chodt medium-lable">الوظيفة الحالية</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input className="form-control chodt medium-input" type="text" disabled />
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="chodt nf medium-lable">تقييم العام</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input className="form-control chodt medium-input" type="text" disabled />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <h3 style={{ marginRight: 20, marginTop: 20, textAlign: "right", fontFamily: 'Markazi Text ,serif', fontWeight: 700 }}>البيانات الشخصية</h3>
+                                    <div style={{ display: "table" }}>
+                                        <div style={{ display: "table-row" }}>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="small-lable" style={{ marginRight: 40 }}>الرقم القومي</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input style={{ marginRight: 70 }} className="form-control medium-medium-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].JOB_LOCATION : null : null} type="text" readonly="readonly" />
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label style={{ marginRight: 10, marginTop: 20 }} className="small-lable">المنطقة</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input style={{ marginRight: 20 }} className="form-control  medium-medium-input" type="text" readonly="readonly" />
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label style={{ marginRight: 10 }} className="small-lable">المحاظة</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input style={{ marginRight: 20 }} className="form-control  medium-medium-input" type="text" readonly="readonly" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style={{ display: "table" }}>
+                                        <div style={{ display: "table-row" }}>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="chodt medium-lable">الرقم التأميني</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input className="form-control chodt medium-input" type="text" disabled />
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="chodt nf medium-lable">مكتب التأمينات</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input className="form-control chodt medium-input" type="text" disabled />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style={{ display: "table" }}>
+                                        <div style={{ display: "table-row" }}>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label style={{ marginRight: 55 }}>العنوان</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input style={{ marginRight: 90 }} className="form-control chodt giant-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].cat_name : null : null} type="text" readonly="readonly" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style={{ display: "table" }}>
+                                        <div style={{ display: "table-row" }}>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="small-lable" style={{ marginRight: 40 }}>ت. المنزل</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input style={{ marginRight: 70 }} className="form-control medium-medium-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].JOB_LOCATION : null : null} type="text" readonly="readonly" />
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label style={{ marginRight: 10, marginTop: 20 }} className="small-lable">ت. المكتب</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input style={{ marginRight: 20 }} className="form-control  medium-medium-input" type="text" readonly="readonly" />
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label style={{ marginRight: 10 }} className="small-lable">الموبايل</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input style={{ marginRight: 20 }} className="form-control  medium-medium-input" type="text" readonly="readonly" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style={{ display: "table" }}>
+                                        <div style={{ display: "table-row" }}>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="chodt medium-lable">البريد الأليكتروني</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input className="form-control chodt medium-input" type="text" disabled />
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="chodt nf medium-lable">الحالة الإجتماعية</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input className="form-control chodt medium-input" type="text" disabled />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style={{ display: "table" }}>
+                                        <div style={{ display: "table-row" }}>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="small-lable" style={{ marginRight: 40 }}>نوع النقابة</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input style={{ marginRight: 70 }} className="form-control medium-medium-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].JOB_LOCATION : null : null} type="text" readonly="readonly" />
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label style={{ marginRight: 10, marginTop: 20 }} className="small-lable">رقم العضوية</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input style={{ marginRight: 20 }} className="form-control  medium-medium-input" type="text" readonly="readonly" />
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label style={{ marginRight: 10 }} className="small-lable">تاريخ العضوية </label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input style={{ marginRight: 20 }} className="form-control  medium-medium-input" type="text" readonly="readonly" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style={{ display: "table" }}>
+                                        <div style={{ display: "table-row" }}>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="small-lable" style={{ marginRight: 40 }}>موقف التجنيد</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input style={{ marginRight: 70 }} className="form-control small-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].JOB_LOCATION : null : null} type="text" readonly="readonly" />
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input style={{ marginRight: 100 }} className="form-control  small-input" type="text" readonly="readonly" />
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input style={{ marginRight: 20 }} className="form-control  small-input" type="text" readonly="readonly" />
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input style={{ marginRight: 20 }} className="form-control  small-input" type="text" readonly="readonly" />
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label style={{ marginRight: 20, marginTop: 20 }} className="small-lable">تاريخ التقاعد</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input style={{ marginRight: 20 }} className="form-control  small-input" type="text" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style={{ display: "table" }}>
+                                        <div style={{ display: "table-row" }}>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="chodt medium-lable">النوع</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input className="form-control chodt medium-input" type="text" disabled />
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="chodt nf medium-lable">الديانة</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input className="form-control chodt medium-input" type="text" disabled />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style={{ display: "table" }}>
+                                        <div style={{ display: "table-row" }}>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="small-lable" style={{ marginRight: 40 }}>تاريخ الميلاد</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input style={{ marginRight: 70 }} className="form-control medium-medium-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].JOB_LOCATION : null : null} type="text" readonly="readonly" />
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label style={{ marginRight: 10, marginTop: 20 }} className="small-lable">جهة الميلاد</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input style={{ marginRight: 20 }} className="form-control  medium-medium-input" type="text" readonly="readonly" />
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label style={{ marginRight: 10 }} className="small-lable">محافظة الميلاد</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input style={{ marginRight: 20 }} className="form-control  medium-medium-input" type="text" readonly="readonly" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>}
                         <div style={{ display: "flex", height: "100%", minHeight: "1000px" }} className="col-lg-4">
                             <div style={{ background: "transparent", height: 750, width: "100%" }} >
                                 <img style={{ borderTop: 3 }} src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin" class="rounded-circle" width="150" />
