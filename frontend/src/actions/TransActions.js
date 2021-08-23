@@ -1,4 +1,5 @@
-import { NEW_APPRAISAL, updatetrans, fetchEmpTrans, updateAppraisal, FETCHEMPEXP, NEW_EXP,fetchEmpPenalties } from "../actions/ActionTypes";
+import { NEW_APPRAISAL, updatetrans, fetchEmpTrans, updateAppraisal,  fetchEmpFamily,
+  FETCHEMPEXP, NEW_EXP,fetchEmpPenalties, postNewFamilyMember } from "../actions/ActionTypes";
 import axios from "axios";
 
 
@@ -40,9 +41,10 @@ export const updateEmpTrans = (obj) => (dispatch) => {
     url: `http://localhost:5000/updateemptrans`,
     headers: { "Content-Type": "application/json" },
   }).then(data => {
+    console.log(data);
     dispatch({
       type: updatetrans,
-      payload: data.data[1]
+      payload: data.data
     })
   })
 }
@@ -99,5 +101,33 @@ export const getempspenalties = (nameOrId, penalty, year) => (dispatch) => {
       payload: res.data
     })
   })
+
+}
+
+export const getEmpFamily = (empid, empname) => (dispatch) => {
+  axios.get(`http://localhost:5000/getempfamily/?empid=${empid}&empname=${empname}`).then(res => {
+    dispatch({
+      type: fetchEmpFamily,
+      payload: res.data
+    })
+  })
+
+}
+
+export const submitNewFamily =  (data) => async (dispatch) => {
+  let res = await axios({
+      method: "POST",
+      data,
+      withCredentials: true,
+      url: "http://localhost:5000/newfamily",
+      headers: { "Content-Type": "application/json" },
+  }).then((res) => {
+    console.log(res.data);
+    dispatch({
+      type:postNewFamilyMember,
+      payload: res.data
+    })
+  })
+  return res;
 
 }

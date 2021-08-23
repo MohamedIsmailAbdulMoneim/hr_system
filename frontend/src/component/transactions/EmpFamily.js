@@ -2,24 +2,25 @@ import React, { Fragment } from "react";
 import {
     getEmpFamily, getEmpName, getEmpNameByName
 } from "../../actions/Actions";
+
+import {
+    submitNewFamily
+} from "../../actions/TransActions"
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import Reactmoment from "react-moment"
-
-
-
+import moment from "react-moment"
 
 class EmpFamily extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            finalData: [], messege: null, addMaritalType: [{ value: " ", type: null, key: null }],
+            finalData: [], messege: "", addMaritalType: [{ value: " ", type: null, key: null }],
             addMaritalName: [{ value: " ", key: null }], addMaritalNId: [{ value: " ", key: null }],
             addMaritalBod: [{ value: " ", key: null }], addMaritalWorkStatus: [{ value: " ", key: null }],
             addMarital: false, editMaritalType: null, editMaritalName: null, editMaritalNid: null, editMaritalBod: null, maritalLength: 0, showFamilyResult: true, add: false, edit: false, empid: null,
             empname: null, showMaritalstate: false, showNamesResultsForSearch: false, showNamesResultsForAdd: false,
-            empnameForAdd: null, empidForAdd: null, showMsg: false, rowFam: null
+            empnameForAdd: null, empidForAdd: null, showMsg: false, rowFam: null,addConfirmed:false
 
         };
 
@@ -253,23 +254,23 @@ class EmpFamily extends React.Component {
                 trnas.push(
                     <tr>
                         <td>
-                            <select onChange={this.addMaritalTypeHandler} className="maritaltype" required ref="selected">
+                            <select onChange={this.addMaritalTypeHandler} className="maritaltype add" required ref="selected">
                                 <option selected>الزوجة</option>
                                 <option selected>الأبن</option>
                                 <option selected>اختر ...</option>
                             </select>
                         </td>
                         <td>
-                            <input required className="maritalname" onChange={this.addMaritalNameHandler} type="text" style={{ fontSize: "10pt", background: "white", marginTop: 5, marginRight: 5, height: 25, width: 130, border: "1px solid black" }} />
+                            <input required className="maritalname add" onChange={this.addMaritalNameHandler} type="text" style={{ fontSize: "10pt", background: "white", marginTop: 5, marginRight: 5, height: 25, width: 130, border: "1px solid black" }} />
                         </td>
                         <td>
-                            <input required className="maritalnid" onChange={this.addMaritalNIdHandler} type="text" style={{ fontSize: "10pt", background: "white", marginTop: 5, marginRight: 5, height: 25, width: 130, border: "1px solid black" }} />
+                            <input required className="maritalnid add" onChange={this.addMaritalNIdHandler} type="text" style={{ fontSize: "10pt", background: "white", marginTop: 5, marginRight: 5, height: 25, width: 130, border: "1px solid black" }} />
                         </td>
                         <td>
-                            <input required className="maritalbod" onChange={this.addMaritalBodHandler} type="date" style={{ fontSize: "10pt", background: "white", marginTop: 5, marginRight: 5, height: 25, width: 130, border: "1px solid black" }} />
+                            <input required className="maritalbod add" onChange={this.addMaritalBodHandler} type="date" style={{ fontSize: "10pt", background: "white", marginTop: 5, marginRight: 5, height: 25, width: 130, border: "1px solid black" }} />
                         </td>
                         <td>
-                            <select onKeyDown={this.tabhandler} onChange={this.addMaritalWorkStatus} className="maritalws" required ref="selected" style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 120 }}>
+                            <select onKeyDown={this.tabhandler} onChange={this.addMaritalWorkStatus} className="maritalws add" required ref="selected" style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 120 }}>
                                 <option selected>يعمل</option>
                                 <option selected>لا يعمل</option>
                                 <option selected>اختر ...</option>
@@ -299,19 +300,25 @@ class EmpFamily extends React.Component {
     }
     submitNewFamily = (e) => {
         e.preventDefault()
-        axios({
-            method: "POST",
-            data: this.state.finalData,
-            withCredentials: true,
-            url: "http://localhost:5000/newfamily",
-            headers: { "Content-Type": "application/json" },
-        }).then((res) => {
-            console.log(res.data);
-            this.setState({
-                messege: res.data,
-                showMsg: true
+        this.props.submitNewFamily(this.state.finalData).then((data) => {
+                this.setState({
+                messege: this.props.msg,
+                showMsg: true,
+                addConfirmed: false,
+                addMaritalType: [{ value: " ", type: null, key: null }],
+                addMaritalName: [{ value: " ", key: null }],
+                addMaritalNId: [{ value: " ", key: null }],
+                addMaritalBod: [{ value: " ", key: null }],
+                addMaritalWorkStatus: [{ value: " ", key: null }]
             })
-        })
+            let addInputs = document.getElementsByClassName("add")
+            for(let i = 0; i < addInputs.length; i++){
+                addInputs[i].value = ""
+            }
+            }
+        
+            
+        )
     }
 
     closeAddConfirmHandler = (e) => {
@@ -429,18 +436,18 @@ class EmpFamily extends React.Component {
                                         <span>إضافة بيانات جديد</span>
                                         <h3></h3>
                                     </div>
-                                    {this.state.showMsg ? this.state.messege.msg == "تم إدخال البيانات بنجاح" ? <div id="showmsg" className="alert alert-success" role="alert"> {this.state.messege.msg}</div> : this.state.messege.msg == "يوجد خطاء بقاعدة البيانات" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege.msg}</div> : this.state.messege.msg == "رقم البطاقة غير صحيح" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege.msg}</div> : this.state.messege.msg == "البيانات غير كاملة" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege.msg}</div> : null : null}
+                                    {this.state.showMsg ? this.state.messege == "تم إدخال البيانات بنجاح" ? <div id="showmsg" className="alert alert-success" role="alert"> {this.state.messege}</div> : this.state.messege == "يوجد خطاء بقاعدة البيانات" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege}</div> : this.state.messege == "رقم البطاقة غير صحيح" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege}</div> : this.state.messege == "البيانات غير كاملة" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege}</div> : null : null}
 
                                     {/* <ImportExcel data={this.ImportExcelHandler} /> */}
                                     <div style={{ marginRight: 20, display: "flex", justifyContent: "center", alignItems: "center", marginLeft: 40 }}>
                                         <div style={{ display: "flex", justifyContent: "space-between" }}>
                                             <div className="form-group" controlId="formBasicEmail">
                                                 <label style={{ width: "100%", textAlign: "right" }}>رقم الأداء : </label>
-                                                <input ref="idadd" id="empid" className="form-control" onChange={this.idInputHandlerForAdd} style={{ background: "white", width: "40%", marginBottom: 5, marginRight: 5, border: "1px solid black" }} type="text" name="first_name" />
+                                                <input ref="idadd" id="empid" className="form-control add" onChange={this.idInputHandlerForAdd} style={{ background: "white", width: "40%", marginBottom: 5, marginRight: 5, border: "1px solid black" }} type="text" name="first_name" />
                                             </div>
                                             <div className="form-group" controlId="formBasicEmail">
                                                 <label style={{ width: "100%", textAlign: "right" }}>الإسم : </label>
-                                                <input ref="nameadd" id="name" id="empname" className="form-control" onChange={this.nameInputHandlerForAdd} style={{ background: "white", width: "100%", minWidth: "250px", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
+                                                <input ref="nameadd" id="name" id="empname" className="form-control add" onChange={this.nameInputHandlerForAdd} style={{ background: "white", width: "100%", minWidth: "250px", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
                                             </div>
                                         </div>
                                     </div>
@@ -448,7 +455,7 @@ class EmpFamily extends React.Component {
                                         this.state.showNamesResultsForAdd ?
                                             <div style={{ marginRight: 20, display: "flex", justifyContent: "center", alignItems: "center", marginLeft: 40 }}>
                                                 <div></div>
-                                                <select onClick={this.namesOptionshandlerForAdd} style={{ marginTop: 20, marginRight: 15, marginBottom: 5, width: "40%", background: "transparent", border: "none" }} multiple name="pets" id="pet-select">
+                                                <select  onClick={this.namesOptionshandlerForAdd} style={{ marginTop: 20, marginRight: 15, marginBottom: 5, width: "40%", background: "transparent", border: "none" }} multiple name="pets" id="pet-select">
                                                     {this.props.empNameByName.map((name => (
                                                         <option>{name.NAME_ARABIC}</option>
                                                     )))}
@@ -470,23 +477,23 @@ class EmpFamily extends React.Component {
                                         <tbody>
                                             <tr>
                                                 <td>
-                                                    <select onChange={this.addMaritalTypeHandler} className="maritaltype" required ref="selected">
+                                                    <select onChange={this.addMaritalTypeHandler} className="maritaltype add" required ref="selected">
                                                         <option type="1" selected>الزوجة</option>
                                                         <option type="2" selected>الأبن</option>
                                                         <option selected>اختر ...</option>
                                                     </select>
                                                 </td>
                                                 <td>
-                                                    <input required className="maritalname " onChange={this.addMaritalNameHandler} type="text" style={{ fontSize: "10pt", background: "white", marginTop: 5, marginRight: 5, height: 25, width: 130, border: "1px solid black" }} />
+                                                    <input required className="maritalname add" onChange={this.addMaritalNameHandler} type="text" style={{ fontSize: "10pt", background: "white", marginTop: 5, marginRight: 5, height: 25, width: 130, border: "1px solid black" }} />
                                                 </td>
                                                 <td>
-                                                    <input required className="maritalnid " onChange={this.addMaritalNIdHandler} type="text" style={{ fontSize: "10pt", background: "white", marginTop: 5, marginRight: 5, height: 25, width: 130, border: "1px solid black" }} />
+                                                    <input required className="maritalnid add" onChange={this.addMaritalNIdHandler} type="text" style={{ fontSize: "10pt", background: "white", marginTop: 5, marginRight: 5, height: 25, width: 130, border: "1px solid black" }} />
                                                 </td>
                                                 <td>
-                                                    <input required className="maritalbod " onChange={this.addMaritalBodHandler} type="date" style={{ fontSize: "10pt", background: "white", marginTop: 5, marginRight: 5, height: 25, width: 130, border: "1px solid black" }} />
+                                                    <input required className="maritalbod add" onChange={this.addMaritalBodHandler} type="date" style={{ fontSize: "10pt", background: "white", marginTop: 5, marginRight: 5, height: 25, width: 130, border: "1px solid black" }} />
                                                 </td>
                                                 <td>
-                                                    <select onKeyDown={this.tabhandler} onChange={this.addMaritalWorkStatus} className="maritalws" required ref="selected" style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 120 }}>
+                                                    <select onKeyDown={this.tabhandler} onChange={this.addMaritalWorkStatus} className="maritalws add" required ref="selected" style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 120 }}>
                                                         <option selected>يعمل</option>
                                                         <option selected>لا يعمل</option>
                                                         <option selected>اختر ...</option>
@@ -583,7 +590,7 @@ class EmpFamily extends React.Component {
                                                         </select> : fam.RELATION_TYPE == 1 ? "الزوجة" : "الأبن"}</td>
                                                     <td>{this.state.edit && this.state.rowFam == fam.id ? <input onChange={this.handleMarName} value={this.state.editMaritalName} className="form-control" style={{ width: "100%" }} type="text" /> : fam.FAMILY_NAME}</td>
                                                     <td>{this.state.edit && this.state.rowFam == fam.id ? <input onChange={this.handleBod} value={this.state.editMaritalBod} className="form-control" style={{ width: "100%" }} type="date" /> : fam.BIRTH_DATE}</td>
-                                                    <td>{this.state.edit && this.state.rowFam == fam.id ? <input onChange={this.handleNid} value={this.state.editMaritalNid} className="form-control" style={{ width: "100%" }} type="text" /> : fam.NATIONAL_ID_CARD_NO}</td>
+                                                    <td>{this.state.edit && this.state.rowFam == fam.id ? <input onChange={this.handleNid} value={this.state.editMaritalNid} className="form-control" style={{ width: "100%" }} type="text" /> : fam.NATIONAL_ID_NUMBER}</td>
                                                     <td></td>
                                                     <td></td>
                                                     <td></td>
@@ -612,11 +619,12 @@ class EmpFamily extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        empfamily: state.posts.empfamily,
+        empfamily: state.trans.empfamily,
         empname: state.posts.empname,
-        empNameByName: state.posts.empNameByName
+        empNameByName: state.posts.empNameByName,
+        msg: state.trans.msg
     };
 };
 export default connect(mapStateToProps, {
-    getEmpFamily, getEmpName, getEmpNameByName
+    getEmpFamily, getEmpName, getEmpNameByName,submitNewFamily
 })(EmpFamily);

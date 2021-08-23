@@ -14,24 +14,68 @@ class Employee extends React.Component {
         super(props);
         this.state = {
 
-            add: false, showNamesResults: false, addDoc: "", addDoj: "", addCj: "", addJasf: "", addMangement: "",
+            add: false, showNamesResults: false,addEmpId: "",addEmpName:"", addDoc: "", addDoj: "", addCj: "", addJasf: "", addMangement: "",
             addaos: "", addStation: "", addArea: "", addGovern: "", addJS: "", addEmpNid: "",
             addPOIssuance: "", addDOIssuance: "", addinsuranceNum: "", addinsuranceOffice: "", addAddress: "", addMPhoneNum: "",
             addHPhoneNum: "", addOPhoneNum: "", addEmail: "", addMarStatus: "", addSyndicateType: "", addMemberShipNum: "",
             addMemberShipDate: "", addMirStatus: "", addDaysCountMir: "", addMonthsCountMir: "", addYearsCountMir: "",
             addRetirementDate: "", addSexType: "", addReligous: "", addDob: "", addPob: "", addGob: ""
-
         };
-
     }
 
     handleArrToSend = (e) => {
         let state = this.state
+        let empid = state.addEmpId
+        let empname = `"${state.addEmpName}"`
         let doc = `"${state.addDoc}"`
-        let doj = `"${state.addDoj}"`
         let addcj = `"${state.addCj}"`
+        let addjasf = `"${state.addJasf}"`
+        let addMangement = `"${state.addMangement}"`
+        let addaos = `"${state.addaos}"`
+        let addStation = `"${state.addStation}"`
+        let addArea = `"${state.addArea}"`
+        let addGovern = `"${state.addGovern}"`
+        let addJS = `"${state.addJS}"`
+        let addEmpNid = `"${state.addEmpNid}"`
+        let addPOIssuance = `"${state.addPOIssuance}"`
+        let addDOIssuance = `"${state.addDOIssuance}"`
+        let addinsuranceNum = `"${state.addinsuranceNum}"`
+        let addinsuranceOffice = `"${state.addinsuranceOffice}"`
+        let addAddress = `"${state.addAddress}"`
+        let addMPhoneNum = `"${state.addMPhoneNum}"`
+        let addHPhoneNum = `"${state.addHPhoneNum}"`
+        let addOPhoneNum = `"${state.addOPhoneNum}"`
+        let addEmail = `"${state.addEmail}"`
+        let addMarStatus = `"${state.addMarStatus}"`
+        let addSyndicateType = `"${state.addSyndicateType}"`
+        let addMemberShipNum = `"${state.addMemberShipNum}"`
+        let addMemberShipDate = `"${state.addMemberShipDate}"`
+        let addMirStatus = `"${state.addMirStatus}"`
+        let addDaysCountMir = `"${state.addDaysCountMir}"`
+        let addMonthsCountMir = `"${state.addMonthsCountMir}"`
+        let addYearsCountMir = `"${state.addYearsCountMir}"`
+        let addRetirementDate = `"${state.addRetirementDate}"`
+        let addSexType = `"${state.addSexType}"`
+        let addReligous = `"${state.addReligous}"`
+        let addDob = `"${state.addDob}"`
+        let addPob = `"${state.addPob}"`
+        let addGob = `"${state.addGob}"`
+
+        let data = [
+            empid,empname,doc, addcj, addjasf, addjasf, addMangement, addaos, addStation, addArea, addGovern
+            , addJS, addEmpNid, addPOIssuance, addDOIssuance, addinsuranceNum, addinsuranceOffice, addAddress,
+            addMPhoneNum, addHPhoneNum, addOPhoneNum, addOPhoneNum, addEmail, addMarStatus, addSyndicateType, addMemberShipNum,
+            addMemberShipDate, addMirStatus, addDaysCountMir, addMonthsCountMir, addYearsCountMir, addRetirementDate, addSexType,
+            addReligous, addDob, addPob, addGob
+        ]
+
+        console.log(data);
+
+
+
+
         if (
-            state.addDoc.length < 1 || state.addDoj.length < 1 || state.addCj.length < 1 || state.addJasf.length < 1 || state.addMangement.length < 1 ||
+            state.addDoc.length < 1 ||  state.addCj.length < 1 || state.addJasf.length < 1 || state.addMangement.length < 1 ||
             state.addaos.length < 1 || state.addStation.length < 1 || state.addArea.length < 1 || state.addGovern.length < 1 || state.addJS.length < 1 ||
             state.addEmpNid.length < 1 || state.addPOIssuance.length < 1 || state.addDOIssuance.length < 1 || state.addinsuranceNum.length < 1 ||
             state.addinsuranceOffice.length < 1 || state.addAddress.length < 1 || state.addMPhoneNum.length < 1 || state.addHPhoneNum.length < 1 ||
@@ -50,15 +94,22 @@ class Employee extends React.Component {
         })
     }
 
-    addDocHandler = (e) => {
+    addEmpIdHandler = (e) => {
         this.setState({
-            addDoc: e.target.value
+            addEmpId: e.target.value
         })
     }
 
-    addDojHandler = (e) => {
+    
+    addEmpNameHandler = (e) => {
         this.setState({
-            addDoj: e.target.value
+            addEmpName: e.target.value
+        })
+    }
+
+    addDocHandler = (e) => {
+        this.setState({
+            addDoc: e.target.value
         })
     }
 
@@ -331,14 +382,14 @@ class Employee extends React.Component {
                                                 <label className="chodt small-lable">رقم الأداء</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control chodt small-input" type="number" />
+                                                <input onChange={this.addEmpIdHandler} className="form-control chodt small-input" type="number" />
                                             </div>
 
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="chodt nf" >الإسم</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input ref="nameinput" className="form-control chodt medium-input" type="text" />
+                                                <input onChange={this.addEmpNameHandler} ref="nameinput" className="form-control chodt medium-input" type="text" />
                                             </div>
                                         </div>
                                         <div style={{ display: "table-row" }}>
@@ -347,12 +398,6 @@ class Employee extends React.Component {
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <input onChange={this.addDocHandler} className="chodt form-control medium-input" type="text" />
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label className="chodt nf small-lable">تاريخ التعيين</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addDojHandler} className="chodt form-control medium-input" type="text" />
                                             </div>
                                         </div>
                                         <div style={{ display: "table-row" }}>
@@ -595,6 +640,13 @@ class Employee extends React.Component {
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <input onChange={this.addGobHandler} style={{ marginRight: 20 }} className="form-control  medium-medium-input" type="text" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style={{ display: "table" }}>
+                                        <div style={{ display: "table-row" }}>
+                                            <div style={{ display: "table-cell" }}>
+                                                <button style={{ marginRight: 180, marginTop: 20, width: 650 }} onClick={this.handleArrToSend} className="btn btn-primary btn-block">إضافة</button>
                                             </div>
                                         </div>
                                     </div>

@@ -143,22 +143,7 @@ class EmpPenalty extends React.Component {
     }
 
 
-    submitNewPenalty = (e) => {
-        e.preventDefault()
-        axios({
-            method: "POST",
-            data: this.state.finalData,
-            withCredentials: true,
-            url: "http://localhost:5000/postnewpenalty",
-            headers: { "Content-Type": "application/json" },
-        }).then((res) => {
-            console.log(res.data);
-            this.setState({
-                messege: res.data,
-                showMsg: true
-            })
-        })
-    }
+
 
     /* ------------------------  */
 
@@ -273,6 +258,22 @@ class EmpPenalty extends React.Component {
         })
     }
 
+    submitNewPenalty = (e) => {
+        axios({
+            method: "POST",
+            data: this.state.finalData,
+            withCredentials: true,
+            url: "http://localhost:5000/postnewpenalty",
+            headers: { "Content-Type": "application/json" },
+        }).then((res) => {
+            console.log("Dasdasdasd");
+            this.setState({
+                messege: res.data,
+                showMsg: true
+            })
+        })
+    }
+
 
 
     render() {
@@ -315,7 +316,7 @@ class EmpPenalty extends React.Component {
                                         <span>إضافة جزاء جديد</span>
                                         <div></div>
                                     </div>
-                                    {this.state.showMsg ? this.props.msg == "تم إدخال الجزاء بنجاح" ? <div id="showmsg" className="alert alert-success" role="alert"> {this.props.msg}</div> : this.props.msg == "يوجد خطاء بقاعدة البيانات" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.props.msg}</div> : this.props.msg == "يجب إدخال أي من الإسم ورقم الأداء" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.props.msg}</div> : null : null}
+                                    {this.state.showMsg ? this.state.messege.msg == "تم إدخال الجزاء بنجاح" ? <div id="showmsg" className="alert alert-success" role="alert"> {this.state.messege.msg}</div> : this.state.messege.msg == "يوجد خطاء بقاعدة البيانات" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege.msg}</div> : this.state.messege.msg == "يجب إدخال أي من الإسم ورقم الأداء" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege.msg}</div> : null : null}
                                     <div style={{ display: "flex", justifyContent: "space-around" }}>
                                         <div className="form-group" controlId="formBasicEmail">
                                             <label style={{ width: "100%", textAlign: "right" }}>رقم الأداء : </label>

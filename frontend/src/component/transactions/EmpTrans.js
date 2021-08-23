@@ -536,15 +536,11 @@ class EmpTrans extends React.Component {
         let tds = document.getElementById(e.target.getAttribute("transdate")).childNodes
 
         for (let i = 0; i < tds.length; i++) {
-
-
             tds[i].style.background = "transparent"
             tds[tds.length - 2].childNodes[0].classList.remove("fa-check")
             tds[tds.length - 2].childNodes[0].classList.add("fa-edit")
             tds[tds.length - 1].childNodes[0].classList.remove("fa-times")
             tds[tds.length - 1].childNodes[0].classList.add("fa-backspace")
-
-
         }
         this.setState({
             edit: false
@@ -692,6 +688,8 @@ class EmpTrans extends React.Component {
 
 
     render() {
+
+        console.log(this.state.finalData);
 
         const styles = {
             display: "block",

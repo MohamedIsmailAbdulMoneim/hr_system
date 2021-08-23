@@ -59,12 +59,27 @@ class EmpTraining extends React.Component {
             withCredentials: true,
             url: "http://localhost:5000/postnewtraining",
             headers: { "Content-Type": "application/json" },
-        }).then((res) => {
+        })
+        .then((res) => {
             console.log(res.data);
             this.setState({
                 messege: res.data,
-                showMsg: true
+                showMsg: true,
+                empidadd: "",
+                empnameadd: "",
+                addTrainingArabicName: "",
+                addTrainingEnglishName: "",
+                addTrainingFromDate: "",
+                addTrainingToDate: "",
+                addTrainingType: "",
+                addTrainingPlaceType: "",
+                addTrainingPlace: ""
             })
+            let addInputs = document.getElementsByClassName("add")
+            for(let i = 0; i < addInputs.length; i++){
+                addInputs[i].value = ""
+            }
+
         })
     }
 
@@ -228,14 +243,6 @@ class EmpTraining extends React.Component {
 
     }
 
-    submitButtonHandler = (e) => {
-        if (!this.state.confirmAdd) {
-            this.setState({ confirmAdd: true })
-        } else if (this.state.confirmAdd) {
-            this.setState({ confirmAdd: false })
-        }
-    }
-
     handleNewAppraisal = (e) => {
         let obj = {
             appDate: this.state.appraisalYear, appValue: this.state.empAppraisal, empid: this.state.empid, empname: this.state.empname
@@ -250,23 +257,6 @@ class EmpTraining extends React.Component {
             this.setState({ showMsg: false })
         }, 3000)
     }
-
-    idInputHandler = (e) => {
-
-        this.props.getEmpName(e.target.value)
-        this.setState({ showStruct: false, showStructWAdd: false, edit: false, empid: e.target.value, showTransResult: true, showMaritalstate: true })
-
-    }
-
-
-
-    nameInputHandler = (e) => {
-        this.setState({ showNamesResults: true })
-        this.props.getEmpNameByName(e.target.value)
-        this.refs.empid.value = ''
-
-    }
-
 
     namesOptionshandler = (e) => {
         document.getElementById('empname').value = e.target.value
@@ -392,22 +382,22 @@ class EmpTraining extends React.Component {
                                         <span>إضافة تدريب جديد</span>
                                         <div></div>
                                     </div>
-                                    {this.state.showMsg ? this.props.msg == "تم إدخال التدريب بنجاح" ? <div id="showmsg" className="alert alert-success" role="alert"> {this.props.msg}</div> : this.props.msg == "يوجد خطاء بقاعدة البيانات" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.props.msg}</div> : this.props.msg == "يجب إدخال أي من الإسم ورقم الأداء" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.props.msg}</div> : null : null}
+                                    {this.state.showMsg ? this.state.messege == "تم إدخال التدريب بنجاح" ? <div id="showmsg" className="alert alert-success" role="alert"> {this.state.messege}</div> : this.state.messege == "يوجد خطاء بقاعدة البيانات" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege}</div> : this.state.messege == "يجب إدخال أي من الإسم ورقم الأداء" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege}</div> : null : null}
                                     <div style={{ display: "flex", justifyContent: "space-around" }}>
                                         <div className="form-group" controlId="formBasicEmail">
                                             <label style={{ width: "100%", textAlign: "right" }}>رقم الأداء : </label>
-                                            <input ref="idadd" onChange={this.idInputHandlerForAdd} className="form-control" style={{ width: "100%", minWidth: "250px" }} onKeyDown={this.nameInputHandler} type="number" />
+                                            <input ref="idadd" onChange={this.idInputHandlerForAdd} className="form-control add" style={{ width: "100%", minWidth: "250px" }} type="number" />
                                         </div>
                                         <div className="form-group" controlId="formBasicEmail">
                                             <label style={{ width: "100%", textAlign: "right" }}>الأسم : </label>
-                                            <input ref="nameadd" onKeyDown={this.nameInputHandlerForAdd} id="nameinputadd" className="form-control" style={{ width: "100%", minWidth: "250px" }} onChange={this.nameInputHandler} type="text" />
+                                            <input ref="nameadd" onKeyDown={this.nameInputHandlerForAdd} id="nameinputadd" className="form-control add" style={{ width: "100%", minWidth: "250px" }} type="text" />
                                         </div>
                                     </div>
                                     {
                                         this.state.showNamesResultsForAdd ?
                                             <div style={{ marginRight: 20, display: "flex", justifyContent: "center", alignItems: "center", marginLeft: 40 }}>
                                                 <div></div>
-                                                <select onClick={this.namesOptionshandlerForAdd} style={{ marginTop: 20, marginRight: 15, marginBottom: 5, width: "40%", background: "transparent", border: "none" }} multiple name="pets" id="pet-select">
+                                                <select className="add" onClick={this.namesOptionshandlerForAdd} style={{ marginTop: 20, marginRight: 15, marginBottom: 5, width: "40%", background: "transparent", border: "none" }} multiple name="pets" id="pet-select">
                                                     {this.props.empNameByName.map((name => (
                                                         <option>{name.NAME_ARABIC}</option>
                                                     )))}
@@ -419,27 +409,27 @@ class EmpTraining extends React.Component {
                                     <div style={{ display: "flex", justifyContent: "space-around" }}>
                                         <div className="form-group" controlId="formBasicEmail">
                                             <label style={{ width: "100%", textAlign: "right" }}>اسم البرنامج باللغة العربية: </label>
-                                            <input onChange={this.addTrainingArabicNameHandler} className="form-control" style={{ width: "100%", minWidth: "250px" }} onKeyDown={this.nameInputHandler} type="text" />
+                                            <input onChange={this.addTrainingArabicNameHandler} className="form-control add" style={{ width: "100%", minWidth: "250px" }} type="text" />
                                         </div>
                                         <div className="form-group" controlId="formBasicEmail">
                                             <label style={{ width: "100%", textAlign: "right" }}>اسم البرنامج باللغة الإنجليزية: </label>
-                                            <input onChange={this.addTrainingEnglishNameHandler} className="form-control" style={{ width: "100%", minWidth: "250px" }} onKeyDown={this.nameInputHandler} type="text" />
+                                            <input onChange={this.addTrainingEnglishNameHandler} className="form-control add" style={{ width: "100%", minWidth: "250px" }} type="text" />
                                         </div>
                                     </div>
                                     <div style={{ display: "flex", justifyContent: "space-around" }}>
                                         <div className="form-group" controlId="formBasicEmail">
                                             <label style={{ width: "100%", textAlign: "right" }}>من: </label>
-                                            <input onChange={this.addTrainingFromDateHandler} className="form-control" style={{ width: "100%", minWidth: "250px" }} onKeyDown={this.nameInputHandler} type="date" />
+                                            <input onChange={this.addTrainingFromDateHandler} className="form-control add" style={{ width: "100%", minWidth: "250px" }} type="date" />
                                         </div>
                                         <div className="form-group" controlId="formBasicEmail">
                                             <label style={{ width: "100%", textAlign: "right" }}>إلى: </label>
-                                            <input onChange={this.addTrainingToDateHandler} className="form-control" style={{ width: "100%", minWidth: "250px" }} onKeyDown={this.nameInputHandler} type="date" />
+                                            <input onChange={this.addTrainingToDateHandler} className="form-control add" style={{ width: "100%", minWidth: "250px" }} type="date" />
                                         </div>
                                     </div>
                                     <div style={{ display: "flex", justifyContent: "space-around" }}>
                                         <div className="form-group" controlId="formBasicEmail">
                                             <label style={{ width: "100%", textAlign: "right" }}>نوع التدريب : </label>
-                                            <select onChange={this.addTrainingTypeHandler} id="empapp" style={{ height: 30, width: "100%", minWidth: "200px" }}>
+                                            <select className="add" onChange={this.addTrainingTypeHandler} id="empapp" style={{ height: 30, width: "100%", minWidth: "200px" }}>
                                                 <option selected>أخرى</option>
                                                 <option selected>مؤتمر</option>
                                                 <option selected>ملتقى</option>
@@ -450,7 +440,7 @@ class EmpTraining extends React.Component {
                                         </div>
                                         <div className="form-group" controlId="formBasicEmail">
                                             <label style={{ width: "100%", textAlign: "right" }}> نوع المكان : </label>
-                                            <select onChange={this.addTrainingPlaceTypeHandler} id="empapp" style={{ height: 30, width: "100%", minWidth: "200px" }}>
+                                            <select className="add" onChange={this.addTrainingPlaceTypeHandler} id="empapp" style={{ height: 30, width: "100%", minWidth: "200px" }}>
                                                 <option >داخلي</option>
                                                 <option >خارجي</option>
                                                 <option selected>اختر ...</option>
@@ -460,7 +450,7 @@ class EmpTraining extends React.Component {
                                     <div style={{ display: "flex", justifyContent: "space-around" }}>
                                         <div className="form-group" controlId="formBasicEmail">
                                             <label style={{ width: "100%", textAlign: "right" }}>مكان التدريب : </label>
-                                            <input onChange={this.addTrainingPlaceHandler} className="form-control" style={{ width: "100%", minWidth: "650px" }} type="text" />
+                                            <input onChange={this.addTrainingPlaceHandler} className="form-control add" style={{ width: "100%", minWidth: "650px" }} type="text" />
                                         </div>
                                     </div>
                                     <button onClick={this.handleDataToSend} style={{ width: "92%", margin: "0 auto" }} type="button" class="btn btn-primary btn-block">إضافة تدريب جديد</button>
