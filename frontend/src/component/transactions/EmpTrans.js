@@ -26,7 +26,7 @@ class EmpTrans extends React.Component {
             edit: false, empid: null, empname: null, transdate: null, jdname: null,
             supboxname: null, gname: null, jasi: null, indname: null, catname: null,
             catid: null, supboxid: null, mainboxid: null, levels: null, showStructWAdd: false,
-            showStruct: false, showNamesResults: false, index: null, jobDgByCat: [{ data: [" "], IdNum: 0 }], empavailsup:[{data: [" "], IdNumSP: 0}]
+            showStruct: false, showNamesResultsForAdd: false, showNamesResultsForSearch: false, index: null, jobDgByCat: [{ data: [" "], IdNum: 0 }], empavailsup: [{ data: [" "], IdNumSP: 0 }]
         };
 
     }
@@ -46,7 +46,7 @@ class EmpTrans extends React.Component {
         if (e.key === 'Enter') {
             this.props.getEmpName(e.target.value)
             this.props.getEmpTrans(e.target.value, "")
-            this.setState({ edit: false, empid: e.target.value})
+            this.setState({ edit: false, empid: e.target.value })
         }
     }
 
@@ -192,7 +192,7 @@ class EmpTrans extends React.Component {
                 empavailsup: newArrOfSp
             })
 
-          })
+        })
 
         this.setState({
             jdNameAdd: newArr,
@@ -715,6 +715,14 @@ class EmpTrans extends React.Component {
                                             </div>
                                         </div>
                                     </div>
+                                    {this.state.showNamesResultsForAdd ? <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}>
+                                        <select onClick={this.namesOptionshandler} style={styles} multiple name="pets" id="pet-select">
+                                            {this.props.empNameByName.map((name => (
+                                                <option>{name.NAME_ARABIC}</option>
+                                            )))}
+                                        </select>
+                                    </div> : null}
+
                                     <table class="table table-striped table-bordered table-hover">
                                         <thead>
                                             <tr>
@@ -762,11 +770,11 @@ class EmpTrans extends React.Component {
                                                 </td>
                                                 <td>
                                                     <select required className="supbox" ref="sps" style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 188 }} onChange={this.addSupboxClickHandeler}>
-                                                    {firstRenderSp ? firstRenderSp.length == 1 ? firstRenderSp[0].data.map(job => (
+                                                        {firstRenderSp ? firstRenderSp.length == 1 ? firstRenderSp[0].data.map(job => (
                                                             <option supboxid={job.SUP_BOX_ID}>
                                                                 {job.SUP_BOX_NAME}
                                                             </option>
-                                                        )): null: null}
+                                                        )) : null : null}
                                                         <option selected>اختر ...</option>
                                                     </select>
                                                 </td>
@@ -848,7 +856,7 @@ class EmpTrans extends React.Component {
                                                         </td>
                                                         <td>
                                                             <select className="supbox" required ref="sps" style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 188 }} onChange={this.addSupboxClickHandeler}>
-                                                            {secondRenderSp ? secondRenderSp.length == 1 ? secondRenderSp[0].data.map(job => (
+                                                                {secondRenderSp ? secondRenderSp.length == 1 ? secondRenderSp[0].data.map(job => (
                                                                     <option supboxid={job.SUP_BOX_ID}>
                                                                         {job.SUP_BOX_NAME}
                                                                     </option>
@@ -933,7 +941,7 @@ class EmpTrans extends React.Component {
                                                         </td>
                                                         <td>
                                                             <select className="supbox" required ref="sps" style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 188 }} onChange={this.addSupboxClickHandeler}>
-                                                            {thirdRenderSp ? thirdRenderSp.length == 1 ? thirdRenderSp[0].data.map(job => (
+                                                                {thirdRenderSp ? thirdRenderSp.length == 1 ? thirdRenderSp[0].data.map(job => (
                                                                     <option supboxid={job.SUP_BOX_ID}>
                                                                         {job.SUP_BOX_NAME}
                                                                     </option>
@@ -1018,11 +1026,11 @@ class EmpTrans extends React.Component {
                                                         </td>
                                                         <td>
                                                             <select className="supbox" required ref="sps" style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 188 }} onChange={this.addSupboxClickHandeler}>
-                                                            {fourthRenderp ? fourthRenderp.length == 1 ? fourthRenderp[0].data.map(job => (
+                                                                {fourthRenderp ? fourthRenderp.length == 1 ? fourthRenderp[0].data.map(job => (
                                                                     <option supboxid={job.SUP_BOX_ID}>
                                                                         {job.SUP_BOX_NAME}
                                                                     </option>
-                                                                )) : null: null}
+                                                                )) : null : null}
                                                                 <option selected>اختر ...</option>
                                                             </select>
                                                         </td>
@@ -1103,11 +1111,11 @@ class EmpTrans extends React.Component {
                                                         </td>
                                                         <td>
                                                             <select className="supbox" required ref="sps" style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 188 }} onChange={this.addSupboxClickHandeler}>
-                                                            {fifthRenderSp ? fifthRenderSp.length == 1 ? fifthRenderSp[0].data.map(job => (
+                                                                {fifthRenderSp ? fifthRenderSp.length == 1 ? fifthRenderSp[0].data.map(job => (
                                                                     <option supboxid={job.SUP_BOX_ID}>
                                                                         {job.SUP_BOX_NAME}
                                                                     </option>
-                                                                )): null : null}
+                                                                )) : null : null}
                                                                 <option selected>اختر ...</option>
                                                             </select>
                                                         </td>
@@ -1189,11 +1197,11 @@ class EmpTrans extends React.Component {
                                                         </td>
                                                         <td>
                                                             <select className="supbox" required ref="sps" style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 188 }} onChange={this.addSupboxClickHandeler}>
-                                                            {sixthRenderSp ? sixthRenderSp.length == 1 ? sixthRenderSp[0].data.map(job => (
+                                                                {sixthRenderSp ? sixthRenderSp.length == 1 ? sixthRenderSp[0].data.map(job => (
                                                                     <option supboxid={job.SUP_BOX_ID}>
                                                                         {job.SUP_BOX_NAME}
                                                                     </option>
-                                                                )) : null: null}
+                                                                )) : null : null}
                                                                 <option selected>اختر ...</option>
                                                             </select>
                                                         </td>
@@ -1274,13 +1282,6 @@ class EmpTrans extends React.Component {
                             </div> : null : null : null}
                     </div> : null}
 
-                {this.state.showNamesResults ? <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}>
-                    <select onClick={this.namesOptionshandler} style={styles} multiple name="pets" id="pet-select">
-                        {this.props.empNameByName.map((name => (
-                            <option>{name.NAME_ARABIC}</option>
-                        )))}
-                    </select>
-                </div> : null}
 
                 <div class="row">
                     <div class="col-lg-12">
@@ -1297,11 +1298,18 @@ class EmpTrans extends React.Component {
                                     <span>رقم الأداء : </span><input ref="empid" onKeyDown={this.idInputHandlerForSearch} style={{ background: "white", width: "40%", marginBottom: 5, marginRight: 5, border: "1px solid black" }} type="text" name="first_name" />
                                 </div>
                                 <div style={{ marginTop: 20, marginRight: 0, width: "70%" }} class="input-group">
-                                    <span >الإسم : </span><input ref="name" onKeyUp={this.idInputHandlerForSearch} style={{ background: "white", width: "80%", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
+                                    <span >الإسم : </span><input ref="name" onKeyUp={this.nameInputHandlerForSearch} style={{ background: "white", width: "80%", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
                                 </div>
                                 <button onClick={this.addNewButtonClickHandeler} style={{ position: "relative", right: 20, top: 8 }} type="button" class="btn btn-primary">إضافة تدرج جديد</button>
                             </div>
                         </div>
+                        {this.state.showNamesResultsForAdd ? <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}>
+                            <select onClick={this.namesOptionshandler} style={styles} multiple name="pets" id="pet-select">
+                                {this.props.empNameByName.map((name => (
+                                    <option>{name.NAME_ARABIC}</option>
+                                )))}
+                            </select>
+                        </div> : null}
                     </div>
 
 
