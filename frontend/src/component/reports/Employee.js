@@ -1,8 +1,8 @@
 import React, { Fragment } from "react";
 import {
-    getEmpDetails, getUpJd, getEmpAppraisal, getEmpEdu, getEmpFamily, getEmpNameByName
+    getEmpDetails, getUpJd, getEmpAppraisal, getEmpEdu, getEmpNameByName
 } from "../../actions/Actions";
-import { getEmpTrans, getEmpExp } from "../../actions/TransActions"
+import { getEmpTrans, getEmpExp, getEmpFamily } from "../../actions/TransActions"
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -14,7 +14,7 @@ class Employee extends React.Component {
         super(props);
         this.state = {
 
-            add: false, showNamesResults: false,addEmpId: "",addEmpName:"", addDoc: "", addDoj: "", addCj: "", addJasf: "", addMangement: "",
+            add: false, showNamesResults: false, addEmpId: "", addEmpName: "", addDoc: "", addDoj: "", addCj: "", addJasf: "", addMangement: "",
             addaos: "", addStation: "", addArea: "", addGovern: "", addJS: "", addEmpNid: "",
             addPOIssuance: "", addDOIssuance: "", addinsuranceNum: "", addinsuranceOffice: "", addAddress: "", addMPhoneNum: "",
             addHPhoneNum: "", addOPhoneNum: "", addEmail: "", addMarStatus: "", addSyndicateType: "", addMemberShipNum: "",
@@ -62,7 +62,7 @@ class Employee extends React.Component {
         let addGob = `"${state.addGob}"`
 
         let data = [
-            empid,empname,doc, addcj, addjasf, addjasf, addMangement, addaos, addStation, addArea, addGovern
+            empid, empname, doc, addcj, addjasf, addjasf, addMangement, addaos, addStation, addArea, addGovern
             , addJS, addEmpNid, addPOIssuance, addDOIssuance, addinsuranceNum, addinsuranceOffice, addAddress,
             addMPhoneNum, addHPhoneNum, addOPhoneNum, addOPhoneNum, addEmail, addMarStatus, addSyndicateType, addMemberShipNum,
             addMemberShipDate, addMirStatus, addDaysCountMir, addMonthsCountMir, addYearsCountMir, addRetirementDate, addSexType,
@@ -75,7 +75,7 @@ class Employee extends React.Component {
 
 
         if (
-            state.addDoc.length < 1 ||  state.addCj.length < 1 || state.addJasf.length < 1 || state.addMangement.length < 1 ||
+            state.addDoc.length < 1 || state.addCj.length < 1 || state.addJasf.length < 1 || state.addMangement.length < 1 ||
             state.addaos.length < 1 || state.addStation.length < 1 || state.addArea.length < 1 || state.addGovern.length < 1 || state.addJS.length < 1 ||
             state.addEmpNid.length < 1 || state.addPOIssuance.length < 1 || state.addDOIssuance.length < 1 || state.addinsuranceNum.length < 1 ||
             state.addinsuranceOffice.length < 1 || state.addAddress.length < 1 || state.addMPhoneNum.length < 1 || state.addHPhoneNum.length < 1 ||
@@ -100,7 +100,7 @@ class Employee extends React.Component {
         })
     }
 
-    
+
     addEmpNameHandler = (e) => {
         this.setState({
             addEmpName: e.target.value

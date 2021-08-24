@@ -425,12 +425,14 @@ function updateEmpTrans(req, res, next) {
 function getAvailSupBox(req, res, next) {
     const catname = req.params.catname
     const jdname = req.params.jdname
+    
 
     let query = `SELECT SUP_BOX_NAME, SUP_BOX_ID from a_sup_box WHERE MAIN_BOX_ID IN(SELECT a_main_box.MAIN_BOX_ID FROM a_main_box JOIN a_job_dgree JOIN a_category ON a_main_box.J_D_ID = a_job_dgree.J_D_ID AND a_main_box.CAT_ID = a_category.CAT_ID WHERE a_category.CAT_NAME = "${catname}" AND a_job_dgree.J_D_NAME = "${jdname}")`
     db.query(query, (err, details) => {
         if (err) {
             next(err);
         } else {
+            console.log(details);
             res.send(details);
         }
     })

@@ -1,10 +1,10 @@
 import React, { Fragment } from "react";
 import {
-    getEmpFamily, getEmpName, getEmpNameByName
+    getEmpName, getEmpNameByName
 } from "../../actions/Actions";
 
 import {
-    submitNewFamily
+    submitNewFamily,getEmpFamily,
 } from "../../actions/TransActions"
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";

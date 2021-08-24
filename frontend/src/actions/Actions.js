@@ -13,7 +13,6 @@ import {
   fetchEmpAppraisal,
   fetchEmpTrans,
   fetchEmpEdu,
-  fetchEmpFamily,
   fetchEmpNameByName,
   fetchCurrentjd,
   fetchavailjd,
@@ -89,7 +88,7 @@ export const getCates = () => (dispatch) => {
 }
 
 // planandorganize folder
-export const getJobDgByCat = (val, mainboxid) => (dispatch) => {
+export const getJobDgByCat =  (val) => async (dispatch) => {
   axios.get(`http://localhost:5000/getjobdgbycat/${val}`).then((res => {
     dispatch({
       type: fetchJobByCat,
@@ -202,15 +201,7 @@ export const getEmpEdu = (empid, empname) => (dispatch) => {
   })
 }
 
-export const getEmpFamily = (empid, empname) => (dispatch) => {
-  axios.get(`http://localhost:5000/getempfamily/?empid=${empid}&empname=${empname}`).then(res => {
-    dispatch({
-      type: fetchEmpFamily,
-      payload: res.data
-    })
-  })
 
-}
 
 export const getCurrentJd = (empid) => (dispatch) => {
   axios.get(`http://localhost:5000/currentjd/${empid}`).then(res => {

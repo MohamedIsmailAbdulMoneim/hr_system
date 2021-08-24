@@ -26,18 +26,13 @@ class EmpTrans extends React.Component {
             edit: false, empid: null, empname: null, transdate: null, jdname: null,
             supboxname: null, gname: null, jasi: null, indname: null, catname: null,
             catid: null, supboxid: null, mainboxid: null, levels: null, showStructWAdd: false,
-            showStruct: false, showNamesResults: false, index: null
+            showStruct: false, showNamesResults: false, index: null, jobDgByCat: [{ data: [" "], IdNum: 0 }], empavailsup:[{data: [" "], IdNumSP: 0}]
         };
 
     }
-
-
-
     componentDidMount() {
 
     }
-
-
     /* 
     
     --------------------
@@ -46,20 +41,95 @@ class EmpTrans extends React.Component {
     
     */
 
+    idInputHandlerForSearch = (e) => {
+        this.refs.name.value = ''
+        if (e.key === 'Enter') {
+            this.props.getEmpName(e.target.value)
+            this.props.getEmpTrans(e.target.value, "")
+            this.setState({ edit: false, empid: e.target.value})
+        }
+    }
+
+    idInputHandlerForAdd = (e) => {
+        this.refs.nameadd.value = ''
+        this.setState({ empidForAdd: e.target.value, empnameForAdd: null })
+        if (e.target.value.length == 0) {
+            this.setState({ empidForAdd: null })
+        }
+    }
+
+    nameInputHandlerForSearch = (e) => {
+        this.setState({ showNamesResultsForSearch: true, showFamilyResult: false })
+        this.props.getEmpNameByName(e.target.value)
+        this.refs.empid.value = ''
+        if (e.key === 'Enter') {
+            this.props.getEmpTrans("", e.target.value)
+        }
+    }
+
+    nameInputHandlerForAdd = (e) => {
+        this.setState({ showNamesResultsForAdd: true, empidForAdd: null, empnameForAdd: e.target.value })
+        this.props.getEmpNameByName(e.target.value)
+        if (e.target.value.length == 0) {
+            this.setState({ empnameForAdd: null })
+        }
+        this.refs.idadd.value = ''
+    }
+
+    namesOptionshandlerForSearch = (e) => {
+        this.refs.name.value = e.target.value
+        this.props.getEmpFamily("", e.target.value)
+        this.setState({ showFamilyResult: true, showMaritalstate: true })
+    }
+    namesOptionshandlerForAdd = (e) => {
+        this.setState({
+            empnameForAdd: e.target.value, empidForAdd: null
+        })
+        if (this.refs.nameadd) this.refs.nameadd.value = e.target.value
+    }
+
+
+
+    /* ---------------------------------------------------------------- */
+
     handelAddDateClick = (e) => {
         let nodes = document.getElementsByClassName("date");
         let index = Array.prototype.indexOf.call(nodes, e.target);
-        let newArr = this.state.catnameAdd.slice()
+        let newArr = this.state.addDate.slice()
         newArr[index] = { value: e.target.value, key: index }
         this.setState({
             addDate: newArr
         })
     }
-
     tabhandler = (e) => {
         let nodes = document.getElementsByClassName("ind");
         let index = Array.prototype.indexOf.call(nodes, e.target);
-        if (e.key === 'Tab' && index == nodes.length - 1) {
+        if (e.key === 'Tab' && index == nodes.length - 1 || this.state.trnasLength <= 6) {
+            if (this.state.trnasLength < 5) {
+
+                this.setState(prevState => {
+                    return {
+                        trnasLength: prevState.trnasLength + 1,
+                        addDate: [...this.state.addDate, " "],
+                        catnameAdd: [...this.state.catnameAdd, " "],
+                        jdNameAdd: [...this.state.jdNameAdd, " "],
+                        addSupbox: [...this.state.addSupbox, " "],
+                        addGName: [...this.state.addGName, " "],
+                        addJasi: [...this.state.addJasi, " "],
+                        addInd: [...this.state.addInd, " "],
+                        jobDgByCat: [...this.state.jobDgByCat, { data: [" "], IdNum: prevState.trnasLength + 1 }],
+                        empavailsup: [...this.state.empavailsup, { data: [" "], IdNumSP: prevState.trnasLength + 1 }]
+
+
+                    }
+                })
+            }
+        }
+    }
+
+    addTrans = (e) => {
+        e.preventDefault()
+        if (this.state.trnasLength < 5) {
             this.setState(prevState => {
                 return {
                     trnasLength: prevState.trnasLength + 1,
@@ -70,48 +140,33 @@ class EmpTrans extends React.Component {
                     addGName: [...this.state.addGName, " "],
                     addJasi: [...this.state.addJasi, " "],
                     addInd: [...this.state.addInd, " "],
+                    jobDgByCat: [...this.state.jobDgByCat, { data: [" "], IdNum: prevState.trnasLength + 1 }],
+                    empavailsup: [...this.state.empavailsup, { data: [" "], IdNumSP: prevState.trnasLength + 1 }],
+
                 }
             })
         }
-    }
-
-    addTrans = (e) => {
-        e.preventDefault()
-        length++
-        this.setState(prevState => {
-            return {
-                trnasLength: prevState.trnasLength + 1,
-                addDate: [...this.state.addDate, " "],
-                catnameAdd: [...this.state.catnameAdd, " "],
-                jdNameAdd: [...this.state.jdNameAdd, " "],
-                addSupbox: [...this.state.addSupbox, " "],
-                addGName: [...this.state.addGName, " "],
-                addJasi: [...this.state.addJasi, " "],
-                addInd: [...this.state.addInd, " "],
-            }
-        })
 
     }
 
     addCatClickHandeler = (e) => {
-        this.props.getJobDgByCat(e.target.value)
         let nodes = document.getElementsByClassName("cate");
         let index = Array.prototype.indexOf.call(nodes, e.target);
-        e.target.parentNode.nextSibling.childNodes[0].setAttribute('id', this.state.trnasLength)
-        console.log(e.target.parentNode.nextSibling.childNodes[0].getAttribute('id'));
-        if(this.state.trnasLength != 1){
-            document.getElementById(e.target.parentNode.nextSibling.childNodes[0].getAttribute('id')).innerHTML = `${this.props.jobdgbycat.map(job => (
-                `<option>${job.J_D_NAME}</option>`
-            ))}`
-        }
-
-        let newArrOfjd = this.state.jdNameAdd.slice()
+        // e.target.parentNode.nextSibling.childNodes[0].setAttribute('id', this.state.trnasLength)
         let newArr = this.state.catnameAdd.slice()
+        let jdNodes = document.getElementsByClassName("jd")
+        let jdIndex = Array.prototype.indexOf.call(jdNodes, e.target.parentNode.nextSibling.childNodes[0]);
+        let newArrOfJd = this.state.jobDgByCat.slice()
+        axios.get(`http://localhost:5000/getjobdgbycat/${e.target.value}`).then((res => {
+            newArrOfJd[jdIndex] = { data: res.data, IdNum: e.target.getAttribute("idNum") }
+            this.setState({
+                jobDgByCat: newArrOfJd
+            })
+        }))
+
         newArr[index] = { value: e.target.value, key: index }
-        newArrOfjd[index] = { value: "", key: index }
         this.setState({
             catnameAdd: newArr,
-            jdNameAdd: newArrOfjd,
             index: index,
         })
         // if (this.refs.selected) {
@@ -122,20 +177,25 @@ class EmpTrans extends React.Component {
     }
 
     addJdNameClickHandeler = (e) => {
-        console.log(this.refs.ddd)
 
         this.setState({ showStructWAdd: false, jdname: e.target.value, levels: this.props.jobdgbycat ? this.props.jobdgbycat.length ? this.props.jobdgbycat[0].levels : null : null })
         let nodes = document.getElementsByClassName("jd");
         let index = Array.prototype.indexOf.call(nodes, e.target);
-        let newArrOfSb = this.state.addSupbox.slice()
-        this.props.getAvailSupBox(this.state.catnameAdd[index].value, e.target.value)
-        let newArr = this.state.catnameAdd.slice()
+        let newArr = this.state.jdNameAdd.slice()
         newArr[index] = { value: e.target.value, key: index }
-        newArrOfSb[index] = { value: "", key: index }
+        let spNodes = document.getElementsByClassName("supbox")
+        let spIndex = Array.prototype.indexOf.call(spNodes, e.target.parentNode.nextSibling.childNodes[0]);
+        let newArrOfSp = this.state.empavailsup.slice()
+        axios.get(`http://localhost:5000/getavailsupbox/${e.target.parentNode.previousSibling.childNodes[0].value}/${e.target.value}`).then(res => {
+            newArrOfSp[spIndex] = { data: res.data, IdNumSP: e.target.getAttribute("IdNumSP") }
+            this.setState({
+                empavailsup: newArrOfSp
+            })
+
+          })
 
         this.setState({
             jdNameAdd: newArr,
-            addSupbox: newArrOfSb
         })
         // if (this.refs.sps) {
         //     if (this.refs.sps.options) {
@@ -148,7 +208,7 @@ class EmpTrans extends React.Component {
     addSupboxClickHandeler = (e) => {
         let nodes = document.getElementsByClassName("supbox");
         let index = Array.prototype.indexOf.call(nodes, e.target);
-        let newArr = this.state.catnameAdd.slice()
+        let newArr = this.state.addSupbox.slice()
         newArr[index] = { value: e.target.value, key: index }
         this.setState({
             addSupbox: newArr,
@@ -160,7 +220,7 @@ class EmpTrans extends React.Component {
     addGNameClickeHandeler = (e) => {
         let nodes = document.getElementsByClassName("gname");
         let index = Array.prototype.indexOf.call(nodes, e.target);
-        let newArr = this.state.catnameAdd.slice()
+        let newArr = this.state.addGName.slice()
         newArr[index] = { value: e.target.value, key: index }
         this.setState({
             addGName: newArr,
@@ -170,9 +230,8 @@ class EmpTrans extends React.Component {
     addJasiClickeHandeler = (e) => {
         let nodes = document.getElementsByClassName("jas");
         let index = Array.prototype.indexOf.call(nodes, e.target);
-        let newArr = this.state.catnameAdd.slice()
+        let newArr = this.state.addJasi.slice()
         newArr[index] = { value: e.target.value, key: index }
-        console.log(index);
         this.setState({
             addJasi: newArr
         })
@@ -181,7 +240,7 @@ class EmpTrans extends React.Component {
     addIndClickeHandeler = (e) => {
         let nodes = document.getElementsByClassName("ind");
         let index = Array.prototype.indexOf.call(nodes, e.target);
-        let newArr = this.state.catnameAdd.slice()
+        let newArr = this.state.addInd.slice()
         newArr[index] = { value: e.target.value, key: index }
         this.setState({
             addInd: newArr
@@ -202,6 +261,12 @@ class EmpTrans extends React.Component {
             while (i > 0) {
                 let smallArr = []
                 var arrloop = arrays.filter(el => el.key == i - 1)
+                let nameOrId;
+                if (this.state.empnameForAdd) {
+                    nameOrId = `((SELECT NATIONAL_ID_CARD_NO FROM employee WHERE NAME_ARABIC = "${this.state.empnameForAdd}")`
+                } else if (this.state.empidForAdd) {
+                    nameOrId = `((SELECT NATIONAL_ID_CARD_NO FROM employee WHERE EMPLOYEE_ID = ${this.state.empidForAdd})`
+                }
                 smallArr.push(arrloop[0].value)
                 smallArr.push(arrloop[1].value)
                 smallArr.push(arrloop[2].value)
@@ -213,6 +278,7 @@ class EmpTrans extends React.Component {
                 i--
             }
         }
+        console.log(arrays);
         console.log(arr);
 
         this.setState({
@@ -220,21 +286,14 @@ class EmpTrans extends React.Component {
         })
     }
 
-
-    addNewHandler = (e) => {
-        this.setState({ addConfirmed: true })
-    }
-
     idInputAddHandler = (e) => {
         this.setState({ showTransResult: false })
         this.props.getEmpName(e.target.value)
-        // this.setState({ showStruct: false, showStructWAdd: false, edit: false, empid: e.target.value, showTransResult: true })
 
         let selectTags = document.getElementsByTagName('select')
         for (let index = 0; index < selectTags.length; index++) {
             document.getElementsByTagName('select')[index].selectedIndex = document.getElementsByTagName('select')[index].options.length - 1
         }
-        // console.log(document.getElementsByTagName('select')[0].options.length);
     }
 
     nameInputAddHandler = (e) => {
@@ -410,7 +469,6 @@ class EmpTrans extends React.Component {
         if (e.key === 'Enter') {
             this.props.getEmpTrans("", e.target.value)
             this.props.getCurrentJd(e.target.value)
-
             this.setState({ showTransResult: true, empid: e.target.value })
             // window.history.replaceState(null, "New Page Title", "/emptrans/goes/here")
             // this.props.history.push(window.location.pathname + "?" + currentUrlParams.toString());
@@ -567,13 +625,19 @@ class EmpTrans extends React.Component {
         let newArrOfGname = [...this.state.addGName]
         let newArrOfJasi = [...this.state.addJasi]
         let newArrOfInd = [...this.state.addInd]
-        newArrOfDate.shift()
-        newArrOfCat.shift()
-        newArrOfJd.shift()
-        newArrOfSupBox.shift()
-        newArrOfGname.shift()
-        newArrOfJasi.shift()
-        newArrOfInd.shift()
+        let newArrOfJobDgByCat = [...this.state.jobDgByCat]
+        let newArrOfempavailsup = [...this.state.empavailsup]
+
+
+        newArrOfDate.pop()
+        newArrOfCat.pop()
+        newArrOfJd.pop()
+        newArrOfSupBox.pop()
+        newArrOfGname.pop()
+        newArrOfJasi.pop()
+        newArrOfInd.pop()
+        newArrOfJobDgByCat.pop()
+        newArrOfempavailsup.pop()
         if (this.state.trnasLength !== 0) {
             this.setState(prevState => {
                 return {
@@ -585,111 +649,31 @@ class EmpTrans extends React.Component {
                     addGName: newArrOfGname,
                     addJasi: newArrOfJasi,
                     addInd: newArrOfInd,
+                    jobDgByCat: newArrOfJobDgByCat,
+                    empavailsup: newArrOfempavailsup
                 }
             })
         }
     }
-
-
-
-    transRender = (transes) => {
-
-        let trnas = []
-        for (let i = 0; i <= transes; i++) {
-            if (i > 0) {
-                trnas.push(
-                    <tr>
-                        <td>
-                            <input index={this.makeClouser(length)(1)} required className="date" onChange={this.handelAddDateClick} type="date" style={{ fontSize: "10pt", background: "white", marginTop: 5, marginRight: 5, height: 25, width: 130, border: "1px solid black" }} />
-                        </td>
-                        <td>
-                            <select className="cate" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 170 }} onChange={this.addCatClickHandeler}>
-                                {this.props.cates.map(cate => (
-                                    <Fragment>
-                                        <option id={cate.CAT_ID}>
-                                            {cate.CAT_NAME}
-                                        </option>
-                                    </Fragment>
-                                ))}
-                                <option selected>
-                                    اختر ...
-                                </option>
-                            </select>
-                        </td>
-                        <td>
-                            <select className="jd transaddidjd" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 120 }} onChange={this.addJdNameClickHandeler}>
-                                {this.state.trnasLength == 1 ? this.props.jobdgbycat.map(job => (
-                                    <option>{job.J_D_NAME}</option>
-                                )): null}
-                                <option selected>اختر ...</option>
-
-                            </select>
-                        </td>
-                        <td>
-                            <select className="supbox" required ref="sps" style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 188 }} onChange={this.addSupboxClickHandeler}>
-                                {this.state.trnasLength == this.state.trnasLength ? this.props.empavailsup.map(job => (
-                                    <option supboxid={job.SUP_BOX_ID}>
-                                        {job.SUP_BOX_NAME}
-                                    </option>
-                                )) : null}
-                                <option selected>اختر ...</option>
-                            </select>
-                        </td>
-                        <td>
-                            <select className="gname" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 6, height: 25, width: 50 }} onChange={this.addGNameClickeHandeler}>
-                                <option>فني</option>
-                                <option>إداري</option>
-                                <option selected>اختر ...</option>
-                            </select>
-                        </td>
-                        <td>
-                            <select className="jas" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 6, height: 25, width: 120 }} onChange={this.addJasiClickeHandeler}>
-                                <option>أخرى</option>
-                                <option>تعيين</option>
-                                <option>نقل</option>
-                                <option>ندب</option>
-                                <option>اعاره</option>
-                                <option>تكليف</option>
-                                <option>محدد المدة</option>
-                                <option>تدريب</option>
-                                <option>ترقية</option>
-                                <option>تثبيت</option>
-                                <option>نقل طبقا لتعديل تنظيمي</option>
-                                <option>إعادة تعيين</option>
-                                <option>إلغاء ندب</option>
-                                <option>إلغاء تكليف</option>
-                                <option>تسكين</option>
-                                <option>تعديل مسمى الوظيفة</option>
-                                <option>عقد مؤقت</option>
-                                <option>مكافئة شاملة</option>
-                                <option>تعديل ندب</option>
-                                <option>إشراف</option>
-                                <option>الحاق</option>
-                                <option>عقد إختبار</option>
-                                <option>إنهاء خدمة</option>
-                                <option>أستيعاب</option>
-                                <option selected>اختر ...</option>
-                            </select>
-                        </td>
-                        <td>
-                            <select className="ind" onKeyDown={this.tabhandler} required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 50 }} onChange={this.addIndClickeHandeler}>
-                                <option>أصلية</option>
-                                <option>حالية</option>
-                                <option>سابقة</option>
-                                <option selected>اختر  ...</option>
-                            </select>
-                        </td>
-                    </tr>
-                )
-            }
-        }
-        return trnas;
-    };
-
-
     render() {
+        let jobDgByCat = this.state.jobDgByCat
+        let firstRender = jobDgByCat.filter(el => el.IdNum == "0" && el.data.length >= 1)
+        let secondRender = jobDgByCat.filter(el => el.IdNum == "1" && el.data.length >= 1)
+        let thirdRender = jobDgByCat.filter(el => el.IdNum == "2" && el.data.length >= 1)
+        let fourthRender = jobDgByCat.filter(el => el.IdNum == "3" && el.data.length >= 1)
+        let fifthRender = jobDgByCat.filter(el => el.IdNum == "4" && el.data.length >= 1)
+        let sixthRender = jobDgByCat.filter(el => el.IdNum == "5" && el.data.length >= 1)
 
-        console.log(this.state.finalData);
+        let empavailsup = this.state.empavailsup
+        let firstRenderSp = empavailsup.filter(el => el.IdNumSP == "0" && el.data.length >= 1)
+        let secondRenderSp = empavailsup.filter(el => el.IdNumSP == "1" && el.data.length >= 1)
+        let thirdRenderSp = empavailsup.filter(el => el.IdNumSP == "2" && el.data.length >= 1)
+        let fourthRenderp = empavailsup.filter(el => el.IdNumSP == "3" && el.data.length >= 1)
+        let fifthRenderSp = empavailsup.filter(el => el.IdNumSP == "4" && el.data.length >= 1)
+        let sixthRenderSp = empavailsup.filter(el => el.IdNumSP == "5" && el.data.length >= 1)
+
+
+
 
         const styles = {
             display: "block",
@@ -716,18 +700,18 @@ class EmpTrans extends React.Component {
                                     <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt", display: "flex", justifyContent: "space-between" }} class="panel-heading">
                                         {this.state.add ? <i onClick={this.closeAddSectionHandler} style={{ fontSize: 15 }} class="fas fa-times-circle"></i> : null}
                                         <span>إضافة تدرج جديد</span>
-                                        <input onClick={this.addNewHandler} style={{ fontSize: 20 }} type="submit" class="btn btn-primary" value="اضف" />
+                                        <div></div>
                                     </div>
                                     <ImportExcel data={this.ImportExcelHandler} />
                                     <div style={{ marginRight: 20, display: "flex", justifyContent: "center", alignItems: "center", marginLeft: 40 }}>
                                         <div style={{ display: "flex", justifyContent: "space-between" }}>
                                             <div className="form-group" controlId="formBasicEmail">
                                                 <label style={{ width: "100%", textAlign: "right" }}>رقم الأداء : </label>
-                                                <input id="empid" ref="empid" className="form-control" onKeyDown={this.idInputHandler} style={{ background: "white", width: "40%", marginBottom: 5, marginRight: 5, border: "1px solid black" }} type="text" name="first_name" />
+                                                <input id="empid" ref="idadd" className="form-control" onKeyDown={this.idInputHandlerForAdd} style={{ background: "white", width: "40%", marginBottom: 5, marginRight: 5, border: "1px solid black" }} type="text" name="first_name" />
                                             </div>
                                             <div className="form-group" controlId="formBasicEmail">
                                                 <label style={{ width: "100%", textAlign: "right" }}>الإسم : </label>
-                                                <input id="name" id="empname" className="form-control" onChange={this.nameInputHandler} style={{ background: "white", width: "100%", minWidth: "250px", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
+                                                <input id="name" id="nameadd" className="form-control" onChange={this.nameInputHandlerForAdd} style={{ background: "white", width: "100%", minWidth: "250px", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
                                             </div>
                                         </div>
                                     </div>
@@ -749,7 +733,7 @@ class EmpTrans extends React.Component {
                                                     <input required className="date" onChange={this.handelAddDateClick} type="date" style={{ fontSize: "10pt", background: "white", marginTop: 5, marginRight: 5, height: 25, width: 130, border: "1px solid black" }} />
                                                 </td>
                                                 <td>
-                                                    <select className="cate" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 170 }} onChange={this.addCatClickHandeler}>
+                                                    <select IdNum={0} className="cate" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 170 }} onChange={this.addCatClickHandeler}>
                                                         {this.props.cates.map(cate => (
                                                             <Fragment>
                                                                 <option id={cate.CAT_ID}>
@@ -763,23 +747,26 @@ class EmpTrans extends React.Component {
                                                     </select>
                                                 </td>
                                                 <td>
-                                                    <select className="jd" required ref="selected" style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 120 }} onChange={this.addJdNameClickHandeler}>
-                                                        {this.props.jobdgbycat.map(job => (
+                                                    <select IdNumSP={0} className="jd" required ref="selected" style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 120 }} onChange={this.addJdNameClickHandeler}>
+                                                        {/* {this.props.jobdgbycat ? this.props.jobdgbycat.length ? this.props.jobdgbycat[0].data.map(job => ( */}
+                                                        {firstRender ? firstRender.length == 1 ? firstRender[0].data.map(job => (
                                                             <option>
                                                                 {job.J_D_NAME}
                                                             </option>
-                                                        ))}
+                                                        )) : null : null}
+
+                                                        // )) : null : null }
                                                         <option selected>اختر ...</option>
 
                                                     </select>
                                                 </td>
                                                 <td>
                                                     <select required className="supbox" ref="sps" style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 188 }} onChange={this.addSupboxClickHandeler}>
-                                                        {this.props.empavailsup.map(job => (
+                                                    {firstRenderSp ? firstRenderSp.length == 1 ? firstRenderSp[0].data.map(job => (
                                                             <option supboxid={job.SUP_BOX_ID}>
                                                                 {job.SUP_BOX_NAME}
                                                             </option>
-                                                        ))}
+                                                        )): null: null}
                                                         <option selected>اختر ...</option>
                                                     </select>
                                                 </td>
@@ -828,7 +815,434 @@ class EmpTrans extends React.Component {
                                                     </select>
                                                 </td>
                                             </tr>
-                                            {this.state.trnasLength === 0 ? null : this.transRender(this.state.trnasLength)}
+                                            {this.state.trnasLength > 0 ?
+                                                <Fragment>
+                                                    <tr>
+                                                        <td>
+                                                            <input index={this.makeClouser(length)(1)} required className="date" onChange={this.handelAddDateClick} type="date" style={{ fontSize: "10pt", background: "white", marginTop: 5, marginRight: 5, height: 25, width: 130, border: "1px solid black" }} />
+                                                        </td>
+                                                        <td>
+                                                            <select IdNum={1} className="cate" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 170 }} onChange={this.addCatClickHandeler}>
+                                                                {this.props.cates.map(cate => (
+                                                                    <Fragment>
+                                                                        <option id={cate.CAT_ID}>
+                                                                            {cate.CAT_NAME}
+                                                                        </option>
+                                                                    </Fragment>
+                                                                ))}
+                                                                <option selected>
+                                                                    اختر ...
+                                                                </option>
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <select IdNumSP={1} className="jd transaddidjd" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 120 }} onChange={this.addJdNameClickHandeler}>
+                                                                {secondRender ? secondRender.length == 1 ? secondRender[0].data.map(job => (
+                                                                    <option>
+                                                                        {job.J_D_NAME}
+                                                                    </option>
+                                                                )) : null : null}
+                                                                <option selected>اختر ...</option>
+
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <select className="supbox" required ref="sps" style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 188 }} onChange={this.addSupboxClickHandeler}>
+                                                            {secondRenderSp ? secondRenderSp.length == 1 ? secondRenderSp[0].data.map(job => (
+                                                                    <option supboxid={job.SUP_BOX_ID}>
+                                                                        {job.SUP_BOX_NAME}
+                                                                    </option>
+                                                                )) : null : null}
+                                                                <option selected>اختر ...</option>
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <select className="gname" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 6, height: 25, width: 50 }} onChange={this.addGNameClickeHandeler}>
+                                                                <option>فني</option>
+                                                                <option>إداري</option>
+                                                                <option selected>اختر ...</option>
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <select className="jas" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 6, height: 25, width: 120 }} onChange={this.addJasiClickeHandeler}>
+                                                                <option>أخرى</option>
+                                                                <option>تعيين</option>
+                                                                <option>نقل</option>
+                                                                <option>ندب</option>
+                                                                <option>اعاره</option>
+                                                                <option>تكليف</option>
+                                                                <option>محدد المدة</option>
+                                                                <option>تدريب</option>
+                                                                <option>ترقية</option>
+                                                                <option>تثبيت</option>
+                                                                <option>نقل طبقا لتعديل تنظيمي</option>
+                                                                <option>إعادة تعيين</option>
+                                                                <option>إلغاء ندب</option>
+                                                                <option>إلغاء تكليف</option>
+                                                                <option>تسكين</option>
+                                                                <option>تعديل مسمى الوظيفة</option>
+                                                                <option>عقد مؤقت</option>
+                                                                <option>مكافئة شاملة</option>
+                                                                <option>تعديل ندب</option>
+                                                                <option>إشراف</option>
+                                                                <option>الحاق</option>
+                                                                <option>عقد إختبار</option>
+                                                                <option>إنهاء خدمة</option>
+                                                                <option>أستيعاب</option>
+                                                                <option selected>اختر ...</option>
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <select className="ind" onKeyDown={this.tabhandler} required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 50 }} onChange={this.addIndClickeHandeler}>
+                                                                <option>أصلية</option>
+                                                                <option>حالية</option>
+                                                                <option>سابقة</option>
+                                                                <option selected>اختر  ...</option>
+                                                            </select>
+                                                        </td>
+                                                    </tr>
+                                                </Fragment> : null}
+                                            {this.state.trnasLength > 1 ?
+                                                <Fragment>
+                                                    <tr>
+                                                        <td>
+                                                            <input required className="date" onChange={this.handelAddDateClick} type="date" style={{ fontSize: "10pt", background: "white", marginTop: 5, marginRight: 5, height: 25, width: 130, border: "1px solid black" }} />
+                                                        </td>
+                                                        <td>
+                                                            <select IdNum={2} className="cate" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 170 }} onChange={this.addCatClickHandeler}>
+                                                                {this.props.cates.map(cate => (
+                                                                    <Fragment>
+                                                                        <option id={cate.CAT_ID}>
+                                                                            {cate.CAT_NAME}
+                                                                        </option>
+                                                                    </Fragment>
+                                                                ))}
+                                                                <option selected>
+                                                                    اختر ...
+                                                                </option>
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <select IdNumSP={2} className="jd transaddidjd" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 120 }} onChange={this.addJdNameClickHandeler}>
+                                                                {thirdRender ? thirdRender.length == 1 ? thirdRender[0].data.map(job => (
+                                                                    <option>{job.J_D_NAME}</option>
+                                                                )) : null : null}
+                                                                <option selected>اختر ...</option>
+
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <select className="supbox" required ref="sps" style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 188 }} onChange={this.addSupboxClickHandeler}>
+                                                            {thirdRenderSp ? thirdRenderSp.length == 1 ? thirdRenderSp[0].data.map(job => (
+                                                                    <option supboxid={job.SUP_BOX_ID}>
+                                                                        {job.SUP_BOX_NAME}
+                                                                    </option>
+                                                                )) : null : null}
+                                                                <option selected>اختر ...</option>
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <select className="gname" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 6, height: 25, width: 50 }} onChange={this.addGNameClickeHandeler}>
+                                                                <option>فني</option>
+                                                                <option>إداري</option>
+                                                                <option selected>اختر ...</option>
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <select className="jas" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 6, height: 25, width: 120 }} onChange={this.addJasiClickeHandeler}>
+                                                                <option>أخرى</option>
+                                                                <option>تعيين</option>
+                                                                <option>نقل</option>
+                                                                <option>ندب</option>
+                                                                <option>اعاره</option>
+                                                                <option>تكليف</option>
+                                                                <option>محدد المدة</option>
+                                                                <option>تدريب</option>
+                                                                <option>ترقية</option>
+                                                                <option>تثبيت</option>
+                                                                <option>نقل طبقا لتعديل تنظيمي</option>
+                                                                <option>إعادة تعيين</option>
+                                                                <option>إلغاء ندب</option>
+                                                                <option>إلغاء تكليف</option>
+                                                                <option>تسكين</option>
+                                                                <option>تعديل مسمى الوظيفة</option>
+                                                                <option>عقد مؤقت</option>
+                                                                <option>مكافئة شاملة</option>
+                                                                <option>تعديل ندب</option>
+                                                                <option>إشراف</option>
+                                                                <option>الحاق</option>
+                                                                <option>عقد إختبار</option>
+                                                                <option>إنهاء خدمة</option>
+                                                                <option>أستيعاب</option>
+                                                                <option selected>اختر ...</option>
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <select className="ind" onKeyDown={this.tabhandler} required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 50 }} onChange={this.addIndClickeHandeler}>
+                                                                <option>أصلية</option>
+                                                                <option>حالية</option>
+                                                                <option>سابقة</option>
+                                                                <option selected>اختر  ...</option>
+                                                            </select>
+                                                        </td>
+                                                    </tr>
+                                                </Fragment> : null}
+                                            {this.state.trnasLength > 2 ?
+                                                <Fragment>
+                                                    <tr>
+                                                        <td>
+                                                            <input index={this.makeClouser(length)(1)} required className="date" onChange={this.handelAddDateClick} type="date" style={{ fontSize: "10pt", background: "white", marginTop: 5, marginRight: 5, height: 25, width: 130, border: "1px solid black" }} />
+                                                        </td>
+                                                        <td>
+                                                            <select IdNum={3} className="cate" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 170 }} onChange={this.addCatClickHandeler}>
+                                                                {this.props.cates.map(cate => (
+                                                                    <Fragment>
+                                                                        <option id={cate.CAT_ID}>
+                                                                            {cate.CAT_NAME}
+                                                                        </option>
+                                                                    </Fragment>
+                                                                ))}
+                                                                <option selected>
+                                                                    اختر ...
+                                                                </option>
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <select IdNumSP={3} className="jd transaddidjd" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 120 }} onChange={this.addJdNameClickHandeler}>
+                                                                {fourthRender ? fourthRender.length == 1 ? fourthRender[0].data.map(job => (
+                                                                    <option>{job.J_D_NAME}</option>
+                                                                )) : null : null}
+                                                                <option selected>اختر ...</option>
+
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <select className="supbox" required ref="sps" style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 188 }} onChange={this.addSupboxClickHandeler}>
+                                                            {fourthRenderp ? fourthRenderp.length == 1 ? fourthRenderp[0].data.map(job => (
+                                                                    <option supboxid={job.SUP_BOX_ID}>
+                                                                        {job.SUP_BOX_NAME}
+                                                                    </option>
+                                                                )) : null: null}
+                                                                <option selected>اختر ...</option>
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <select className="gname" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 6, height: 25, width: 50 }} onChange={this.addGNameClickeHandeler}>
+                                                                <option>فني</option>
+                                                                <option>إداري</option>
+                                                                <option selected>اختر ...</option>
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <select className="jas" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 6, height: 25, width: 120 }} onChange={this.addJasiClickeHandeler}>
+                                                                <option>أخرى</option>
+                                                                <option>تعيين</option>
+                                                                <option>نقل</option>
+                                                                <option>ندب</option>
+                                                                <option>اعاره</option>
+                                                                <option>تكليف</option>
+                                                                <option>محدد المدة</option>
+                                                                <option>تدريب</option>
+                                                                <option>ترقية</option>
+                                                                <option>تثبيت</option>
+                                                                <option>نقل طبقا لتعديل تنظيمي</option>
+                                                                <option>إعادة تعيين</option>
+                                                                <option>إلغاء ندب</option>
+                                                                <option>إلغاء تكليف</option>
+                                                                <option>تسكين</option>
+                                                                <option>تعديل مسمى الوظيفة</option>
+                                                                <option>عقد مؤقت</option>
+                                                                <option>مكافئة شاملة</option>
+                                                                <option>تعديل ندب</option>
+                                                                <option>إشراف</option>
+                                                                <option>الحاق</option>
+                                                                <option>عقد إختبار</option>
+                                                                <option>إنهاء خدمة</option>
+                                                                <option>أستيعاب</option>
+                                                                <option selected>اختر ...</option>
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <select className="ind" onKeyDown={this.tabhandler} required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 50 }} onChange={this.addIndClickeHandeler}>
+                                                                <option>أصلية</option>
+                                                                <option>حالية</option>
+                                                                <option>سابقة</option>
+                                                                <option selected>اختر  ...</option>
+                                                            </select>
+                                                        </td>
+                                                    </tr>
+                                                </Fragment> : null}
+                                            {this.state.trnasLength > 3 ?
+                                                <Fragment>
+                                                    <tr>
+                                                        <td>
+                                                            <input index={this.makeClouser(length)(1)} required className="date" onChange={this.handelAddDateClick} type="date" style={{ fontSize: "10pt", background: "white", marginTop: 5, marginRight: 5, height: 25, width: 130, border: "1px solid black" }} />
+                                                        </td>
+                                                        <td>
+                                                            <select IdNum={4} className="cate" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 170 }} onChange={this.addCatClickHandeler}>
+                                                                {this.props.cates.map(cate => (
+                                                                    <Fragment>
+                                                                        <option id={cate.CAT_ID}>
+                                                                            {cate.CAT_NAME}
+                                                                        </option>
+                                                                    </Fragment>
+                                                                ))}
+                                                                <option selected>
+                                                                    اختر ...
+                                                                </option>
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <select IdNumSP={4} className="jd transaddidjd" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 120 }} onChange={this.addJdNameClickHandeler}>
+                                                                {fifthRender ? fifthRender.length == 1 ? fifthRender[0].data.map(job => (
+                                                                    <option>{job.J_D_NAME}</option>
+                                                                )) : null : null}
+                                                                <option selected>اختر ...</option>
+
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <select className="supbox" required ref="sps" style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 188 }} onChange={this.addSupboxClickHandeler}>
+                                                            {fifthRenderSp ? fifthRenderSp.length == 1 ? fifthRenderSp[0].data.map(job => (
+                                                                    <option supboxid={job.SUP_BOX_ID}>
+                                                                        {job.SUP_BOX_NAME}
+                                                                    </option>
+                                                                )): null : null}
+                                                                <option selected>اختر ...</option>
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <select className="gname" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 6, height: 25, width: 50 }} onChange={this.addGNameClickeHandeler}>
+                                                                <option>فني</option>
+                                                                <option>إداري</option>
+                                                                <option selected>اختر ...</option>
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <select className="jas" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 6, height: 25, width: 120 }} onChange={this.addJasiClickeHandeler}>
+                                                                <option>أخرى</option>
+                                                                <option>تعيين</option>
+                                                                <option>نقل</option>
+                                                                <option>ندب</option>
+                                                                <option>اعاره</option>
+                                                                <option>تكليف</option>
+                                                                <option>محدد المدة</option>
+                                                                <option>تدريب</option>
+                                                                <option>ترقية</option>
+                                                                <option>تثبيت</option>
+                                                                <option>نقل طبقا لتعديل تنظيمي</option>
+                                                                <option>إعادة تعيين</option>
+                                                                <option>إلغاء ندب</option>
+                                                                <option>إلغاء تكليف</option>
+                                                                <option>تسكين</option>
+                                                                <option>تعديل مسمى الوظيفة</option>
+                                                                <option>عقد مؤقت</option>
+                                                                <option>مكافئة شاملة</option>
+                                                                <option>تعديل ندب</option>
+                                                                <option>إشراف</option>
+                                                                <option>الحاق</option>
+                                                                <option>عقد إختبار</option>
+                                                                <option>إنهاء خدمة</option>
+                                                                <option>أستيعاب</option>
+                                                                <option selected>اختر ...</option>
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <select className="ind" onKeyDown={this.tabhandler} required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 50 }} onChange={this.addIndClickeHandeler}>
+                                                                <option>أصلية</option>
+                                                                <option>حالية</option>
+                                                                <option>سابقة</option>
+                                                                <option selected>اختر  ...</option>
+                                                            </select>
+                                                        </td>
+                                                    </tr>
+                                                </Fragment> : null}
+                                            {this.state.trnasLength > 4 ?
+                                                <Fragment>
+                                                    <tr>
+                                                        <td>
+                                                            <input index={this.makeClouser(length)(1)} required className="date" onChange={this.handelAddDateClick} type="date" style={{ fontSize: "10pt", background: "white", marginTop: 5, marginRight: 5, height: 25, width: 130, border: "1px solid black" }} />
+                                                        </td>
+                                                        <td>
+                                                            <select IdNum={5} className="cate" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 170 }} onChange={this.addCatClickHandeler}>
+                                                                {this.props.cates.map(cate => (
+                                                                    <Fragment>
+                                                                        <option id={cate.CAT_ID}>
+                                                                            {cate.CAT_NAME}
+                                                                        </option>
+                                                                    </Fragment>
+                                                                ))}
+                                                                <option selected>
+                                                                    اختر ...
+                                                                </option>
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <select IdNumSP={5} className="jd transaddidjd" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 120 }} onChange={this.addJdNameClickHandeler}>
+                                                                {sixthRender ? sixthRender.length == 1 ? sixthRender[0].data.map(job => (
+
+                                                                    <option>{job.J_D_NAME}</option>
+                                                                )) : null : null}
+                                                                <option selected>اختر ...</option>
+
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <select className="supbox" required ref="sps" style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 188 }} onChange={this.addSupboxClickHandeler}>
+                                                            {sixthRenderSp ? sixthRenderSp.length == 1 ? sixthRenderSp[0].data.map(job => (
+                                                                    <option supboxid={job.SUP_BOX_ID}>
+                                                                        {job.SUP_BOX_NAME}
+                                                                    </option>
+                                                                )) : null: null}
+                                                                <option selected>اختر ...</option>
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <select className="gname" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 6, height: 25, width: 50 }} onChange={this.addGNameClickeHandeler}>
+                                                                <option>فني</option>
+                                                                <option>إداري</option>
+                                                                <option selected>اختر ...</option>
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <select className="jas" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 6, height: 25, width: 120 }} onChange={this.addJasiClickeHandeler}>
+                                                                <option>أخرى</option>
+                                                                <option>تعيين</option>
+                                                                <option>نقل</option>
+                                                                <option>ندب</option>
+                                                                <option>اعاره</option>
+                                                                <option>تكليف</option>
+                                                                <option>محدد المدة</option>
+                                                                <option>تدريب</option>
+                                                                <option>ترقية</option>
+                                                                <option>تثبيت</option>
+                                                                <option>نقل طبقا لتعديل تنظيمي</option>
+                                                                <option>إعادة تعيين</option>
+                                                                <option>إلغاء ندب</option>
+                                                                <option>إلغاء تكليف</option>
+                                                                <option>تسكين</option>
+                                                                <option>تعديل مسمى الوظيفة</option>
+                                                                <option>عقد مؤقت</option>
+                                                                <option>مكافئة شاملة</option>
+                                                                <option>تعديل ندب</option>
+                                                                <option>إشراف</option>
+                                                                <option>الحاق</option>
+                                                                <option>عقد إختبار</option>
+                                                                <option>إنهاء خدمة</option>
+                                                                <option>أستيعاب</option>
+                                                                <option selected>اختر ...</option>
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <select className="ind" onKeyDown={this.tabhandler} required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 50 }} onChange={this.addIndClickeHandeler}>
+                                                                <option>أصلية</option>
+                                                                <option>حالية</option>
+                                                                <option>سابقة</option>
+                                                                <option selected>اختر  ...</option>
+                                                            </select>
+                                                        </td>
+                                                    </tr>
+                                                </Fragment> : null}
                                         </tbody>
                                     </table>
                                     <button onClick={this.addTrans} style={{ float: "right", minWidth: 50, marginBottom: 5, marginRight: 12, maxHeight: 25 }}><i class="fas fa-plus"></i>
@@ -880,10 +1294,10 @@ class EmpTrans extends React.Component {
                             </div>
                             <div style={{ marginRight: 20, display: "flex", justifyContent: "center", alignItems: "center", marginLeft: 40 }}>
                                 <div style={{ marginTop: 20, marginLeft: 0, width: "30%" }} class="input-group">
-                                    <span>رقم الأداء : </span><input ref="empid" onKeyDown={this.idInputHandler} style={{ background: "white", width: "40%", marginBottom: 5, marginRight: 5, border: "1px solid black" }} type="text" name="first_name" />
+                                    <span>رقم الأداء : </span><input ref="empid" onKeyDown={this.idInputHandlerForSearch} style={{ background: "white", width: "40%", marginBottom: 5, marginRight: 5, border: "1px solid black" }} type="text" name="first_name" />
                                 </div>
                                 <div style={{ marginTop: 20, marginRight: 0, width: "70%" }} class="input-group">
-                                    <span >الإسم : </span><input ref="searchName" onKeyUp={this.nameInputHandler} style={{ background: "white", width: "80%", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
+                                    <span >الإسم : </span><input ref="name" onKeyUp={this.idInputHandlerForSearch} style={{ background: "white", width: "80%", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
                                 </div>
                                 <button onClick={this.addNewButtonClickHandeler} style={{ position: "relative", right: 20, top: 8 }} type="button" class="btn btn-primary">إضافة تدرج جديد</button>
                             </div>
@@ -1085,283 +1499,3 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps, {
     getEmpTrans, getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox, getUpJd, gitDownJd, updateEmpTrans
 })(EmpTrans);
-
-
-{/* <table class="table table-striped table-bordered table-hover" id="dataTables-example">
-{!this.state.edit && this.state.showTransResult ?
-    <Fragment>
-        <thead>
-            <tr>
-                {this.state.edit ? <th style={{ width: 250 }}>الإسم</th> : null}
-                <th style={{width: 110}}>الوظيفة</th>
-                <th style={{width: 220}}>المسمى الوظيفي</th>
-                <th style={{width: 90}}>تاريخ الحركة</th>
-                <th style={{width: 150}}>الإدارة</th>
-                <th style={{width: 90}}>طريقة شغل الوظيفة</th>
-                <th>نوع التخصص</th>
-                <th>حالة الوظيفة</th>
-                <th>تعديل</th>
-                <th>حذف</th>
-            </tr>
-        </thead>
-        {this.props.empTrans.map(trans => (
-            <tbody>
-                <tr>
-                    <td ref="jdname">{trans.MAIN_BOX_NAME}</td>
-                    <td ref="supboxname">{trans.SUP_BOX_NAME}</td>
-                    <td >{trans.TRANS_DATE}</td>
-                    <td ref="catname">{trans.catename}</td>
-                    <td ref="jasi">{trans.JOB_ASSIGNMENT_FORM_ARABIC}</td>
-                    <td ref="gname">{trans.G_NAME}</td>
-                    <td ref="indname">{trans.INDICATOR_NAME}</td>
-                    <td onClick={this.handelEdit_1}><i empname={trans.NAME_ARABIC} transdate={trans.TRANS_DATE} catid={trans.CAT_ID} catname={trans.CAT_NAME} mainboxid={trans.MAIN_BOX_ID} jdname={trans.MAIN_BOX_NAME} supboxid={trans.SUP_BOX_ID} supboxname={trans.SUP_BOX_NAME} jobgroup={trans.G_NAME} jasform={trans.JOB_ASSIGNMENT_FORM_ARABIC} indname={trans.INDICATOR_NAME} class="fas fa-edit"></i></td>
-                    <td><i class="fas fa-backspace"></i></td>
-                </tr>
-            </tbody>
-
-        ))}
-
-
-
-    </Fragment>
-
-    : !this.state.add && this.state.edit ?
-        <Fragment>
-
-            <thead>
-                <tr>
-                    <th>الإسم</th>
-                    <th>تاريخ الحركة</th>
-                    <th>الإدارة</th>
-                    <th>الوظيفة</th>
-                    <th>المسمى الوظيفي</th>
-                    <th>نوع التخصص</th>
-                    <th>طريقة شغل الوظيفة</th>
-                    <th>حالة الوظيفة</th>
-                    <th>تعديل</th>
-                    <th>حذف</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-
-                    <td style={{ width: 250 }} ><input type="text" placeholder={this.state.empname ? this.state.empname : null} disabled /></td>
-                    {this.state.showDateUnlessEdit ? <td><input onClick={this.editDate} type="text" id="date" onChange={this.handelDateClick} value={this.state.transdate ? this.state.transdate : null} style={{ display: "inline", width: 80 }} /></td>
-                        : <td><input type="date" id="date" onChange={this.handelDateClick} value={this.state.transdate ? this.state.transdate : null} style={{ display: "inline", width: 80 }} /></td>
-                    }
-                    <td><input placeholder={this.state.catname} /></td>
-                    <td>
-                        <select onChange={this.catClickHandeler}>
-                            {this.props.cates.map(cate => (
-                                <Fragment>
-                                    <option id={cate.CAT_ID}>
-                                        {cate.CAT_NAME}
-                                    </option>
-                                </Fragment>
-                            ))}
-                            <option selected>
-                                {this.state.catname}
-                            </option>
-                        </select>
-                    </td>
-                    <td>
-                        <select onChange={this.jdNameClickHandeler}>
-                            {this.props.jobdgbycat.map(job => (
-                                <option>
-                                    {job.J_D_NAME}
-                                </option>
-                            ))}
-                            <option selected>{this.state.jdname}</option>
-                        </select>
-                    </td>
-                    <td>
-                        <select required onChange={this.supboxClickHandeler}>
-                            {this.props.empavailsup.map(job => (
-                                <option>
-                                    {job.SUP_BOX_NAME}
-                                </option>
-                            ))}
-                            <option selected>{this.state.supboxname}</option>
-
-                        </select>
-                    </td>
-                    <td>
-                        <select required onChange={this.gNameClickeHandeler}>
-                            <option>فني</option>
-                            <option>إداري</option>
-                        </select>
-                    </td>
-                    <td>
-                        <select required onChange={this.jasiClickeHandeler}>
-                            <option>أخرى</option>
-                            <option>تعيين</option>
-                            <option>نقل</option>
-                            <option>ندب</option>
-                            <option>اعاره</option>
-                            <option>تكليف</option>
-                            <option>محدد المدة</option>
-                            <option>تدريب</option>
-                            <option>ترقية</option>
-                            <option>تثبيت</option>
-                            <option>نقل طبقا لتعديل تنظيمي</option>
-                            <option>إعادة تعيين</option>
-                            <option>إلغاء ندب</option>
-                            <option>إلغاء تكليف</option>
-                            <option>تسكين</option>
-                            <option>تعديل مسمى الوظيفة</option>
-                            <option>عقد مؤقت</option>
-                            <option>مكافئة شاملة</option>
-                            <option>تعديل ندب</option>
-                            <option>إشراف</option>
-                            <option>الحاق</option>
-                            <option>عقد إختبار</option>
-                            <option>إنهاء خدمة</option>
-                            <option>أستيعاب</option>
-                            <option selected>{this.state.jasi}</option>
-                        </select>
-                    </td>
-                    <td>
-                        <select required onChange={this.indClickeHandeler}>
-                            <option>أصلية</option>
-                            <option>حالية</option>
-                            <option>سابقة</option>
-                            <option selected>{this.state.indname}</option>
-                        </select></td>
-                    <td onClick={this.editHandler}><i class="fas fa-edit"></i></td>
-                    <td><i class="fas fa-backspace"></i></td>
-                </tr>
-            </tbody>
-        </Fragment>
-        : null}
-
-</table> */}
-
-
-
-
-
-{/* <div class="row">
-                            <div className="col-lg-12" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                                <div style={{ height: "100%", width: 750 }} class="panel panel-default">
-                                    <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }} class="panel-heading">
-                                        <span style={{ position: "relative", right: 50 }}>إضافة تدرج جديد</span> {this.state.edit ? <i onClick={this.closeEditSectionHandler} style={{ fontSize: 15, position: "relative", left: 530 }} class="fas fa-times-circle"></i> : null}
-                                        {this.state.add ? <i onClick={this.closeAddSectionHandler} style={{ fontSize: 15, position: "relative", top: 5, left: 380 }} class="fas fa-times-circle"></i> : null}
-                                        <input onClick={this.addNewHandler} style={{ position: "relative", right: 250, fontSize: 20 }} type="submit" class="btn btn-primary" value="اضف" />
-                                    </div>
-                                    <div style={{ display: "flex", marginTop: 5 }}>
-                                        <div style={{ marginRight: 20, marginTop: 5 }}>
-                                            <div className="col-lg-4">
-                                                <div class="input-group">
-                                                    <span >رقم الأداء :  </span><input onChange={this.idInputAddHandler} type="number" style={{ background: "white", marginTop: 5, marginRight: 5, height: 25, width: 188, border: "1px solid black" }} type="text" name="first_name" placeholder={this.props.empNameByName ? this.props.empNameByName.length >= 1 ? this.props.empNameByName[0].EMPLOYEE_ID : null : null} />
-                                                </div>
-                                                <div class="input-group">
-                                                    <span>الإسم :  </span><input ref="insertName" onChange={this.nameInputAddHandler} required style={{ background: "white", marginTop: 5, marginRight: 5, height: 25, width: 188, border: "1px solid black" }} type="text" name="first_name" placeholder={this.props.empname ? this.props.empname.length >= 1 ? this.props.empname[0].NAME_ARABIC : null : null || this.props.empNameByName ? this.props.empNameByName.length >= 1 ? this.props.empNameByName[0].NAME_ARABIC : null : null} />
-                                                </div>
-
-                                                <div class="input-group">
-                                                    <span>تاريخ الحركة :  </span><input required onChange={this.handelDateClick} type="date" style={{ background: "white", marginTop: 5, marginRight: 5, height: 25, width: 188, border: "1px solid black" }} />
-                                                </div>
-                                            </div>
-                                            <div className="col-lg-4">
-                                                <div class="input-group">
-                                                    <span>الإدارة :  </span>
-                                                    <select required style={{ marginTop: 5, marginRight: 5, height: 25, width: 188 }} onChange={this.catClickHandeler}>
-                                                        {this.props.cates.map(cate => (
-                                                            <Fragment>
-                                                                <option id={cate.CAT_ID}>
-                                                                    {cate.CAT_NAME}
-                                                                </option>
-                                                            </Fragment>
-                                                        ))}
-                                                        <option selected>
-                                                        </option>
-                                                    </select>
-                                                </div>
-                                                <div class="input-group">
-                                                    <span>الوظيفة :  </span>
-                                                    <select required ref="selected" style={{ marginTop: 5, marginRight: 5, height: 25, width: 188 }} onChange={this.jdNameClickHandeler}>
-                                                        {this.props.jobdgbycat.map(job => (
-                                                            <option>
-                                                                {job.J_D_NAME}
-                                                            </option>
-                                                        ))}
-                                                        <option selected>اختر الوظيفة</option>
-
-                                                    </select>
-                                                </div>
-                                                <div class="input-group">
-                                                    <span>المسمى الوظيفي :  </span>
-                                                    <select required ref="sps" style={{ marginTop: 5, marginRight: 5, height: 25, width: 188 }} onChange={this.supboxClickHandeler}>
-                                                        {this.props.empavailsup.map(job => (
-                                                            <option supboxid={job.SUP_BOX_ID}>
-                                                                {job.SUP_BOX_NAME}
-                                                            </option>
-                                                        ))}
-                                                        <option selected>اختر المسمى الوظيفي</option>
-
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div className="col-lg-4">
-                                                <div class="input-group">
-                                                    <span>نوع التخصص :  </span>
-                                                    <select required style={{ marginTop: 5, marginRight: 6, height: 25, width: 188 }} onChange={this.gNameClickeHandeler}>
-                                                        <option>فني</option>
-                                                        <option>إداري</option>
-                                                        <option selected>اختر نوع التخصص</option>
-                                                    </select>
-                                                </div>
-                                                <div class="input-group">
-                                                    <span>طريقة شغل الوظيفة :  </span>
-                                                    <select required style={{ marginTop: 5, marginRight: 6, height: 25, width: 188 }} onChange={this.jasiClickeHandeler}>
-                                                        <option>أخرى</option>
-                                                        <option>تعيين</option>
-                                                        <option>نقل</option>
-                                                        <option>ندب</option>
-                                                        <option>اعاره</option>
-                                                        <option>تكليف</option>
-                                                        <option>محدد المدة</option>
-                                                        <option>تدريب</option>
-                                                        <option>ترقية</option>
-                                                        <option>تثبيت</option>
-                                                        <option>نقل طبقا لتعديل تنظيمي</option>
-                                                        <option>إعادة تعيين</option>
-                                                        <option>إلغاء ندب</option>
-                                                        <option>إلغاء تكليف</option>
-                                                        <option>تسكين</option>
-                                                        <option>تعديل مسمى الوظيفة</option>
-                                                        <option>عقد مؤقت</option>
-                                                        <option>مكافئة شاملة</option>
-                                                        <option>تعديل ندب</option>
-                                                        <option>إشراف</option>
-                                                        <option>الحاق</option>
-                                                        <option>عقد إختبار</option>
-                                                        <option>إنهاء خدمة</option>
-                                                        <option>أستيعاب</option>
-                                                        <option selected>اختر ...</option>
-                                                    </select>
-                                                </div>
-                                                <div class="input-group">
-                                                    <span>حالة الوظيفة :  </span>
-                                                    <select required style={{ marginTop: 5, marginRight: 5, height: 25, width: 188 }} onChange={this.indClickeHandeler}>
-                                                        <option>أصلية</option>
-                                                        <option>حالية</option>
-                                                        <option>سابقة</option>
-                                                        <option selected>اختر  ...</option>
-
-                                                    </select>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                        <div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {this.state.addConfirmed ? <div style={{ width: "70%" }} class="alert alert-warning" role="alert"> هل انت متأكد من إضافة تدرج جديد ؟ <button onClick={this.handelInsertNewTrans} style={{ position: "absolute", left: "17%", top: "80%" }} type="button" class="btn btn-warning">تأكيد</button> <i onClick={this.closeAddConfirmHandler} style={{ fontSize: 15, position: "relative", top: "5%", left: "62%" }} class="fas fa-times-circle"></i></div> : null}
-
-
-                            </div>
-
-                        </div> */}
