@@ -32,20 +32,7 @@ function getJobDgByCat(req, res, next) {
             res.send(details);
         }
     })
-    // db.query(query, (err, details) => {
-    //     if (err) {
-    //         next(err);
-    //         db.query(`SELECT * ,maincate.MAIN_BOX_ID  FROM a_job_dgree JOIN( SELECT a_main_box.CAT_ID, a_main_box.MAIN_BOX_ID, a_main_box.J_D_ID, a_category.CAT_NAME FROM a_main_box JOIN a_category ON a_category.CAT_ID = a_main_box.CAT_ID ) AS maincate ON a_job_dgree.J_D_ID = maincate.J_D_ID WHERE maincate.CAT_NAME = "${catId}" `, (err, details) => {
-    //             if (err) {
-    //                 next(err)
-    //             } else {
-    //                 res.send(details.reverse());
-    //             }
-    //         })
-    //     } else {
-    //         res.send(details);
-    //     }
-    // })
+
 }
 
 function getSupBoxNames(req, res, next) {
@@ -148,23 +135,12 @@ function updateAppraisal(req, res, next) {
     })
 }
 
-// function getEmpTrans(req, res) {
-//     const empid = req.params.empid
-//     let query = `select * from a_job_trans JOIN employee JOIN job_assignment_form JOIN indicators JOIN a_sup_box JOIN a_category JOIN a_job_groups ON a_job_trans.G_ID = a_job_groups.G_ID AND a_category.CAT_ID = a_job_trans.CAT_ID AND a_sup_box.SUP_BOX_ID = a_job_trans.SUP_BOX_ID AND a_job_trans.NATIONAL_ID_CARD_NO = employee.NATIONAL_ID_CARD_NO AND a_job_trans.JOB_ASSIGNMENT_FORM = JOB_ASSIGNMENT_FORM.JOB_ASSIGNMENT_FORM AND a_job_trans.INDICATOR = indicators.INDICATOR WHERE employee.EMPLOYEE_ID = ${empid} ORDER by a_job_trans.TRANS_DATE`
-//     db.query(query, (err, details) => {
-//         if (err) {
-//         } else {
-//             res.send(details);
-//         }
-//     })
-// }
-
 function getEmpTrans(req, res, next) {
     const empid = req.query.empid
     const empname = req.query.empname
 
     let query = `select *, a_job_trans.SUP_BOX_NAME AS catename from a_job_trans JOIN employee JOIN job_assignment_form JOIN indicators JOIN a_sup_box JOIN a_category JOIN a_job_groups ON a_job_trans.G_ID = a_job_groups.G_ID AND a_category.CAT_ID = a_job_trans.CAT_ID AND a_sup_box.SUP_BOX_ID = a_job_trans.SUP_BOX_ID AND a_job_trans.NATIONAL_ID_CARD_NO = employee.NATIONAL_ID_CARD_NO AND a_job_trans.JOB_ASSIGNMENT_FORM = JOB_ASSIGNMENT_FORM.JOB_ASSIGNMENT_FORM AND a_job_trans.INDICATOR = indicators.INDICATOR WHERE ${empid.length !== 0 ? `employee.EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `employee.NAME_ARABIC = "${empname}"` : null} ORDER by a_job_trans.TRANS_DATE`
-
+    console.log('hit getemptrans');
     db.query(query, (err, details) => {
         if (err) {
             next(err);
@@ -253,9 +229,13 @@ function getEmpFamily(req, res, next) {
 }
 
 function postnewtrans(req, res, next) {
+    let query;
+    let data = req.body
+    let nameOrId = data[0][0].substring(1)
+    
 
-    let query = `
-    update a_job_trans set INDICATOR = 3 WHERE INDICATOR = 2 AND NATIONAL_ID_CARD_NO = (SELECT NATIONAL_ID_CARD_NO FROM employee WHERE EMPLOYEE_ID = ${req.body.empid});
+    query = 
+`   update a_job_trans set INDICATOR = 3 WHERE INDICATOR = 2 AND NATIONAL_ID_CARD_NO = ${nameOrId};
     INSERT INTO a_job_trans(
         NATIONAL_ID_CARD_NO,
         TRANS_DATE,
@@ -268,109 +248,33 @@ function postnewtrans(req, res, next) {
         JOB_ASSIGNMENT_FORM,
         INDICATOR,
         MAIN_BOX_NAME
-    )
-    VALUES(
-        (
-            SELECT
-            NATIONAL_ID_CARD_NO
-        FROM
-            employee
-        WHERE
-            EMPLOYEE_ID = ${req.body.empid}
-    ), "${req.body.transdate}",
-        (
-            SELECT
-            CAT_ID
-    FROM
-    a_category
-    WHERE
-    CAT_NAME = "${req.body.catname}"
-    ),
-    30,
-        (
-            SELECT
-            MAIN_BOX_ID
-    FROM
-    a_main_box
-    WHERE
-    J_D_ID = (
-        SELECT
-                J_D_ID
-    FROM
-    a_job_dgree
-    WHERE
-    J_D_NAME = "${req.body.jdname}"
-        ) AND CAT_ID = (
-        SELECT
-            CAT_ID
-    FROM
-    a_category
-    WHERE
-    CAT_NAME = "${req.body.catname}"
-    )
-    ),
-    (
-        SELECT
-            SUP_BOX_ID
-    FROM
-    a_sup_box
-    WHERE
-    SUP_BOX_NAME = "${req.body.supboxname}" AND MAIN_BOX_ID = (
-        SELECT
-            MAIN_BOX_ID
-    FROM
-    a_main_box
-    WHERE
-    J_D_ID = (
-        SELECT
-                J_D_ID
-    FROM
-    a_job_dgree
-    WHERE
-    J_D_NAME = "${req.body.jdname}"
-        ) AND CAT_ID = (
-        SELECT
-            CAT_ID
-    FROM
-    a_category
-    WHERE
-    CAT_NAME = "${req.body.catname}"
-    )))
-    ,
-    (
-        SELECT
-            G_ID
-    FROM
-    a_job_groups
-    WHERE
-    G_NAME = "${req.body.gname}"
-    ),
-    "${req.body.catname}",
-        (
-            SELECT
-            JOB_ASSIGNMENT_FORM
-    FROM
-    JOB_ASSIGNMENT_FORM
-    WHERE
-    JOB_ASSIGNMENT_FORM_ARABIC = "${req.body.jasi}"
-    ),
-    (
-        SELECT
-            INDICATOR
-    FROM
-    indicators
-    WHERE
-    INDICATOR_NAME = "${req.body.indname}"
-    ), "${req.body.jdname}")`
-
+    ) VALUES ${data};
+    select *, a_job_trans.SUP_BOX_NAME AS catename from a_job_trans JOIN employee JOIN job_assignment_form JOIN indicators JOIN a_sup_box JOIN a_category JOIN a_job_groups ON a_job_trans.G_ID = a_job_groups.G_ID AND a_category.CAT_ID = a_job_trans.CAT_ID AND a_sup_box.SUP_BOX_ID = a_job_trans.SUP_BOX_ID AND a_job_trans.NATIONAL_ID_CARD_NO = employee.NATIONAL_ID_CARD_NO AND a_job_trans.JOB_ASSIGNMENT_FORM = JOB_ASSIGNMENT_FORM.JOB_ASSIGNMENT_FORM AND a_job_trans.INDICATOR = indicators.INDICATOR WHERE employee.NATIONAL_ID_CARD_NO IN ${data[0][0].substring(1)} ORDER by a_job_trans.TRANS_DATE;
+    `
     db.query(query, (err, details) => {
         if (err) {
+            console.log(err);
             res.json({ msg: "يوجد خطاء بقاعدة البيانات", data: null })
         } else {
+            res.json({ data: details, msg: "تم إدخال البيانات بنجاح" });
+        }
+    })
+    console.log(query);
+
+
+}
+
+function postBulkTrans(req, res, next) {
+    let data = req.body
+    db.query(`INSERT INTO a_job_trans (NATIONAL_ID_CARD_NO, TRANS_DATE, CAT_ID,ORGANIZATION,MAIN_BOX_ID,SUP_BOX_ID,G_ID,SUP_BOX_NAME,JOB_ASSIGNMENT_FORM,INDICATOR,MAIN_BOX_NAME) VALUES ${data}`, function (err, data) {
+        if (err) {
+            next(err);
+            res.json({ data: null, msg: "يوجد خطاء بقاعدة البيانات" });
+        } else {
+            console.log(data);
             res.json({ data: data, msg: "تم إدخال البيانات بنجاح" });
         }
     })
-
 }
 
 
@@ -464,17 +368,7 @@ function newEmpExp(req, res, next) {
     })
 }
 
-function postBulkTrans(req, res, next) {
-    let data = req.body
-    db.query(`INSERT INTO a_job_trans (NATIONAL_ID_CARD_NO, TRANS_DATE, CAT_ID) VALUES ${data}`, function (err, data) {
-        if (err) {
-            next(err);
-            res.json({ data: null, msg: "يوجد خطاء بقاعدة البيانات" });
-        } else {
-            res.json({ data: data, msg: "تم إدخال البيانات بنجاح" });
-        }
-    })
-}
+
 
 function newFamily(req, res, next) {
     let data = req.body

@@ -43,6 +43,7 @@ export const NEW_EXP = "NEW-EMP-EXP"
 export const fetchCountEmpsInGoverns = "FETCH-COUNT-EMPS-IN-GOVERNS"
 export const fetchEmpPenalties = "FETCH-EMPS-PENALTIES"
 export const postNewFamilyMember = "POST-NEW-FAMILY-MEMBER"
+export const postNewTrans = "POST-NEW-TRANS"
 
 
 

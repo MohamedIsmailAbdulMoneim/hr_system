@@ -27,6 +27,7 @@ class Upload extends React.Component {
                     })
                     arr.shift()
                     this.props.data(arr)
+                    console.log(arr);
 
                 })
             }

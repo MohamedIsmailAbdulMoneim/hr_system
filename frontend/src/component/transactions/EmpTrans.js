@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 import {
     getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox, getUpJd, gitDownJd
 } from "../../actions/Actions";
-import { updateEmpTrans, getEmpTrans } from "../../actions/TransActions";
+import { updateEmpTrans, getEmpTrans, insertNewTrans } from "../../actions/TransActions";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -14,7 +14,6 @@ import structure from "../structure.png"
 
 let length = 0
 
-
 const colNames = [{ label: "الإسم", value: "name" }, { label: "تاريخ الحركة", value: "date" }, { label: "الإدارة", value: "dep" }, { label: "الوظيفة", value: "job" }, { label: "المسمى الوظيفي", value: "jobdesc" }, { label: "نوع التخصص", value: "gname" }, { label: "طريقة شغل الوظيفة", value: "jas" }, { label: "حالة الوظيفة", value: "ind" }]
 class EmpTrans extends React.Component {
     constructor(props) {
@@ -22,7 +21,7 @@ class EmpTrans extends React.Component {
         this.state = {
             addDate: [" "], catnameAdd: [" "], jdNameAdd: [" "], addSupbox: [" "], addGName: [" "], addJasi: [" "], addInd: [" "],
             trnasLength: 0, catnameChanged: false, rowTrans: null, editConfirmed: false,
-            addConfirmed: false, showDateUnlessEdit: true, showTransResult: true, add: false,
+            confirmAdd: false, showDateUnlessEdit: true, showTransResult: true, add: false,
             edit: false, empid: null, empname: null, transdate: null, jdname: null,
             supboxname: null, gname: null, jasi: null, indname: null, catname: null,
             catid: null, supboxid: null, mainboxid: null, levels: null, showStructWAdd: false,
@@ -186,8 +185,10 @@ class EmpTrans extends React.Component {
         let spNodes = document.getElementsByClassName("supbox")
         let spIndex = Array.prototype.indexOf.call(spNodes, e.target.parentNode.nextSibling.childNodes[0]);
         let newArrOfSp = this.state.empavailsup.slice()
+        
         axios.get(`http://localhost:5000/getavailsupbox/${e.target.parentNode.previousSibling.childNodes[0].value}/${e.target.value}`).then(res => {
             newArrOfSp[spIndex] = { data: res.data, IdNumSP: e.target.getAttribute("IdNumSP") }
+            console.log(res.data);
             this.setState({
                 empavailsup: newArrOfSp
             })
@@ -209,7 +210,9 @@ class EmpTrans extends React.Component {
         let nodes = document.getElementsByClassName("supbox");
         let index = Array.prototype.indexOf.call(nodes, e.target);
         let newArr = this.state.addSupbox.slice()
-        newArr[index] = { value: e.target.value, key: index }
+        let i =  e.target.options.selectedIndex
+
+        newArr[index] = { value: e.target.value, key: index, supboxid:e.target.options[i].getAttribute("supboxid") }
         this.setState({
             addSupbox: newArr,
             showStructWAdd: true
@@ -256,7 +259,8 @@ class EmpTrans extends React.Component {
         let arr = []
 
         if (emptyInputs != undefined) {
-        } else if (emptyInputs == undefined) {
+            console.log('hit');
+        } else if (emptyInputs == undefined && (this.state.empnameForAdd || this.state.empidForAdd)) {
             let i = arrays.length / 7
             while (i > 0) {
                 let smallArr = []
@@ -267,24 +271,52 @@ class EmpTrans extends React.Component {
                 } else if (this.state.empidForAdd) {
                     nameOrId = `((SELECT NATIONAL_ID_CARD_NO FROM employee WHERE EMPLOYEE_ID = ${this.state.empidForAdd})`
                 }
-                smallArr.push(arrloop[0].value)
-                smallArr.push(arrloop[1].value)
-                smallArr.push(arrloop[2].value)
-                smallArr.push(arrloop[3].value)
-                smallArr.push(arrloop[4].value)
-                smallArr.push(arrloop[5].value)
-                smallArr.push(arrloop[6].value)
+                smallArr.push(nameOrId)
+                smallArr.push(`"${arrloop[0].value}"`)
+                smallArr.push(`(SELECT CAT_ID FROM a_category WHERE CAT_NAME = "${arrloop[1].value}")`)
+                smallArr.push(30)
+                smallArr.push(`( SELECT MAIN_BOX_ID FROM a_sup_box WHERE SUP_BOX_ID = ${arrloop[3].supboxid})`)
+                smallArr.push(`${arrloop[3].supboxid}`)
+                smallArr.push(`(SELECT G_ID FROM a_job_groups WHERE G_NAME = "${arrloop[4].value}")`)
+                smallArr.push(`"${arrloop[1].value}"`)
+                smallArr.push(`(SELECT JOB_ASSIGNMENT_FORM FROM JOB_ASSIGNMENT_FORM WHERE JOB_ASSIGNMENT_FORM_ARABIC = "${arrloop[5].value}")`)
+                smallArr.push(`(SELECT INDICATOR FROM indicators WHERE INDICATOR_NAME = "${arrloop[6].value}")`)
+                smallArr.push(`"${arrloop[2].value}")`)
                 arr.push(smallArr)
                 i--
             }
+            this.setState({
+                confirmAdd: true, finalData: arr,
+            })
         }
         console.log(arrays);
         console.log(arr);
-
-        this.setState({
-            confirmAdd: true, finalData: arr
+    }
+    ImportExcelHandler = (data) => {
+        let newArr = []
+        // newSArr.push(`SELECT NATIONAL_ID_CARD_NO FROM employee WHERE NAME_ARABIC = ${data[0][0]}`)
+        data.forEach(arr => {
+            let newSArr = []
+            newSArr.push(`((SELECT NATIONAL_ID_CARD_NO FROM employee WHERE NAME_ARABIC = "${arr[0]}"), "${arr[1]}",
+            (SELECT CAT_ID FROM a_category WHERE CAT_NAME = "${arr[2]}"),30,
+            ( SELECT MAIN_BOX_ID FROM a_main_box WHERE J_D_ID =( SELECT J_D_ID FROM a_job_dgree WHERE J_D_NAME = "${arr[3]}") AND CAT_ID =( SELECT CAT_ID FROM a_category WHERE CAT_NAME = "${arr[2]}") LIMIT 1 ),
+            (SELECT SUP_BOX_ID FROM a_sup_box WHERE SUP_BOX_NAME = "${arr[4]}" AND MAIN_BOX_ID = ( SELECT MAIN_BOX_ID FROM a_main_box WHERE J_D_ID =( SELECT J_D_ID FROM a_job_dgree WHERE J_D_NAME = "${arr[3]}") AND CAT_ID =( SELECT CAT_ID FROM a_category WHERE CAT_NAME = "${arr[2]}") LIMIT 1 )),
+            (SELECT G_ID FROM a_job_groups WHERE G_NAME = "${arr[5]}"),"${arr[2]}",(SELECT JOB_ASSIGNMENT_FORM FROM JOB_ASSIGNMENT_FORM WHERE JOB_ASSIGNMENT_FORM_ARABIC = "${arr[6]}"),
+            (SELECT INDICATOR FROM indicators WHERE INDICATOR_NAME = "${arr[7]}"),"${arr[3]}"
+            )`)
+            newArr.push(newSArr)
+        })
+        axios({
+            method: "POST",
+            data: newArr,
+            withCredentials: true,
+            url: "http://localhost:5000/newbulktrans",
+            headers: { "Content-Type": "application/json" },
+        }).then((res) => {
+            console.log(res);
         })
     }
+
 
     idInputAddHandler = (e) => {
         this.setState({ showTransResult: false })
@@ -310,23 +342,6 @@ class EmpTrans extends React.Component {
         this.setState({ addConfirmed: false })
     }
 
-    ImportExcelHandler = (data) => {
-        let newArr = []
-        // newSArr.push(`SELECT NATIONAL_ID_CARD_NO FROM employee WHERE NAME_ARABIC = ${data[0][0]}`)
-        data.forEach(arr => {
-            let newSArr = []
-            newSArr.push(`((SELECT NATIONAL_ID_CARD_NO FROM employee WHERE NAME_ARABIC = "${arr[0]}"), "${arr[1]}",(SELECT CAT_ID FROM a_category WHERE CAT_NAME = "${arr[2]}"))`)
-            newArr.push(newSArr)
-        })
-        axios({
-            method: "POST",
-            data: newArr,
-            withCredentials: true,
-            url: "http://localhost:5000/newbulktrans",
-            headers: { "Content-Type": "application/json" },
-        }).then((res) => {
-        })
-    }
 
 
 
@@ -391,24 +406,8 @@ class EmpTrans extends React.Component {
 
     handelInsertNewTrans = (e) => {
         e.preventDefault()
-        const fd = {
-            empid: this.state.empid,
-            transdate: this.state.transdate,
-            jdname: this.state.jdname,
-            supboxname: this.state.supboxname,
-            gname: this.state.gname,
-            jasi: this.state.jasi,
-            indname: this.state.indname,
-            catname: this.state.catname,
-        };
-        axios({
-            method: "POST",
-            data: fd,
-            withCredentials: true,
-            url: "http://localhost:5000/postnewtrans",
-            headers: { "Content-Type": "application/json" },
-        }).then((res) => {
-        })
+        this.props.insertNewTrans(this.state.finalData)
+
     }
 
 
@@ -707,11 +706,11 @@ class EmpTrans extends React.Component {
                                         <div style={{ display: "flex", justifyContent: "space-between" }}>
                                             <div className="form-group" controlId="formBasicEmail">
                                                 <label style={{ width: "100%", textAlign: "right" }}>رقم الأداء : </label>
-                                                <input id="empid" ref="idadd" className="form-control" onKeyDown={this.idInputHandlerForAdd} style={{ background: "white", width: "40%", marginBottom: 5, marginRight: 5, border: "1px solid black" }} type="text" name="first_name" />
+                                                <input id="empid" ref="idadd" className="form-control" onChange={this.idInputHandlerForAdd} style={{ background: "white", width: "40%", marginBottom: 5, marginRight: 5, border: "1px solid black" }} type="text" name="first_name" />
                                             </div>
                                             <div className="form-group" controlId="formBasicEmail">
                                                 <label style={{ width: "100%", textAlign: "right" }}>الإسم : </label>
-                                                <input id="name" id="nameadd" className="form-control" onChange={this.nameInputHandlerForAdd} style={{ background: "white", width: "100%", minWidth: "250px", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
+                                                <input id="name" ref="nameadd" className="form-control" onChange={this.nameInputHandlerForAdd} style={{ background: "white", width: "100%", minWidth: "250px", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
                                             </div>
                                         </div>
                                     </div>
@@ -1261,7 +1260,7 @@ class EmpTrans extends React.Component {
 
 
                                 </div>
-                                {this.state.addConfirmed ? <div style={{ width: "70%" }} class="alert alert-warning" role="alert"> هل انت متأكد من إضافة تدرج جديد ؟ <button onClick={this.handelInsertNewTrans} style={{ position: "absolute", left: "17%", top: "80%" }} type="button" class="btn btn-warning">تأكيد</button> <i onClick={this.closeAddConfirmHandler} style={{ fontSize: 15, position: "relative", top: "5%", left: "62%" }} class="fas fa-times-circle"></i></div> : null}
+                                {this.state.confirmAdd ? <div style={{ width: "70%" }} class="alert alert-warning" role="alert"> هل انت متأكد من إضافة تدرج جديد ؟ <button onClick={this.handelInsertNewTrans} style={{ position: "absolute", left: "17%", top: "80%" }} type="button" class="btn btn-warning">تأكيد</button> <i onClick={this.closeAddConfirmHandler} style={{ fontSize: 15, position: "relative", top: "5%", left: "62%" }} class="fas fa-times-circle"></i></div> : null}
                             </div>
                         </div>
 
@@ -1298,7 +1297,7 @@ class EmpTrans extends React.Component {
                                     <span>رقم الأداء : </span><input ref="empid" onKeyDown={this.idInputHandlerForSearch} style={{ background: "white", width: "40%", marginBottom: 5, marginRight: 5, border: "1px solid black" }} type="text" name="first_name" />
                                 </div>
                                 <div style={{ marginTop: 20, marginRight: 0, width: "70%" }} class="input-group">
-                                    <span >الإسم : </span><input ref="name" onKeyUp={this.nameInputHandlerForSearch} style={{ background: "white", width: "80%", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
+                                    <span >الإسم : </span><input ref="name" onChange={this.nameInputHandlerForSearch} style={{ background: "white", width: "80%", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
                                 </div>
                                 <button onClick={this.addNewButtonClickHandeler} style={{ position: "relative", right: 20, top: 8 }} type="button" class="btn btn-primary">إضافة تدرج جديد</button>
                             </div>
@@ -1506,4 +1505,5 @@ const mapStateToProps = (state) => {
 };
 export default connect(mapStateToProps, {
     getEmpTrans, getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox, getUpJd, gitDownJd, updateEmpTrans
+    ,insertNewTrans
 })(EmpTrans);

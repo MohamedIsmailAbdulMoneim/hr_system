@@ -1,5 +1,7 @@
-import { NEW_APPRAISAL, updatetrans, fetchEmpTrans, updateAppraisal,  fetchEmpFamily,
-  FETCHEMPEXP, NEW_EXP,fetchEmpPenalties, postNewFamilyMember } from "../actions/ActionTypes";
+import {
+  NEW_APPRAISAL, updatetrans, fetchEmpTrans, updateAppraisal, fetchEmpFamily,
+  FETCHEMPEXP, NEW_EXP, fetchEmpPenalties, postNewFamilyMember,postNewTrans
+} from "../actions/ActionTypes";
 import axios from "axios";
 
 
@@ -25,6 +27,7 @@ export const newAppraisal = (obj) => (dispatch) => {
 }
 
 export const getEmpTrans = (empid, empname) => (dispatch) => {
+  console.log('hit getemptrans');
   axios.get(`http://localhost:5000/getemptrans/?empid=${empid}&empname=${empname}`).then(res => {
     dispatch({
       type: fetchEmpTrans,
@@ -94,8 +97,8 @@ export const newEmpExp = (data) => (dispatch) => {
 }
 
 export const getempspenalties = (nameOrId, penalty, year) => (dispatch) => {
-  
-  axios.get(`http://localhost:5000/getempspenalties/?nameorid=${nameOrId}&penalty=${penalty}&year=${year}`).then(res=> {
+
+  axios.get(`http://localhost:5000/getempspenalties/?nameorid=${nameOrId}&penalty=${penalty}&year=${year}`).then(res => {
     dispatch({
       type: fetchEmpPenalties,
       payload: res.data
@@ -114,20 +117,39 @@ export const getEmpFamily = (empid, empname) => (dispatch) => {
 
 }
 
-export const submitNewFamily =  (data) => async (dispatch) => {
+export const submitNewFamily = (data) => async (dispatch) => {
   let res = await axios({
-      method: "POST",
-      data,
-      withCredentials: true,
-      url: "http://localhost:5000/newfamily",
-      headers: { "Content-Type": "application/json" },
+    method: "POST",
+    data,
+    withCredentials: true,
+    url: "http://localhost:5000/newfamily",
+    headers: { "Content-Type": "application/json" },
   }).then((res) => {
     console.log(res.data);
     dispatch({
-      type:postNewFamilyMember,
+      type: postNewFamilyMember,
       payload: res.data
     })
   })
   return res;
+
+}
+
+export const insertNewTrans = (data) => (dispatch) => {
+  axios({
+    method: "POST",
+    data: data,
+    withCredentials: true,
+    url: "http://localhost:5000/postnewtrans",
+    headers: { "Content-Type": "application/json" },
+  }).then((res) => {
+    console.log(res.data);
+    dispatch({
+      type: postNewTrans,
+      payload: res.data
+    })
+  })
+
+
 
 }
