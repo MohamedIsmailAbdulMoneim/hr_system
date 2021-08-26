@@ -11,8 +11,6 @@ import {
   fetchEmpByDeps,
   fetchEmpName,
   fetchEmpAppraisal,
-  fetchEmpTrans,
-  fetchEmpEdu,
   fetchEmpNameByName,
   fetchCurrentjd,
   fetchavailjd,
@@ -21,14 +19,10 @@ import {
   fetchEmpDetails,
   fetchDownJd,
   fetchqn,
-  fetchuneschool,
-  fetchspecarabic,
   fetchemps,
   fetchgid
 } from "../actions/ActionTypes";
 import axios from "axios";
-
-let outDocsData = [];
 
 export const gitDownJd = () => (dispatch) => {
   axios.get(`http://localhost:5000/gitDownJd`).then((res) => {
@@ -87,7 +81,6 @@ export const getCates = () => (dispatch) => {
   }))
 }
 
-// planandorganize folder
 export const getJobDgByCat =  (val) => async (dispatch) => {
   axios.get(`http://localhost:5000/getjobdgbycat/${val}`).then((res => {
     dispatch({
@@ -191,18 +184,6 @@ export const getEmpAppraisal = (empid, empname, appraisal, year) => (dispatch) =
 
 
 
-export const getEmpEdu = (empid, empname) => (dispatch) => {
-  console.log(empid, empname);
-  axios.get(`http://localhost:5000/getempedu/?empid=${empid}&empname=${empname}`).then(res => {
-    dispatch({
-      type: fetchEmpEdu,
-      payload: res.data
-    })
-  })
-}
-
-
-
 export const getCurrentJd = (empid) => (dispatch) => {
   axios.get(`http://localhost:5000/currentjd/${empid}`).then(res => {
     dispatch({
@@ -249,24 +230,6 @@ export const getQn = () => (dispatch) => {
     })
   })
 
-}
-
-export const getQulSpeciality = (specarabic) => (dispatch) => {
-  axios.get(`http://localhost:5000/specarabic/?specarabic=${specarabic}`).then(res => {
-    dispatch({
-      type: fetchspecarabic,
-      payload: res.data
-    })
-  })
-}
-
-export const getUneSchool = (uneschool) => (dispatch) => {
-  axios.get(`http://localhost:5000/uneschool/?uneschool=${uneschool}`).then(res => {
-    dispatch({
-      type: fetchuneschool,
-      payload: res.data
-    })
-  })
 }
 
 export const getemps = () => (dispatch) => {

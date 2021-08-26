@@ -299,8 +299,8 @@ class EmpTrans extends React.Component {
             let newSArr = []
             newSArr.push(`((SELECT NATIONAL_ID_CARD_NO FROM employee WHERE NAME_ARABIC = "${arr[0]}"), "${arr[1]}",
             (SELECT CAT_ID FROM a_category WHERE CAT_NAME = "${arr[2]}"),30,
-            ( SELECT MAIN_BOX_ID FROM a_main_box WHERE J_D_ID =( SELECT J_D_ID FROM a_job_dgree WHERE J_D_NAME = "${arr[3]}") AND CAT_ID =( SELECT CAT_ID FROM a_category WHERE CAT_NAME = "${arr[2]}") LIMIT 1 ),
-            (SELECT SUP_BOX_ID FROM a_sup_box WHERE SUP_BOX_NAME = "${arr[4]}" AND MAIN_BOX_ID = ( SELECT MAIN_BOX_ID FROM a_main_box WHERE J_D_ID =( SELECT J_D_ID FROM a_job_dgree WHERE J_D_NAME = "${arr[3]}") AND CAT_ID =( SELECT CAT_ID FROM a_category WHERE CAT_NAME = "${arr[2]}") LIMIT 1 )),
+            (SELECT a_main_box.MAIN_BOX_ID FROM a_main_box JOIN a_sup_box ON a_main_box.MAIN_BOX_ID = a_sup_box.MAIN_BOX_ID WHERE a_sup_box.SUP_BOX_NAME = "${arr[4]}" AND a_main_box.CAT_ID = (SELECT CAT_ID FROM a_category WHERE CAT_NAME = "${arr[2]}") ),
+            (SELECT SUP_BOX_ID FROM a_sup_box WHERE SUP_BOX_NAME = "${arr[4]}" AND MAIN_BOX_ID = ( SELECT a_main_box.MAIN_BOX_ID FROM a_main_box JOIN a_sup_box ON a_main_box.MAIN_BOX_ID = a_sup_box.MAIN_BOX_ID WHERE a_sup_box.SUP_BOX_NAME = "${arr[4]}" AND a_main_box.CAT_ID = (SELECT CAT_ID FROM a_category WHERE CAT_NAME = "${arr[2]}"))),
             (SELECT G_ID FROM a_job_groups WHERE G_NAME = "${arr[5]}"),"${arr[2]}",(SELECT JOB_ASSIGNMENT_FORM FROM JOB_ASSIGNMENT_FORM WHERE JOB_ASSIGNMENT_FORM_ARABIC = "${arr[6]}"),
             (SELECT INDICATOR FROM indicators WHERE INDICATOR_NAME = "${arr[7]}"),"${arr[3]}"
             )`)

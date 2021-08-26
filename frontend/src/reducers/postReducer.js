@@ -1,7 +1,6 @@
 import {
   fetchCates,
-  fetchJobDgreeCodes, fetchMainCodes, fetchJobByCat, fetchSupBoxNamesandmanager, fetchJobGovern, fetchJobStation, fetchEmpStationAndGovern, fetchDeps, fetchEmpByDeps, fetchEmpName, fetchEmpAppraisal, fetchEmpEdu, fetchEmpNameByName, fetchCurrentjd, fetchavailjd, fetchavailsupbox, fetchupjd, fetchEmpDetails, fetchDownJd, fetchqn, fetchspecarabic, fetchuneschool, fetchemps, fetchgid, updatetrans
-
+  fetchJobDgreeCodes, fetchMainCodes, fetchJobByCat, fetchSupBoxNamesandmanager, fetchJobGovern, fetchJobStation, fetchEmpStationAndGovern, fetchDeps, fetchEmpByDeps, fetchEmpName, fetchEmpAppraisal, fetchEmpNameByName, fetchCurrentjd, fetchavailjd, fetchavailsupbox, fetchupjd, fetchEmpDetails, fetchDownJd, fetchqn, fetchemps, fetchgid
 } from "../actions/ActionTypes";
 
 const initialState = {
@@ -16,7 +15,6 @@ const initialState = {
   deps: [],
   empdep: [],
   empApp: [],
-  empEdu: [],
   empavailjd: [],
   empavailsup: [],
   empcurrentjd: [],
@@ -25,8 +23,6 @@ const initialState = {
   downJd: [],
   empNameByName: [],
   qn: [],
-  specarabic: [],
-  uneshcool: [],
   emps: [],
   gid: [],
   empname:[]
@@ -104,11 +100,7 @@ export default function (state = initialState, action) {
         ...state,
         empApp: action.payload
       }
-    case fetchEmpEdu:
-      return {
-        ...state,
-        empEdu: action.payload
-      }
+
     case fetchCurrentjd:
       return {
         ...state,
@@ -119,7 +111,6 @@ export default function (state = initialState, action) {
         ...state,
         empNameByName: action.payload
       }
-
 
     case fetchavailjd:
       return {
@@ -150,23 +141,10 @@ export default function (state = initialState, action) {
         downJd: action.payload.data
       }
 
-
-
     case fetchqn:
       return {
         ...state,
         qn: action.payload
-      }
-    case fetchspecarabic:
-      return {
-        ...state,
-        specarabic: action.payload
-      }
-
-    case fetchuneschool:
-      return {
-        ...state,
-        uneshcool: action.payload
       }
 
     case fetchemps:

@@ -1,8 +1,8 @@
 import React, { Fragment } from "react";
 import {
-    getEmpDetails, getUpJd, getEmpAppraisal, getEmpEdu, getEmpNameByName
+    getEmpDetails, getUpJd, getEmpAppraisal, getEmpNameByName
 } from "../../actions/Actions";
-import { getEmpTrans, getEmpExp, getEmpFamily } from "../../actions/TransActions"
+import { getEmpTrans, getEmpExp, getEmpFamily,getEmpEdu } from "../../actions/TransActions"
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import axios from "axios";

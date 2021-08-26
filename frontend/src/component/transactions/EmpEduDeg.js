@@ -1,13 +1,14 @@
 import React, { Fragment } from "react";
 import {
-    getEmpEdu, getEmpName, getEmpNameByName, getQulSpeciality, getUneSchool
+    getEmpName, getEmpNameByName
 } from "../../actions/Actions";
+import {
+    InsertNewEdu, getEmpEdu
+} from "../../actions/TransActions"
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import Reactmoment from "react-moment"
-import { TextField } from '@material-ui/core';
-import { withStyles } from "@material-ui/core/styles";
 
 
 const styles = {
@@ -29,7 +30,13 @@ const styles = {
 class EmpEduDeg extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { add: false, edit: false, empid: null, empname: null, qual: null, showNamesResults: false, showSpeciality: false, showUneSchools: false, speciality: null, uneversity: null, graduationGrade: null, graduationYear: null };
+        this.state = {
+            add: false, edit: false, empidForAdd: "",
+            empnameForAdd: "", qual: null, showNamesResultsForAdd: false,
+            showNamesResultsForSearch: false, showSpeciality: false,
+            addEduDeg: "", specs: [], addSpec: "", showSpecialityDetails: false, specsDetails: [], addSpecDetails: "",
+            addGrade: "", showUneSchools: false, unes: [], addUneversity: "", addGradYear: "", rowEmpEdu: ""
+        };
 
     }
     /* 
@@ -40,53 +47,160 @@ class EmpEduDeg extends React.Component {
     
     */
 
+    handleDataToSend = () => {
+        let nameOrId;
+        if (this.state.empnameForAdd) {
+            nameOrId = `((SELECT NATIONAL_ID_CARD_NO FROM employee WHERE NAME_ARABIC = "${this.state.empnameForAdd}")`
+        } else if (this.state.empidForAdd) {
+            nameOrId = `((SELECT NATIONAL_ID_CARD_NO FROM employee WHERE EMPLOYEE_ID = ${this.state.empidForAdd})`
+        }
+        let eduDeg = `(SELECT DEGREE FROM education_degree WHERE DEGREE_ARABIC = "${this.state.addEduDeg}")`
+        let spec = `(SELECT SPECIALITY FROM dgree_speciality WHERE SPECIALITY_ARABIC = "${this.state.addSpec}")`
+        let specDetails = `(SELECT SPECIALITY_DETAIL FROM dgree_speciality_detail WHERE SPECIALITY_DETAIL_ARABIC = "${this.state.addSpecDetails}")`
+        let grade = `(SELECT GRADUATION_GRADE FROM graduation_grade WHERE GRADE_ARABIC = "${this.state.addGrade}")`
+        let uneversity = `(SELECT UNIVERSITY_SCHOOL FROM university_school WHERE UNIVERSITY_SCHOOL_ARABIC = "${this.state.addUneversity}")`
+        let gradYear = `${this.state.addGradYear}`
+        let organization = '30)'
+        let data = [nameOrId, eduDeg, spec, specDetails, grade, uneversity, gradYear, organization]
+        if (this.state.addEduDeg.length < 1 || this.state.addSpec.length < 1 || this.state.addSpecDetails.length < 1 ||
+            this.state.addGrade.length < 1 || this.state.addUneversity.length < 1 || this.state.addGradYear.length < 1) {
+            this.setState({
+                messege: { msg: "البيانات غير كاملة" }
+            })
+            console.log('inputs are not completed');
+        } else if (this.state.empnameForAdd.length > 0 || this.state.empidForAdd.length > 0) {
+            console.log('done');
+            this.setState({ finalData: data, confirmAdd: true })
+
+        }
+    }
+
     addButtonClickHandeler = () => {
-        this.setState({ add: true, empid: null, empname: null, transdate: null, catname: null, jdname: null, supboxname: null, gname: null, jasi: null, indname: null, shoshowStructWAddw: false, showStruct: false })
-    }
-
-    specialityHandler = (e) => {
-        this.props.getQulSpeciality(e.target.value)
         this.setState({
-            showSpeciality: true,
-            showNamesResults: false,
-            showUneSchools: false
+            add: true
         })
     }
 
-    uneshcoolHandler = (e) => {
-        this.props.getUneSchool(e.target.value)
+    idInputHandlerForAdd = (e) => {
+        this.refs.nameadd.value = ''
+        this.setState({ empidForAdd: e.target.value, empnameForAdd: "" })
+        if (e.target.value.length == 0) {
+            this.setState({ empidForAdd: "" })
+        }
+    }
+    nameInputHandlerForAdd = (e) => {
+        this.setState({ showNamesResultsForAdd: true, empidForAdd: "", empnameForAdd: e.target.value })
+        this.props.getEmpNameByName(e.target.value)
+        if (e.target.value.length == 0) {
+            this.setState({ empnameForAdd: "" })
+        }
+        this.refs.idadd.value = ''
+    }
+
+    addEducationDegreeHandler = (e) => {
         this.setState({
-            showUneSchools: true,
-            showSpeciality: false,
-            showNamesResults: false
+            addEduDeg: e.target.value
+        })
+    }
+
+    addSpecialityHandler = (e) => {
+        axios.get(`http://localhost:5000/specarabic/?specarabic=${e.target.value}`).then(res => {
+            this.setState({
+                specs: res.data,
+                showSpeciality: true
+            })
+        })
+    }
+
+    specsOptionshandler = (e) => {
+        this.refs.spec.value = e.target.value
+        this.setState({ addSpec: e.target.value })
+    }
+
+    addSpecialityDetailsHandler = (e) => {
+        axios.get(`http://localhost:5000/specDetail/?specDetail=${e.target.value}`).then(res => {
+            this.setState({
+                specsDetails: res.data,
+                showSpecialityDetails: true
+            })
+        })
+    }
+
+    specDetailsOptionshandler = (e) => {
+        this.refs.specDet.value = e.target.value
+        this.setState({ addSpecDetails: e.target.value })
+    }
+
+    addGradeHandler = (e) => {
+        this.setState({
+            addGrade: e.target.value
+        })
+    }
+
+    addUneshcoolHandler = (e) => {
+        axios.get(`http://localhost:5000/uneschool/?uneschool=${e.target.value}`).then(res => {
+            this.setState({
+                showUneSchools: true,
+                unes: res.data
+            })
         })
 
+    }
+
+    uneshcoolsOptionshandler = (e) => {
+        this.refs.unes.value = e.target.value
+        this.setState({ addUneversity: e.target.value })
+    }
+
+    addGraduationYearHandler = (e) => {
+
+        this.setState({
+            addGradYear: e.target.value
+        })
     }
 
     handelInsertNewEdu = (e) => {
         e.preventDefault()
-        const fd = {
-            empid: this.state.empid,
-            transdate: this.state.transdate,
-            jdname: this.state.jdname,
-            supboxname: this.state.supboxname,
-            gname: this.state.gname,
-            jasi: this.state.jasi,
-            indname: this.state.indname,
-            catname: this.state.catname,
-        };
-        axios({
-            method: "POST",
-            data: fd,
-            withCredentials: true,
-            url: "http://localhost:5000/postnewtrans",
-            headers: { "Content-Type": "application/json" },
-        }).then((res) => {
-        })
+        this.props.InsertNewEdu(this.state.finalData)
+
     }
 
     closeAddSectionHandler = (e) => {
         this.setState({ add: false })
+    }
+
+
+    idInputHandlerForSearch = (e) => {
+        this.refs.name.value = ''
+        this.setState({ showFamilyResult: false })
+        if (e.key === 'Enter') {
+            this.props.getEmpName(e.target.value)
+            this.props.getEmpEdu(e.target.value, "")
+            this.setState({ edit: false, empid: e.target.value, showMaritalstate: true })
+        }
+    }
+
+    nameInputHandlerForSearch = (e) => {
+        this.setState({ showNamesResultsForSearch: true, showFamilyResult: false })
+        this.refs.empid.value = ''
+        this.props.getEmpNameByName(e.target.value)
+        if (e.key === 'Enter') {
+            this.props.getEmpEdu("", e.target.value)
+        }
+    }
+
+
+
+    namesOptionshandlerForSearch = (e) => {
+        this.refs.name.value = e.target.value
+        this.props.getEmpEdu("", e.target.value)
+    }
+
+    namesOptionshandlerForAdd = (e) => {
+        this.setState({
+            empnameForAdd: e.target.value, empidForAdd: null
+        })
+        if (this.refs.nameadd) this.refs.nameadd.value = e.target.value
     }
 
 
@@ -100,34 +214,6 @@ class EmpEduDeg extends React.Component {
     */
 
 
-    idInputHandler = (e) => {
-        this.refs.name.value = ''
-        this.refs.name.placeholder = ''
-        this.setState({ showFamilyResult: false })
-        if (e.key === 'Enter') {
-            this.props.getEmpName(e.target.value)
-            this.props.getEmpEdu(e.target.value, "")
-            this.setState({ showStruct: false, showNamesResults: false, showTransResult: true, showStructWAdd: false, edit: false, empid: e.target.value })
-        }
-    }
-
-
-
-    nameInputHandler = (e) => {
-        this.setState({ showNamesResults: true, showSpeciality: false, showUneSchools: false })
-        this.props.getEmpNameByName(e.target.value)
-        this.refs.empid.value = ''
-        if (e.key === 'Enter') {
-            this.props.getEmpEdu("", e.target.value)
-            this.setState({ showFamilyResult: true, showMaritalstate: true })
-        }
-    }
-
-    namesOptionshandler = (e) => {
-        this.refs.name.value = e.target.value
-        this.props.getEmpEdu("", e.target.value)
-        this.setState({ showFamilyResult: true })
-    }
 
     /* 
     
@@ -138,26 +224,60 @@ class EmpEduDeg extends React.Component {
     */
 
 
+
+
+
     handelEdit_1 = (e) => {
-        this.setState({ add: false, edit: true, empname: e.target.getAttribute("empname"), catname: e.target.getAttribute("catname"), catid: e.target.getAttribute("catid"), jdname: e.target.getAttribute("jdname"), supboxname: e.target.getAttribute("supboxname"), gname: e.target.getAttribute("jobgroup"), jasi: e.target.getAttribute("jasform"), indname: e.target.getAttribute("indname") })
+        this.setState({ edit: true, rowEmpEdu: e.target.getAttribute("tableId"), })
+        let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
+        for (let i = 0; i < tds.length; i++) {
+            tds[i].style.background = "white"
+            tds[tds.length - 2].childNodes[0].classList.remove("fa-edit")
+            tds[tds.length - 2].childNodes[0].classList.add("fa-check")
+            tds[tds.length - 1].childNodes[0].classList.remove("fa-backspace")
+            tds[tds.length - 1].childNodes[0].classList.add("fa-times")
+        }
+    }
+
+    closeEditSectionHandler = (e) => {
+        let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
+        for (let i = 0; i < tds.length; i++) {
+            tds[i].style.background = "transparent"
+            tds[tds.length - 2].childNodes[0].classList.remove("fa-check")
+            tds[tds.length - 2].childNodes[0].classList.add("fa-edit")
+            tds[tds.length - 1].childNodes[0].classList.remove("fa-times")
+            tds[tds.length - 1].childNodes[0].classList.add("fa-backspace")
+        }
+        this.setState({ edit: false })
     }
 
     handelEdit_2 = (e) => {
         e.preventDefault()
-        // let data = { empNat: this.state.empNat, appraisal: this.refs.newAppraisal.value, year: document.getElementById("year").placeholder }
-
-        let data = { date: this.state.transdate, catname: this.state.catname, jdname: this.state.jdname, supboxname: this.state.supboxname, gname: this.state.gname, jasi: this.state.jasi, indname: this.state.indname, empid: this.state.empid }
-        axios({
-            method: "PUT",
-            data: data,
-            url: `http://localhost:5000/updateemptrans`,
-            headers: { "Content-Type": "application/json" },
-        }).then(data => {
+        // let data = { , appraisal: this.refs.newAppraisal.value, year: document.getElementById("year").placeholder }
+        let data = { empNat: this.state.empnat, appraisal: this.state.empAppraisal, year: this.state.appraisalYear }
+        // axios({
+        //     method: "PUT",
+        //     data: data,
+        //     url: `http://localhost:5000/updateemptrans`,
+        //     headers: { "Content-Type": "application/json" },
+        // }).then(data => {
+        // })
+        let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
+        for (let i = 0; i < tds.length; i++) {
+            tds[i].style.background = "transparent"
+            tds[tds.length - 2].childNodes[0].classList.remove("fa-check")
+            tds[tds.length - 2].childNodes[0].classList.add("fa-edit")
+            tds[tds.length - 1].childNodes[0].classList.remove("fa-times")
+            tds[tds.length - 1].childNodes[0].classList.add("fa-backspace")
+        }
+        this.setState({
+            edit: false
         })
-    }
+        if (this.props.result == 200) {
+            this.setState({ updated: true })
+        }
 
-    closeEditSectionHandler = (e) => {
-        this.setState({ edit: false })
+
     }
 
     /* 
@@ -178,47 +298,12 @@ class EmpEduDeg extends React.Component {
     */
 
 
-    handelDateClick = (e) => {
-        this.setState({ transdate: e.target.value })
-    }
-
-
 
     // End Of Methods
 
 
-
-
-
-    componentDidMount() {
-    }
-
-    idInputAddHandler = (e) => {
-        console.log(e.target.value);
-    }
-
-
     render() {
-        console.log(this.props.uneshcool);
-        // const styles = {
-        //     display: "block",
-        //     padding: "0.375rem 2.25rem 0.375rem 0.75rem",
-        //     width: "55%",
-        //     height: 250,
-        //     backgroundColor: "#fff",
-        //     color: "#212529",
-        //     fontSize: "2rem",
-        //     lineHeight: 1.5,
-        //     fontWeight: "bold",
-        //     border: "1px solid #ced4da",
-        //     borderRadius: "0.25rem",
-        //     appearance: "none",
-        //     transition: "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out"
-        // }
-
-        const { classes } = this.props;
-
-
+        let grades = ["مقبول", "جيد", "جيد جدا", "جيد جدا مع مرتبة الشرف", "ممتاز", "امتياز مع مرتبة الشرف"]
         return (
             <div id="page-wrapper" >
                 {this.state.add ?
@@ -234,82 +319,127 @@ class EmpEduDeg extends React.Component {
                                     <div style={{ display: "flex", justifyContent: "space-around" }}>
                                         <div className="form-group" controlId="formBasicEmail">
                                             <label style={{ width: "100%", textAlign: "right" }}>رقم الأداء : </label>
-                                            <input onChange={this.idInputAddHandler} className="form-control" style={{ width: "100%", minWidth: "250px" }} onKeyDown={this.nameInputHandler} type="text" />
+                                            <input ref="idadd" onChange={this.idInputHandlerForAdd} className="form-control" style={{ width: "100%", minWidth: "250px" }} type="text" />
                                         </div>
                                         <div className="form-group" controlId="formBasicEmail">
                                             <label style={{ width: "100%", textAlign: "right" }}>الأسم : </label>
-                                            <input onKeyDown={this.nameInputAddHandler} id="nameinputadd" className="form-control" style={{ width: "100%", minWidth: "250px" }} onChange={this.nameInputHandler} type="text" />
+                                            <input ref="nameadd" onKeyDown={this.nameInputHandlerForAdd} id="nameinputadd" className="form-control" style={{ width: "100%", minWidth: "250px" }} type="text" />
                                         </div>
                                     </div>
+                                    {this.state.showNamesResults ?
+                                        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}>
+                                            <select onClick={this.nameInputHandlerForAdd} style={{ marginTop: 20, marginRight: 15, marginBottom: 5, width: "40%", background: "transparent", border: "none" }} multiple name="pets" id="pet-select">
+                                                {this.props.empNameByName.map((name => (
+                                                    <option>{name.NAME_ARABIC}</option>
+                                                )))}
+                                            </select>
+                                        </div> : null}
                                     <div style={{ display: "flex", justifyContent: "space-around" }}>
                                         <div className="form-group" controlId="formBasicEmail">
-                                            <label style={{ width: "100%", textAlign: "right" }}>التقدير : </label>
-                                            <select onChange={this.handelAppraisal} id="empapp" style={{ height: 30, width: "100%", minWidth: "215px" }}>
-                                                <option selected>اختر التقدير</option>
+                                            <label style={{ width: "100%", textAlign: "right" }}>المؤهل : </label>
+                                            <select onChange={this.addEducationDegreeHandler} id="empapp" style={{ height: 30, width: "100%", minWidth: "215px" }}>
+                                                <option>زمالة</option>
+                                                <option>دكتوراه</option>
+                                                <option>ماجستير</option>
+                                                <option>دبلوم دراسات عليا</option>
+                                                <option>ليسانس</option>
+                                                <option>بكالوريوس</option>
+                                                <option>دبلوم</option>
+                                                <option>الشهادة الأهلية</option>
+                                                <option>ثانوية</option>
+                                                <option>إعدادية</option>
+                                                <option>إبتدائية</option>
+                                                <option>شهادة محو الأمية</option>
+                                                <option>بدون مؤهل</option>
+                                                <option>مؤهل فوق متوسط</option>
+                                                <option>مؤهل متوسط</option>
+                                                <option>شهادة</option>
+                                                <option selected>اختر المؤهل</option>
                                             </select>
                                         </div>
                                         <div className="form-group" controlId="formBasicEmail">
-                                            <label style={{ width: "100%", textAlign: "right" }}>السنة : </label>
-                                            <input onChange={this.handelYear} className="form-control" style={{ width: "100%", minWidth: "250px" }} onKeyDown={this.nameInputHandler} type="text" />
+                                            <label style={{ width: "100%", textAlign: "right" }}>التخصص : </label>
+                                            <input ref="spec" onChange={this.addSpecialityHandler} className="form-control" style={{ width: "100%", minWidth: "250px" }} type="text" />
                                         </div>
                                     </div>
-                                    <div style={{ display: "flex", justifyContent: "space-around" }}>
-
-                                        <span>الدرجة :  </span>
-                                        <select required style={{ marginTop: 5, marginRight: 5, height: 25, width: 188 }} onChange={this.catClickHandeler}>
-                                            <option selected>
-                                                اختر الدرجة
-                                            </option>
-                                            <option>زمالة</option>
-                                            <option>دكتوراه</option>
-                                            <option>ماجستير</option>
-                                            <option>دبلوم دراسات عليا</option>
-                                            <option>ليسانس</option>
-                                            <option>بكالوريوس</option>
-                                            <option>دبلوم</option>
-                                            <option>الشهادة الأهلية</option>
-                                            <option>ثانوية</option>
-                                            <option>إعدادية</option>
-                                            <option>إبتدائية</option>
-                                            <option>شهادة محو الأمية</option>
-                                            <option>بدون مؤهل</option>
-                                            <option>مؤهل فوق متوسط</option>
-                                            <option>مؤهل متوسط</option>
-                                            <option>شهادة</option>
-                                        </select>
+                                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                                        <div></div>
+                                        {this.state.showSpeciality ?
+                                            <div style={{ width: "150px", marginLeft: 10 }}>
+                                                <select onClick={this.specsOptionshandler} style={{ marginTop: 20, marginRight: 15, marginBottom: 5, background: "transparent", border: "none" }} multiple name="pets" id="pet-select">
+                                                    {this.state.specs.map((spec => (
+                                                        <option>{spec.SPECIALITY_ARABIC}</option>
+                                                    )))}
+                                                </select>
+                                            </div> : null}
                                     </div>
-                                    <button onClick={this.submitButtonHandler} style={{ width: "92%", margin: "0 auto" }} type="button" class="btn btn-primary btn-block">إضافة تقييم جديد</button>
+                                    <div style={{ display: "flex", justifyContent: "space-around" }}>
+                                        <div className="form-group" controlId="formBasicEmail">
+                                            <label style={{ width: "100%", textAlign: "right" }}>الشعبة : </label>
+                                            <input ref="specDet" onChange={this.addSpecialityDetailsHandler} className="form-control" style={{ width: "100%", minWidth: "250px" }} type="text" />
+                                        </div>
+                                        <div className="form-group" controlId="formBasicEmail">
+                                            <label style={{ width: "100%", textAlign: "right" }}>التقدير : </label>
+                                            <select onChange={this.addGradeHandler} id="empapp" style={{ height: 30, width: "100%", minWidth: "215px" }}>
+                                                {grades.map(grade => (
+                                                    <option>{grade}</option>
+                                                ))}
+                                                <option selected>
+                                                    اختر التقدير
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                                        {this.state.showSpecialityDetails ?
+                                            <div style={{ width: "200px", marginRight: 30 }}>
+                                                <select onClick={this.specDetailsOptionshandler} style={{ marginTop: 20, marginRight: 15, marginBottom: 5, background: "transparent", border: "none" }} multiple name="pets" id="pet-select">
+                                                    {this.state.specsDetails.map((specDet => (
+                                                        <option>{specDet.SPECIALITY_DETAIL_ARABIC}</option>
+                                                    )))}
+                                                </select>
+                                            </div> : null}
+                                        <div></div>
+                                    </div>
+                                    <div style={{ display: "flex", justifyContent: "space-around" }}>
+                                        <div className="form-group" controlId="formBasicEmail">
+                                            <label style={{ width: "100%", textAlign: "right" }}>جهة التخرج : </label>
+                                            <input ref="unes" onChange={this.addUneshcoolHandler} className="form-control" style={{ width: "100%", minWidth: "250px" }} type="text" />
+                                        </div>
+                                        <div className="form-group" controlId="formBasicEmail">
+                                            <label style={{ width: "100%", textAlign: "right" }}>سنة التخرج : </label>
+                                            <input onChange={this.addGraduationYearHandler} className="form-control" style={{ width: "100%", minWidth: "250px" }} type="text" />
+                                        </div>
+                                    </div>
+                                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                                        {this.state.showUneSchools ?
+                                            <div style={{ width: "200px", marginRight: 30 }}>
+                                                <select onClick={this.uneshcoolsOptionshandler} style={{ marginTop: 20, marginRight: 15, marginBottom: 5, background: "transparent", border: "none" }} multiple name="pets" id="pet-select">
+                                                    {this.state.unes.map((us => (
+                                                        <option>{us.UNIVERSITY_SCHOOL_ARABIC}</option>
+                                                    )))}
+                                                </select>
+                                            </div> : null}
+                                        <div></div>
+                                    </div>
 
-                                    {this.state.confirmAdd ? <div style={{ width: "100%" }} class="alert alert-warning" role="alert"> هل انت متأكد من إضافة تدرج جديد ؟ <button onClick={this.handleNewAppraisal} style={{ float: "left" }} type="button" class="btn btn-warning">تأكيد</button> <i onClick={this.submitButtonHandler} style={{ fontSize: 15, float: "right" }} class="fas fa-times-circle"></i></div> : null}
+                                    <button onClick={this.handleDataToSend} style={{ width: "92%", margin: "0 auto" }} type="button" class="btn btn-primary btn-block">إضافة مؤهل جديد</button>
+
+                                    {this.state.confirmAdd ? <div style={{ width: "100%" }} class="alert alert-warning" role="alert"> هل انت متأكد من إضافة مؤهل جديد ؟ <button onClick={this.handelInsertNewEdu} style={{ float: "left" }} type="button" class="btn btn-warning">تأكيد</button> <i onClick={this.submitButtonHandler} style={{ fontSize: 15, float: "right" }} class="fas fa-times-circle"></i></div> : null}
 
 
                                 </div>
-                                {this.state.addConfirmed ? <div style={{ width: "70%" }} class="alert alert-warning" role="alert"> هل انت متأكد من إضافة تدرج جديد ؟ <button onClick={this.handelInsertNewTrans} style={{ position: "absolute", left: "17%", top: "80%" }} type="button" class="btn btn-warning">تأكيد</button> <i onClick={this.closeAddConfirmHandler} style={{ fontSize: 15, position: "relative", top: "5%", left: "62%" }} class="fas fa-times-circle"></i></div> : null}
+                                {/* {this.state.addConfirmed ? <div style={{ width: "70%" }} class="alert alert-warning" role="alert"> هل انت متأكد من إضافة مؤهل جديد ؟ <button onClick={this.handelInsertNewTrans} style={{ position: "absolute", left: "17%", top: "80%" }} type="button" class="btn btn-warning">تأكيد</button> <i onClick={this.closeAddConfirmHandler} style={{ fontSize: 15, position: "relative", top: "5%", left: "62%" }} class="fas fa-times-circle"></i></div> : null} */}
                             </div>
                         </div>
                     </div> : null}
-                {this.state.showNamesResults ?
-                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}>
-                        <select onClick={this.namesOptionshandler} style={styles} multiple name="pets" id="pet-select">
-                            {this.props.empNameByName.map((name => (
-                                <option>{name.NAME_ARABIC}</option>
-                            )))}
-                        </select>
-                    </div> : null}
+
                 {this.state.showSpeciality ?
                     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}>
                         <select onClick={this.namesOptionshandler} style={styles} multiple name="pets" id="pet-select">
-                            {this.props.specarabic.map((spec => (
+                            {/* {this.props.specarabic.map((spec => (
                                 <option>{spec.SPECIALITY_ARABIC}</option>
-                            )))}
-                        </select>
-                    </div> : null}
-                {this.state.showUneSchools ?
-                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}>
-                        <select onClick={this.namesOptionshandler} style={styles} multiple name="pets" id="pet-select">
-                            {this.props.uneshcool.map((us => (
-                                <option>{us.UNIVERSITY_SCHOOL_ARABIC}</option>
-                            )))}
+                            )))} */}
                         </select>
                     </div> : null}
                 <div class="row">
@@ -318,162 +448,132 @@ class EmpEduDeg extends React.Component {
                 </div>
                 <div className="row">
                     <div className="col-lg-12" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                        <div style={{ height: 150, width: 600 }} class="panel panel-default">
+                        <div style={{ height: "100%", minHeight: 150, width: 600 }} class="panel panel-default">
                             <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }} class="panel-heading">
                                 مؤهلات العاملين
                             </div>
                             <div style={{ marginRight: 20, display: "flex", justifyContent: "center", alignItems: "center", marginLeft: 40 }}>
                                 <div style={{ marginTop: 20, marginLeft: 0, width: "30%" }} class="input-group">
-                                    <span>رقم الأداء : </span><input ref="empid" onKeyDown={this.idInputHandler} style={{ background: "white", width: "40%", marginBottom: 5, marginRight: 5, border: "1px solid black" }} type="text" name="first_name" />
+                                    <span>رقم الأداء : </span><input ref="empid" onKeyDown={this.idInputHandlerForSearch} style={{ background: "white", width: "40%", marginBottom: 5, marginRight: 5, border: "1px solid black" }} type="text" name="first_name" />
                                 </div>
                                 <div style={{ marginTop: 20, marginRight: 0, width: "70%" }} class="input-group">
-                                    <span >الإسم : </span><input ref="name" onKeyUp={this.nameInputHandler} style={{ background: "white", width: "80%", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
+                                    <span >الإسم : </span><input ref="name" onKeyUp={this.nameInputHandlerForSearch} style={{ background: "white", width: "80%", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
                                 </div>
                                 <button onClick={this.addButtonClickHandeler} style={{ position: "relative", right: 20, top: 8 }} type="button" class="btn btn-primary">إضافة مؤهل جديد</button>
                             </div>
+                            {this.state.showNamesResultsForSearch ?
+                                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}>
+                                    <select onClick={this.namesOptionshandlerForSearch} style={{ marginTop: 20, marginRight: 15, marginBottom: 5, width: "40%", background: "transparent", border: "none" }} multiple name="pets" id="pet-select">
+                                        {this.props.empNameByName.map((name => (
+                                            <option>{name.NAME_ARABIC}</option>
+                                        )))}
+                                    </select>
+                                </div> : null}
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="panel panel-default">
-                            <div class="panel-heading" style={{ display: "flex", justifyContent: "space-evenly" }}>
-                                {this.state.edit ? <i onClick={this.closeEditSectionHandler} style={{ fontSize: 15, position: "relative", bottom: 10, left: 550 }} class="fas fa-times-circle"></i> : null}
-                            </div>
                             <div class="panel-body">
                                 <div class="table-responsive">
-                                    <h4 style={{ textAlign: "right", fontWeight: "bolder" }}>مؤهلات العاملين</h4>
-
+                                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                                        <div></div>
+                                        {this.props.empEdu.length > 0 ? <h4 style={{ textAlign: "right", fontWeight: "bolder" }}>بيان بمؤهل السيد / {this.props.empEdu[0].NAME_ARABIC}</h4> : null}
+                                        <div></div>
+                                    </div>
                                     <table class="table table-striped table-bordered table-hover" id="dataTables-example">
                                         <thead>
                                             <tr>
                                                 <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>الدرجة</th>
-                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>المؤهل</th>
                                                 <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>التخصص</th>
+                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>الشعبة</th>
+                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>التقدير</th>
                                                 <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>جهة التخرج</th>
                                                 <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>سنة التخرج</th>
-                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>التقدير</th>
                                                 <th>تعديل</th>
                                                 <th>حذف</th>
                                             </tr>
                                         </thead>
-                                        {!this.state.add && !this.state.edit ? this.props.empEdu.map((edu) => (
+                                        {this.props.empEdu.map((edu) => (
                                             <tbody>
-                                                <tr>
-                                                    <td><input style={{ border: 0 }} placeholder={edu.DEGREE_ARABIC} disabled /></td>
-                                                    <td>{edu.DEGREE_DESCRIPTION}</td>
-                                                    <td>{edu.SPECIALITY_ARABIC}</td>
-                                                    <td>{edu.UNIVERSITY_SCHOOL_ARABIC}</td>
-                                                    <td>{edu.GRADUATION_YEAR}</td>
-                                                    <td>{edu.GRADE_ARABIC}</td>
-                                                    <td ><i onClick={this.handelEdit_1} class="fas fa-edit"></i></td>
-                                                    <td><i class="fas fa-backspace"></i></td>
+                                                <tr id={edu.id}>
+                                                    <td>
+                                                        {!this.state.edit ? edu.DEGREE_ARABIC :
+                                                            <select onChange={this.addEducationDegreeHandler} id="empapp" style={{ height: 30, width: "100%", minWidth: "215px" }}>
+                                                                <option>زمالة</option>
+                                                                <option>دكتوراه</option>
+                                                                <option>ماجستير</option>
+                                                                <option>دبلوم دراسات عليا</option>
+                                                                <option>ليسانس</option>
+                                                                <option>بكالوريوس</option>
+                                                                <option>دبلوم</option>
+                                                                <option>الشهادة الأهلية</option>
+                                                                <option>ثانوية</option>
+                                                                <option>إعدادية</option>
+                                                                <option>إبتدائية</option>
+                                                                <option>شهادة محو الأمية</option>
+                                                                <option>بدون مؤهل</option>
+                                                                <option>مؤهل فوق متوسط</option>
+                                                                <option>مؤهل متوسط</option>
+                                                                <option>شهادة</option>
+                                                                <option selected>اختر المؤهل</option>
+                                                            </select>}
+                                                    </td>
+                                                    <td>{!this.state.edit ? edu.SPECIALITY_ARABIC : <input className="form-control" style={{ width: "100%" }} type="text" />}</td>
+                                                    <td>{!this.state.edit ? edu.SPECIALITY_DETAIL_ARABIC : <input className="form-control" style={{ width: "100%" }} type="text" />}</td>
+                                                    <td>{!this.state.edit ? edu.GRADE_ARABIC :
+                                                        <select onChange={this.addGradeHandler} id="empapp" style={{ height: 30, width: "100%", minWidth: "215px" }}>
+                                                            {grades.map(grade => (
+                                                                <option>{grade}</option>
+                                                            ))}
+                                                            <option selected>
+                                                                اختر التقدير
+                                                            </option>
+                                                        </select>
+                                                    }</td>
+                                                    <td>{!this.state.edit ?  edu.UNIVERSITY_SCHOOL_ARABIC : <input className="form-control" style={{ width: "100%" }} type="text" />}</td>
+                                                    <td>{!this.state.edit ?  edu.GRADUATION_YEAR : <input className="form-control" style={{ width: "100%" }} type="text" />}</td>
+                                                    <td ><i tableId={edu.id} onClick={this.handelEdit_1} class="fas fa-edit"></i></td>
+                                                    <td><i tableId={edu.id} onClick={this.closeEditSectionHandler} class="fas fa-backspace"></i></td>
                                                 </tr>
-                                            </tbody>
-                                        )) : !this.state.add && this.state.edit ?
-                                            <Fragment>
-                                                <thead>
-                                                    <tr>
-                                                        <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>الدرجة</th>
-                                                        <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>المؤهل</th>
-                                                        <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>التخصص</th>
-                                                        <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>جهة التخرج</th>
-                                                        <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>سنة التخرج</th>
-                                                        <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>التقدير</th>
-                                                        <th>تعديل</th>
-                                                        <th>حذف</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td style={{ width: 250 }} ><input type="text" placeholder={this.state.empname ? this.state.empname : null} disabled /></td>
-                                                        {this.state.showDateUnlessEdit ? <td><input onClick={this.editDate} type="text" id="date" onChange={this.handelDateClick} value={this.state.transdate ? this.state.transdate : null} style={{ display: "inline", width: 80 }} /></td>
-                                                            : <td><input type="date" id="date" onChange={this.handelDateClick} value={this.state.transdate ? this.state.transdate : null} style={{ display: "inline", width: 80 }} /></td>
-                                                        }
-                                                        <td><input placeholder={this.state.catname} /></td>
-                                                        <td>
-                                                            <select onChange={this.catClickHandeler}>
-                                                                {this.props.cates.map(cate => (
-                                                                    <Fragment>
-                                                                        <option id={cate.CAT_ID}>
-                                                                            {cate.CAT_NAME}
-                                                                        </option>
-                                                                    </Fragment>
-                                                                ))}
-                                                                <option selected>
-                                                                    {this.state.catname}
-                                                                </option>
-                                                            </select>
-                                                        </td>
-                                                        <td>
-                                                            <select onChange={this.jdNameClickHandeler}>
-                                                                {this.props.jobdgbycat.map(job => (
-                                                                    <option>
-                                                                        {job.J_D_NAME}
-                                                                    </option>
-                                                                ))}
-                                                                <option selected>{this.state.jdname}</option>
-                                                            </select>
-                                                        </td>
-                                                        <td>
-                                                            <select required onChange={this.supboxClickHandeler}>
-                                                                {this.props.empavailsup.map(job => (
-                                                                    <option>
-                                                                        {job.SUP_BOX_NAME}
-                                                                    </option>
-                                                                ))}
-                                                                <option selected>{this.state.supboxname}</option>
+                                            </tbody>))}
 
-                                                            </select>
-                                                        </td>
-                                                        <td>
-                                                            <select required onChange={this.gNameClickeHandeler}>
-                                                                <option>فني</option>
-                                                                <option>إداري</option>
-                                                            </select>
-                                                        </td>
-                                                        <td>
-                                                            <select required onChange={this.jasiClickeHandeler}>
-                                                                <option>أخرى</option>
-                                                                <option>تعيين</option>
-                                                                <option>نقل</option>
-                                                                <option>ندب</option>
-                                                                <option>اعاره</option>
-                                                                <option>تكليف</option>
-                                                                <option>محدد المدة</option>
-                                                                <option>تدريب</option>
-                                                                <option>ترقية</option>
-                                                                <option>تثبيت</option>
-                                                                <option>نقل طبقا لتعديل تنظيمي</option>
-                                                                <option>إعادة تعيين</option>
-                                                                <option>إلغاء ندب</option>
-                                                                <option>إلغاء تكليف</option>
-                                                                <option>تسكين</option>
-                                                                <option>تعديل مسمى الوظيفة</option>
-                                                                <option>عقد مؤقت</option>
-                                                                <option>مكافئة شاملة</option>
-                                                                <option>تعديل ندب</option>
-                                                                <option>إشراف</option>
-                                                                <option>الحاق</option>
-                                                                <option>عقد إختبار</option>
-                                                                <option>إنهاء خدمة</option>
-                                                                <option>أستيعاب</option>
-                                                                <option selected>{this.state.jasi}</option>
-                                                            </select>
-                                                        </td>
-                                                        <td>
-                                                            <select required onChange={this.indClickeHandeler}>
-                                                                <option>أصلية</option>
-                                                                <option>حالية</option>
-                                                                <option>سابقة</option>
-                                                                <option selected>{this.state.indname}</option>
-                                                            </select></td>
-                                                        <td onClick={this.editHandler}><i class="fas fa-edit"></i></td>
-                                                        <td><i class="fas fa-backspace"></i></td>
-                                                    </tr>
-                                                </tbody>
-                                            </Fragment>
-                                            : null}
+                                        <tbody>
+                                            <td></td>
+                                            <td>
+                                                {this.state.showSpeciality ?
+                                                    <div style={{ width: "150px", marginLeft: 10 }}>
+                                                        <select onClick={this.specsOptionshandler} style={{ marginTop: 20, marginRight: 15, marginBottom: 5, background: "transparent", border: "none" }} multiple name="pets" id="pet-select">
+                                                            {this.state.specs.map((spec => (
+                                                                <option>{spec.SPECIALITY_ARABIC}</option>
+                                                            )))}
+                                                        </select>
+                                                    </div> : null}
+                                            </td>
+                                            <td>
+                                                {this.state.showSpecialityDetails ?
+                                                    <div style={{ width: "200px", marginRight: 30 }}>
+                                                        <select onClick={this.specDetailsOptionshandler} style={{ marginTop: 20, marginRight: 15, marginBottom: 5, background: "transparent", border: "none" }} multiple name="pets" id="pet-select">
+                                                            {this.state.specsDetails.map((specDet => (
+                                                                <option>{specDet.SPECIALITY_DETAIL_ARABIC}</option>
+                                                            )))}
+                                                        </select>
+                                                    </div> : null}
+                                            </td>
+                                            <td></td>
+                                            <td>
+                                                {this.state.showUneSchools ?
+                                                    <div style={{ width: "200px", marginRight: 30 }}>
+                                                        <select onClick={this.uneshcoolsOptionshandler} style={{ marginTop: 20, marginRight: 15, marginBottom: 5, background: "transparent", border: "none" }} multiple name="pets" id="pet-select">
+                                                            {this.state.unes.map((us => (
+                                                                <option>{us.UNIVERSITY_SCHOOL_ARABIC}</option>
+                                                            )))}
+                                                        </select>
+                                                    </div> : null}
+                                            </td>
+                                            <td></td>
+                                        </tbody>
                                     </table>
                                 </div>
                             </div>
@@ -494,7 +594,7 @@ class EmpEduDeg extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        empEdu: state.posts.empEdu,
+        empEdu: state.trans.empEdu,
         empname: state.posts.empname,
         empNameByName: state.posts.empNameByName,
         cates: state.posts.cates,
@@ -503,78 +603,5 @@ const mapStateToProps = (state) => {
     };
 };
 export default connect(mapStateToProps, {
-    getEmpEdu, getEmpName, getEmpNameByName, getQulSpeciality, getUneSchool
-})(withStyles(styles)(EmpEduDeg));
-
-{/* <div className="col-lg-4">
-                                                <TextField
-                                                    id="with-placeholder"
-                                                    label={<span style={{ fontSize: '2rem' }}>dsdsa</span>}
-                                                    placeholder="id"
-                                                    InputProps={{
-                                                        classes: {
-                                                            input: classes.resize,
-                                                        },
-                                                    }}
-                                                    className={classes.textField}
-                                                    margin="normal"
-                                                    autoFocus={true}
-                                                    helperText={"Add an existing id or select "} />
-
-                                                <div class="input-group">
-                                                    <span >رقم الأداء :  </span><input onChange={this.idInputAddHandler} type="number" style={{ background: "white", marginTop: 5, marginRight: 5, height: 25, width: 188, border: "1px solid black" }} type="text" name="first_name" placeholder={this.props.empNameByName ? this.props.empNameByName.length >= 1 ? this.props.empNameByName[0].EMPLOYEE_ID : null : null} />
-                                                </div>
-                                                <div class="input-group">
-                                                    <span>الإسم :  </span><input onKeyUp={this.nameInputHandler} ref="insertName" onChange={this.nameInputAddHandler} required style={{ background: "white", marginTop: 5, marginRight: 5, height: 25, width: 188, border: "1px solid black" }} type="text" name="first_name" placeholder={this.props.empname ? this.props.empname.length >= 1 ? this.props.empname[0].NAME_ARABIC : null : null || this.props.empNameByName ? this.props.empNameByName.length >= 1 ? this.props.empNameByName[0].NAME_ARABIC : null : null} />
-                                                </div>
-                                                <div class="input-group">
-                                                    <span>الدرجة :  </span>
-                                                    <select required style={{ marginTop: 5, marginRight: 5, height: 25, width: 188 }} onChange={this.catClickHandeler}>
-                                                        <option selected>
-                                                            اختر الدرجة
-                                                        </option>
-                                                        <option>زمالة</option>
-                                                        <option>دكتوراه</option>
-                                                        <option>ماجستير</option>
-                                                        <option>دبلوم دراسات عليا</option>
-                                                        <option>ليسانس</option>
-                                                        <option>بكالوريوس</option>
-                                                        <option>دبلوم</option>
-                                                        <option>الشهادة الأهلية</option>
-                                                        <option>ثانوية</option>
-                                                        <option>إعدادية</option>
-                                                        <option>إبتدائية</option>
-                                                        <option>شهادة محو الأمية</option>
-                                                        <option>بدون مؤهل</option>
-                                                        <option>مؤهل فوق متوسط</option>
-                                                        <option>مؤهل متوسط</option>
-                                                        <option>شهادة</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div className="col-lg-4">
-                                                <div class="input-group">
-                                                    <span>التخصص :  </span><input ref="spec" onChange={this.specialityHandler} />
-                                                </div>
-                                                <div class="input-group">
-                                                    <span>جهة التخرج :  </span><input ref="spec" onChange={this.uneshcoolHandler} />
-
-                                                </div>
-                                            </div>
-                                            <div className="col-lg-4">
-                                                <div class="input-group">
-                                                    <span>سنة التخرج :  </span><input type="number" onChange={this.graduationYearHandler} />
-                                                </div>
-                                                <div class="input-group">
-                                                    <span>التقدير :  </span>
-                                                    <select required style={{ marginTop: 5, marginRight: 6, height: 25, width: 188 }} onChange={this.gNameClickeHandeler}>
-                                                        <option>امتياز مع مرتبة الشرف</option>
-                                                        <option>ممتاز</option>
-                                                        <option>جيد جداً مع مرتبة الشرف</option>
-                                                        <option>جيد جداً</option>
-                                                        <option>جيد</option>
-                                                        <option>مقبول</option>
-                                                        <option selected>اخترالتقدير</option>
-                                                    </select>
-                                                </div>
-                                            </div> */}
+    getEmpEdu, getEmpName, getEmpNameByName, InsertNewEdu
+})((EmpEduDeg));

@@ -41,11 +41,14 @@ function getCates(req, res, next) {
 
 function getEmpNameById(req, res, next) {
     const empid = req.params.empid
-    const query = `SELECT employee.NAME_ARABIC, employee.EMPLOYEE_ID ,employee.NATIONAL_ID_CARD_NO ,empmainbox.SUP_BOX_NAME, empmainbox.MAIN_BOX_ID, employee.NATIONAL_ID_CARD_NO FROM employee JOIN (SELECT a_job_trans.SUP_BOX_ID, a_sup_box.SUP_BOX_NAME , a_job_trans.NATIONAL_ID_CARD_NO, a_sup_box.MAIN_BOX_ID FROM a_job_trans JOIN a_sup_box ON a_job_trans.SUP_BOX_ID = a_sup_box.SUP_BOX_ID WHERE a_job_trans.INDICATOR = 2 ) AS empmainbox ON employee.NATIONAL_ID_CARD_NO = empmainbox.NATIONAL_ID_CARD_NO WHERE EMPLOYEE_ID = ${empid}`
+    // const query = `SELECT employee.NAME_ARABIC, employee.EMPLOYEE_ID ,employee.NATIONAL_ID_CARD_NO ,empmainbox.SUP_BOX_NAME, empmainbox.MAIN_BOX_ID, employee.NATIONAL_ID_CARD_NO FROM employee JOIN (SELECT a_job_trans.SUP_BOX_ID, a_sup_box.SUP_BOX_NAME , a_job_trans.NATIONAL_ID_CARD_NO, a_sup_box.MAIN_BOX_ID FROM a_job_trans JOIN a_sup_box ON a_job_trans.SUP_BOX_ID = a_sup_box.SUP_BOX_ID WHERE a_job_trans.INDICATOR = 2 ) AS empmainbox ON employee.NATIONAL_ID_CARD_NO = empmainbox.NATIONAL_ID_CARD_NO WHERE EMPLOYEE_ID = ${empid}`
+    let query = `SELECT NAME_ARABIC FROM employee WHERE EMPLOYEE_ID = ${empid}`
     db.query(query, (err, details) => {
         if (err) {
+            console.log(err);
             next(err);
         } else {
+            console.log(details);
             res.send(details);
         }
     })
@@ -63,9 +66,10 @@ function getEmpNameByName(req, res, next) {
     })
 }
 
+
 function getQulSpeciality(req, res, next) {
     let specarabic = req.query.specarabic
-    let query = `SELECT SPECIALITY_ARABIC FROM dgree_speciality WHERE SPECIALITY_ARABIC LIKE "%${specarabic}%" `
+    let query = `SELECT SPECIALITY_ARABIC FROM dgree_speciality WHERE SPECIALITY_ARABIC LIKE "%${specarabic}%";`
     db.query(query, (err, details) => {
         if (err) {
             next(err);
@@ -73,6 +77,20 @@ function getQulSpeciality(req, res, next) {
             res.send(details);
         }
     })
+}
+
+function getSpecDetail(req, res, next){
+
+    let specDetail = req.query.specDetail;
+    let query = `SELECT SPECIALITY_DETAIL_ARABIC FROM dgree_speciality_detail WHERE SPECIALITY_DETAIL_ARABIC LIKE "%${specDetail}%";`
+    db.query(query, (err, details) => {
+        if (err) {
+            next(err);
+        } else {
+            res.send(details);
+        }
+    })
+
 }
 
 function getUneSchool(req, res, next) {
@@ -97,6 +115,7 @@ router
     .get('/empnamebyid/:empid', getEmpNameById)
     .get('/empnamebyName/:empname', getEmpNameByName)
     .get('/specarabic', getQulSpeciality)
+    .get('/specDetail', getSpecDetail)
     .get('/uneschool', getUneSchool)
 
 module.exports = router;

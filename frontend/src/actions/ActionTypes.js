@@ -21,8 +21,6 @@ export const fetchEmpDetails = "FETCH-EMP-DETAILS"
 export const fetchDownJd = "FETCH-DOWN-JD"
 export const fetchEmpFamily = "FETCH-EMP-FAMILY"
 export const fetchqn = "FETCH-Q-N"
-export const fetchuneschool = "FETCH-UNE-SCHOOL"
-export const fetchspecarabic = "FETCH-SPEC-ARABIC"
 export const GET_ERRORS = "GET-ERRORS"
 export const CLEAR_ERRORS = "CLEAR-ERRORS"
 export const USER_LOADED = "USER-LOADED"
@@ -44,6 +42,7 @@ export const fetchCountEmpsInGoverns = "FETCH-COUNT-EMPS-IN-GOVERNS"
 export const fetchEmpPenalties = "FETCH-EMPS-PENALTIES"
 export const postNewFamilyMember = "POST-NEW-FAMILY-MEMBER"
 export const postNewTrans = "POST-NEW-TRANS"
+export const postEmpEdu = "POST-NEW-EMP-EDU"
 
 
 

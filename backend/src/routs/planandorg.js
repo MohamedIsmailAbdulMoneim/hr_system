@@ -140,7 +140,6 @@ function getEmpTrans(req, res, next) {
     const empname = req.query.empname
 
     let query = `select *, a_job_trans.SUP_BOX_NAME AS catename from a_job_trans JOIN employee JOIN job_assignment_form JOIN indicators JOIN a_sup_box JOIN a_category JOIN a_job_groups ON a_job_trans.G_ID = a_job_groups.G_ID AND a_category.CAT_ID = a_job_trans.CAT_ID AND a_sup_box.SUP_BOX_ID = a_job_trans.SUP_BOX_ID AND a_job_trans.NATIONAL_ID_CARD_NO = employee.NATIONAL_ID_CARD_NO AND a_job_trans.JOB_ASSIGNMENT_FORM = JOB_ASSIGNMENT_FORM.JOB_ASSIGNMENT_FORM AND a_job_trans.INDICATOR = indicators.INDICATOR WHERE ${empid.length !== 0 ? `employee.EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `employee.NAME_ARABIC = "${empname}"` : null} ORDER by a_job_trans.TRANS_DATE`
-    console.log('hit getemptrans');
     db.query(query, (err, details) => {
         if (err) {
             next(err);
@@ -202,7 +201,7 @@ function getEmpEdu(req, res, next) {
     let empid = req.query.empid
     let empname = req.query.empname
 
-    let query = `SELECT * FROM employee_education_degree JOIN education_degree JOIN dgree_speciality JOIN dgree_speciality_detail JOIN UNIVERSITY_SCHOOL JOIN GRADUATION_GRADE JOIN (SELECT employee.EMPLOYEE_ID,employee.NATIONAL_ID_CARD_NO FROM employee ) AS detofemp ON employee_education_degree.DEGREE = education_degree.DEGREE AND employee_education_degree.SPECIALITY = dgree_speciality.SPECIALITY AND employee_education_degree.SPECIALITY_DETAIL = dgree_speciality_detail.SPECIALITY_DETAIL AND employee_education_degree.UNIVERSITY_SCHOOL = university_school.UNIVERSITY_SCHOOL AND employee_education_degree.GRADUATION_GRADE = graduation_grade.GRADUATION_GRADE AND employee_education_degree.NATIONAL_ID_CARD_NO = detofemp.NATIONAL_ID_CARD_NO WHERE ${empid.length !== 0 ? `detofemp.EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `detofemp.NAME_ARABIC = "${empname}"` : null}`
+    let query = `SELECT * FROM employee_education_degree JOIN education_degree JOIN dgree_speciality JOIN dgree_speciality_detail JOIN UNIVERSITY_SCHOOL JOIN GRADUATION_GRADE JOIN (SELECT employee.EMPLOYEE_ID, employee.NAME_ARABIC ,employee.NATIONAL_ID_CARD_NO FROM employee ) AS detofemp ON employee_education_degree.DEGREE = education_degree.DEGREE AND employee_education_degree.SPECIALITY = dgree_speciality.SPECIALITY AND employee_education_degree.SPECIALITY_DETAIL = dgree_speciality_detail.SPECIALITY_DETAIL AND employee_education_degree.UNIVERSITY_SCHOOL = university_school.UNIVERSITY_SCHOOL AND employee_education_degree.GRADUATION_GRADE = graduation_grade.GRADUATION_GRADE AND employee_education_degree.NATIONAL_ID_CARD_NO = detofemp.NATIONAL_ID_CARD_NO WHERE ${empid.length !== 0 ? `detofemp.EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `detofemp.NAME_ARABIC = "${empname}"` : null}`
 
     db.query(query, (err, details) => {
         if (err) {
@@ -253,25 +252,23 @@ function postnewtrans(req, res, next) {
     `
     db.query(query, (err, details) => {
         if (err) {
-            console.log(err);
             res.json({ msg: "يوجد خطاء بقاعدة البيانات", data: null })
         } else {
             res.json({ data: details, msg: "تم إدخال البيانات بنجاح" });
         }
     })
-    console.log(query);
 
 
 }
 
 function postBulkTrans(req, res, next) {
     let data = req.body
-    db.query(`INSERT INTO a_job_trans (NATIONAL_ID_CARD_NO, TRANS_DATE, CAT_ID,ORGANIZATION,MAIN_BOX_ID,SUP_BOX_ID,G_ID,SUP_BOX_NAME,JOB_ASSIGNMENT_FORM,INDICATOR,MAIN_BOX_NAME) VALUES ${data}`, function (err, data) {
+    let query = `INSERT INTO a_job_trans (NATIONAL_ID_CARD_NO, TRANS_DATE, CAT_ID,ORGANIZATION,MAIN_BOX_ID,SUP_BOX_ID,G_ID,SUP_BOX_NAME,JOB_ASSIGNMENT_FORM,INDICATOR,MAIN_BOX_NAME) VALUES ${data}`
+    db.query(query, function (err, data) {
         if (err) {
             next(err);
             res.json({ data: null, msg: "يوجد خطاء بقاعدة البيانات" });
         } else {
-            console.log(data);
             res.json({ data: data, msg: "تم إدخال البيانات بنجاح" });
         }
     })
@@ -282,7 +279,6 @@ function postBulkTrans(req, res, next) {
 
 function updateEmpTrans(req, res, next) {
     let query;
-    console.log(req.body.empname, req.body.empid);
     if (!req.body.empname || req.body.empname == "null" || req.body.empname == "undefined") {
         query = `UPDATE a_job_trans SET SUP_BOX_NAME = "${req.body.catname}", MAIN_BOX_NAME = "${req.body.jdname}", SUP_BOX_ID = (
         SELECT
@@ -336,7 +332,6 @@ function getAvailSupBox(req, res, next) {
         if (err) {
             next(err);
         } else {
-            console.log(details);
             res.send(details);
         }
     })
@@ -372,11 +367,12 @@ function newEmpExp(req, res, next) {
 
 function newFamily(req, res, next) {
     let data = req.body
-    console.log(data);
     let emp = data[0][0].substring(1)
     let query = `
     INSERT INTO employee_family_member (NATIONAL_ID_CARD_NO,RELATION_TYPE, FAMILY_NAME, NATIONAL_ID_NUMBER, BIRTH_DATE, JOB, ORGANIZATION) VALUES ${data};
-    SELECT *, detofemp.EMPLOYEE_ID, detofemp.NAME_ARABIC, detofemp.NATIONAL_ID_CARD_NO FROM employee_family_member JOIN( SELECT employee.EMPLOYEE_ID, employee.NAME_ARABIC, employee.NATIONAL_ID_CARD_NO FROM employee ) AS detofemp ON employee_family_member.NATIONAL_ID_CARD_NO = detofemp.NATIONAL_ID_CARD_NO WHERE detofemp.NATIONAL_ID_CARD_NO IN ${emp}`
+    SELECT *, detofemp.EMPLOYEE_ID, detofemp.NAME_ARABIC, detofemp.NATIONAL_ID_CARD_NO FROM employee_family_member JOIN
+    ( SELECT employee.EMPLOYEE_ID, employee.NAME_ARABIC, employee.NATIONAL_ID_CARD_NO FROM employee ) AS detofemp ON
+     employee_family_member.NATIONAL_ID_CARD_NO = detofemp.NATIONAL_ID_CARD_NO WHERE detofemp.NATIONAL_ID_CARD_NO IN ${emp}`
     db.query(query, function (err, data) {
         if (err) {
             next(err)
@@ -417,7 +413,6 @@ WHERE
         if (err) {
             next(err)
         } else {
-            console.log(data);
             res.send(data)
         }
     })
@@ -425,7 +420,6 @@ WHERE
 
 function postNewPenalty(req, res, next) {
     let query = `INSERT INTO employee_penalty (NATIONAL_ID_CARD_NO, PENALTY_TYPE, PENALTY_DATE, PENALTY_YEAR, ORGANIZATION, PENALTY_REASON${req.body.length == 7 ? `,PEN_NUM` : ''}) VALUES ${req.body} `
-    console.log(query);
 
     db.query(query, (err, data) => {
         if (err) {
@@ -434,12 +428,10 @@ function postNewPenalty(req, res, next) {
             res.json({ msg: "تم إدخال البيانات بنجاح", data: data })
         }
     })
-    console.log(req.body);
 }
 
 function postNewTraining(req, res, next) {
     let query = `INSERT INTO employee_training (NATIONAL_ID_CARD_NO,TRAINING_PROGRAM_ARABIC,TRAINING_PROGRAM_ENGLISH,TRAINING_START_DATE, TRAINING_COMPLETION_DATE, TRAINING_TYPE ,LOCATION_TYPE, LOCATION_NAME, ORGANIZATION) VALUES ${req.body}`
-    console.log(query);
     db.query(query, (err, data) => {
         if (err) {
             res.json({ msg: "يوجد خطاء بقاعدة البيانات", data: null })
@@ -447,6 +439,32 @@ function postNewTraining(req, res, next) {
             res.json({ msg: "تم إدخال البيانات بنجاح", data: data })
         }
     })
+}
+
+function postNewEmpEdu(req,res,next){
+    let data = req.body
+    let emp = data[0].substring(1)
+    let query = 
+    `
+        INSERT INTO employee_education_degree (NATIONAL_ID_CARD_NO, DEGREE,
+        SPECIALITY, SPECIALITY_DETAIL, GRADUATION_GRADE, UNIVERSITY_SCHOOL, GRADUATION_YEAR, ORGANIZATION) VALUES ${data};
+        SELECT * FROM employee_education_degree JOIN education_degree JOIN dgree_speciality JOIN dgree_speciality_detail
+        JOIN UNIVERSITY_SCHOOL JOIN GRADUATION_GRADE ON employee_education_degree.DEGREE = education_degree.DEGREE AND employee_education_degree.SPECIALITY =
+        dgree_speciality.SPECIALITY AND employee_education_degree.SPECIALITY_DETAIL = dgree_speciality_detail.SPECIALITY_DETAIL
+        AND employee_education_degree.UNIVERSITY_SCHOOL = university_school.UNIVERSITY_SCHOOL AND employee_education_degree.GRADUATION_GRADE
+        = graduation_grade.GRADUATION_GRADE AND employee_education_degree.NATIONAL_ID_CARD_NO IN ${emp}
+    `
+
+    db.query(query, (err, data) => {
+        if (err) {
+            res.json({ msg: "يوجد خطاء بقاعدة البيانات", data: null })
+        } else {
+            res.json({ msg: "تم إدخال البيانات بنجاح", data: data })
+        }
+    })
+
+
+
 }
 
 
@@ -477,5 +495,6 @@ router
     .post('/postnewpenalty', postNewPenalty)
     .get('/getempspenalties', getEmpsPenalties)
     .post('/postnewtraining', postNewTraining)
+    .post('/postnewempedu', postNewEmpEdu)
 
 module.exports = router;

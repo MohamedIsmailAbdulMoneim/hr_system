@@ -1,13 +1,13 @@
 import {
   NEW_APPRAISAL, updatetrans, fetchEmpTrans, updateAppraisal, fetchEmpFamily,
-  FETCHEMPEXP, NEW_EXP, fetchEmpPenalties, postNewFamilyMember,postNewTrans
+  FETCHEMPEXP, NEW_EXP, fetchEmpPenalties, postNewFamilyMember,postNewTrans, postEmpEdu,fetchEmpEdu
+
 } from "../actions/ActionTypes";
 import axios from "axios";
 
 
 
 export const newAppraisal = (obj) => (dispatch) => {
-
   axios({
     method: "POST",
     data: obj,
@@ -22,6 +22,16 @@ export const newAppraisal = (obj) => (dispatch) => {
         data: res.data.data,
         msg: res.data.msg
       }
+    })
+  })
+}
+
+export const getEmpEdu = (empid, empname) => (dispatch) => {
+  console.log(empid, empname);
+  axios.get(`http://localhost:5000/getempedu/?empid=${empid}&empname=${empname}`).then(res => {
+    dispatch({
+      type: fetchEmpEdu,
+      payload: res.data
     })
   })
 }
@@ -149,7 +159,20 @@ export const insertNewTrans = (data) => (dispatch) => {
       payload: res.data
     })
   })
+}
 
-
-
+export const InsertNewEdu = (data) => (dispatch) => {
+  axios({
+    method: "POST",
+    data: data,
+    withCredentials: true,
+    url: "http://localhost:5000/postnewempedu",
+    headers: { "Content-Type": "application/json" },
+}).then((res) => {
+  console.log(res.data);
+  dispatch({
+    type: postEmpEdu,
+    payload: res.data
+  })
+})
 }
