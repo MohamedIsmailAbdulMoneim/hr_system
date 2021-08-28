@@ -468,6 +468,10 @@ div .small-input {
   width: 80px
 }
 
+div .medium-small-input {
+  width: 120px;
+}
+
 div .medium-input {
   width: 200px
 }

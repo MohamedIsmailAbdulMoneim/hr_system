@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 import {
     getEmpDetails, getUpJd, getEmpAppraisal, getEmpNameByName
 } from "../../actions/Actions";
-import { getEmpTrans, getEmpExp, getEmpFamily,getEmpEdu } from "../../actions/TransActions"
+import { getEmpTrans, getEmpExp, getEmpFamily, getEmpEdu } from "../../actions/TransActions"
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -14,12 +14,12 @@ class Employee extends React.Component {
         super(props);
         this.state = {
 
-            add: false, showNamesResults: false, addEmpId: "", addEmpName: "", addDoc: "", addDoj: "", addCj: "", addJasf: "", addMangement: "",
-            addaos: "", addStation: "", addArea: "", addGovern: "", addJS: "", addEmpNid: "",
+            add: false, showNamesResults: false, addEmpId: "", addEmpName: "", addDoc: "", addDoj: "",
+            addStation: "", addArea: "", addGovern: "", addJS: "", addEmpNid: "",
             addPOIssuance: "", addDOIssuance: "", addinsuranceNum: "", addinsuranceOffice: "", addAddress: "", addMPhoneNum: "",
             addHPhoneNum: "", addOPhoneNum: "", addEmail: "", addMarStatus: "", addSyndicateType: "", addMemberShipNum: "",
             addMemberShipDate: "", addMirStatus: "", addDaysCountMir: "", addMonthsCountMir: "", addYearsCountMir: "",
-            addRetirementDate: "", addSexType: "", addReligous: "", addDob: "", addPob: "", addGob: ""
+            addRetirementDate: "", addSexType: "", addReligous: "", addDob: "", addPob: "", addGob: "", milStatusIsTempEx: false, milStatusIsCompleted: false
         };
     }
 
@@ -31,7 +31,6 @@ class Employee extends React.Component {
         let addcj = `"${state.addCj}"`
         let addjasf = `"${state.addJasf}"`
         let addMangement = `"${state.addMangement}"`
-        let addaos = `"${state.addaos}"`
         let addStation = `"${state.addStation}"`
         let addArea = `"${state.addArea}"`
         let addGovern = `"${state.addGovern}"`
@@ -62,7 +61,7 @@ class Employee extends React.Component {
         let addGob = `"${state.addGob}"`
 
         let data = [
-            empid, empname, doc, addcj, addjasf, addjasf, addMangement, addaos, addStation, addArea, addGovern
+            empid, empname, doc, addcj, addjasf, addjasf, addMangement, addStation, addArea, addGovern
             , addJS, addEmpNid, addPOIssuance, addDOIssuance, addinsuranceNum, addinsuranceOffice, addAddress,
             addMPhoneNum, addHPhoneNum, addOPhoneNum, addOPhoneNum, addEmail, addMarStatus, addSyndicateType, addMemberShipNum,
             addMemberShipDate, addMirStatus, addDaysCountMir, addMonthsCountMir, addYearsCountMir, addRetirementDate, addSexType,
@@ -76,14 +75,16 @@ class Employee extends React.Component {
 
         if (
             state.addDoc.length < 1 || state.addCj.length < 1 || state.addJasf.length < 1 || state.addMangement.length < 1 ||
-            state.addaos.length < 1 || state.addStation.length < 1 || state.addArea.length < 1 || state.addGovern.length < 1 || state.addJS.length < 1 ||
+            state.addStation.length < 1 || state.addArea.length < 1 || state.addGovern.length < 1 || state.addJS.length < 1 ||
             state.addEmpNid.length < 1 || state.addPOIssuance.length < 1 || state.addDOIssuance.length < 1 || state.addinsuranceNum.length < 1 ||
             state.addinsuranceOffice.length < 1 || state.addAddress.length < 1 || state.addMPhoneNum.length < 1 || state.addHPhoneNum.length < 1 ||
-            state.addOPhoneNum.length < 1 || state.addEmail.length < 1 || state.addMarStatus.length < 1 || state.addSyndicateType.length < 11 ||
+            state.addOPhoneNum.length < 1 || state.addEmail.length < 1 || state.addMarStatus.length < 1 || state.addSyndicateType.length < 1 ||
             state.addMemberShipNum.length < 1 || state.addMemberShipDate.length < 1 || state.addMirStatus.length < 1 || state.addDaysCountMir.length < 1 ||
             state.addMonthsCountMir.length < 1 || state.addYearsCountMir.length < 1 || state.addRetirementDate.length < 1 || state.addSexType.length < 1 ||
             state.addReligous.length < 1 || state.addDob.length < 1 || state.addPob.length < 1 || state.addGob.length < 1
         ) {
+
+            console.log('inputs are not completed');
 
         }
     }
@@ -126,10 +127,6 @@ class Employee extends React.Component {
         this.setState({ addMangement: e.target.value })
     }
 
-    addaosHandler = (e) => {
-        this.setState({ addaos: e.target.value })
-
-    }
 
     addStationHandler = (e) => {
         this.setState({ addStation: e.target.value })
@@ -254,6 +251,10 @@ class Employee extends React.Component {
         this.setState({ addDob: e.target.value })
     }
 
+    addPobHandler = (e) => {
+        this.setState({ addPob: e.target.value })
+    }
+
 
     addGobHandler = (e) => {
         this.setState({ addGob: e.target.value })
@@ -376,7 +377,7 @@ class Employee extends React.Component {
                             <div className="col-lg-8">
                                 <div className="data-wrapper" style={{ background: "transparent", height: "100%", width: "100%" }} >
                                     <h3 style={{ marginRight: 20, marginTop: 3, textAlign: "right", fontFamily: 'Markazi Text ,serif', fontWeight: 700 }}>البيانات الوظيفية</h3>
-                                    <div style={{ display: "table" }}>
+                                    {/* <div style={{ display: "table" }}>
                                         <div style={{ display: "table-row" }}>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="chodt small-lable">رقم الأداء</label>
@@ -384,77 +385,65 @@ class Employee extends React.Component {
                                             <div style={{ display: "table-cell" }}>
                                                 <input onChange={this.addEmpIdHandler} className="form-control chodt small-input" type="number" />
                                             </div>
-
-                                            <div style={{ display: "table-cell" }}>
-                                                <label className="chodt nf" >الإسم</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addEmpNameHandler} ref="nameinput" className="form-control chodt medium-input" type="text" />
-                                            </div>
                                         </div>
+                                    </div> */}
+
+                                    <div style={{ display: "table" }}>
                                         <div style={{ display: "table-row" }}>
                                             <div style={{ display: "table-cell" }}>
-                                                <label className="chodt small-lable" >تاريخ العقد</label>
+                                                <label className="chodt nf">رقم الأداء</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input style={{ marginRight: 32 }} onChange={this.addEmpIdHandler} ref="nameinput" className="form-control chodt giant-input" type="text" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style={{ display: "table" }}>
+                                        <div style={{ display: "table-row" }}>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="chodt nf"> الإسم</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input style={{ marginRight: 50 }} onChange={this.addEmpNameHandler} ref="nameinput" className="form-control chodt giant-input" type="text" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style={{ display: "table" }}>
+
+                                        <div style={{ display: "table-row" }}>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="chodt medium-lable" >تاريخ العقد</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <input onChange={this.addDocHandler} className="chodt form-control medium-input" type="text" />
                                             </div>
-                                        </div>
-                                        <div style={{ display: "table-row" }}>
                                             <div style={{ display: "table-cell" }}>
-                                                <label className="chodt medium-lable">الوظيفة الحالية</label>
+                                                <label className="nf medium-lable">تاريخ التقاعد</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addCjHandler} className="form-control chodt medium-input" type="text" />
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label className="chodt nf medium-lable">طريقة شغلها</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addJasfHandler} className="form-control chodt medium-input" type="text" />
+                                                <input onChange={this.addRetirementDateHandler} style={{ marginRight: 50 }} className="form-control  medium-input" type="text" />
                                             </div>
                                         </div>
                                     </div>
-                                    <div style={{ display: "table" }}>
-                                        <div style={{ display: "table-row" }}>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label style={{ marginRight: 60 }}>الإدارة</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addMangementHandler} style={{ marginRight: 90 }} className="form-control chodt giant-input" type="text" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div style={{ display: "table" }}>
-                                        <div style={{ display: "table-row" }}>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label className="medium-lable" style={{ marginRight: 30 }}>النطاق الإشرافي</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addaosHandler} style={{ marginRight: 50 }} className="form-control chodt giant-input" type="text" />
-                                            </div>
-                                        </div>
-                                    </div>
-
                                     <div style={{ display: "table" }}>
                                         <div style={{ display: "table-row" }}>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="small-lable" style={{ marginRight: 40 }}>المحطة</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addStationHandler} style={{ marginRight: 70 }} className="form-control  small-input" type="text" />
+                                                <input onChange={this.addStationHandler} style={{ marginRight: 70 }} className="form-control  medium-small-input" type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <label style={{ marginRight: 70, marginTop: 20 }} className="small-lable">المنطقة</label>
+                                                <label style={{ marginRight: 35, marginTop: 20 }} className="small-lable">المنطقة</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addAreaHandler} style={{ marginRight: 70 }} className="form-control  small-input" type="text" />
+                                                <input onChange={this.addAreaHandler} style={{ marginRight: 35 }} className="form-control  medium-small-input" type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <label style={{ marginRight: 60 }} className="small-lable">المحاظة</label>
+                                                <label style={{ marginRight: 40 }} className="small-lable">المحاظة</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addGovernHandler} style={{ marginRight: 70 }} className="form-control  small-input" type="text" />
+                                                <input onChange={this.addGovernHandler} style={{ marginRight: 40 }} className="form-control  medium-small-input" type="text" />
                                             </div>
                                         </div>
                                     </div>
@@ -464,7 +453,7 @@ class Employee extends React.Component {
                                                 <label className="medium-lable" style={{ marginRight: 30 }}>الحالة الوظيفية</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addaosHandler} style={{ marginRight: 50 }} className="form-control chodt giant-input" type="text" />
+                                                <input onChange={this.addJSHandler} style={{ marginRight: 50 }} className="form-control chodt giant-input" type="text" />
                                             </div>
                                         </div>
                                     </div>
@@ -597,12 +586,6 @@ class Employee extends React.Component {
                                             <div style={{ display: "table-cell" }}>
                                                 <input onChange={this.addYearsCountMirHandler} style={{ marginRight: 10 }} className="form-control  small-input" type="text" />
                                             </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label style={{ marginRight: 40, marginTop: 20 }} className="small-lable">تاريخ التقاعد</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addRetirementDateHandler} style={{ marginRight: 10 }} className="form-control  small-input" type="text" />
-                                            </div>
                                         </div>
                                     </div>
                                     <div style={{ display: "table" }}>
@@ -709,7 +692,7 @@ class Employee extends React.Component {
                                             </div>
                                         </div>
                                     </div>
-                                    <div style={{ display: "table" }}>
+                                    {/* <div style={{ display: "table" }}>
                                         <div style={{ display: "table-row" }}>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable" style={{ marginRight: 30 }}>النطاق الإشرافي</label>
@@ -718,8 +701,7 @@ class Employee extends React.Component {
                                                 <input style={{ marginRight: 50 }} className="form-control chodt giant-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].cat_name : null : null} type="text" readonly="readonly" />
                                             </div>
                                         </div>
-                                    </div>
-
+                                    </div> */}
                                     <div style={{ display: "table" }}>
                                         <div style={{ display: "table-row" }}>
                                             <div style={{ display: "table-cell" }}>

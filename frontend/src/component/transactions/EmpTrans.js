@@ -185,7 +185,7 @@ class EmpTrans extends React.Component {
         let spNodes = document.getElementsByClassName("supbox")
         let spIndex = Array.prototype.indexOf.call(spNodes, e.target.parentNode.nextSibling.childNodes[0]);
         let newArrOfSp = this.state.empavailsup.slice()
-        
+
         axios.get(`http://localhost:5000/getavailsupbox/${e.target.parentNode.previousSibling.childNodes[0].value}/${e.target.value}`).then(res => {
             newArrOfSp[spIndex] = { data: res.data, IdNumSP: e.target.getAttribute("IdNumSP") }
             console.log(res.data);
@@ -210,15 +210,16 @@ class EmpTrans extends React.Component {
         let nodes = document.getElementsByClassName("supbox");
         let index = Array.prototype.indexOf.call(nodes, e.target);
         let newArr = this.state.addSupbox.slice()
-        let i =  e.target.options.selectedIndex
+        let i = e.target.options.selectedIndex
 
-        newArr[index] = { value: e.target.value, key: index, supboxid:e.target.options[i].getAttribute("supboxid") }
+        newArr[index] = { value: e.target.value, key: index, supboxid: e.target.options[i].getAttribute("supboxid") }
         this.setState({
             addSupbox: newArr,
             showStructWAdd: true
         })
         // this.props.getUpJd(10, this.props.empname ? this.props.empname.length ? this.props.empname[0].SUP_BOX_ID : null : null))
-        this.props.getUpJd(10, e.target.value)
+
+        this.props.getUpJd(this.state.catnameAdd[index].value, e.target.value)
     }
     addGNameClickeHandeler = (e) => {
         let nodes = document.getElementsByClassName("gname");
@@ -1505,5 +1506,5 @@ const mapStateToProps = (state) => {
 };
 export default connect(mapStateToProps, {
     getEmpTrans, getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox, getUpJd, gitDownJd, updateEmpTrans
-    ,insertNewTrans
+    , insertNewTrans
 })(EmpTrans);

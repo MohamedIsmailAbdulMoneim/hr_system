@@ -231,10 +231,10 @@ function postnewtrans(req, res, next) {
     let query;
     let data = req.body
     let nameOrId = data[0][0].substring(1)
-    
 
-    query = 
-`   update a_job_trans set INDICATOR = 3 WHERE INDICATOR = 2 AND NATIONAL_ID_CARD_NO = ${nameOrId};
+
+    query =
+        `   update a_job_trans set INDICATOR = 3 WHERE INDICATOR = 2 AND NATIONAL_ID_CARD_NO = ${nameOrId};
     INSERT INTO a_job_trans(
         NATIONAL_ID_CARD_NO,
         TRANS_DATE,
@@ -325,7 +325,7 @@ function updateEmpTrans(req, res, next) {
 function getAvailSupBox(req, res, next) {
     const catname = req.params.catname
     const jdname = req.params.jdname
-    
+
 
     let query = `SELECT SUP_BOX_NAME, SUP_BOX_ID from a_sup_box WHERE MAIN_BOX_ID IN(SELECT a_main_box.MAIN_BOX_ID FROM a_main_box JOIN a_job_dgree JOIN a_category ON a_main_box.J_D_ID = a_job_dgree.J_D_ID AND a_main_box.CAT_ID = a_category.CAT_ID WHERE a_category.CAT_NAME = "${catname}" AND a_job_dgree.J_D_NAME = "${jdname}")`
     db.query(query, (err, details) => {
@@ -338,9 +338,13 @@ function getAvailSupBox(req, res, next) {
 }
 
 function getUpJd(req, res, next) {
-    const len = req.params.len
+    const catename = req.params.catename
     const supboxname = req.params.supboxname
-    let query = `CALL GTT(${len}, (SELECT SUP_BOX_ID FROM a_sup_box WHERE SUP_BOX_NAME = "${supboxname}"))`
+    let query = `CALL GTT(10, (SELECT SUP_BOX_ID FROM a_sup_box WHERE SUP_BOX_NAME = "${supboxname}" AND MAIN_BOX_ID =
+    (SELECT a_main_box.MAIN_BOX_ID FROM a_main_box JOIN a_sup_box ON a_main_box.MAIN_BOX_ID =
+        a_sup_box.MAIN_BOX_ID WHERE a_sup_box.SUP_BOX_NAME = "${supboxname}" AND a_main_box.CAT_ID =
+         (SELECT CAT_ID FROM a_category WHERE CAT_NAME = "${catename}"))))`
+
     db.query(query, (err, details) => {
         if (err) {
             next(err);
@@ -348,6 +352,7 @@ function getUpJd(req, res, next) {
             res.send(details.reverse());
         }
     })
+    console.log(query);
 }
 
 function newEmpExp(req, res, next) {
@@ -441,11 +446,11 @@ function postNewTraining(req, res, next) {
     })
 }
 
-function postNewEmpEdu(req,res,next){
+function postNewEmpEdu(req, res, next) {
     let data = req.body
     let emp = data[0].substring(1)
-    let query = 
-    `
+    let query =
+        `
         INSERT INTO employee_education_degree (NATIONAL_ID_CARD_NO, DEGREE,
         SPECIALITY, SPECIALITY_DETAIL, GRADUATION_GRADE, UNIVERSITY_SCHOOL, GRADUATION_YEAR, ORGANIZATION) VALUES ${data};
         SELECT * FROM employee_education_degree JOIN education_degree JOIN dgree_speciality JOIN dgree_speciality_detail
@@ -486,7 +491,7 @@ router
     .get('/availjd/:catname/:jdname', getEmpAvljd)
     .get('/getavailsupbox/:catname/:jdname', getAvailSupBox)
     .post('/postnewtrans', postnewtrans)
-    .get('/getUpJd/:len/:supboxname', getUpJd)
+    .get('/getUpJd/:catename/:supboxname', getUpJd)
     .get('/getempexp', getEmpExprerience)
     .post('/newempexp', newEmpExp)
     .post('/newbulktrans', postBulkTrans)

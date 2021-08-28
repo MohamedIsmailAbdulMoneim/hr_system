@@ -81,7 +81,7 @@ export const getCates = () => (dispatch) => {
   }))
 }
 
-export const getJobDgByCat =  (val) => async (dispatch) => {
+export const getJobDgByCat = (val) => async (dispatch) => {
   axios.get(`http://localhost:5000/getjobdgbycat/${val}`).then((res => {
     dispatch({
       type: fetchJobByCat,
@@ -211,8 +211,8 @@ export const getAvailSupBox = (catname, jdname) => (dispatch) => {
   })
 }
 
-export const getUpJd = (len, supboxname) => (dispatch) => {
-  axios.get(`http://localhost:5000/getUpJd/${len}/${supboxname}`).then(res => {
+export const getUpJd = (catename, supboxname) => (dispatch) => {
+  axios.get(`http://localhost:5000/getUpJd/${catename}/${supboxname}`).then(res => {
     dispatch({
       type: fetchupjd,
       payload: res.data
