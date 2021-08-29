@@ -19,7 +19,8 @@ class Employee extends React.Component {
             addPOIssuance: "", addDOIssuance: "", addinsuranceNum: "", addinsuranceOffice: "", addAddress: "", addMPhoneNum: "",
             addHPhoneNum: "", addOPhoneNum: "", addEmail: "", addMarStatus: "", addSyndicateType: "", addMemberShipNum: "",
             addMemberShipDate: "", addMirStatus: "", addDaysCountMir: "", addMonthsCountMir: "", addYearsCountMir: "",
-            addRetirementDate: "", addSexType: "", addReligous: "", addDob: "", addPob: "", addGob: "", milStatusIsTempEx: false, milStatusIsCompleted: false
+            addRetirementDate: "", addSexType: "", addReligous: "", addDob: "", addPob: "", addGob: "", milStatusIsTempEx: false, milStatusIsCompleted: false,
+            syndicateAdded: false
         };
     }
 
@@ -219,6 +220,15 @@ class Employee extends React.Component {
     }
 
     addMirStatusHandler = (e) => {
+        if (e.target.value == "ادي الخدمه العسكرية") {
+            this.setState({
+                milStatusIsCompleted: true
+            })
+        } else if (e.target.value == "معاف مؤقت") {
+            this.setState({
+                milStatusIsTempEx: true
+            })
+        }
         this.setState({ addMirStatus: e.target.value })
 
     }
@@ -316,8 +326,22 @@ class Employee extends React.Component {
 
     }
 
+    ds = (e) => {
+        this.setState({
+            syndicateAdded: false
+        })
+    }
+
+    addSyndicateHandler = (e) => {
+        this.setState({
+            syndicateAdded: true
+        })
+    }
+
+
+
     render() {
-        console.log(this.props.empdetails);
+        let militaryStatus = ["لعدم اللياقة البدنية", "اعفاء من الخدمة العامة", "غير معروف", "ادي الخدمه العسكرية", "لم يصبه الدور", "مجند", "معاف مؤقت", "اعفاء نهائى", "أدى الخدمة العامة", "تحت الطلب", "ضابط عامل", "مستثنى من الخدمة", "عسكري سابق", "مستدعى", "تخلف عن التجنيد", "أمين شرطة سابقا", "ضابط سابق في شرطة"]
         const styles = {
             display: "block",
             padding: "0.375rem 2.25rem 0.375rem 0.75rem",
@@ -380,31 +404,31 @@ class Employee extends React.Component {
                                     {/* <div style={{ display: "table" }}>
                                         <div style={{ display: "table-row" }}>
                                             <div style={{ display: "table-cell" }}>
-                                                <label className="chodt small-lable">رقم الأداء</label>
+                                                <label className="small-lable">رقم الأداء</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addEmpIdHandler} className="form-control chodt small-input" type="number" />
+                                                <input onChange={this.addEmpIdHandler} className="form-control small-input" type="number" />
                                             </div>
                                         </div>
                                     </div> */}
 
-                                    <div style={{ display: "table" }}>
+                                    {/* <div style={{ display: "table" }}>
                                         <div style={{ display: "table-row" }}>
                                             <div style={{ display: "table-cell" }}>
-                                                <label className="chodt nf">رقم الأداء</label>
+                                                <label style={{ marginRight: 26 }} className="medium-lable">رقم الأداء</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input style={{ marginRight: 32 }} onChange={this.addEmpIdHandler} ref="nameinput" className="form-control chodt giant-input" type="text" />
+                                                <input style={{ marginRight: 53 }} onChange={this.addEmpIdHandler} ref="nameinput" className="form-control giant-input" type="text" />
                                             </div>
                                         </div>
                                     </div>
                                     <div style={{ display: "table" }}>
                                         <div style={{ display: "table-row" }}>
                                             <div style={{ display: "table-cell" }}>
-                                                <label className="chodt nf"> الإسم</label>
+                                                <label className="> الإسم</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input style={{ marginRight: 50 }} onChange={this.addEmpNameHandler} ref="nameinput" className="form-control chodt giant-input" type="text" />
+                                                <input style={{ marginRight: 50 }} onChange={this.addEmpNameHandler} ref="nameinput" className="form-control giant-input" type="text" />
                                             </div>
                                         </div>
                                     </div>
@@ -412,16 +436,16 @@ class Employee extends React.Component {
 
                                         <div style={{ display: "table-row" }}>
                                             <div style={{ display: "table-cell" }}>
-                                                <label className="chodt medium-lable" >تاريخ العقد</label>
+                                                <label style={{ marginRight: 40 }} className="medium-lable" >تاريخ العقد</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addDocHandler} className="chodt form-control medium-input" type="text" />
+                                                <input style={{ marginRight: 18 }} onChange={this.addDocHandler} className=" form-control medium-input" type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <label className="nf medium-lable">تاريخ التقاعد</label>
+                                                <label className="medium-lable">تاريخ التقاعد</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addRetirementDateHandler} style={{ marginRight: 50 }} className="form-control  medium-input" type="text" />
+                                                <input onChange={this.addRetirementDateHandler} style={{ marginRight: 70, marginTop: 10 }} className="form-control  medium-input" type="text" />
                                             </div>
                                         </div>
                                     </div>
@@ -453,7 +477,7 @@ class Employee extends React.Component {
                                                 <label className="medium-lable" style={{ marginRight: 30 }}>الحالة الوظيفية</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addJSHandler} style={{ marginRight: 50 }} className="form-control chodt giant-input" type="text" />
+                                                <input onChange={this.addJSHandler} style={{ marginRight: 50 }} className="form-control giant-input" type="text" />
                                             </div>
                                         </div>
                                     </div>
@@ -483,16 +507,16 @@ class Employee extends React.Component {
                                     <div style={{ display: "table" }}>
                                         <div style={{ display: "table-row" }}>
                                             <div style={{ display: "table-cell" }}>
-                                                <label className="chodt medium-lable">الرقم التأميني</label>
+                                                <label className="medium-lable">الرقم التأميني</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addinsuranceNumHandler} className="form-control chodt medium-input" type="text" />
+                                                <input onChange={this.addinsuranceNumHandler} className="form-control medium-input" type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <label className="chodt nf medium-lable">مكتب التأمينات</label>
+                                                <label className="medium-lable">مكتب التأمينات</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addinsuranceOfficeHandler} className="form-control chodt medium-input" type="text" />
+                                                <input onChange={this.addinsuranceOfficeHandler} className="form-control medium-input" type="text" />
                                             </div>
                                         </div>
                                     </div>
@@ -502,7 +526,7 @@ class Employee extends React.Component {
                                                 <label style={{ marginRight: 55 }}>العنوان</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addAddressHandler} style={{ marginRight: 90 }} className="form-control chodt giant-input" type="text" />
+                                                <input onChange={this.addAddressHandler} style={{ marginRight: 90 }} className="form-control giant-input" type="text" />
                                             </div>
                                         </div>
                                     </div>
@@ -531,76 +555,129 @@ class Employee extends React.Component {
                                     <div style={{ display: "table" }}>
                                         <div style={{ display: "table-row" }}>
                                             <div style={{ display: "table-cell" }}>
-                                                <label className="chodt medium-lable">البريد الأليكتروني</label>
+                                                <label className="medium-lable">البريد الأليكتروني</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addEmailNumHandler} className="form-control chodt medium-input" type="text" />
+                                                <input onChange={this.addEmailNumHandler} className="form-control medium-input" type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <label className="chodt nf medium-lable">الحالة الإجتماعية</label>
+                                                <label className="medium-lable">الحالة الإجتماعية</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addMarStatusNumHandler} className="form-control chodt medium-input" type="text" />
+                                                <input onChange={this.addMarStatusNumHandler} className="form-control medium-input" type="text" />
                                             </div>
                                         </div>
                                     </div>
-                                    <div style={{ display: "table" }}>
-                                        <div style={{ display: "table-row" }}>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label className="small-lable" style={{ marginRight: 40 }}>نوع النقابة</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addSyndicateTypeNumHandler} style={{ marginRight: 70 }} className="form-control medium-medium-input" type="text" />
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label style={{ marginRight: 10, marginTop: 20 }} className="small-lable">رقم العضوية</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addMemberShipNumHandler} style={{ marginRight: 20 }} className="form-control  medium-medium-input" type="text" />
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label style={{ marginRight: 10 }} className="small-lable">تاريخ العضوية </label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addMemberShipDateHandler} style={{ marginRight: 20 }} className="form-control  medium-medium-input" type="text" />
+                                    {this.state.syndicateAdded ?
+                                        <div style={{ display: "table" }}>
+                                            <div style={{ display: "table-row" }}>
+                                                <div style={{ display: "table-cell" }}>
+                                                    <i onClick={this.ds} class="fas fa-minus"></i>
+                                                </div>
+                                                <div style={{ display: "table-cell" }}>
+                                                    <label className="small-lable" style={{ marginRight: 26 }}>نوع النقابة</label>
+                                                </div>
+                                                <div style={{ display: "table-cell" }}>
+                                                    <input onChange={this.addSyndicateTypeNumHandler} style={{ marginRight: 70 }} className="form-control medium-medium-input" type="text" />
+                                                </div>
+                                                <div style={{ display: "table-cell" }}>
+                                                    <label style={{ marginRight: 10 }} className="small-lable">رقم العضوية</label>
+                                                </div>
+                                                <div style={{ display: "table-cell" }}>
+                                                    <input onChange={this.addMemberShipNumHandler} style={{ marginRight: 20, marginTop: 10 }} className="form-control  medium-medium-input" type="text" />
+                                                </div>
+                                                <div style={{ display: "table-cell" }}>
+                                                    <label style={{ marginRight: 10 }} className="small-lable">تاريخ العضوية </label>
+                                                </div>
+                                                <div style={{ display: "table-cell" }}>
+                                                    <input onChange={this.addMemberShipDateHandler} style={{ marginRight: 20 }} className="form-control  medium-medium-input" type="text" />
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+                                        : null}
+                                    {this.state.syndicateAdded == false ?
+                                        <div style={{ display: "table" }}>
+                                            <div style={{ display: "table-row" }}>
+                                                <div style={{ display: "table-cell" }}>
+                                                    <label className="medium-lable" style={{ marginRight: 40 }}>إضافة نقابة</label>
+                                                </div>
+                                                <div style={{ display: "table-cell" }}>
+                                                    <i onClick={this.addSyndicateHandler} class="fas fa-plus" style={{ marginRight: 55, marginTop: 20 }}></i>
+                                                </div>
+                                                <div style={{ display: "table-cell" }}>
+                                                </div>
+                                                <div style={{ display: "table-cell" }}>
+                                                </div>
+                                                <div style={{ display: "table-cell" }}>
+                                                </div>
+                                                <div style={{ display: "table-cell" }}>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        : null}
                                     <div style={{ display: "table" }}>
                                         <div style={{ display: "table-row" }}>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable" style={{ marginRight: 30 }}>الموقف من التجنيد</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addMirStatusHandler} style={{ marginRight: 50 }} className="form-control small-input" type="text" />
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label className="small-lable" style={{ marginRight: 30 }}>مدة التجنيد</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addDaysCountMirHandler} style={{ marginRight: 10 }} className="form-control  small-input" type="text" />
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addMonthsCountMirHandler} style={{ marginRight: 10 }} className="form-control  small-input" type="text" />
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addYearsCountMirHandler} style={{ marginRight: 10 }} className="form-control  small-input" type="text" />
+                                                <select onChange={this.addMirStatusHandler} style={{ marginRight: 50, marginTop: 10 }} id="empapp" className="medium-select">
+                                                    {militaryStatus.map(status => (
+                                                        <option>{status}</option>
+                                                    ))}
+                                                    <option selected>اختر</option>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
+                                    {this.state.milStatusIsTempEx ?
+
+                                        <div style={{ display: "table" }}>
+                                            <div style={{ display: "table-row" }}>
+                                                <div style={{ display: "table-cell" }}>
+                                                    <label className="medium-lable" style={{ marginRight: 20 }}>تاريخ الإنتهاء</label>
+                                                </div>
+                                                <div style={{ display: "table-cell" }}>
+                                                    <input style={{ marginRight: 20 }} className="form-control giant-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].cat_name : null : null} type="date" />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        :
+                                        null
+                                    }
+
+                                    {this.state.milStatusIsCompleted ?
+                                        <div style={{ display: "table" }}>
+                                            <div style={{ display: "table-row" }}>
+                                                <div style={{ display: "table-cell" }}>
+                                                    <label className="small-lable" style={{ marginRight: 50 }}>مدة التجنيد</label>
+                                                </div>
+                                                <div style={{ display: "table-cell" }}>
+                                                    <input onChange={this.addDaysCountMirHandler} placeholder="يوم" style={{ marginRight: 60 }} className="form-control  medium-medium-input" type="text" />
+                                                </div>
+                                                <div style={{ display: "table-cell" }}>
+                                                    <input onChange={this.addMonthsCountMirHandler} placeholder="شهر" style={{ marginRight: 100, marginTop: 10 }} className="form-control  medium-medium-input" type="text" />
+                                                </div>
+                                                <div style={{ display: "table-cell" }}>
+                                                    <input onChange={this.addYearsCountMirHandler} placeholder="سنة" style={{ marginRight: 100 }} className="form-control  medium-medium-input" type="text" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        : null}
                                     <div style={{ display: "table" }}>
                                         <div style={{ display: "table-row" }}>
                                             <div style={{ display: "table-cell" }}>
-                                                <label className="chodt medium-lable">النوع</label>
+                                                <label className="medium-lable">النوع</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addSexTypeHandler} className="form-control chodt medium-input" type="text" />
+                                                <input onChange={this.addSexTypeHandler} className="form-control medium-input" type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <label className="chodt nf medium-lable">الديانة</label>
+                                                <label className="medium-lable">الديانة</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addReligousHandler} className="form-control chodt medium-input" type="text" />
+                                                <input onChange={this.addReligousHandler} className="form-control medium-input" type="text" />
                                             </div>
                                         </div>
                                     </div>
@@ -634,109 +711,74 @@ class Employee extends React.Component {
                                         </div>
                                     </div>
                                 </div>
-                            </div> : <div className="col-lg-8">
-                                <div className="data-wrapper" style={{ background: "transparent", height: "100%", width: "100%" }} >
-                                    <h3 style={{ marginRight: 20, marginTop: 3, textAlign: "right", fontFamily: 'Markazi Text ,serif', fontWeight: 700 }}>البيانات الوظيفية</h3>
-                                    <div style={{ display: "table" }}>
-                                        <div style={{ display: "table-row" }}>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label className="chodt small-lable">رقم الأداء</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input className="form-control chodt small-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].EMPLOYEE_ID : null : null} readonly="readonly" type="number" />
-                                            </div>
+                            </div> */}
 
-                                            <div style={{ display: "table-cell" }}>
-                                                <label className="chodt nf" >الإسم</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input ref="nameinput" className="form-control chodt medium-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].NAME_ARABIC : null : null} type="text" />
-                                            </div>
-                                        </div>
+                                    <div style={{ display: "table" }}>
                                         <div style={{ display: "table-row" }}>
                                             <div style={{ display: "table-cell" }}>
-                                                <label className="chodt small-lable" >تاريخ العقد</label>
+                                                <label className="medium-lable">رقم الأداء</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="chodt form-control medium-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].SECTOR_JOIN_DATE : null : null} type="text" readonly="readonly" />
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label className="chodt nf small-lable">تاريخ التعيين</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input className="chodt form-control medium-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].TRANS_DATE : null : null} type="text" readonly="readonly" />
-                                            </div>
-                                        </div>
-                                        <div style={{ display: "table-row" }}>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label className="chodt medium-lable">الوظيفة الحالية</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input className="form-control chodt medium-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].SUP_BOX_NAME : null : null} type="text" readonly="readonly" />
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label className="chodt nf medium-lable">طريقة شغلها</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input className="form-control chodt medium-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].WOG : null : null} type="text" readonly="readonly" />
+                                                <input onChange={this.addEmpIdHandler} ref="nameinput" className="form-control giant-input" type="text" />
                                             </div>
                                         </div>
                                     </div>
                                     <div style={{ display: "table" }}>
                                         <div style={{ display: "table-row" }}>
                                             <div style={{ display: "table-cell" }}>
-                                                <label style={{ marginRight: 60 }}>الإدارة</label>
+                                                <label className="medium-lable"> الإسم</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input style={{ marginRight: 90 }} className="form-control chodt giant-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].cat_name : null : null} type="text" readonly="readonly" />
+                                                <input onChange={this.addEmpNameHandler} ref="nameinput" className="form-control giant-input oneInputMargin" type="text" />
                                             </div>
                                         </div>
                                     </div>
-                                    {/* <div style={{ display: "table" }}>
-                                        <div style={{ display: "table-row" }}>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label className="medium-lable" style={{ marginRight: 30 }}>النطاق الإشرافي</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input style={{ marginRight: 50 }} className="form-control chodt giant-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].cat_name : null : null} type="text" readonly="readonly" />
-                                            </div>
-                                        </div>
-                                    </div> */}
                                     <div style={{ display: "table" }}>
+
                                         <div style={{ display: "table-row" }}>
                                             <div style={{ display: "table-cell" }}>
-                                                <label className="small-lable" style={{ marginRight: 40 }}>المحطة</label>
+                                                <label className="medium-lable" >تاريخ العقد</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input style={{ marginRight: 70 }} className="form-control  small-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].JOB_LOCATION : null : null} type="text" readonly="readonly" />
+                                                <input onChange={this.addDocHandler} className=" form-control medium-input" type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <label style={{ marginRight: 70, marginTop: 20 }} className="small-lable">المنطقة</label>
+                                                <label className="medium-lable towMediumInputsLableMargin">تاريخ التقاعد</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input style={{ marginRight: 70 }} className="form-control  small-input" type="text" readonly="readonly" />
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label style={{ marginRight: 60 }} className="small-lable">المحاظة</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input style={{ marginRight: 70 }} className="form-control  small-input" type="text" readonly="readonly" />
+                                                <input onChange={this.addRetirementDateHandler} className="form-control  medium-input" type="text" />
                                             </div>
                                         </div>
                                     </div>
                                     <div style={{ display: "table" }}>
                                         <div style={{ display: "table-row" }}>
                                             <div style={{ display: "table-cell" }}>
-                                                <label className="chodt medium-lable">الوظيفة الحالية</label>
+                                                <label className="medium-lable" >المحطة</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control chodt medium-input" type="text" disabled />
+                                                <input onChange={this.addStationHandler} className="form-control  medium-small-input" type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <label className="chodt nf medium-lable">تقييم العام</label>
+                                                <label className="medium-lable threeMediumSmallInputsLableMargin">المنطقة</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control chodt medium-input" type="text" disabled />
+                                                <input onChange={this.addAreaHandler} className="form-control  medium-small-input" type="text" />
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="medium-lable threeMediumSmallInputsLableMargin">المحاظة</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input onChange={this.addGovernHandler} className="form-control  medium-small-input" type="text" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style={{ display: "table" }}>
+                                        <div style={{ display: "table-row" }}>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="medium-lable" >الحالة الوظيفية</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input onChange={this.addJSHandler} className="form-control giant-input oneInputMargin" type="text" />
                                             </div>
                                         </div>
                                     </div>
@@ -744,171 +786,498 @@ class Employee extends React.Component {
                                     <div style={{ display: "table" }}>
                                         <div style={{ display: "table-row" }}>
                                             <div style={{ display: "table-cell" }}>
-                                                <label className="small-lable" style={{ marginRight: 40 }}>الرقم القومي</label>
+                                                <label className="medium-lable" >الرقم القومي</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input style={{ marginRight: 70 }} className="form-control medium-medium-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].JOB_LOCATION : null : null} type="text" readonly="readonly" />
+                                                <input onChange={this.addEmpNidHandler} className="form-control medium-medium-input" type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <label style={{ marginRight: 10, marginTop: 20 }} className="small-lable">المنطقة</label>
+                                                <label className="medium-lable">جهة الإصدار</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input style={{ marginRight: 20 }} className="form-control  medium-medium-input" type="text" readonly="readonly" />
+                                                <input onChange={this.addPOIssuanceHandler} className="form-control  medium-medium-input" type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <label style={{ marginRight: 10 }} className="small-lable">المحاظة</label>
+                                                <label className="medium-lable">تاريخ الإصدار</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input style={{ marginRight: 20 }} className="form-control  medium-medium-input" type="text" readonly="readonly" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div style={{ display: "table" }}>
-                                        <div style={{ display: "table-row" }}>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label className="chodt medium-lable">الرقم التأميني</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input className="form-control chodt medium-input" type="text" disabled />
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label className="chodt nf medium-lable">مكتب التأمينات</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input className="form-control chodt medium-input" type="text" disabled />
+                                                <input onChange={this.addDOIssuanceHandler} className="form-control  medium-medium-input" type="text" />
                                             </div>
                                         </div>
                                     </div>
                                     <div style={{ display: "table" }}>
                                         <div style={{ display: "table-row" }}>
                                             <div style={{ display: "table-cell" }}>
-                                                <label style={{ marginRight: 55 }}>العنوان</label>
+                                                <label className="medium-lable ">الرقم التأميني</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input style={{ marginRight: 90 }} className="form-control chodt giant-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].cat_name : null : null} type="text" readonly="readonly" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div style={{ display: "table" }}>
-                                        <div style={{ display: "table-row" }}>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label className="small-lable" style={{ marginRight: 40 }}>ت. المنزل</label>
+                                                <input onChange={this.addinsuranceNumHandler} className="form-control medium-input" type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input style={{ marginRight: 70 }} className="form-control medium-medium-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].JOB_LOCATION : null : null} type="text" readonly="readonly" />
+                                                <label className="big-lable towMediumInputsLableMargin">مكتب التأمينات</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <label style={{ marginRight: 10, marginTop: 20 }} className="small-lable">ت. المكتب</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input style={{ marginRight: 20 }} className="form-control  medium-medium-input" type="text" readonly="readonly" />
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label style={{ marginRight: 10 }} className="small-lable">الموبايل</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input style={{ marginRight: 20 }} className="form-control  medium-medium-input" type="text" readonly="readonly" />
+                                                <input onChange={this.addinsuranceOfficeHandler} className="form-control medium-input" type="text" />
                                             </div>
                                         </div>
                                     </div>
                                     <div style={{ display: "table" }}>
                                         <div style={{ display: "table-row" }}>
                                             <div style={{ display: "table-cell" }}>
-                                                <label className="chodt medium-lable">البريد الأليكتروني</label>
+                                                <label className="medium-lable" >العنوان</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control chodt medium-input" type="text" disabled />
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label className="chodt nf medium-lable">الحالة الإجتماعية</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input className="form-control chodt medium-input" type="text" disabled />
+                                                <input onChange={this.addAddressHandler} className="form-control giant-input oneInputMargin" type="text" />
                                             </div>
                                         </div>
                                     </div>
                                     <div style={{ display: "table" }}>
                                         <div style={{ display: "table-row" }}>
                                             <div style={{ display: "table-cell" }}>
-                                                <label className="small-lable" style={{ marginRight: 40 }}>نوع النقابة</label>
+                                                <label className="medium-lable" >ت. المنزل</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input style={{ marginRight: 70 }} className="form-control medium-medium-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].JOB_LOCATION : null : null} type="text" readonly="readonly" />
+                                                <input onChange={this.addHPhoneNumHandler} className="form-control medium-medium-input" type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <label style={{ marginRight: 10, marginTop: 20 }} className="small-lable">رقم العضوية</label>
+                                                <label className="medium-lable ">ت. المكتب</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input style={{ marginRight: 20 }} className="form-control  medium-medium-input" type="text" readonly="readonly" />
+                                                <input onChange={this.addOPhoneNumHandler} className="form-control  medium-medium-input threeMediumBigInputsLableMargin" type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <label style={{ marginRight: 10 }} className="small-lable">تاريخ العضوية </label>
+                                                <label className="medium-lable">الموبايل</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input style={{ marginRight: 20 }} className="form-control  medium-medium-input" type="text" readonly="readonly" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div style={{ display: "table" }}>
-                                        <div style={{ display: "table-row" }}>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label className="small-lable" style={{ marginRight: 40 }}>موقف التجنيد</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input style={{ marginRight: 70 }} className="form-control small-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].JOB_LOCATION : null : null} type="text" readonly="readonly" />
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input style={{ marginRight: 100 }} className="form-control  small-input" type="text" readonly="readonly" />
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input style={{ marginRight: 20 }} className="form-control  small-input" type="text" readonly="readonly" />
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input style={{ marginRight: 20 }} className="form-control  small-input" type="text" readonly="readonly" />
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label style={{ marginRight: 20, marginTop: 20 }} className="small-lable">تاريخ التقاعد</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input style={{ marginRight: 20 }} className="form-control  small-input" type="text" />
+                                                <input onChange={this.addMPhoneNumHandler} className="form-control  medium-medium-input threeMediumBigInputsLableMargin" type="text" />
                                             </div>
                                         </div>
                                     </div>
                                     <div style={{ display: "table" }}>
                                         <div style={{ display: "table-row" }}>
                                             <div style={{ display: "table-cell" }}>
-                                                <label className="chodt medium-lable">النوع</label>
+                                                <label className="medium-lable">البريد الأليكتروني</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control chodt medium-input" type="text" disabled />
+                                                <input onChange={this.addEmailNumHandler} className="form-control medium-input" type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <label className="chodt nf medium-lable">الديانة</label>
+                                                <label className="big-lable towMediumInputsLableMargin">الحالة الإجتماعية</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control chodt medium-input" type="text" disabled />
+                                                <input onChange={this.addMarStatusNumHandler} className="form-control medium-input" type="text" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {this.state.syndicateAdded ?
+                                        <div style={{ display: "table" }}>
+                                            <div style={{ display: "table-row" }}>
+                                                <div style={{ display: "table-cell" }}>
+                                                    <i onClick={this.ds} class="fas fa-minus"></i>
+                                                </div>
+                                                <div style={{ display: "table-cell" }}>
+                                                    <label className="medium-lable" >نوع النقابة</label>
+                                                </div>
+                                                <div style={{ display: "table-cell" }}>
+                                                    <input onChange={this.addSyndicateTypeNumHandler} className="form-control medium-medium-input" type="text" />
+                                                </div>
+                                                <div style={{ display: "table-cell" }}>
+                                                    <label className="medium-lable">رقم العضوية</label>
+                                                </div>
+                                                <div style={{ display: "table-cell" }}>
+                                                    <input onChange={this.addMemberShipNumHandler} sclassName="form-control  medium-medium-input" type="text" />
+                                                </div>
+                                                <div style={{ display: "table-cell" }}>
+                                                    <label className="medium-lable">تاريخ العضوية </label>
+                                                </div>
+                                                <div style={{ display: "table-cell" }}>
+                                                    <input onChange={this.addMemberShipDateHandler} className="form-control  medium-medium-input" type="text" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        : null}
+                                    {this.state.syndicateAdded == false ?
+                                        <div style={{ display: "table" }}>
+                                            <div style={{ display: "table-row" }}>
+                                                <div style={{ display: "table-cell" }}>
+                                                    <label className="medium-lable" >إضافة نقابة</label>
+                                                </div>
+                                                <div style={{ display: "table-cell" }}>
+                                                    <i onClick={this.addSyndicateHandler} style={{marginTop: 10}} class="fas fa-plus" ></i>
+                                                </div>
+                                                <div style={{ display: "table-cell" }}>
+                                                </div>
+                                                <div style={{ display: "table-cell" }}>
+                                                </div>
+                                                <div style={{ display: "table-cell" }}>
+                                                </div>
+                                                <div style={{ display: "table-cell" }}>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        : null}
+                                    <div style={{ display: "table" }}>
+                                        <div style={{ display: "table-row" }}>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="medium-lable" >الموقف من التجنيد</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <select onChange={this.addMirStatusHandler} id="empapp" className="medium-select">
+                                                    {militaryStatus.map(status => (
+                                                        <option>{status}</option>
+                                                    ))}
+                                                    <option selected>اختر</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {this.state.milStatusIsTempEx ?
+
+                                        <div style={{ display: "table" }}>
+                                            <div style={{ display: "table-row" }}>
+                                                <div style={{ display: "table-cell" }}>
+                                                    <label className="medium-lable" >تاريخ الإنتهاء</label>
+                                                </div>
+                                                <div style={{ display: "table-cell" }}>
+                                                    <input className="form-control giant-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].cat_name : null : null} type="date" />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        :
+                                        null
+                                    }
+
+                                    {this.state.milStatusIsCompleted ?
+                                        <div style={{ display: "table" }}>
+                                            <div style={{ display: "table-row" }}>
+                                                <div style={{ display: "table-cell" }}>
+                                                    <label className="medium-lable" >مدة التجنيد</label>
+                                                </div>
+                                                <div style={{ display: "table-cell" }}>
+                                                    <input onChange={this.addDaysCountMirHandler} placeholder="يوم" className="form-control  medium-medium-input" type="text" />
+                                                </div>
+                                                <div style={{ display: "table-cell" }}>
+                                                    <input onChange={this.addMonthsCountMirHandler} placeholder="شهر" className="form-control  medium-medium-input" type="text" />
+                                                </div>
+                                                <div style={{ display: "table-cell" }}>
+                                                    <input onChange={this.addYearsCountMirHandler} placeholder="سنة" className="form-control  medium-medium-input" type="text" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        : null}
+                                    <div style={{ display: "table" }}>
+                                        <div style={{ display: "table-row" }}>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="medium-lable">النوع</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input onChange={this.addSexTypeHandler} className="form-control medium-input" type="text" />
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="medium-lable towMediumInputsLableMargin">الديانة</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input onChange={this.addReligousHandler} className="form-control medium-input" type="text" />
                                             </div>
                                         </div>
                                     </div>
                                     <div style={{ display: "table" }}>
                                         <div style={{ display: "table-row" }}>
                                             <div style={{ display: "table-cell" }}>
-                                                <label className="small-lable" style={{ marginRight: 40 }}>تاريخ الميلاد</label>
+                                                <label className="medium-lable" >تاريخ الميلاد</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input style={{ marginRight: 70 }} className="form-control medium-medium-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].JOB_LOCATION : null : null} type="text" readonly="readonly" />
+                                                <input onChange={this.addDobHandler} className="form-control medium-medium-input threeMediumBigInputsLableMargin" type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <label style={{ marginRight: 10, marginTop: 20 }} className="small-lable">جهة الميلاد</label>
+                                                <label className="medium-lable">جهة الميلاد</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input style={{ marginRight: 20 }} className="form-control  medium-medium-input" type="text" readonly="readonly" />
+                                                <input onChange={this.addPobHandler} className="form-control  medium-medium-input threeMediumBigInputsLableMargin" type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <label style={{ marginRight: 10 }} className="small-lable">محافظة الميلاد</label>
+                                                <label className="medium-lable">محافظة الميلاد</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input style={{ marginRight: 20 }} className="form-control  medium-medium-input" type="text" readonly="readonly" />
+                                                <input onChange={this.addGobHandler} className="form-control medium-medium-input threeMediumBigInputsLableMargin" type="text" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style={{ display: "table" }}>
+                                        <div style={{ display: "table-row" }}>
+                                            <div style={{ display: "table-cell" }}>
+                                                <button style={{ marginRight: 180, marginTop: 20, width: 650 }} onClick={this.handleArrToSend} className="btn btn-primary btn-block">إضافة</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            : <div className="col-lg-8">
+                                <div className="data-wrapper" style={{ background: "transparent", height: "100%", width: "100%" }} >
+                                    <h3 style={{ marginRight: 20, marginTop: 3, textAlign: "right", fontFamily: 'Markazi Text ,serif', fontWeight: 700 }}>البيانات الوظيفية</h3>
+                                    <div style={{ display: "table" }}>
+                                        <div style={{ display: "table-row" }}>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="medium-lable">رقم الأداء</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input className="form-control small-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].EMPLOYEE_ID : null : null} readonly="readonly" type="number" />
+                                            </div>
+
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="medium-lable towMediumInputsLableMargin" >الإسم</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input ref="nameinput" className="form-control medium-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].NAME_ARABIC : null : null} type="text" />
+                                            </div>
+                                        </div>
+                                        <div style={{ display: "table-row" }}>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="medium-lable" >تاريخ العقد</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input className="form-control medium-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].SECTOR_JOIN_DATE : null : null} type="text" readonly="readonly" />
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="big-lable towMediumInputsLableMargin">تاريخ التعيين</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input className="form-control medium-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].TRANS_DATE : null : null} type="text" readonly="readonly" />
+                                            </div>
+                                        </div>
+                                        <div style={{ display: "table-row" }}>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="medium-lable">الوظيفة الحالية</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input className="form-control medium-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].SUP_BOX_NAME : null : null} type="text" readonly="readonly" />
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="big-lable towMediumInputsLableMargin">طريقة شغلها</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input className="form-control medium-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].WOG : null : null} type="text" readonly="readonly" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style={{ display: "table" }}>
+                                        <div style={{ display: "table-row" }}>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="medium-lable">الإدارة</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input className="form-control giant-input oneInputMargin" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].cat_name : null : null} type="text" readonly="readonly" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style={{ display: "table" }}>
+                                        <div style={{ display: "table-row" }}>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="medium-lable">المحطة</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input className="form-control  small-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].JOB_LOCATION : null : null} type="text" readonly="readonly" />
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="medium-lable threeSmallLableMargin">المنطقة</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input className="form-control  small-input" type="text" readonly="readonly" />
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="medium-lable threeSmallLableMargin">المحاظة</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input className="form-control  small-input" type="text" readonly="readonly" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style={{ display: "table" }}>
+                                        <div style={{ display: "table-row" }}>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="medium-lable">الوظيفة الحالية</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input className="form-control medium-input" type="text" disabled />
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="big-lable towMediumInputsLableMargin">تقييم العام</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input className="form-control medium-input" type="text" disabled />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <h3 style={{ marginRight: 20, marginTop: 20, textAlign: "right", fontFamily: 'Markazi Text ,serif', fontWeight: 700 }}>البيانات الشخصية</h3>
+                                    <div style={{ display: "table" }}>
+                                        <div style={{ display: "table-row" }}>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="medium-lable">الرقم القومي</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input  className="form-control medium-medium-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].JOB_LOCATION : null : null} type="text" readonly="readonly" />
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="medium-lable">المنطقة</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input className="form-control  medium-medium-input" type="text" readonly="readonly" />
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="medium-lable">المحاظة</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input className="form-control  medium-medium-input" type="text" readonly="readonly" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style={{ display: "table" }}>
+                                        <div style={{ display: "table-row" }}>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="medium-lable">الرقم التأميني</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input className="form-control medium-input" type="text" disabled />
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="big-lable towMediumInputsLableMargin">مكتب التأمينات</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input className="form-control medium-input" type="text" disabled />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style={{ display: "table" }}>
+                                        <div style={{ display: "table-row" }}>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="medium-lable">العنوان</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input className="form-control giant-input oneInputMargin" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].cat_name : null : null} type="text" readonly="readonly" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style={{ display: "table" }}>
+                                        <div style={{ display: "table-row" }}>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="medium-lable">ت. المنزل</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input className="form-control medium-medium-input threeMediumBigInputsLableMargin" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].JOB_LOCATION : null : null} type="text" readonly="readonly" />
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="medium-lable">ت. المكتب</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin" type="text" readonly="readonly" />
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="medium-lable">الموبايل</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin" type="text" readonly="readonly" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style={{ display: "table" }}>
+                                        <div style={{ display: "table-row" }}>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="medium-lable">البريد الأليكتروني</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input className="form-control medium-input" type="text" disabled />
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="big-lable towMediumInputsLableMargin">الحالة الإجتماعية</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input className="form-control medium-input" type="text" disabled />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style={{ display: "table" }}>
+                                        <div style={{ display: "table-row" }}>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="medium-lable">نوع النقابة</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input className="form-control medium-medium-input threeMediumBigInputsLableMargin" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].JOB_LOCATION : null : null} type="text" readonly="readonly" />
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label  className="medium-lable">رقم العضوية</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin" type="text" readonly="readonly" />
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="medium-lable">تاريخ العضوية </label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin" type="text" readonly="readonly" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {/* <div style={{ display: "table" }}>
+                                        <div style={{ display: "table-row" }}>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="medium-lable">موقف التجنيد</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input className="form-control small-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].JOB_LOCATION : null : null} type="text" readonly="readonly" />
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input  className="form-control  small-input" type="text" readonly="readonly" />
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input className="form-control  small-input" type="text" readonly="readonly" />
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input className="form-control  small-input" type="text" readonly="readonly" />
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="medium-lable">تاريخ التقاعد</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input className="form-control  small-input" type="text" />
+                                            </div>
+                                        </div>
+                                    </div> */}
+                                    <div style={{ display: "table" }}>
+                                        <div style={{ display: "table-row" }}>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="medium-lable">النوع</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input className="form-control medium-input" type="text" disabled />
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="medium-lable towMediumInputsLableMargin">الديانة</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input className="form-control medium-input" type="text" disabled />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style={{ display: "table" }}>
+                                        <div style={{ display: "table-row" }}>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="medium-lable ">تاريخ الميلاد</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input className="form-control medium-medium-input threeMediumBigInputsLableMargin" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].JOB_LOCATION : null : null} type="text" readonly="readonly" />
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="medium-lable">جهة الميلاد</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin" type="text" readonly="readonly" />
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label  className="medium-lable">محافظة الميلاد</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin" type="text" readonly="readonly" />
                                             </div>
                                         </div>
                                     </div>
