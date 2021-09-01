@@ -3,6 +3,25 @@ const db = require("../database/connection")
 
 let router = express.Router();
 
+function insertNewEmp(req,res,next){
+    const data = req.body
+    let query = `INSERT INTO employee (ORGANIZATION,EMPLOYEE_ID,NAME_ARABIC,CONTRACT_TYPE,SECTOR_JOIN_DATE,
+        JOB_LOCATION,JOB_AREA,JOB_GOVERNORATE,EMP_STATUS,NATIONAL_ID_CARD_NO,NATIONAL_ID_CARD_ISSUED_BY,NATIONAL_CARD_ISSUE_DATE,SOCIAL_INSURANCE_NUMBER
+        ,INSURANCE_OFFICE,RESEDNTIAL_ADDRESS,PHONE_3_MOBILE,PHONE_2_HOME,PHONE_1_OFFICE,EMP_EMAIL,MARITAL_STATUS,SYNDICATE,SYNDICATE_REGISTERATION,
+        SYNDICATE_REGISTERATION_DATE,MILITARY_SERVICE_STATUS,MIL_SERVICE_DAYS,MIL_SERVICE_MONTHS,MIL_SERVICE_YEARS,RETIRE_DATE,GENDER,RELIGION,BIRTH_DATE,
+        BIRTH_PLACE,GOVERNORATE_OF_BIRTH) VALUES ${data}`
+
+        db.query(query, (err, details) => {
+            if (err) {
+                next(err);
+            } else {
+                res.send(details)
+            }
+        })
+        console.log(query);
+
+}
+
 function getJobDgreeCodes(req, res, next) {
     const jDName = req.params.jDName
     const query = `SELECT J_D_ID FROM a_job_dgree WHERE J_D_NAME = '${jDName}'; `
@@ -117,5 +136,6 @@ router
     .get('/specarabic', getQulSpeciality)
     .get('/specDetail', getSpecDetail)
     .get('/uneschool', getUneSchool)
+    .post('/insertnewemp',insertNewEmp)
 
 module.exports = router;

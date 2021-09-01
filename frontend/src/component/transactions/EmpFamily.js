@@ -205,7 +205,6 @@ class EmpFamily extends React.Component {
         let arr = []
         if (emptyInputs != undefined || state.addMaritalNId[0].value.length !== 14) {
             if (emptyInputs != undefined) {
-                console.log('hit');
                 this.setState({
                     messege: { msg: "البيانات غير كاملة" }
                 })

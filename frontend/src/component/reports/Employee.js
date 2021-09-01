@@ -14,29 +14,28 @@ class Employee extends React.Component {
         super(props);
         this.state = {
 
-            add: false, showNamesResults: false, addEmpId: "", addEmpName: "", addDoc: "", addDoj: "",
+            add: false, showNamesResults: false, addEmpId: "", addEmpName: "", addContractType: "", addDoc: "", addRetirementDate: "", addDoj: "",
             addStation: "", addArea: "", addGovern: "", addJS: "", addEmpNid: "",
             addPOIssuance: "", addDOIssuance: "", addinsuranceNum: "", addinsuranceOffice: "", addAddress: "", addMPhoneNum: "",
             addHPhoneNum: "", addOPhoneNum: "", addEmail: "", addMarStatus: "", addSyndicateType: "", addMemberShipNum: "",
-            addMemberShipDate: "", addMirStatus: "", addDaysCountMir: "", addMonthsCountMir: "", addYearsCountMir: "",
-            addRetirementDate: "", addSexType: "", addReligous: "", addDob: "", addPob: "", addGob: "", milStatusIsTempEx: false, milStatusIsCompleted: false,
-            syndicateAdded: false
+            addMemberShipDate: "", addMirStatus: "", addDaysCountMir: "", addMonthsCountMir: "", addYearsCountMir: "", ExmpExpireDate: "",
+            addSexType: "", addReligous: "", addDob: "", addPob: "", addGob: "", milStatusIsTempEx: false, milStatusIsCompleted: false,
+            syndicateAdded: false, confirmAdd: ""
         };
     }
 
     handleArrToSend = (e) => {
         let state = this.state
+        let organization = `(30`
         let empid = state.addEmpId
         let empname = `"${state.addEmpName}"`
+        let contractType = `(SELECT CONTRACT_TYPE FROM contract_type WHERE CONTRACT_TYPE_ARABIC = ${state.addContractType})`
         let doc = `"${state.addDoc}"`
-        let addcj = `"${state.addCj}"`
-        let addjasf = `"${state.addJasf}"`
-        let addMangement = `"${state.addMangement}"`
         let addStation = `"${state.addStation}"`
         let addArea = `"${state.addArea}"`
-        let addGovern = `"${state.addGovern}"`
-        let addJS = `"${state.addJS}"`
-        let addEmpNid = `"${state.addEmpNid}"`
+        let addGovern = `(SELECT GOVERNORATE FROM governorate WHERE GOVERNORATE_ARABIC = "${state.addGovern}")`
+        let addJS = `(SELECT EMP_STATUS FROM emp_status WHERE EMP_STATUS_NAME = "${state.addJS}")`
+        let addEmpNid = `${state.addEmpNid}`
         let addPOIssuance = `"${state.addPOIssuance}"`
         let addDOIssuance = `"${state.addDOIssuance}"`
         let addinsuranceNum = `"${state.addinsuranceNum}"`
@@ -46,49 +45,66 @@ class Employee extends React.Component {
         let addHPhoneNum = `"${state.addHPhoneNum}"`
         let addOPhoneNum = `"${state.addOPhoneNum}"`
         let addEmail = `"${state.addEmail}"`
-        let addMarStatus = `"${state.addMarStatus}"`
-        let addSyndicateType = `"${state.addSyndicateType}"`
+        let addMarStatus = `(SELECT MARITAL_STATUS FROM marital_status WHERE STATUS_DESC = "${state.addMarStatus}")`
+        let addSyndicateType = `(SELECT SYNDICATE FROM syndicate WHERE SYNDICATE_NAME = "${state.addSyndicateType}")`
         let addMemberShipNum = `"${state.addMemberShipNum}"`
         let addMemberShipDate = `"${state.addMemberShipDate}"`
-        let addMirStatus = `"${state.addMirStatus}"`
+        let addMirStatus = `(SELECT MILITARY_SERVICE_STATUS FROM military_service_status WHERE STATUS_ARABIC ="${state.addMirStatus}")`
         let addDaysCountMir = `"${state.addDaysCountMir}"`
-        let addMonthsCountMir = `"${state.addMonthsCountMir}"`
-        let addYearsCountMir = `"${state.addYearsCountMir}"`
+        let addMonthsCountMir = `${state.addMonthsCountMir}`
+        let addYearsCountMir = `${state.addYearsCountMir}`
         let addRetirementDate = `"${state.addRetirementDate}"`
-        let addSexType = `"${state.addSexType}"`
-        let addReligous = `"${state.addReligous}"`
+        let addSexType = `(SELECT GENDER FROM genders WHERE GENDER_NAME = "${state.addSexType}")`
+        let addReligous = `(SELECT RELIGION FROM religions WHERE RELIGION_NAME = "${state.addReligous}")`
         let addDob = `"${state.addDob}"`
         let addPob = `"${state.addPob}"`
-        let addGob = `"${state.addGob}"`
+        let addGob = `"${state.addGob}")`
 
         let data = [
-            empid, empname, doc, addcj, addjasf, addjasf, addMangement, addStation, addArea, addGovern
+            organization, empid, empname, contractType, doc, addStation, addArea, addGovern
             , addJS, addEmpNid, addPOIssuance, addDOIssuance, addinsuranceNum, addinsuranceOffice, addAddress,
-            addMPhoneNum, addHPhoneNum, addOPhoneNum, addOPhoneNum, addEmail, addMarStatus, addSyndicateType, addMemberShipNum,
+            addMPhoneNum, addHPhoneNum, addOPhoneNum, addEmail, addMarStatus, addSyndicateType, addMemberShipNum,
             addMemberShipDate, addMirStatus, addDaysCountMir, addMonthsCountMir, addYearsCountMir, addRetirementDate, addSexType,
             addReligous, addDob, addPob, addGob
         ]
 
-        console.log(data);
-
-
-
-
         if (
-            state.addDoc.length < 1 || state.addCj.length < 1 || state.addJasf.length < 1 || state.addMangement.length < 1 ||
-            state.addStation.length < 1 || state.addArea.length < 1 || state.addGovern.length < 1 || state.addJS.length < 1 ||
+            state.addEmpId.length < 1 || state.addEmpName.length < 1 || state.addContractType.length < 1 || state.addDoc.length < 1 || state.addStation.length < 1 || state.addArea.length < 1 || state.addGovern.length < 1 || state.addJS.length < 1 ||
             state.addEmpNid.length < 1 || state.addPOIssuance.length < 1 || state.addDOIssuance.length < 1 || state.addinsuranceNum.length < 1 ||
             state.addinsuranceOffice.length < 1 || state.addAddress.length < 1 || state.addMPhoneNum.length < 1 || state.addHPhoneNum.length < 1 ||
-            state.addOPhoneNum.length < 1 || state.addEmail.length < 1 || state.addMarStatus.length < 1 || state.addSyndicateType.length < 1 ||
-            state.addMemberShipNum.length < 1 || state.addMemberShipDate.length < 1 || state.addMirStatus.length < 1 || state.addDaysCountMir.length < 1 ||
-            state.addMonthsCountMir.length < 1 || state.addYearsCountMir.length < 1 || state.addRetirementDate.length < 1 || state.addSexType.length < 1 ||
+            state.addOPhoneNum.length < 1 || state.addEmail.length < 1 || state.addMarStatus.length < 1 || (state.syndicateAdded && (state.addSyndicateType.length < 1 ||
+                state.addMemberShipNum.length < 1 || state.addMemberShipDate.length < 1)) || (state.milStatusIsCompleted && (state.addMirStatus.length < 1 || state.addDaysCountMir.length < 1 ||
+                    state.addMonthsCountMir.length < 1 || state.addYearsCountMir.length < 1)) || (state.milStatusIsTempEx && state.ExmpExpireDate.length < 1) || state.addRetirementDate.length < 1 || state.addSexType.length < 1 ||
             state.addReligous.length < 1 || state.addDob.length < 1 || state.addPob.length < 1 || state.addGob.length < 1
         ) {
 
             console.log('inputs are not completed');
 
+        } else if (state.addEmpNid.length !== 14) {
+            console.log('رقم البطاقة غير صحيح');
+
+            this.setState({
+                messege: "رقم البطاقة غير صحيح"
+            })
+
+        } else {
+             axios({
+                method: "POST",
+                data,
+                withCredentials: true,
+                url: "http://localhost:5000/insertnewemp",
+                headers: { "Content-Type": "application/json" },
+            }).then((res) => {
+                console.log(res.data);
+
+            })
+            this.setState({
+                confirmAdd: true, finalData: data
+            })
         }
     }
+
+
 
     addButtonHandler = (e) => {
         this.setState({
@@ -109,25 +125,17 @@ class Employee extends React.Component {
         })
     }
 
+    addContractTypeHandler = (e) => {
+        this.setState({
+            addContractType: e.target.value
+        })
+    }
+
     addDocHandler = (e) => {
         this.setState({
             addDoc: e.target.value
         })
     }
-
-    addCjHandler = (e) => {
-        this.setState({ addCj: e.target.value })
-    }
-
-    addJasfHandler = (e) => {
-        this.setState({ addJasf: e.target.value })
-
-    }
-
-    addMangementHandler = (e) => {
-        this.setState({ addMangement: e.target.value })
-    }
-
 
     addStationHandler = (e) => {
         this.setState({ addStation: e.target.value })
@@ -222,11 +230,18 @@ class Employee extends React.Component {
     addMirStatusHandler = (e) => {
         if (e.target.value == "ادي الخدمه العسكرية") {
             this.setState({
-                milStatusIsCompleted: true
+                milStatusIsCompleted: true,
+                milStatusIsTempEx: false
             })
         } else if (e.target.value == "معاف مؤقت") {
             this.setState({
-                milStatusIsTempEx: true
+                milStatusIsTempEx: true,
+                milStatusIsCompleted: false
+            })
+        } else {
+            this.setState({
+                milStatusIsCompleted: false,
+                milStatusIsTempEx: false
             })
         }
         this.setState({ addMirStatus: e.target.value })
@@ -243,6 +258,12 @@ class Employee extends React.Component {
 
     addYearsCountMirHandler = (e) => {
         this.setState({ addYearsCountMir: e.target.value })
+    }
+
+    addExmpExpireDate = (e) => {
+        this.setState({
+            ExmpExpireDate: e.target.value
+        })
     }
 
     addRetirementDateHandler = (e) => {
@@ -340,8 +361,126 @@ class Employee extends React.Component {
 
 
 
+
     render() {
         let militaryStatus = ["لعدم اللياقة البدنية", "اعفاء من الخدمة العامة", "غير معروف", "ادي الخدمه العسكرية", "لم يصبه الدور", "مجند", "معاف مؤقت", "اعفاء نهائى", "أدى الخدمة العامة", "تحت الطلب", "ضابط عامل", "مستثنى من الخدمة", "عسكري سابق", "مستدعى", "تخلف عن التجنيد", "أمين شرطة سابقا", "ضابط سابق في شرطة"]
+        let governorate = ["القاهرة", "الاسكندرية", "بورسعيد", "السويس", "البحرالاحمر", "الـوادى الجديد", "مرسى مطروح", "جنوب سيناء", "الاسماعيلية", "البحيرة", "الدقهليـة", "الشرقية", "الغربيـة", "كفرالشيخ", "القليوبيـة", "المنوفيـة", "دميـاط", "الجـيزة", "الفيـوم", "بنى سويف", "المنيـا", "اسيـوط", "سوهاج", "قنـا", "اسوان", "شمال سيناء", "الاقصر", "حلوان", "دول خارجية"]
+        let station = ['الاستاد',
+            'الإسكندرية',
+            'الدخيلة',
+            'الزقازيق',
+            'الزهور',
+            'السويس',
+            'الشهداء',
+            'العاشر من رمضان',
+            'العجمى',
+            'العريش',
+            'العمرانية',
+            'الفيوم',
+            'القبارى',
+            'الكابلات',
+            'المرج',
+            'المروة',
+            'المطرية',
+            'المعادي',
+            'المعصرة',
+            'المنصورة 1',
+            'المنصورة 2',
+            'المنيا',
+            'النزهة الجديدة',
+            'النهضة',
+            'الهرم',
+            'الوراق',
+            'أبورواش',
+            'أسو القطامية',
+            'أسو سافوى',
+            'ألماظة',
+            'بنها',
+            'بني سويف',
+            'توتال - العوايد',
+            'توتال - المطار',
+            'جراج العجمي',
+            'جراج القطامية',
+            'جراج المعادى',
+            'جراج محرم بك',
+            'جميلة - العوايد',
+            'دمنهور',
+            'رشدى -وسط البلد',
+            'رشدي',
+            'سفنكس',
+            'سموحة',
+            'سوهاج',
+            'سيدي بشر',
+            'سيدي بشر 2',
+            'شبرا',
+            'شبين',
+            'شبين الكوم',
+            'شبين الكوم 1',
+            'شطا',
+            'شهداء',
+            'شيبرد',
+            'طنطا',
+            'عز الدين',
+            'عين شمس',
+            'فيصل',
+            'قبضايا',
+            'مبارك',
+            'مجلس الوزراء',
+            'مدينة نصر',
+            'مصدق',
+        ]
+        let area = ["شرق", "غرب", "الصعيد", "الدلتا", "الأسكندرية", "القناة"]
+        let emp_status = ['على قوة العمل',
+            'أستقالة',
+            'موقوف',
+            'فصل',
+            'معاش',
+            'معاش مبكر',
+            'وفاه',
+            'أجازة بدون مرتب',
+            'معار',
+            'منتدب',
+            'نقل',
+            'إيقاف للتجنيد',
+            'تفرغ',
+            'عجز كلي',
+            'نقل بقرار وزاري',
+            'تعيين شركات شقيقة',
+            'إعارة من الشركات للعمل بالشركة',
+            'ندب من الشركات للعمل بالشركة',
+            'تكليف من الشركات للعمل بالشركة',
+        ]
+        let syndicate = ['التجاريين',
+            'الصحفين',
+            'المهندسين',
+            'نقابة المهن الاجتماعية',
+            'نقابة الأطباء البشرين',
+            'اطباء الاسنان',
+            'نقابة الأطباء البيطرين',
+            'النقابة العامة للنقل البحري',
+            'نقابة التطبيقين',
+            'البترول',
+            'فنون تطبيقية',
+            'التمريض',
+            'نقابة الصيادلة',
+            'الزراعيين                                        ',
+            'العلميين',
+            'المعلميين',
+            'المحامين',
+            'العامه للنقل البرى',
+            'العلاج الطبيعى',
+            'نقابة الفنانين التشكيلين',
+            'المهن التعليمية',
+            'المهن الرياضية',
+            'نقابة المهن الصناعية',
+            'المهنيين',
+            'النقابة العامة للعاملين بالصناعات الهندسية والمعدن...',
+            'العاملين بصناعات البناء والأخشاب',
+            'غير محـدد له النقـابه',
+            'نقابه الطيارين المدنيين المصريه',
+            'النقابة العامة للنقل الجوي',
+            'نقابة العاملين بهندسة صيانة الطائرات',
+        ]
         const styles = {
             display: "block",
             padding: "0.375rem 2.25rem 0.375rem 0.75rem",
@@ -401,325 +540,13 @@ class Employee extends React.Component {
                             <div className="col-lg-8">
                                 <div className="data-wrapper" style={{ background: "transparent", height: "100%", width: "100%" }} >
                                     <h3 style={{ marginRight: 20, marginTop: 3, textAlign: "right", fontFamily: 'Markazi Text ,serif', fontWeight: 700 }}>البيانات الوظيفية</h3>
-                                    {/* <div style={{ display: "table" }}>
-                                        <div style={{ display: "table-row" }}>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label className="small-lable">رقم الأداء</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addEmpIdHandler} className="form-control small-input" type="number" />
-                                            </div>
-                                        </div>
-                                    </div> */}
-
-                                    {/* <div style={{ display: "table" }}>
-                                        <div style={{ display: "table-row" }}>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label style={{ marginRight: 26 }} className="medium-lable">رقم الأداء</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input style={{ marginRight: 53 }} onChange={this.addEmpIdHandler} ref="nameinput" className="form-control giant-input" type="text" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div style={{ display: "table" }}>
-                                        <div style={{ display: "table-row" }}>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label className="> الإسم</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input style={{ marginRight: 50 }} onChange={this.addEmpNameHandler} ref="nameinput" className="form-control giant-input" type="text" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div style={{ display: "table" }}>
-
-                                        <div style={{ display: "table-row" }}>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label style={{ marginRight: 40 }} className="medium-lable" >تاريخ العقد</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input style={{ marginRight: 18 }} onChange={this.addDocHandler} className=" form-control medium-input" type="text" />
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label className="medium-lable">تاريخ التقاعد</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addRetirementDateHandler} style={{ marginRight: 70, marginTop: 10 }} className="form-control  medium-input" type="text" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div style={{ display: "table" }}>
-                                        <div style={{ display: "table-row" }}>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label className="small-lable" style={{ marginRight: 40 }}>المحطة</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addStationHandler} style={{ marginRight: 70 }} className="form-control  medium-small-input" type="text" />
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label style={{ marginRight: 35, marginTop: 20 }} className="small-lable">المنطقة</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addAreaHandler} style={{ marginRight: 35 }} className="form-control  medium-small-input" type="text" />
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label style={{ marginRight: 40 }} className="small-lable">المحاظة</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addGovernHandler} style={{ marginRight: 40 }} className="form-control  medium-small-input" type="text" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div style={{ display: "table" }}>
-                                        <div style={{ display: "table-row" }}>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label className="medium-lable" style={{ marginRight: 30 }}>الحالة الوظيفية</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addJSHandler} style={{ marginRight: 50 }} className="form-control giant-input" type="text" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <h3 style={{ marginRight: 20, marginTop: 20, textAlign: "right", fontFamily: 'Markazi Text ,serif', fontWeight: 700 }}>البيانات الشخصية</h3>
-                                    <div style={{ display: "table" }}>
-                                        <div style={{ display: "table-row" }}>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label className="small-lable" style={{ marginRight: 40 }}>الرقم القومي</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addEmpNidHandler} style={{ marginRight: 70 }} className="form-control medium-medium-input" type="text" />
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label style={{ marginRight: 10, marginTop: 20 }} className="small-lable">جهة الإصدار</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addPOIssuanceHandler} style={{ marginRight: 20 }} className="form-control  medium-medium-input" type="text" />
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label style={{ marginRight: 10 }} className="small-lable">تاريخ الإصدار</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addDOIssuanceHandler} style={{ marginRight: 20 }} className="form-control  medium-medium-input" type="text" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div style={{ display: "table" }}>
-                                        <div style={{ display: "table-row" }}>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label className="medium-lable">الرقم التأميني</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addinsuranceNumHandler} className="form-control medium-input" type="text" />
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label className="medium-lable">مكتب التأمينات</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addinsuranceOfficeHandler} className="form-control medium-input" type="text" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div style={{ display: "table" }}>
-                                        <div style={{ display: "table-row" }}>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label style={{ marginRight: 55 }}>العنوان</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addAddressHandler} style={{ marginRight: 90 }} className="form-control giant-input" type="text" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div style={{ display: "table" }}>
-                                        <div style={{ display: "table-row" }}>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label className="small-lable" style={{ marginRight: 40 }}>ت. المنزل</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addHPhoneNumHandler} style={{ marginRight: 70 }} className="form-control medium-medium-input" type="text" />
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label style={{ marginRight: 10, marginTop: 20 }} className="small-lable">ت. المكتب</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addOPhoneNumHandler} style={{ marginRight: 20 }} className="form-control  medium-medium-input" type="text" />
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label style={{ marginRight: 10 }} className="small-lable">الموبايل</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addMPhoneNumHandler} style={{ marginRight: 20 }} className="form-control  medium-medium-input" type="text" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div style={{ display: "table" }}>
-                                        <div style={{ display: "table-row" }}>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label className="medium-lable">البريد الأليكتروني</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addEmailNumHandler} className="form-control medium-input" type="text" />
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label className="medium-lable">الحالة الإجتماعية</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addMarStatusNumHandler} className="form-control medium-input" type="text" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {this.state.syndicateAdded ?
-                                        <div style={{ display: "table" }}>
-                                            <div style={{ display: "table-row" }}>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <i onClick={this.ds} class="fas fa-minus"></i>
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <label className="small-lable" style={{ marginRight: 26 }}>نوع النقابة</label>
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <input onChange={this.addSyndicateTypeNumHandler} style={{ marginRight: 70 }} className="form-control medium-medium-input" type="text" />
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <label style={{ marginRight: 10 }} className="small-lable">رقم العضوية</label>
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <input onChange={this.addMemberShipNumHandler} style={{ marginRight: 20, marginTop: 10 }} className="form-control  medium-medium-input" type="text" />
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <label style={{ marginRight: 10 }} className="small-lable">تاريخ العضوية </label>
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <input onChange={this.addMemberShipDateHandler} style={{ marginRight: 20 }} className="form-control  medium-medium-input" type="text" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        : null}
-                                    {this.state.syndicateAdded == false ?
-                                        <div style={{ display: "table" }}>
-                                            <div style={{ display: "table-row" }}>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <label className="medium-lable" style={{ marginRight: 40 }}>إضافة نقابة</label>
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <i onClick={this.addSyndicateHandler} class="fas fa-plus" style={{ marginRight: 55, marginTop: 20 }}></i>
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        : null}
-                                    <div style={{ display: "table" }}>
-                                        <div style={{ display: "table-row" }}>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label className="medium-lable" style={{ marginRight: 30 }}>الموقف من التجنيد</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <select onChange={this.addMirStatusHandler} style={{ marginRight: 50, marginTop: 10 }} id="empapp" className="medium-select">
-                                                    {militaryStatus.map(status => (
-                                                        <option>{status}</option>
-                                                    ))}
-                                                    <option selected>اختر</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {this.state.milStatusIsTempEx ?
-
-                                        <div style={{ display: "table" }}>
-                                            <div style={{ display: "table-row" }}>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <label className="medium-lable" style={{ marginRight: 20 }}>تاريخ الإنتهاء</label>
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <input style={{ marginRight: 20 }} className="form-control giant-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].cat_name : null : null} type="date" />
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        :
-                                        null
-                                    }
-
-                                    {this.state.milStatusIsCompleted ?
-                                        <div style={{ display: "table" }}>
-                                            <div style={{ display: "table-row" }}>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <label className="small-lable" style={{ marginRight: 50 }}>مدة التجنيد</label>
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <input onChange={this.addDaysCountMirHandler} placeholder="يوم" style={{ marginRight: 60 }} className="form-control  medium-medium-input" type="text" />
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <input onChange={this.addMonthsCountMirHandler} placeholder="شهر" style={{ marginRight: 100, marginTop: 10 }} className="form-control  medium-medium-input" type="text" />
-                                                </div>
-                                                <div style={{ display: "table-cell" }}>
-                                                    <input onChange={this.addYearsCountMirHandler} placeholder="سنة" style={{ marginRight: 100 }} className="form-control  medium-medium-input" type="text" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        : null}
-                                    <div style={{ display: "table" }}>
-                                        <div style={{ display: "table-row" }}>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label className="medium-lable">النوع</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addSexTypeHandler} className="form-control medium-input" type="text" />
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label className="medium-lable">الديانة</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addReligousHandler} className="form-control medium-input" type="text" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div style={{ display: "table" }}>
-                                        <div style={{ display: "table-row" }}>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label className="small-lable" style={{ marginRight: 40 }}>تاريخ الميلاد</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addDobHandler} style={{ marginRight: 70 }} className="form-control medium-medium-input" type="text" />
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label style={{ marginRight: 10, marginTop: 20 }} className="small-lable">جهة الميلاد</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addPobHandler} style={{ marginRight: 20 }} className="form-control  medium-medium-input" type="text" />
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label style={{ marginRight: 10 }} className="small-lable">محافظة الميلاد</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addGobHandler} style={{ marginRight: 20 }} className="form-control  medium-medium-input" type="text" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div style={{ display: "table" }}>
-                                        <div style={{ display: "table-row" }}>
-                                            <div style={{ display: "table-cell" }}>
-                                                <button style={{ marginRight: 180, marginTop: 20, width: 650 }} onClick={this.handleArrToSend} className="btn btn-primary btn-block">إضافة</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div> */}
-
                                     <div style={{ display: "table" }}>
                                         <div style={{ display: "table-row" }}>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable">رقم الأداء</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addEmpIdHandler} ref="nameinput" className="form-control giant-input" type="text" />
+                                                <input onChange={this.addEmpIdHandler} ref="nameinput" className="form-control giant-input" type="number" />
                                             </div>
                                         </div>
                                     </div>
@@ -734,19 +561,42 @@ class Employee extends React.Component {
                                         </div>
                                     </div>
                                     <div style={{ display: "table" }}>
+                                        <div style={{ display: "table-row" }}>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="medium-lable" >نوع العقد</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input onChange={this.addContractTypeHandler} className="form-control giant-input oneInputMargin" list="brow12" />
+                                                <datalist id="brow12">
+                                                    <option value="أخرى" />
+                                                    <option value="دائم" />
+                                                    <option value="عقد محدد المده" />
+                                                    <option value="مكافأه شامله" />
+                                                    <option value="عقد عمل بنظام على مشروع" />
+                                                    <option value="معار" />
+                                                    <option value="منتدب" />
+                                                    <option value="عقد عمال مياومة شركات قطاع" />
+                                                    <option value="عقد تدريب" />
+                                                    <option value="عقد عمال مياومة من خارج القطاع" />
+
+                                                </datalist>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style={{ display: "table" }}>
 
                                         <div style={{ display: "table-row" }}>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable" >تاريخ العقد</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addDocHandler} className=" form-control medium-input" type="text" />
+                                                <input onChange={this.addDocHandler} className=" form-control medium-input" type="date" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable towMediumInputsLableMargin">تاريخ التقاعد</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addRetirementDateHandler} className="form-control  medium-input" type="text" />
+                                                <input onChange={this.addRetirementDateHandler} className="form-control  medium-input" type="date" />
                                             </div>
                                         </div>
                                     </div>
@@ -756,19 +606,35 @@ class Employee extends React.Component {
                                                 <label className="medium-lable" >المحطة</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addStationHandler} className="form-control  medium-small-input" type="text" />
+                                                <input onChange={this.addStationHandler} className="form-control medium-small-input" list="brow1" />
+                                                <datalist id="brow1">
+                                                    {station.map(stat => (
+                                                        <option value={stat} />
+                                                    ))}
+                                                </datalist>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable threeMediumSmallInputsLableMargin">المنطقة</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addAreaHandler} className="form-control  medium-small-input" type="text" />
+                                                <input onChange={this.addAreaHandler} className="form-control medium-small-input" list="brow2" />
+                                                <datalist id="brow2">
+                                                    {area.map(er => (
+                                                        <option value={er} />
+                                                    ))}
+                                                </datalist>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <label className="medium-lable threeMediumSmallInputsLableMargin">المحاظة</label>
+                                                <label className="medium-lable threeMediumSmallInputsLableMargin">المحافظة</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addGovernHandler} className="form-control  medium-small-input" type="text" />
+                                                {/* <input onChange={this.addGovernHandler} className="form-control  medium-small-input" type="text" /> */}
+                                                <input onChange={this.addGovernHandler} className="form-control medium-small-input" list="brow3" />
+                                                <datalist id="brow3">
+                                                    {governorate.map(gov => (
+                                                        <option value={gov} />
+                                                    ))}
+                                                </datalist>
                                             </div>
                                         </div>
                                     </div>
@@ -778,7 +644,12 @@ class Employee extends React.Component {
                                                 <label className="medium-lable" >الحالة الوظيفية</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addJSHandler} className="form-control giant-input oneInputMargin" type="text" />
+                                                <input onChange={this.addJSHandler} className="form-control giant-input oneInputMargin" list="brow4" />
+                                                <datalist id="brow4">
+                                                    {emp_status.map(empstatus => (
+                                                        <option value={empstatus} />
+                                                    ))}
+                                                </datalist>
                                             </div>
                                         </div>
                                     </div>
@@ -789,7 +660,7 @@ class Employee extends React.Component {
                                                 <label className="medium-lable" >الرقم القومي</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addEmpNidHandler} className="form-control medium-medium-input" type="text" />
+                                                <input onChange={this.addEmpNidHandler} className="form-control medium-medium-input" type="number" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable">جهة الإصدار</label>
@@ -801,7 +672,7 @@ class Employee extends React.Component {
                                                 <label className="medium-lable">تاريخ الإصدار</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addDOIssuanceHandler} className="form-control  medium-medium-input" type="text" />
+                                                <input onChange={this.addDOIssuanceHandler} className="form-control  medium-medium-input" type="date" />
                                             </div>
                                         </div>
                                     </div>
@@ -811,7 +682,7 @@ class Employee extends React.Component {
                                                 <label className="medium-lable ">الرقم التأميني</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addinsuranceNumHandler} className="form-control medium-input" type="text" />
+                                                <input onChange={this.addinsuranceNumHandler} className="form-control medium-input" type="number" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="big-lable towMediumInputsLableMargin">مكتب التأمينات</label>
@@ -837,19 +708,19 @@ class Employee extends React.Component {
                                                 <label className="medium-lable" >ت. المنزل</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addHPhoneNumHandler} className="form-control medium-medium-input" type="text" />
+                                                <input onChange={this.addHPhoneNumHandler} className="form-control medium-medium-input" type="number" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable ">ت. المكتب</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addOPhoneNumHandler} className="form-control  medium-medium-input threeMediumBigInputsLableMargin" type="text" />
+                                                <input onChange={this.addOPhoneNumHandler} className="form-control  medium-medium-input threeMediumBigInputsLableMargin" type="number" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable">الموبايل</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addMPhoneNumHandler} className="form-control  medium-medium-input threeMediumBigInputsLableMargin" type="text" />
+                                                <input onChange={this.addMPhoneNumHandler} className="form-control  medium-medium-input threeMediumBigInputsLableMargin" type="number" />
                                             </div>
                                         </div>
                                     </div>
@@ -873,25 +744,30 @@ class Employee extends React.Component {
                                         <div style={{ display: "table" }}>
                                             <div style={{ display: "table-row" }}>
                                                 <div style={{ display: "table-cell" }}>
-                                                    <i onClick={this.ds} class="fas fa-minus"></i>
+                                                    <i onClick={this.ds} class="fas fa-minus" ></i>
                                                 </div>
                                                 <div style={{ display: "table-cell" }}>
-                                                    <label className="medium-lable" >نوع النقابة</label>
+                                                    <label className="medium-lable" style={{ marginLeft: -14 }}>نوع النقابة</label>
                                                 </div>
                                                 <div style={{ display: "table-cell" }}>
-                                                    <input onChange={this.addSyndicateTypeNumHandler} className="form-control medium-medium-input" type="text" />
+                                                    <input onChange={this.addSyndicateTypeNumHandler} className="form-control medium-medium-input" list="brow12" />
+                                                    <datalist id="brow12">
+                                                        {syndicate.map(synd => (
+                                                            <option value={synd} />
+                                                        ))}
+                                                    </datalist>
                                                 </div>
                                                 <div style={{ display: "table-cell" }}>
                                                     <label className="medium-lable">رقم العضوية</label>
                                                 </div>
                                                 <div style={{ display: "table-cell" }}>
-                                                    <input onChange={this.addMemberShipNumHandler} sclassName="form-control  medium-medium-input" type="text" />
+                                                    <input onChange={this.addMemberShipNumHandler} className="form-control medium-medium-input threeMediumBigInputsLableMargin" type="number" />
                                                 </div>
                                                 <div style={{ display: "table-cell" }}>
                                                     <label className="medium-lable">تاريخ العضوية </label>
                                                 </div>
                                                 <div style={{ display: "table-cell" }}>
-                                                    <input onChange={this.addMemberShipDateHandler} className="form-control  medium-medium-input" type="text" />
+                                                    <input onChange={this.addMemberShipDateHandler} className="form-control medium-medium-input threeMediumBigInputsLableMargin" type="date" />
                                                 </div>
                                             </div>
                                         </div>
@@ -903,7 +779,7 @@ class Employee extends React.Component {
                                                     <label className="medium-lable" >إضافة نقابة</label>
                                                 </div>
                                                 <div style={{ display: "table-cell" }}>
-                                                    <i onClick={this.addSyndicateHandler} style={{marginTop: 10}} class="fas fa-plus" ></i>
+                                                    <i onClick={this.addSyndicateHandler} style={{ marginTop: 10 }} class="fas fa-plus" ></i>
                                                 </div>
                                                 <div style={{ display: "table-cell" }}>
                                                 </div>
@@ -922,7 +798,7 @@ class Employee extends React.Component {
                                                 <label className="medium-lable" >الموقف من التجنيد</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <select onChange={this.addMirStatusHandler} id="empapp" className="medium-select">
+                                                <select onChange={this.addMirStatusHandler} id="empapp" className="form-control medium-select oneInputMargin">
                                                     {militaryStatus.map(status => (
                                                         <option>{status}</option>
                                                     ))}
@@ -936,10 +812,10 @@ class Employee extends React.Component {
                                         <div style={{ display: "table" }}>
                                             <div style={{ display: "table-row" }}>
                                                 <div style={{ display: "table-cell" }}>
-                                                    <label className="medium-lable" >تاريخ الإنتهاء</label>
+                                                    <label className="medium-lable" >تاريخ انتهاء الإعفاء</label>
                                                 </div>
                                                 <div style={{ display: "table-cell" }}>
-                                                    <input className="form-control giant-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].cat_name : null : null} type="date" />
+                                                    <input onChange={this.addExmpExpireDate} className="form-control giant-input oneInputMargin" type="date" />
                                                 </div>
                                             </div>
                                         </div>
@@ -955,13 +831,13 @@ class Employee extends React.Component {
                                                     <label className="medium-lable" >مدة التجنيد</label>
                                                 </div>
                                                 <div style={{ display: "table-cell" }}>
-                                                    <input onChange={this.addDaysCountMirHandler} placeholder="يوم" className="form-control  medium-medium-input" type="text" />
+                                                    <input onChange={this.addDaysCountMirHandler} placeholder="يوم" className="form-control  medium-medium-input" type="number" />
                                                 </div>
                                                 <div style={{ display: "table-cell" }}>
-                                                    <input onChange={this.addMonthsCountMirHandler} placeholder="شهر" className="form-control  medium-medium-input" type="text" />
+                                                    <input onChange={this.addMonthsCountMirHandler} placeholder="شهر" className="form-control  medium-medium-input" type="number" />
                                                 </div>
                                                 <div style={{ display: "table-cell" }}>
-                                                    <input onChange={this.addYearsCountMirHandler} placeholder="سنة" className="form-control  medium-medium-input" type="text" />
+                                                    <input onChange={this.addYearsCountMirHandler} placeholder="سنة" className="form-control  medium-medium-input" type="number" />
                                                 </div>
                                             </div>
                                         </div>
@@ -972,13 +848,23 @@ class Employee extends React.Component {
                                                 <label className="medium-lable">النوع</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addSexTypeHandler} className="form-control medium-input" type="text" />
+                                                <input onChange={this.addSexTypeHandler} className="form-control medium-input" list="brow5" />
+                                                <datalist id="brow5">
+                                                    <option value='ذكر' />
+                                                    <option value='أنثى' />
+
+                                                </datalist>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable towMediumInputsLableMargin">الديانة</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addReligousHandler} className="form-control medium-input" type="text" />
+                                                <input onChange={this.addReligousHandler} className="form-control medium-input" list="brow6" />
+                                                <datalist id="brow6">
+                                                    <option value='مسلم' />
+                                                    <option value='مسيحي' />
+
+                                                </datalist>
                                             </div>
                                         </div>
                                     </div>
@@ -988,7 +874,7 @@ class Employee extends React.Component {
                                                 <label className="medium-lable" >تاريخ الميلاد</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addDobHandler} className="form-control medium-medium-input threeMediumBigInputsLableMargin" type="text" />
+                                                <input onChange={this.addDobHandler} className="form-control medium-medium-input threeMediumBigInputsLableMargin" type="date" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable">جهة الميلاد</label>
@@ -1000,14 +886,19 @@ class Employee extends React.Component {
                                                 <label className="medium-lable">محافظة الميلاد</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addGobHandler} className="form-control medium-medium-input threeMediumBigInputsLableMargin" type="text" />
+                                                <input onChange={this.addGobHandler} className="form-control medium-medium-input threeMediumBigInputsLableMargin" list="brow3" />
+                                                <datalist id="brow3">
+                                                    {governorate.map(gov => (
+                                                        <option value={gov} />
+                                                    ))}
+                                                </datalist>
                                             </div>
                                         </div>
                                     </div>
                                     <div style={{ display: "table" }}>
                                         <div style={{ display: "table-row" }}>
                                             <div style={{ display: "table-cell" }}>
-                                                <button style={{ marginRight: 180, marginTop: 20, width: 650 }} onClick={this.handleArrToSend} className="btn btn-primary btn-block">إضافة</button>
+                                                <button style={{ marginRight: 100, marginTop: 20, width: 650 }} onClick={this.handleArrToSend} className="btn btn-primary btn-block">إضافة</button>
                                             </div>
                                         </div>
                                     </div>
@@ -1086,7 +977,7 @@ class Employee extends React.Component {
                                                 <input className="form-control  small-input" type="text" readonly="readonly" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <label className="medium-lable threeSmallLableMargin">المحاظة</label>
+                                                <label className="medium-lable threeSmallLableMargin">المحافظة</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <input className="form-control  small-input" type="text" readonly="readonly" />
@@ -1116,7 +1007,7 @@ class Employee extends React.Component {
                                                 <label className="medium-lable">الرقم القومي</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input  className="form-control medium-medium-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].JOB_LOCATION : null : null} type="text" readonly="readonly" />
+                                                <input className="form-control medium-medium-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].JOB_LOCATION : null : null} type="text" readonly="readonly" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable">المنطقة</label>
@@ -1125,7 +1016,7 @@ class Employee extends React.Component {
                                                 <input className="form-control  medium-medium-input" type="text" readonly="readonly" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <label className="medium-lable">المحاظة</label>
+                                                <label className="medium-lable">المحافظة</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <input className="form-control  medium-medium-input" type="text" readonly="readonly" />
@@ -1205,7 +1096,7 @@ class Employee extends React.Component {
                                                 <input className="form-control medium-medium-input threeMediumBigInputsLableMargin" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].JOB_LOCATION : null : null} type="text" readonly="readonly" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <label  className="medium-lable">رقم العضوية</label>
+                                                <label className="medium-lable">رقم العضوية</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin" type="text" readonly="readonly" />
@@ -1274,7 +1165,7 @@ class Employee extends React.Component {
                                                 <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin" type="text" readonly="readonly" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <label  className="medium-lable">محافظة الميلاد</label>
+                                                <label className="medium-lable">محافظة الميلاد</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin" type="text" readonly="readonly" />
