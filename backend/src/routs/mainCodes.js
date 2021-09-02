@@ -9,7 +9,6 @@ function insertNewEmp(req,res,next){
     let fData = data.filter(inf => inf != '')
 
     console.log(fData);
-    
 
     let query = `INSERT INTO employee (ORGANIZATION,EMPLOYEE_ID,NAME_ARABIC,CONTRACT_TYPE,SECTOR_JOIN_DATE,
         JOB_LOCATION,JOB_AREA,JOB_GOVERNORATE,EMP_STATUS,NATIONAL_ID_CARD_NO,NATIONAL_ID_CARD_ISSUED_BY,NATIONAL_CARD_ISSUE_DATE,SOCIAL_INSURANCE_NUMBER

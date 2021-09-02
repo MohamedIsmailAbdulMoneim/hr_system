@@ -126,11 +126,10 @@ function updateAppraisal(req, res, next) {
     db.query(query, (err, details, next) => {
         if (err) {
             next(err)
+            console.log(err);
             res.json({ data: null, status: 400 })
         } else {
             res.json({ data: details, status: 200 });
-
-
         }
     })
 }
@@ -391,14 +390,28 @@ function newFamily(req, res, next) {
 
 function editFamily(req, res, next) {
     console.log(req.body);
-}
+    let data = req.body
+    let id = data[data.length-1]
+    data.pop()
+    let query = `UPDATE employee_family_member SET ${data} WHERE id = ${id}`
+    console.log(query);
+    db.query(query, (err, data) => {
+        if (err) {
+            next(err)
+            res.json({ msg: "يوجد خطاء بقاعدة البيانات", data: null })
+
+        } else {
+            res.json({ msg: "تم إدخال البيانات بنجاح", data: data })
+        }
+    })}
 
 function getEmpsPenalties(req, res, next) {
     let query = `
     SELECT
     employee.NAME_ARABIC,
     penalty_type.PENALTY_TYPE_AR,
-    PENALTY_DATE
+    PENALTY_DATE,
+    id
 FROM
     employee_penalty
 JOIN employee JOIN penalty_type ON employee.NATIONAL_ID_CARD_NO = employee_penalty.NATIONAL_ID_CARD_NO AND penalty_type.PENALTY_ID = employee_penalty.PENALTY_TYPE
@@ -416,8 +429,9 @@ WHERE
     `
     db.query(query, (err, data) => {
         if (err) {
-            next(err)
+            res.json({ msg: "يوجد خطاء بقاعدة البيانات", data: null })
         } else {
+            console.log(err);
             res.send(data)
         }
     })

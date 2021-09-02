@@ -206,7 +206,7 @@ class EmpPenalty extends React.Component {
     }
 
 
-    handelEdit_1 = (e) => {
+    handelEdit_1 = (e) => { 
         this.setState({ edit: true, rowAppraisal: e.target.getAttribute("tableId"), empAppraisal: e.target.getAttribute("empApp"), appraisalYear: e.target.getAttribute("empDate"), empnat: e.target.getAttribute("empnatid") })
         let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
         for (let i = 0; i < tds.length; i++) {
