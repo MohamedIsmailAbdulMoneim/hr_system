@@ -26,10 +26,11 @@ class Employee extends React.Component {
 
     handleArrToSend = (e) => {
         let state = this.state
+        let addedSyndicate = this.state.syndicateAdded ? 'added' : ''
         let organization = `(30`
         let empid = state.addEmpId
         let empname = `"${state.addEmpName}"`
-        let contractType = `(SELECT CONTRACT_TYPE FROM contract_type WHERE CONTRACT_TYPE_ARABIC = ${state.addContractType})`
+        let contractType = `(SELECT CONTRACT_TYPE FROM contract_type WHERE CONTRACT_TYPE_ARABIC = "${state.addContractType}")`
         let doc = `"${state.addDoc}"`
         let addStation = `"${state.addStation}"`
         let addArea = `"${state.addArea}"`
@@ -61,10 +62,10 @@ class Employee extends React.Component {
         let addGob = `"${state.addGob}")`
 
         let data = [
-            organization, empid, empname, contractType, doc, addStation, addArea, addGovern
+            addedSyndicate ,organization, empid, empname, contractType, doc, addStation, addArea, addGovern
             , addJS, addEmpNid, addPOIssuance, addDOIssuance, addinsuranceNum, addinsuranceOffice, addAddress,
-            addMPhoneNum, addHPhoneNum, addOPhoneNum, addEmail, addMarStatus, addSyndicateType, addMemberShipNum,
-            addMemberShipDate, addMirStatus, addDaysCountMir, addMonthsCountMir, addYearsCountMir, addRetirementDate, addSexType,
+            addMPhoneNum, addHPhoneNum, addOPhoneNum, addEmail, addMarStatus, this.state.syndicateAdded ? addSyndicateType : '', this.state.syndicateAdded ? addMemberShipNum : '',
+            this.state.syndicateAdded ? addMemberShipDate : '',addMirStatus,this.state.milStatusIsCompleted ? addDaysCountMir : '',this.state.milStatusIsCompleted ? addMonthsCountMir : '',this.state.milStatusIsCompleted ? addYearsCountMir : '', addRetirementDate, addSexType,
             addReligous, addDob, addPob, addGob
         ]
 
@@ -750,8 +751,8 @@ class Employee extends React.Component {
                                                     <label className="medium-lable" style={{ marginLeft: -14 }}>نوع النقابة</label>
                                                 </div>
                                                 <div style={{ display: "table-cell" }}>
-                                                    <input onChange={this.addSyndicateTypeNumHandler} className="form-control medium-medium-input" list="brow12" />
-                                                    <datalist id="brow12">
+                                                    <input onChange={this.addSyndicateTypeNumHandler} className="form-control medium-medium-input" list="brow50" />
+                                                    <datalist id="brow50">
                                                         {syndicate.map(synd => (
                                                             <option value={synd} />
                                                         ))}
