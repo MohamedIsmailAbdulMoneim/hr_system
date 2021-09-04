@@ -15,7 +15,8 @@ class EmpPenalty extends React.Component {
             confirmAdd: false, showMsg: false, addPenaltyType: "", addPenaltyDate: "", addDayesOfPenalty: "",
             empname: null, updated: false, firstArg: 0, addReasonOfPenalty: "", searchPenaltyType: "", searchPenaltyYear: "", messege: null,
             secondArg: 20, currentPage: 1, firstArgPerBtn: 0, secondArgPerBtn: 10, empnameadd: "", empidadd: "",
-            showNamesResultsForSearch: false, showNamesResultsForAdd: false, finalData: null, penIsdisDeduct: false
+            showNamesResultsForSearch: false, showNamesResultsForAdd: false, finalData: null, penIsdisDeduct: false,
+            editName: "", editPenaltyType: "", editPenaltyDate: "", editDayesOfPenalty: "", editReasonOfPenalty: "", add: false, edit: false, rowPen: ""
         };
     }
 
@@ -49,6 +50,95 @@ class EmpPenalty extends React.Component {
     }
 
     /* -----------------------------------------------------------------*/
+
+
+
+    editNameHandler = (e) => {
+        this.props.getEmpNameByName(e.target.value)
+        this.setState({
+            editName: e.target.value
+        })
+    }
+
+    editPenaltyTypeHandler = (e) => {
+        this.setState({
+            editPenaltyType: e.target.value
+        })
+    }
+
+    editPenaltyDateHandler = (e) => {
+        this.setState({
+            editPenaltyDate: e.target.value
+        })
+    }
+
+    editDayesOfPenaltyHanler = (e) => {
+        this.setState({
+            editDayesOfPenalty: e.target.value
+        })
+    }
+
+    editReasonOfPenaltyHanlder = (e) => {
+        this.setState({
+            editReasonOfPenalty: e.traget.value
+        })
+    }
+
+    handelEdit_1 = (e) => {
+        this.setState({ edit: true, rowPen: e.target.getAttribute("tableId"), editName: e.target.getAttribute("empName"), editPenaltyType: e.target.getAttribute("penType"), editDayesOfPenalty: e.target.getAttribute("penNum"), editPenaltyDate: e.target.getAttribute("penDate") })
+        let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
+        console.log(this.state.editDayesOfPenalty);
+        for (let i = 0; i < tds.length; i++) {
+            tds[i].style.background = "white"
+            tds[tds.length - 2].childNodes[0].classList.remove("fa-edit")
+            tds[tds.length - 2].childNodes[0].classList.add("fa-check")
+            tds[tds.length - 1].childNodes[0].classList.remove("fa-backspace")
+            tds[tds.length - 1].childNodes[0].classList.add("fa-times")
+        }
+    }
+
+    closeEditSectionHandler = (e) => {
+        let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
+        for (let i = 0; i < tds.length; i++) {
+            tds[i].style.background = "transparent"
+            tds[tds.length - 2].childNodes[0].classList.remove("fa-check")
+            tds[tds.length - 2].childNodes[0].classList.add("fa-edit")
+            tds[tds.length - 1].childNodes[0].classList.remove("fa-times")
+            tds[tds.length - 1].childNodes[0].classList.add("fa-backspace")
+        }
+        this.setState({ edit: false })
+    }
+
+
+    handelEdit_2 = (e) => {
+        e.preventDefault()
+        // editName: "", editPenaltyType: "", editPenaltyDate: "", editDayesOfPenalty: "", editReasonOfPenalty: ""
+
+        let editName = `NATIONAL_ID_CARD_NO = (SELECT NATIONAL_ID_CARD_NO FROM employee WHERE NAME_ARABIC = "${this.state.editName}")`
+        let editPenaltyType = `PENALTY_TYPE = (SELECT PENALTY_ID FROM penalty_type WHERE PENALTY_TYPE_AR = "${this.state.editPenaltyType}")`
+        let editPenaltyDate = `PENALTY_DATE = ${this.state.editPenaltyDate}}`
+        let editPenaltyYear = `PENALTY_YEAR = YEAR(${this.state.editPenaltyDate})`
+
+        // let data = { }
+
+        // this.props.updateEmpAppraisal(data)
+        let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
+        for (let i = 0; i < tds.length; i++) {
+            tds[i].style.background = "transparent"
+            tds[tds.length - 2].childNodes[0].classList.remove("fa-check")
+            tds[tds.length - 2].childNodes[0].classList.add("fa-edit")
+            tds[tds.length - 1].childNodes[0].classList.remove("fa-times")
+            tds[tds.length - 1].childNodes[0].classList.add("fa-backspace")
+        }
+        this.setState({
+            edit: false
+        })
+        if (this.props.result == 200) {
+            this.setState({ updated: true })
+        }
+    }
+
+    /* ________________________________________________________________________ */
 
     idInputHandlerForSearch = (e) => {
         this.refs.name.value = ''
@@ -206,51 +296,6 @@ class EmpPenalty extends React.Component {
     }
 
 
-    handelEdit_1 = (e) => { 
-        this.setState({ edit: true, rowAppraisal: e.target.getAttribute("tableId"), empAppraisal: e.target.getAttribute("empApp"), appraisalYear: e.target.getAttribute("empDate"), empnat: e.target.getAttribute("empnatid") })
-        let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
-        for (let i = 0; i < tds.length; i++) {
-            tds[i].style.background = "white"
-            tds[tds.length - 2].childNodes[0].classList.remove("fa-edit")
-            tds[tds.length - 2].childNodes[0].classList.add("fa-check")
-            tds[tds.length - 1].childNodes[0].classList.remove("fa-backspace")
-            tds[tds.length - 1].childNodes[0].classList.add("fa-times")
-        }
-    }
-
-    closeEditSectionHandler = (e) => {
-        let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
-        for (let i = 0; i < tds.length; i++) {
-            tds[i].style.background = "transparent"
-            tds[tds.length - 2].childNodes[0].classList.remove("fa-check")
-            tds[tds.length - 2].childNodes[0].classList.add("fa-edit")
-            tds[tds.length - 1].childNodes[0].classList.remove("fa-times")
-            tds[tds.length - 1].childNodes[0].classList.add("fa-backspace")
-        }
-        this.setState({ edit: false })
-    }
-
-
-    handelEdit_2 = (e) => {
-        e.preventDefault()
-        // let data = { , appraisal: this.refs.newAppraisal.value, year: document.getElementById("year").placeholder }
-        let data = { empNat: this.state.empnat, appraisal: this.state.empAppraisal, year: this.state.appraisalYear }
-        this.props.updateEmpAppraisal(data)
-        let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
-        for (let i = 0; i < tds.length; i++) {
-            tds[i].style.background = "transparent"
-            tds[tds.length - 2].childNodes[0].classList.remove("fa-check")
-            tds[tds.length - 2].childNodes[0].classList.add("fa-edit")
-            tds[tds.length - 1].childNodes[0].classList.remove("fa-times")
-            tds[tds.length - 1].childNodes[0].classList.add("fa-backspace")
-        }
-        this.setState({
-            edit: false
-        })
-        if (this.props.result == 200) {
-            this.setState({ updated: true })
-        }
-    }
 
     closeAddConfirmHandler = (e) => {
         this.setState({
@@ -277,6 +322,7 @@ class EmpPenalty extends React.Component {
 
 
     render() {
+        console.log(this.state.editDayesOfPenalty);
         var dates = [];
         let start = 1996;
         let end = 2021;
@@ -471,7 +517,7 @@ class EmpPenalty extends React.Component {
                                                     <td>{emp.NAME_ARABIC}</td>
                                                     <td>{emp.PENALTY_TYPE_AR}</td>
                                                     <td>{emp.PENALTY_DATE}</td>
-                                                    <td><i onClick={this.state.edit ? this.handelEdit_2 : this.handelEdit_1} tableId={emp.id} style={{ fontSize: 20 }} empName={emp.NAME_ARABIC} empApp={emp.APPRAISAL_ARABIC} empDate={emp.APPRAISAL_DATE} empnatid={emp.NATIONAL_ID_CARD_NO} class="fas fa-edit"></i></td>
+                                                    <td><i onClick={this.state.edit ? this.handelEdit_2 : this.handelEdit_1} tableId={emp.id} style={{ fontSize: 20 }} empName={emp.NAME_ARABIC} penType={emp.PENALTY_TYPE_AR} penDate={emp.PENALTY_DATE} class="fas fa-edit"></i></td>
                                                     <td><i onClick={this.state.edit ? this.closeEditSectionHandler : null} tableId={emp.id} class="fas fa-backspace"></i></td>
                                                 </tr>
                                             </tbody>
@@ -511,10 +557,19 @@ class EmpPenalty extends React.Component {
                                         {this.props.empsPenalties.length >= 1 ? this.props.empsPenalties[1].length >= 1 ? this.props.empsPenalties[1].map(emp => (
                                             <tbody>
                                                 <tr id={emp.id}>
-                                                    <td>{emp.NAME_ARABIC}</td>
+                                                    <td>{this.state.edit && this.state.rowPen == emp.id ?
+                                                        <Fragment>
+                                                            <input onKeyDown={this.editNameHandler} className="form-control giant-input oneInputMargin" list="brow500" />
+                                                            <datalist id="brow500">
+                                                                {this.props.empNameByName.map(name => (
+                                                                    <option value={name.NAME_ARABIC} />
+                                                                ))}
+                                                            </datalist>
+                                                        </Fragment>
+                                                        : emp.NAME_ARABIC}</td>
                                                     <td>{emp.PEN_NUM}</td>
                                                     <td>{emp.PENALTY_DATE}</td>
-                                                    <td><i onClick={this.state.edit ? this.handelEdit_2 : this.handelEdit_1} tableId={emp.id} style={{ fontSize: 20 }} empName={emp.NAME_ARABIC} empApp={emp.APPRAISAL_ARABIC} empDate={emp.APPRAISAL_DATE} empnatid={emp.NATIONAL_ID_CARD_NO} class="fas fa-edit"></i></td>
+                                                    <td><i onClick={this.state.edit ? this.handelEdit_2 : this.handelEdit_1} tableId={emp.id} style={{ fontSize: 20 }} empName={emp.NAME_ARABIC} penDate={emp.PENALTY_DATE} penNum={emp.PEN_NUM} class="fas fa-edit"></i></td>
                                                     <td><i onClick={this.state.edit ? this.closeEditSectionHandler : null} tableId={emp.id} class="fas fa-backspace"></i></td>
                                                 </tr>
                                             </tbody>

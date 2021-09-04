@@ -62,10 +62,10 @@ class Employee extends React.Component {
         let addGob = `"${state.addGob}")`
 
         let data = [
-            addedSyndicate ,organization, empid, empname, contractType, doc, addStation, addArea, addGovern
+            addedSyndicate, organization, empid, empname, contractType, doc, addStation, addArea, addGovern
             , addJS, addEmpNid, addPOIssuance, addDOIssuance, addinsuranceNum, addinsuranceOffice, addAddress,
             addMPhoneNum, addHPhoneNum, addOPhoneNum, addEmail, addMarStatus, this.state.syndicateAdded ? addSyndicateType : '', this.state.syndicateAdded ? addMemberShipNum : '',
-            this.state.syndicateAdded ? addMemberShipDate : '',addMirStatus,this.state.milStatusIsCompleted ? addDaysCountMir : '',this.state.milStatusIsCompleted ? addMonthsCountMir : '',this.state.milStatusIsCompleted ? addYearsCountMir : '', addRetirementDate, addSexType,
+            this.state.syndicateAdded ? addMemberShipDate : '', addMirStatus, this.state.milStatusIsCompleted ? addDaysCountMir : '', this.state.milStatusIsCompleted ? addMonthsCountMir : '', this.state.milStatusIsCompleted ? addYearsCountMir : '', addRetirementDate, addSexType,
             addReligous, addDob, addPob, addGob
         ]
 
@@ -89,7 +89,7 @@ class Employee extends React.Component {
             })
 
         } else {
-             axios({
+            axios({
                 method: "POST",
                 data,
                 withCredentials: true,

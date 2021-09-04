@@ -391,7 +391,7 @@ function newFamily(req, res, next) {
 function editFamily(req, res, next) {
     console.log(req.body);
     let data = req.body
-    let id = data[data.length-1]
+    let id = data[data.length - 1]
     data.pop()
     let query = `UPDATE employee_family_member SET ${data} WHERE id = ${id}`
     console.log(query);
@@ -403,7 +403,8 @@ function editFamily(req, res, next) {
         } else {
             res.json({ msg: "تم إدخال البيانات بنجاح", data: data })
         }
-    })}
+    })
+}
 
 function getEmpsPenalties(req, res, next) {
     let query = `
@@ -420,7 +421,8 @@ WHERE
     SELECT
     employee.NAME_ARABIC,
     PEN_NUM,
-    PENALTY_DATE
+    PENALTY_DATE,
+    id
 FROM
     employee_penalty
 JOIN employee JOIN penalty_type ON employee.NATIONAL_ID_CARD_NO = employee_penalty.NATIONAL_ID_CARD_NO AND penalty_type.PENALTY_ID = employee_penalty.PENALTY_TYPE
@@ -447,6 +449,11 @@ function postNewPenalty(req, res, next) {
             res.json({ msg: "تم إدخال البيانات بنجاح", data: data })
         }
     })
+}
+
+
+function updatePenalty(req, res, next) {
+    console.log(req.body);
 }
 
 function postNewTraining(req, res, next) {
@@ -513,6 +520,7 @@ router
     .put('/editFamily', editFamily)
     .post('/postnewpenalty', postNewPenalty)
     .get('/getempspenalties', getEmpsPenalties)
+    .put('/updatepenalty', updatePenalty)
     .post('/postnewtraining', postNewTraining)
     .post('/postnewempedu', postNewEmpEdu)
 
