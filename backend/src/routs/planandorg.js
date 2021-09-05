@@ -389,12 +389,10 @@ function newFamily(req, res, next) {
 
 
 function editFamily(req, res, next) {
-    console.log(req.body);
     let data = req.body
     let id = data[data.length - 1]
     data.pop()
     let query = `UPDATE employee_family_member SET ${data} WHERE id = ${id}`
-    console.log(query);
     db.query(query, (err, data) => {
         if (err) {
             next(err)
@@ -455,6 +453,20 @@ function postNewPenalty(req, res, next) {
 
 function updatePenalty(req, res, next) {
     console.log(req.body);
+    let data = req.body.filter(inf => inf != '')
+    let id = data[data.length - 1]
+    data.pop()
+    let query = `UPDATE employee_penalty SET ${data} WHERE id = ${id}`
+    console.log(query);
+    db.query(query, (err, data) => {
+        if (err) {
+            next(err)
+            res.json({ msg: "يوجد خطاء بقاعدة البيانات", data: null })
+
+        } else {
+            res.json({ msg: "تم إدخال البيانات بنجاح", data: data })
+        }
+    })
 }
 
 function postNewTraining(req, res, next) {
@@ -518,7 +530,7 @@ router
     .post('/newempexp', newEmpExp)
     .post('/newbulktrans', postBulkTrans)
     .post('/newfamily', newFamily)
-    .put('/editFamily', editFamily)
+    .put('/editfamily', editFamily)
     .post('/postnewpenalty', postNewPenalty)
     .get('/getempspenalties', getEmpsPenalties)
     .put('/updatepenalty', updatePenalty)

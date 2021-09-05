@@ -18,7 +18,7 @@ class EmpFamily extends React.Component {
             finalData: [], messege: "", addMaritalType: [{ value: " ", type: null, key: null }],
             addMaritalName: [{ value: " ", key: null }], addMaritalNId: [{ value: " ", key: null }],
             addMaritalBod: [{ value: " ", key: null }], addMaritalWorkStatus: [{ value: " ", key: null }],
-            addMarital: false, editMaritalType: null, editMaritalName: null, editNid: null ,editMaritalNid: null, editMaritalBod: null, maritalLength: 0, showFamilyResult: true, add: false, edit: false, empid: null,
+            addMarital: false, editMaritalType: null, editMaritalName: null, editNid: null, editMaritalNid: null, editMaritalBod: null, maritalLength: 0, showFamilyResult: true, add: false, edit: false, empid: null,
             empname: null, showMaritalstate: false, showNamesResultsForSearch: false, showNamesResultsForAdd: false,
             empnameForAdd: null, empidForAdd: null, showMsg: false, rowFam: null, addConfirmed: false, updated: false
 
@@ -331,7 +331,7 @@ class EmpFamily extends React.Component {
             edit: true, rowFam: e.target.getAttribute("tableId"),
             editMaritalType: e.target.getAttribute("relType") == 1 ? "الزوجة" : "الأبن", editMaritalName: e.target.getAttribute("famName"),
             editMaritalNid: e.target.getAttribute("marNid"), editMaritalBod: e.target.getAttribute("birthDate"),
-            editNid:e.target.getAttribute("natIdCard")
+            editNid: e.target.getAttribute("natIdCard")
         })
         let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
         for (let i = 0; i < tds.length; i++) {
@@ -367,26 +367,26 @@ class EmpFamily extends React.Component {
     handelEdit_2 = (e) => {
         e.preventDefault()
         let empNid = `NATIONAL_ID_CARD_NO = ${this.state.editNid}`
-        let type =  `RELATION_TYPE = (SELECT RELATION_TYPE_ID FROM relation_type WHERE RELATION_NAME = "${this.state.editMaritalType}")`
+        let type = `RELATION_TYPE = (SELECT RELATION_TYPE_ID FROM relation_type WHERE RELATION_NAME = "${this.state.editMaritalType}")`
         let marName = `FAMILY_NAME = "${this.state.editMaritalName}"`
         let nat = `NATIONAL_ID_NUMBER = ${this.state.editMaritalNid}`
         let bod = `BIRTH_DATE = "${this.state.editMaritalBod}"`
         let lastSentence = this.state.rowFam
 
-        let data = [empNid,type,marName,nat,bod,lastSentence]
+        let data = [empNid, type, marName, nat, bod, lastSentence]
 
         axios({
             method: "PUT",
             data: data,
-            url: `http://localhost:5000/editFamily`,
+            url: `http://localhost:5000/editfamily`,
             headers: { "Content-Type": "application/json" },
         }).then(data => {
             console.log(data.data.msg);
-            if(data.data.msg == "تم إدخال البيانات بنجاح"){
+            if (data.data.msg == "تم إدخال البيانات بنجاح") {
                 this.setState({
                     updated: true
                 })
-            }else{
+            } else {
                 this.setState({
                     updated: false
                 })
@@ -602,17 +602,17 @@ class EmpFamily extends React.Component {
                                                         <select onChange={this.handleMarType} style={{ width: "100%", height: 30 }}>
                                                             <option type={1}>الزوجة</option>
                                                             <option type={2}>الأبن</option>
-                                                            <option selected>{this.state.editMaritalType == 1 ? "الزوجة" : "الأبن" }</option>
+                                                            <option selected>{this.state.editMaritalType == 1 ? "الزوجة" : "الأبن"}</option>
                                                         </select> : fam.RELATION_TYPE == 1 ? "الزوجة" : "الأبن"}</td>
-                                                    <td>{this.state.edit && this.state.rowFam == fam.id ? <input onChange={this.handleMarName} value={this.state.editMaritalName} className="form-control" style={{ width: "100%" }} type="text" /> : this.state.updated && this.state.rowFam == fam.id ?  this.state.editMaritalName : fam.FAMILY_NAME}</td>
-                                                    <td>{this.state.edit && this.state.rowFam == fam.id ? <input onChange={this.handleBod} value={this.state.editMaritalBod} className="form-control" style={{ width: "100%" }} type="date" /> : this.state.updated && this.state.rowFam == fam.id ?  this.state.editMaritalBod : fam.BIRTH_DATE}</td>
-                                                    <td>{this.state.edit && this.state.rowFam == fam.id ? <input onChange={this.handleNid} value={this.state.editMaritalNid} className="form-control" style={{ width: "100%" }} type="text" /> : this.state.updated && this.state.rowFam == fam.id ?  this.state.editMaritalNid : fam.NATIONAL_ID_NUMBER}</td>
+                                                    <td>{this.state.edit && this.state.rowFam == fam.id ? <input onChange={this.handleMarName} value={this.state.editMaritalName} className="form-control" style={{ width: "100%" }} type="text" /> : this.state.updated && this.state.rowFam == fam.id ? this.state.editMaritalName : fam.FAMILY_NAME}</td>
+                                                    <td>{this.state.edit && this.state.rowFam == fam.id ? <input onChange={this.handleBod} value={this.state.editMaritalBod} className="form-control" style={{ width: "100%" }} type="date" /> : this.state.updated && this.state.rowFam == fam.id ? this.state.editMaritalBod : fam.BIRTH_DATE}</td>
+                                                    <td>{this.state.edit && this.state.rowFam == fam.id ? <input onChange={this.handleNid} value={this.state.editMaritalNid} className="form-control" style={{ width: "100%" }} type="text" /> : this.state.updated && this.state.rowFam == fam.id ? this.state.editMaritalNid : fam.NATIONAL_ID_NUMBER}</td>
                                                     <td></td>
                                                     <td></td>
                                                     <td></td>
                                                     <td></td>
 
-                                                    <td><i onClick={this.state.edit ? this.handelEdit_2 : this.handelEdit_1} tableId={fam.id} relType={fam.RELATION_TYPE} famName={fam.FAMILY_NAME} birthDate={fam.BIRTH_DATE} marNid = {fam.NATIONAL_ID_NUMBER} natIdCard={fam.NATIONAL_ID_CARD_NO} class="fas fa-edit"></i></td>
+                                                    <td><i onClick={this.state.edit ? this.handelEdit_2 : this.handelEdit_1} tableId={fam.id} relType={fam.RELATION_TYPE} famName={fam.FAMILY_NAME} birthDate={fam.BIRTH_DATE} marNid={fam.NATIONAL_ID_NUMBER} natIdCard={fam.NATIONAL_ID_CARD_NO} class="fas fa-edit"></i></td>
                                                     <td><i onClick={this.state.edit ? this.closeEditSectionHandler : null} tableId={fam.id} class="fas fa-backspace"></i></td>
                                                 </tr>
                                             </tbody>
