@@ -412,6 +412,7 @@ function getEmpsPenalties(req, res, next) {
     employee.NAME_ARABIC,
     penalty_type.PENALTY_TYPE_AR,
     PENALTY_DATE,
+    employee_penalty.NATIONAL_ID_CARD_NO,
     id
 FROM
     employee_penalty

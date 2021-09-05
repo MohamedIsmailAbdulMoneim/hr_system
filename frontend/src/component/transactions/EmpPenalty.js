@@ -53,8 +53,11 @@ class EmpPenalty extends React.Component {
 
 
 
-    editNameHandler = (e) => {
+    searchEditNameHandler = (e) => {
         this.props.getEmpNameByName(e.target.value)
+    }
+
+    editNameHandler = (e) => {
         this.setState({
             editName: e.target.value
         })
@@ -98,6 +101,9 @@ class EmpPenalty extends React.Component {
     }
 
     closeEditSectionHandler = (e) => {
+        let empNid = ``
+
+
         let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
         for (let i = 0; i < tds.length; i++) {
             tds[i].style.background = "transparent"
@@ -514,9 +520,26 @@ class EmpPenalty extends React.Component {
                                         {this.props.empsPenalties.length >= 1 ? this.props.empsPenalties[0].length >= 1 ? this.props.empsPenalties[0].map(emp => (
                                             <tbody>
                                                 <tr id={emp.id}>
-                                                    <td>{emp.NAME_ARABIC}</td>
-                                                    <td>{emp.PENALTY_TYPE_AR}</td>
-                                                    <td>{emp.PENALTY_DATE}</td>
+                                                    <td>{this.state.edit && this.state.rowPen == emp.id ?
+                                                        <div style={{ display: "flex", alignItems: "center", flexDirection: "column" }}>
+                                                            <input onKeyUp={this.searchEditNameHandler} className="form-control" style={{ width: 220, marginBottom: 5 }} name="brow501" />
+                                                            <select onChange={this.editNameHandler} id="brow501" style={{ width: "50%", minWidth: 220, height: 30 }}>
+                                                                {this.props.empNameByName.map(name => (
+                                                                    <option for="brow501">{name.NAME_ARABIC}</option>
+                                                                ))}
+                                                            </select>
+                                                        </div>
+                                                        : emp.NAME_ARABIC}</td>
+                                                    <td>{this.state.edit && this.state.rowPen == emp.id ?
+                                                        <select onChange={this.AddPenaltyTypeHandler} id="empapp" style={{ height: 30, width: "50%", minWidth: "50px" }}>
+                                                            {penalties.map(penalty => (
+                                                                <option>{penalty}</option>
+                                                            ))}
+                                                            <option selected>اختر ...</option>
+                                                        </select> : emp.PENALTY_TYPE_AR}</td>
+                                                    <td>{this.state.edit && this.state.rowPen == emp.id ?
+                                                        <input onChange={this.addDateHandler} className="form-control" style={{ width: "70%", minWidth: "90px", margin: "0 auto" }} onKeyDown={this.nameInputHandler} type="date" />
+                                                        : emp.PENALTY_DATE}</td>
                                                     <td><i onClick={this.state.edit ? this.handelEdit_2 : this.handelEdit_1} tableId={emp.id} style={{ fontSize: 20 }} empName={emp.NAME_ARABIC} penType={emp.PENALTY_TYPE_AR} penDate={emp.PENALTY_DATE} class="fas fa-edit"></i></td>
                                                     <td><i onClick={this.state.edit ? this.closeEditSectionHandler : null} tableId={emp.id} class="fas fa-backspace"></i></td>
                                                 </tr>
@@ -558,18 +581,19 @@ class EmpPenalty extends React.Component {
                                             <tbody>
                                                 <tr id={emp.id}>
                                                     <td>{this.state.edit && this.state.rowPen == emp.id ?
-                                                        <Fragment>
-                                                            <input onKeyDown={this.editNameHandler} className="form-control giant-input oneInputMargin" list="brow500" />
-                                                            <datalist id="brow500">
+                                                        <div style={{ display: "flex", alignItems: "center", flexDirection: "column" }}>
+                                                            <input onKeyUp={this.searchEditNameHandler} className="form-control" style={{ width: 220, marginBottom: 5 }} name="brow501" />
+                                                            <select onChange={this.editNameHandler} id="brow501" style={{ width: "50%", minWidth: 220, height: 30 }}>
                                                                 {this.props.empNameByName.map(name => (
-                                                                    <option value={name.NAME_ARABIC} />
+                                                                    <option for="brow501">{name.NAME_ARABIC}</option>
                                                                 ))}
-                                                            </datalist>
-                                                        </Fragment>
+                                                            </select>
+                                                        </div>
                                                         : emp.NAME_ARABIC}</td>
                                                     <td>{emp.PEN_NUM}</td>
-                                                    <td>{emp.PENALTY_DATE}</td>
-                                                    <td><i onClick={this.state.edit ? this.handelEdit_2 : this.handelEdit_1} tableId={emp.id} style={{ fontSize: 20 }} empName={emp.NAME_ARABIC} penDate={emp.PENALTY_DATE} penNum={emp.PEN_NUM} class="fas fa-edit"></i></td>
+                                                    <td>{this.state.edit && this.state.rowPen == emp.id ?
+                                                        <input onChange={this.addDateHandler} className="form-control" style={{ width: "70%", minWidth: "90px", margin: "0 auto" }} onKeyDown={this.nameInputHandler} type="date" />
+                                                        : emp.PENALTY_DATE}</td>                                                    <td><i onClick={this.state.edit ? this.handelEdit_2 : this.handelEdit_1} tableId={emp.id} style={{ fontSize: 20 }} empName={emp.NAME_ARABIC} penDate={emp.PENALTY_DATE} penNum={emp.PEN_NUM} class="fas fa-edit"></i></td>
                                                     <td><i onClick={this.state.edit ? this.closeEditSectionHandler : null} tableId={emp.id} class="fas fa-backspace"></i></td>
                                                 </tr>
                                             </tbody>
