@@ -34,11 +34,13 @@ class EmpEduDeg extends React.Component {
             add: false, edit: false, empidForAdd: "",
             empnameForAdd: "", qual: null, showNamesResultsForAdd: false,
             showNamesResultsForSearch: false, showSpeciality: false,
-            addEduDeg: "", specs: [], addSpec: "", showSpecialityDetails: false, specsDetails: [], addSpecDetails: "",
-            addGrade: "", showUneSchools: false, unes: [], addUneversity: "", addGradYear: "", rowEmpEdu: ""
+            addEduDeg: "", specs: [], specsEdit: [], addSpec: "", showSpecialityDetails: false, specsDetails: [], specsDetailsEdit: [], addSpecDetails: "",
+            addGrade: "", showUneSchools: false, unes: [], unesEdit: [], addUneversity: "", addGradYear: "", rowEmpEdu: "", editDegree: "", editSpec: "",
+            editSpecDetail: "", editGrade: "", editUni: "", editGradeYear: ""
         };
 
     }
+
     /* 
     
     --------------------
@@ -103,7 +105,35 @@ class EmpEduDeg extends React.Component {
         })
     }
 
-    addSpecialityHandler = (e) => {
+
+
+    getSpecialityHandlerForEdit = (e) => {
+        axios.get(`http://localhost:5000/specarabic/?specarabic=${e.target.value}`).then(res => {
+            this.setState({
+                specsEdit: res.data,
+            })
+        })
+    }
+
+    getSpecialityDetailsHandlerForEdit = (e) => {
+        axios.get(`http://localhost:5000/specDetail/?specDetail=${e.target.value}`).then(res => {
+            this.setState({
+                specsDetailsEdit: res.data,
+            })
+        })
+    }
+
+    getUneshcoolHandlerForEdit = (e) => {
+        axios.get(`http://localhost:5000/uneschool/?uneschool=${e.target.value}`).then(res => {
+            this.setState({
+                unesEdit: res.data
+
+            })
+        })
+
+    }
+
+    getSpecialityHandlerForAdd = (e) => {
         axios.get(`http://localhost:5000/specarabic/?specarabic=${e.target.value}`).then(res => {
             this.setState({
                 specs: res.data,
@@ -117,7 +147,7 @@ class EmpEduDeg extends React.Component {
         this.setState({ addSpec: e.target.value })
     }
 
-    addSpecialityDetailsHandler = (e) => {
+    getSpecialityDetailsHandlerForAdd = (e) => {
         axios.get(`http://localhost:5000/specDetail/?specDetail=${e.target.value}`).then(res => {
             this.setState({
                 specsDetails: res.data,
@@ -125,6 +155,8 @@ class EmpEduDeg extends React.Component {
             })
         })
     }
+
+
 
     specDetailsOptionshandler = (e) => {
         this.refs.specDet.value = e.target.value
@@ -137,7 +169,7 @@ class EmpEduDeg extends React.Component {
         })
     }
 
-    addUneshcoolHandler = (e) => {
+    getUneshcoolHandlerForAdd = (e) => {
         axios.get(`http://localhost:5000/uneschool/?uneschool=${e.target.value}`).then(res => {
             this.setState({
                 showUneSchools: true,
@@ -224,11 +256,52 @@ class EmpEduDeg extends React.Component {
     */
 
 
+    editDegreeHandler = (e) => {
+        this.setState({
+            editDegree: e.target.value
+        })
+
+    }
+
+    editSpecHandler = (e) => {
+        this.setState({
+            editSpec: e.target.value
+        })
+    }
+
+    editSpecDetailHandler = (e) => {
+        this.setState({
+            editSpecDetail: e.target.value
+        })
+    }
+
+    editGradeHandler = (e) => {
+        this.setState({
+            editGrade: e.target.value
+        })
+    }
+
+    editUniHandler = (e) => {
+        this.setState({
+            editUni: e.target.value
+        })
+    }
+
+    editGradeYearHandler = (e) => {
+        this.setState({
+            editGradeYear: e.target.value
+        })
+    }
 
 
 
     handelEdit_1 = (e) => {
-        this.setState({ edit: true, rowEmpEdu: e.target.getAttribute("tableId"), })
+
+        this.setState({
+            edit: true, rowEmpEdu: e.target.getAttribute("tableId"), editDegree: e.target.getAttribute('empDeg'), editSpec: e.target.getAttribute("empSpec"),
+            editSpecDetail: e.target.getAttribute("empSpecDetail"), editGrade: e.target.getAttribute("empGrade"), editUni: e.target.getAttribute("empUni"),
+            editGradeYear: e.target.getAttribute("empGradeYear")
+        })
         let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
         for (let i = 0; i < tds.length; i++) {
             tds[i].style.background = "white"
@@ -253,15 +326,25 @@ class EmpEduDeg extends React.Component {
 
     handelEdit_2 = (e) => {
         e.preventDefault()
-        // let data = { , appraisal: this.refs.newAppraisal.value, year: document.getElementById("year").placeholder }
-        let data = { empNat: this.state.empnat, appraisal: this.state.empAppraisal, year: this.state.appraisalYear }
-        // axios({
-        //     method: "PUT",
-        //     data: data,
-        //     url: `http://localhost:5000/updateemptrans`,
-        //     headers: { "Content-Type": "application/json" },
-        // }).then(data => {
-        // })
+        // editGradeYear: ""
+        let degree = `DEGREE = (SELECT DEGREE FROM education_degree WHERE DEGREE_ARABIC = "${this.state.editDegree}")`
+        let spec = ` SPECIALITY = (SELECT SPECIALITY FROM dgree_speciality WHERE SPECIALITY_ARABIC = "${this.state.editSpec}")`
+        let specDetail = `SPECIALITY_DETAIL = (SELECT SPECIALITY_DETAIL FROM dgree_speciality_detail WHERE SPECIALITY_DETAIL_ARABIC = "${this.state.editSpecDetail}")`
+        let grade = `GRADUATION_GRADE = (SELECT GRADUATION_GRADE FROM graduation_grade WHERE GRADE_ARABIC = "${this.state.editGrade}")`
+        let uni = `UNIVERSITY_SCHOOL = (SELECT UNIVERSITY_SCHOOL FROM university_school WHERE UNIVERSITY_SCHOOL_ARABIC = "${this.state.editUni}")`
+        let gradYear = `GRADUATION_YEAR = ${this.state.editGradeYear}`
+        let lastSentence = this.state.rowEmpEdu
+        let data = [degree, spec, specDetail, grade, uni, gradYear, lastSentence]
+
+        axios({
+            method: "PUT",
+            data: data,
+            url: `http://localhost:5000/editempedu`,
+            headers: { "Content-Type": "application/json" },
+        }).then(data => {
+        })
+
+
         let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
         for (let i = 0; i < tds.length; i++) {
             tds[i].style.background = "transparent"
@@ -359,7 +442,7 @@ class EmpEduDeg extends React.Component {
                                         </div>
                                         <div className="form-group" controlId="formBasicEmail">
                                             <label style={{ width: "100%", textAlign: "right" }}>التخصص : </label>
-                                            <input ref="spec" onChange={this.addSpecialityHandler} className="form-control" style={{ width: "100%", minWidth: "250px" }} type="text" />
+                                            <input ref="spec" onChange={this.getSpecialityHandlerForAdd} className="form-control" style={{ width: "100%", minWidth: "250px" }} type="text" />
                                         </div>
                                     </div>
                                     <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -376,7 +459,7 @@ class EmpEduDeg extends React.Component {
                                     <div style={{ display: "flex", justifyContent: "space-around" }}>
                                         <div className="form-group" controlId="formBasicEmail">
                                             <label style={{ width: "100%", textAlign: "right" }}>الشعبة : </label>
-                                            <input ref="specDet" onChange={this.addSpecialityDetailsHandler} className="form-control" style={{ width: "100%", minWidth: "250px" }} type="text" />
+                                            <input ref="specDet" onChange={this.getSpecialityDetailsHandlerForAdd} className="form-control" style={{ width: "100%", minWidth: "250px" }} type="text" />
                                         </div>
                                         <div className="form-group" controlId="formBasicEmail">
                                             <label style={{ width: "100%", textAlign: "right" }}>التقدير : </label>
@@ -404,7 +487,7 @@ class EmpEduDeg extends React.Component {
                                     <div style={{ display: "flex", justifyContent: "space-around" }}>
                                         <div className="form-group" controlId="formBasicEmail">
                                             <label style={{ width: "100%", textAlign: "right" }}>جهة التخرج : </label>
-                                            <input ref="unes" onChange={this.addUneshcoolHandler} className="form-control" style={{ width: "100%", minWidth: "250px" }} type="text" />
+                                            <input ref="unes" onChange={this.getUneshcoolHandlerForAdd} className="form-control" style={{ width: "100%", minWidth: "250px" }} type="text" />
                                         </div>
                                         <div className="form-group" controlId="formBasicEmail">
                                             <label style={{ width: "100%", textAlign: "right" }}>سنة التخرج : </label>
@@ -500,7 +583,7 @@ class EmpEduDeg extends React.Component {
                                                 <tr id={edu.id}>
                                                     <td>
                                                         {!this.state.edit ? edu.DEGREE_ARABIC :
-                                                            <select onChange={this.addEducationDegreeHandler} id="empapp" style={{ height: 30, width: "100%", minWidth: "215px" }}>
+                                                            <select onChange={this.editDegreeHandler} id="empapp" style={{ height: 30, width: 120 }}>
                                                                 <option>زمالة</option>
                                                                 <option>دكتوراه</option>
                                                                 <option>ماجستير</option>
@@ -520,10 +603,33 @@ class EmpEduDeg extends React.Component {
                                                                 <option selected>اختر المؤهل</option>
                                                             </select>}
                                                     </td>
-                                                    <td>{!this.state.edit ? edu.SPECIALITY_ARABIC : <input className="form-control" style={{ width: "100%" }} type="text" />}</td>
-                                                    <td>{!this.state.edit ? edu.SPECIALITY_DETAIL_ARABIC : <input className="form-control" style={{ width: "100%" }} type="text" />}</td>
+                                                    <td>{!this.state.edit ? edu.SPECIALITY_ARABIC :
+                                                        <div style={{ display: "flex", alignItems: "center", flexDirection: "column" }}>
+                                                            <input onChange={this.getSpecialityHandlerForEdit} className="form-control" style={{ width: 120 }} type="text" />
+                                                            <select onChange={this.editSpecHandler} style={{ width: 120, height: 30 }}>
+                                                                {this.state.specsEdit.map((spec => (
+                                                                    <option value={spec.SPECIALITY_ARABIC}>{spec.SPECIALITY_ARABIC}</option>
+                                                                )))}
+                                                                <option selected>اختر</option>
+
+                                                            </select>
+                                                        </div>
+                                                    }</td>
+                                                    <td>{!this.state.edit ? edu.SPECIALITY_DETAIL_ARABIC :
+                                                        <div style={{ display: "flex", alignItems: "center", flexDirection: "column" }}>
+                                                            <input onChange={this.getSpecialityDetailsHandlerForEdit} className="form-control" style={{ width: 120 }} type="text" />
+                                                            <select onChange={this.editSpecDetailHandler} id="brow501" style={{ width: 120, height: 30 }}>
+                                                                {this.state.specsDetailsEdit.map((specDet => (
+                                                                    <option>{specDet.SPECIALITY_DETAIL_ARABIC}</option>
+                                                                )))}
+                                                                <option selected>اختر</option>
+
+                                                            </select>
+                                                        </div>
+
+                                                    }</td>
                                                     <td>{!this.state.edit ? edu.GRADE_ARABIC :
-                                                        <select onChange={this.addGradeHandler} id="empapp" style={{ height: 30, width: "100%", minWidth: "215px" }}>
+                                                        <select onChange={this.editGradeHandler} id="empapp" style={{ height: 30, width: 120 }}>
                                                             {grades.map(grade => (
                                                                 <option>{grade}</option>
                                                             ))}
@@ -532,48 +638,23 @@ class EmpEduDeg extends React.Component {
                                                             </option>
                                                         </select>
                                                     }</td>
-                                                    <td>{!this.state.edit ?  edu.UNIVERSITY_SCHOOL_ARABIC : <input className="form-control" style={{ width: "100%" }} type="text" />}</td>
-                                                    <td>{!this.state.edit ?  edu.GRADUATION_YEAR : <input className="form-control" style={{ width: "100%" }} type="text" />}</td>
-                                                    <td ><i tableId={edu.id} onClick={this.handelEdit_1} class="fas fa-edit"></i></td>
-                                                    <td><i tableId={edu.id} onClick={this.closeEditSectionHandler} class="fas fa-backspace"></i></td>
+                                                    <td>{!this.state.edit ? edu.UNIVERSITY_SCHOOL_ARABIC :
+                                                        <div style={{ display: "flex", alignItems: "center", flexDirection: "column" }}>
+                                                            <input onChange={this.getUneshcoolHandlerForEdit} className="form-control" style={{ width: 120 }} type="text" />
+                                                            <select onChange={this.editUniHandler} id="brow501" style={{ width: 120, height: 30 }}>
+                                                                {this.state.unesEdit.map((us => (
+                                                                    <option>{us.UNIVERSITY_SCHOOL_ARABIC}</option>
+                                                                )))}
+                                                                <option selected>اختر</option>
+                                                            </select>
+                                                        </div>
+                                                    }</td>
+                                                    <td>{!this.state.edit ? edu.GRADUATION_YEAR : <input onChange={this.editGradeYearHandler} className="form-control" style={{ width: 80 }} type="number" />}</td>
+                                                    <td ><i tableId={edu.id} onClick={this.state.edit ? this.handelEdit_2 : this.handelEdit_1} empDeg={edu.DEGREE_ARABIC} empSpec={edu.SPECIALITY_ARABIC} empSpecDetail={edu.SPECIALITY_DETAIL_ARABIC} empGrade={edu.GRADE_ARABIC} empUni={edu.UNIVERSITY_SCHOOL_ARABIC} empGradeYear={edu.GRADUATION_YEAR} class="fas fa-edit"></i></td>
+                                                    <td><i tableId={edu.id} onClick={this.state.edit ? this.closeEditSectionHandler : null} class="fas fa-backspace"></i></td>
+
                                                 </tr>
                                             </tbody>))}
-
-                                        <tbody>
-                                            <td></td>
-                                            <td>
-                                                {this.state.showSpeciality ?
-                                                    <div style={{ width: "150px", marginLeft: 10 }}>
-                                                        <select onClick={this.specsOptionshandler} style={{ marginTop: 20, marginRight: 15, marginBottom: 5, background: "transparent", border: "none" }} multiple name="pets" id="pet-select">
-                                                            {this.state.specs.map((spec => (
-                                                                <option>{spec.SPECIALITY_ARABIC}</option>
-                                                            )))}
-                                                        </select>
-                                                    </div> : null}
-                                            </td>
-                                            <td>
-                                                {this.state.showSpecialityDetails ?
-                                                    <div style={{ width: "200px", marginRight: 30 }}>
-                                                        <select onClick={this.specDetailsOptionshandler} style={{ marginTop: 20, marginRight: 15, marginBottom: 5, background: "transparent", border: "none" }} multiple name="pets" id="pet-select">
-                                                            {this.state.specsDetails.map((specDet => (
-                                                                <option>{specDet.SPECIALITY_DETAIL_ARABIC}</option>
-                                                            )))}
-                                                        </select>
-                                                    </div> : null}
-                                            </td>
-                                            <td></td>
-                                            <td>
-                                                {this.state.showUneSchools ?
-                                                    <div style={{ width: "200px", marginRight: 30 }}>
-                                                        <select onClick={this.uneshcoolsOptionshandler} style={{ marginTop: 20, marginRight: 15, marginBottom: 5, background: "transparent", border: "none" }} multiple name="pets" id="pet-select">
-                                                            {this.state.unes.map((us => (
-                                                                <option>{us.UNIVERSITY_SCHOOL_ARABIC}</option>
-                                                            )))}
-                                                        </select>
-                                                    </div> : null}
-                                            </td>
-                                            <td></td>
-                                        </tbody>
                                     </table>
                                 </div>
                             </div>

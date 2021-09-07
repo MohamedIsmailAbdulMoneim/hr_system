@@ -19,12 +19,11 @@ class EmpExperience extends React.Component {
             , job: [],
             from: []
             , to: []
-            , length: 0, exp: [], empNameAdd: "", empNameEdit: "" , empNameSearch: "", empIdAdd: "",empIdEdit: "",empIdSearch: ""
-            , finalData: [], showFamilyResult: true,
+            , length: 0, exp: [], empNameAdd: "", empIdAdd: "", empNameSearch: "", empIdSearch: ""
+            , finalData: [], showFamilyResult: true, editExpTyp: "" ,editPlaceOfExp: "", editJobOfExp: "", editFromOfExp: "", editToOfExp: "",
             confirmAdd: false, showMsg: false, errorAdd: false,
-            empAppraisal: "null", appraisalYear: "null"
-            , add: false, edit: false,
-            empid: null, empname: null, catname: null, catid: null, showNamesResults: false
+            add: false, edit: false,
+            empid: null, empname: null, catname: null, catid: null, showNamesResults: false, rowExp: ""
         };
     }
 
@@ -177,9 +176,15 @@ class EmpExperience extends React.Component {
         var arrays = state.poe.concat(state.job, state.from, state.to)
         var emptyInputs = arrays.find(i => i.length <= 1) || null
         let arr = []
-
+        let nameOrId;
+        if (this.state.empNameAdd) {
+            nameOrId = `(SELECT NATIONAL_ID_CARD_NO FROM employee WHERE NAME_ARABIC = "${this.state.empNameAdd}"))`
+        } else if (this.state.empIdAdd) {
+            nameOrId = `(SELECT NATIONAL_ID_CARD_NO FROM employee WHERE EMPLOYEE_ID = ${this.state.empIdAdd}))`
+        }
+        console.log(nameOrId);
         if (emptyInputs != undefined) {
-        } else if (emptyInputs == undefined) {
+        } else if (emptyInputs == undefined && (this.state.empNameAdd || this.state.empIdAdd)) {
             let militerExp = arrays.filter(el => el.expType == 1)
             if (militerExp.length > 0) {
                 let i = militerExp.length / 4
@@ -187,12 +192,12 @@ class EmpExperience extends React.Component {
                     let smallArr = []
                     var arrloop = militerExp.filter(el => el.key == i - 1)
                     console.log(arrloop);
-                    smallArr.push(arrloop[0].value)
-                    smallArr.push(arrloop[1].value)
-                    smallArr.push(arrloop[2].value)
-                    smallArr.push(arrloop[3].value)
+                    smallArr.push(`("${arrloop[0].value}"`)
+                    smallArr.push(`"${arrloop[1].value}"`)
+                    smallArr.push(`"${arrloop[2].value}"`)
+                    smallArr.push(`"${arrloop[3].value}"`)
                     smallArr.push(arrloop[0].expType)
-                    smallArr.push(this.props.empname.length >= 1 ? this.props.empname[0].NATIONAL_ID_CARD_NO : this.props.empNameByName.length >= 1 ? this.props.empNameByName[0].NATIONAL_ID_CARD_NO : null)
+                    smallArr.push(nameOrId)
                     arr.push(smallArr)
                     i--
                 }
@@ -205,12 +210,12 @@ class EmpExperience extends React.Component {
                     let smallArr = []
                     var arrloop = innerExp.filter(el => el.key == i - 1)
                     console.log(arrloop);
-                    smallArr.push(arrloop[0].value)
-                    smallArr.push(arrloop[1].value)
-                    smallArr.push(arrloop[2].value)
-                    smallArr.push(arrloop[3].value)
+                    smallArr.push(`("${arrloop[0].value}"`)
+                    smallArr.push(`"${arrloop[1].value}"`)
+                    smallArr.push(`"${arrloop[2].value}"`)
+                    smallArr.push(`"${arrloop[3].value}"`)
                     smallArr.push(arrloop[0].expType)
-                    smallArr.push(this.props.empname.length >= 1 ? this.props.empname[0].NATIONAL_ID_CARD_NO : this.props.empNameByName.length >= 1 ? this.props.empNameByName[0].NATIONAL_ID_CARD_NO : null)
+                    smallArr.push(nameOrId)
                     arr.push(smallArr)
                     i--
                 }
@@ -223,22 +228,23 @@ class EmpExperience extends React.Component {
                     let smallArr = []
                     var arrloop = outerExp.filter(el => el.key == i - 1)
                     console.log(arrloop);
-                    smallArr.push(arrloop[0].value)
-                    smallArr.push(arrloop[1].value)
-                    smallArr.push(arrloop[2].value)
-                    smallArr.push(arrloop[3].value)
+                    smallArr.push(`("${arrloop[0].value}"`)
+                    smallArr.push(`"${arrloop[1].value}"`)
+                    smallArr.push(`"${arrloop[2].value}"`)
+                    smallArr.push(`"${arrloop[3].value}"`)
                     smallArr.push(arrloop[0].expType)
-                    smallArr.push(this.props.empname.length >= 1 ? this.props.empname[0].NATIONAL_ID_CARD_NO : this.props.empNameByName.length >= 1 ? this.props.empNameByName[0].NATIONAL_ID_CARD_NO : null)
+                    smallArr.push(nameOrId)
                     arr.push(smallArr)
                     i--
                 }
             }
+            this.setState({
+                confirmAdd: true, finalData: arr
+            })
         }
         console.log(arr);
 
-        this.setState({
-            confirmAdd: true, finalData: arr
-        })
+
     }
 
     submitButtonHandler = (e) => {
@@ -254,24 +260,15 @@ class EmpExperience extends React.Component {
     }
 
 
-    idInputAddHandlerForAdd = (e) => {
+    idInputHandlerForAdd = (e) => {
         this.setState({ empIdAdd: e.target.value })
+        this.refs.nameAdd.value = ''
+
     }
 
-    idInputAddHandlerForEdit = (e) => {
-        this.setState({ empIdEdit: e.target.value })
-    }
-
-
-
-    nameInputAddHandlerForAdd = (e) => {
+    nameInputHandlerForAdd = (e) => {
         this.setState({ empNameAdd: e.target.value })
-
-    }
-
-    nameInputAddHandlerForEdit = (e) => {
-        this.setState({ empNameEdit: e.target.value })
-
+        this.refs.idAdd.value = ''
     }
 
     namesOptionshandlerForSearch = (e) => {
@@ -300,102 +297,9 @@ class EmpExperience extends React.Component {
         if (e.key === 'Enter') {
             this.props.getEmpName(e.target.value)
             this.props.getEmpExp(e.target.value, "")
-            this.setState({  empIdSearch: e.target.value })
+            this.setState({ empIdSearch: e.target.value })
         }
     }
-
-
-    handelEdit_2 = (e) => {
-
-        let data = { empNat: this.state.empNat, appraisal: this.refs.newAppraisal.value, year: document.getElementById("year").placeholder }
-        axios({
-            method: "PUT",
-            data: data,
-            url: 'http://localhost:5000/appraisalupdate',
-            headers: { "Content-Type": "application/json" },
-        }).then(data => {
-        })
-
-        window.location.reload();
-    }
-
-    closeAddConfirmHandler = (e) => {
-        this.setState({
-            addConfirmed: false
-        })
-    }
-
-    handelEdit_1 = (e) => {
-        this.setState({
-            edit: true, rowFam: e.target.getAttribute("tableId"),
-            editMaritalType: e.target.getAttribute("relType") == 1 ? "الزوجة" : "الأبن", editMaritalName: e.target.getAttribute("famName"),
-            editMaritalNid: e.target.getAttribute("marNid"), editMaritalBod: e.target.getAttribute("birthDate"),
-            editNid: e.target.getAttribute("natIdCard")
-        })
-        let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
-        for (let i = 0; i < tds.length; i++) {
-            tds[i].style.background = "white"
-            tds[tds.length - 2].childNodes[0].classList.remove("fa-edit")
-            tds[tds.length - 2].childNodes[0].classList.add("fa-check")
-            tds[tds.length - 1].childNodes[0].classList.remove("fa-backspace")
-            tds[tds.length - 1].childNodes[0].classList.add("fa-times")
-        }
-    }
-
-    handelEdit_2 = (e) => {
-        e.preventDefault()
-        let empNid = `NATIONAL_ID_CARD_NO = ${this.state.editNid}`
-        let type = `RELATION_TYPE = (SELECT RELATION_TYPE_ID FROM relation_type WHERE RELATION_NAME = "${this.state.editMaritalType}")`
-        let marName = `FAMILY_NAME = "${this.state.editMaritalName}"`
-        let nat = `NATIONAL_ID_NUMBER = ${this.state.editMaritalNid}`
-        let bod = `BIRTH_DATE = "${this.state.editMaritalBod}"`
-        let lastSentence = this.state.rowFam
-
-        let data = [empNid, type, marName, nat, bod, lastSentence]
-
-        axios({
-            method: "PUT",
-            data: data,
-            url: `http://localhost:5000/editfamily`,
-            headers: { "Content-Type": "application/json" },
-        }).then(data => {
-            console.log(data.data.msg);
-            if (data.data.msg == "تم إدخال البيانات بنجاح") {
-                this.setState({
-                    updated: true
-                })
-            } else {
-                this.setState({
-                    updated: false
-                })
-            }
-        })
-        let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
-        for (let i = 0; i < tds.length; i++) {
-            tds[i].style.background = "transparent"
-            tds[tds.length - 2].childNodes[0].classList.remove("fa-check")
-            tds[tds.length - 2].childNodes[0].classList.add("fa-edit")
-            tds[tds.length - 1].childNodes[0].classList.remove("fa-times")
-            tds[tds.length - 1].childNodes[0].classList.add("fa-backspace")
-        }
-        this.setState({
-            edit: false
-        })
-    }
-
-    closeEditSectionHandler = (e) => {
-        let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
-        for (let i = 0; i < tds.length; i++) {
-            tds[i].style.background = "transparent"
-            tds[tds.length - 2].childNodes[0].classList.remove("fa-check")
-            tds[tds.length - 2].childNodes[0].classList.add("fa-edit")
-            tds[tds.length - 1].childNodes[0].classList.remove("fa-times")
-            tds[tds.length - 1].childNodes[0].classList.add("fa-backspace")
-        }
-        this.setState({ edit: false })
-    }
-
-    
 
     handleExpTime = (startDate, endDate) => {
 
@@ -408,10 +312,103 @@ class EmpExperience extends React.Component {
 
     handleNewExp = (e) => {
         this.props.newEmpExp(this.state.finalData)
+        console.log(this.state.finalData);
         this.setState({
             confirmAdd: false, showMsg: true
         })
     }
+
+        /* ______________________________ */
+
+        editPlaceOfExpHandler = (e) => {
+            this.setState({ editPlaceOfExp: e.target.value })
+        }
+    
+        editJobOfExpHandler = (e) => {
+            this.setState({ editJobOfExp: e.target.value })
+        }
+    
+        editFromOfExpHandler = (e) => {
+            this.setState({ editFromOfExp: e.target.value })
+        }
+    
+        editToOfExpHandler = (e) => {
+            this.setState({ editToOfExp: e.target.value })
+        }
+    
+        handelEdit_1 = (e) => {
+            this.setState({
+                edit: true, rowExp: e.target.getAttribute("tableId"),editExpTyp: e.target.getAttribute("expType") 
+                ,editPlaceOfExp: e.target.getAttribute("placeName"), editJobOfExp: e.target.getAttribute("jobName"),
+                editFromOfExp: e.target.getAttribute("startDate"), editToOfExp: e.target.getAttribute("endDate")
+            })
+            let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
+            for (let i = 0; i < tds.length; i++) {
+                tds[i].style.background = "white"
+                tds[tds.length - 2].childNodes[0].classList.remove("fa-edit")
+                tds[tds.length - 2].childNodes[0].classList.add("fa-check")
+                tds[tds.length - 1].childNodes[0].classList.remove("fa-backspace")
+                tds[tds.length - 1].childNodes[0].classList.add("fa-times")
+            }
+        }
+    
+        handelEdit_2 = (e) => {
+            e.preventDefault()
+            let expType = `EXP_TYP_CODE = ${this.state.editExpTyp}`
+            let placeOfExp = `PLACE_NAME = "${this.state.editPlaceOfExp}"`
+            let jobOfExp = `JOB_NAME = "${this.state.editJobOfExp}"`
+            let fromOfExparName = `START_DATE = "${this.state.editFromOfExp}"`
+            let toOfExp = `END_DATE = "${this.state.editToOfExp}"`
+            let lastSentence = this.state.rowExp
+    
+            let data = [expType,placeOfExp, jobOfExp, fromOfExparName, toOfExp, lastSentence]
+    
+            axios({
+                method: "PUT",
+                data: data,
+                url: `http://localhost:5000/editempexp`,
+                headers: { "Content-Type": "application/json" },
+            }).then(data => {
+                console.log(data.data.msg);
+                if (data.data.msg == "تم إدخال البيانات بنجاح") {
+                    this.setState({
+                        updated: true
+                    })
+                } else {
+                    this.setState({
+                        updated: false
+                    })
+                }
+            })
+            let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
+            for (let i = 0; i < tds.length; i++) {
+                tds[i].style.background = "transparent"
+                tds[tds.length - 2].childNodes[0].classList.remove("fa-check")
+                tds[tds.length - 2].childNodes[0].classList.add("fa-edit")
+                tds[tds.length - 1].childNodes[0].classList.remove("fa-times")
+                tds[tds.length - 1].childNodes[0].classList.add("fa-backspace")
+            }
+            this.setState({
+                edit: false
+            })
+        }
+    
+        closeEditSectionHandler = (e) => {
+            let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
+            for (let i = 0; i < tds.length; i++) {
+                tds[i].style.background = "transparent"
+                tds[tds.length - 2].childNodes[0].classList.remove("fa-check")
+                tds[tds.length - 2].childNodes[0].classList.add("fa-edit")
+                tds[tds.length - 1].childNodes[0].classList.remove("fa-times")
+                tds[tds.length - 1].childNodes[0].classList.add("fa-backspace")
+            }
+            this.setState({ edit: false })
+        }
+    
+    
+    
+    
+        /* ___________________________________ */
 
     render() {
         const styles = {
@@ -453,11 +450,11 @@ class EmpExperience extends React.Component {
 
                                         <div className="form-group" controlId="formBasicEmail">
                                             <label style={{ width: "100%", textAlign: "right" }}>رقم الأداء : </label>
-                                            <input ref="nameinput" className="form-control" style={{ width: "100%", minWidth: "250px" }} type="text" />
+                                            <input onChange={this.idInputHandlerForAdd} ref="idAdd" className="form-control" style={{ width: "100%", minWidth: "250px" }} type="text" />
                                         </div>
                                         <div className="form-group" controlId="formBasicEmail">
                                             <label style={{ width: "100%", textAlign: "right" }}>الإسم : </label>
-                                            <input ref="nameinput" id="nameinputadd" className="form-control" style={{ width: "100%", minWidth: "250px" }} onChange={this.nameInputHandler} type="text" />
+                                            <input onChange={this.nameInputHandlerForAdd} ref="nameAdd" id="nameinputadd" className="form-control" style={{ width: "100%", minWidth: "250px" }} type="text" />
                                         </div>
                                     </div>
                                     {this.state.length === 0 ? null : this.expHandler(this.state.length)}
@@ -535,16 +532,16 @@ class EmpExperience extends React.Component {
                                         </thead>
                                         {this.props.empexp.length >= 1 ? this.props.empexp[2].length >= 1 ? this.props.empexp[2].map(emp => (
                                             <tbody>
-                                                <tr>
-                                                    <td></td>
-                                                    <td>{emp.JOB_NAME}</td>
-                                                    <td>{emp.START_DATE}</td>
-                                                    <td>{emp.END_DATE}</td>
+                                                <tr id={emp.id}>
+                                                    <td>{this.state.edit && this.state.rowExp == emp.id ? <input onChange={this.editPlaceOfExpHandler} className="form-control job" style={{ width: "100%", minWidth: "90px" }} type="text" /> : emp.PLACE_NAME}</td>
+                                                    <td>{this.state.edit && this.state.rowExp == emp.id ? <input onChange={this.editJobOfExpHandler} className="form-control job" style={{ width: "100%", minWidth: "90px" }} type="text" /> : emp.JOB_NAME}</td>
+                                                    <td>{this.state.edit && this.state.rowExp == emp.id ? <input onChange={this.editFromOfExpHandler} className="form-control job" style={{ width: "100%", minWidth: "90px" }} type="date" /> : emp.START_DATE}</td>
+                                                    <td>{this.state.edit && this.state.rowExp == emp.id ? <input onChange={this.editToOfExpHandler} className="form-control job" style={{ width: "100%", minWidth: "90px" }} type="date" /> : emp.END_DATE}</td>
                                                     <td>{this.handleExpTime(emp.START_DATE, emp.END_DATE).days()}</td>
                                                     <td>{this.handleExpTime(emp.START_DATE, emp.END_DATE).months()}</td>
                                                     <td>{this.handleExpTime(emp.START_DATE, emp.END_DATE).years()}</td>
-                                                    <td onClick={this.handelEdit_1}><i style={{ fontSize: 20 }} empName={emp.NAME_ARABIC} empApp={emp.APPRAISAL_ARABIC} empDate={emp.APPRAISAL_DATE} empnatid={emp.NATIONAL_ID_CARD_NO} onClick={this.editHandler} class="fas fa-edit"></i></td>
-                                                    <td><i class="fas fa-backspace"></i></td>
+                                                    <td><i onClick={this.state.edit ? this.handelEdit_2 : this.handelEdit_1} style={{ fontSize: 20 }} tableId={emp.id} expType={emp.EXP_TYP_CODE} placeName={emp.PLACE_NAME} jobName={emp.JOB_NAME} startDate={emp.START_DATE} endDate={emp.END_DATE} class="fas fa-edit"></i></td>
+                                                    <td><i onClick={this.state.edit ? this.closeEditSectionHandler : null} tableId={emp.id} class="fas fa-backspace"></i></td>
                                                 </tr>
                                             </tbody>
                                         ))
@@ -582,16 +579,16 @@ class EmpExperience extends React.Component {
                                         </thead>
                                         {this.props.empexp.length >= 1 ? this.props.empexp[1].length >= 1 ? this.props.empexp[1].map(emp => (
                                             <tbody>
-                                                <tr>
-                                                    <td></td>
-                                                    <td>{emp.JOB_NAME}</td>
-                                                    <td>{emp.START_DATE}</td>
-                                                    <td>{emp.END_DATE}</td>
+                                                <tr id={emp.id}>
+                                                    <td>{this.state.edit && this.state.rowExp == emp.id ? <input onChange={this.editPlaceOfExpHandler} className="form-control job" style={{ width: "100%", minWidth: "90px" }} type="text" /> : emp.PLACE_NAME}</td>
+                                                    <td>{this.state.edit && this.state.rowExp == emp.id ? <input onChange={this.editJobOfExpHandler} className="form-control job" style={{ width: "100%", minWidth: "90px" }} type="text" /> : emp.JOB_NAME}</td>
+                                                    <td>{this.state.edit && this.state.rowExp == emp.id ? <input onChange={this.editFromOfExpHandler} className="form-control job" style={{ width: "100%", minWidth: "90px" }} type="date" /> : emp.START_DATE}</td>
+                                                    <td>{this.state.edit && this.state.rowExp == emp.id ? <input onChange={this.editToOfExpHandler} className="form-control job" style={{ width: "100%", minWidth: "90px" }} type="date" /> : emp.END_DATE}</td>
                                                     <td>{this.handleExpTime(emp.START_DATE, emp.END_DATE).days()}</td>
                                                     <td>{this.handleExpTime(emp.START_DATE, emp.END_DATE).months()}</td>
                                                     <td>{this.handleExpTime(emp.START_DATE, emp.END_DATE).years()}</td>
-                                                    <td onClick={this.handelEdit_1}><i style={{ fontSize: 20 }} empName={emp.NAME_ARABIC} empApp={emp.APPRAISAL_ARABIC} empDate={emp.APPRAISAL_DATE} empnatid={emp.NATIONAL_ID_CARD_NO} onClick={this.editHandler} class="fas fa-edit"></i></td>
-                                                    <td><i class="fas fa-backspace"></i></td>
+                                                    <td><i onClick={this.state.edit ? this.handelEdit_2 : this.handelEdit_1} style={{ fontSize: 20 }} tableId={emp.id} expType={emp.EXP_TYP_CODE} placeName={emp.PLACE_NAME} jobName={emp.JOB_NAME} startDate={emp.START_DATE} endDate={emp.END_DATE} class="fas fa-edit"></i></td>
+                                                    <td><i onClick={this.state.edit ? this.closeEditSectionHandler : null} tableId={emp.id} class="fas fa-backspace"></i></td>
                                                 </tr>
                                             </tbody>
                                         ))
@@ -629,16 +626,16 @@ class EmpExperience extends React.Component {
                                         </thead>
                                         {this.props.empexp.length >= 1 ? this.props.empexp[0].length >= 1 ? this.props.empexp[0].map(emp => (
                                             <tbody>
-                                                <tr>
+                                                <tr id={emp.id}>
                                                     <td>القوات المسلحة</td>
-                                                    <td>{emp.JOB_NAME}</td>
-                                                    <td>{emp.START_DATE}</td>
-                                                    <td>{emp.END_DATE}</td>
+                                                    <td>{this.state.edit && this.state.rowExp == emp.id ? <input onChange={this.editJobOfExpHandler} className="form-control job" style={{ width: "100%", minWidth: "90px" }} type="text" /> : emp.JOB_NAME}</td>
+                                                    <td>{this.state.edit && this.state.rowExp == emp.id ? <input onChange={this.editFromOfExpHandler} className="form-control job" style={{ width: "100%", minWidth: "90px" }} type="date" /> : emp.START_DATE}</td>
+                                                    <td>{this.state.edit && this.state.rowExp == emp.id ? <input onChange={this.editToOfExpHandler} className="form-control job" style={{ width: "100%", minWidth: "90px" }} type="date" /> : emp.END_DATE}</td>
                                                     <td>{this.handleExpTime(emp.START_DATE, emp.END_DATE).days()}</td>
                                                     <td>{this.handleExpTime(emp.START_DATE, emp.END_DATE).months()}</td>
                                                     <td>{this.handleExpTime(emp.START_DATE, emp.END_DATE).years()}</td>
-                                                    <td onClick={this.handelEdit_1}><i style={{ fontSize: 20 }} empName={emp.NAME_ARABIC} empApp={emp.APPRAISAL_ARABIC} empDate={emp.APPRAISAL_DATE} empnatid={emp.NATIONAL_ID_CARD_NO} onClick={this.editHandler} class="fas fa-edit"></i></td>
-                                                    <td><i class="fas fa-backspace"></i></td>
+                                                    <td ><i onClick={this.state.edit ? this.handelEdit_2 : this.handelEdit_1} tableId={emp.id} style={{ fontSize: 20 }} expType={emp.EXP_TYP_CODE} placeName={emp.PLACE_NAME} jobName={emp.JOB_NAME} startDate={emp.START_DATE} endDate={emp.END_DATE} class="fas fa-edit"></i></td>
+                                                    <td><i onClick={this.state.edit ? this.closeEditSectionHandler : null} tableId={emp.id} class="fas fa-backspace"></i></td>
                                                 </tr>
                                             </tbody>
                                         ))

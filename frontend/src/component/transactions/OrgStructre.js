@@ -11,7 +11,7 @@ import axios from "axios";
 class OrgStructre extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { jobbycat: null || this.props.jobdgbycat, catid: null };
+        this.state = { jobdgbycat: "", jobbycat: null || this.props.jobdgbycat, catid: null };
 
     }
 
@@ -20,7 +20,12 @@ class OrgStructre extends React.Component {
     }
 
     clickHandler = (e) => {
-        this.props.getJobDgByCat(e.target.getAttribute("catid"))
+        axios.get(`http://localhost:5000/getJobdgbycatfororgstructure/?catid=${e.target.getAttribute("catid")}`).then(data=> {
+            this.setState({
+                jobdgbycat: data.data
+            })
+        })
+        // this.props.getJobDgByCat(e.target.getAttribute("catid"))
         this.setState({ catid: e.target.getAttribute("catid") })
         this.setState({ clicked: true })
     }
@@ -76,9 +81,9 @@ class OrgStructre extends React.Component {
                                     <div className="col-lg-6">
                                         <label style={{ display: "block" }} for="pet-select">الوظائف</label>
                                         <select style={styles} multiple name="pets" id="pet-select">
-                                            {this.state.clicked === false ? null : this.props.jobdgbycat.map((job) => (
+                                            {this.state.clicked === false ? null : this.state.jobdgbycat.length > 0 ? this.state.jobdgbycat.map((job) => (
                                                 <option onClick={this.clickHandler_2} jdid={job.J_D_ID}>{job.J_D_NAME}</option>
-                                            ))}
+                                            )) : null}
                                         </select>
                                     </div>
                                 </div>

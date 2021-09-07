@@ -550,14 +550,14 @@ class EmpPenalty extends React.Component {
                                                         </div>
                                                         : emp.NAME_ARABIC}</td>
                                                     <td>{this.state.edit && this.state.rowPen == emp.id ?
-                                                        <select onChange={this.AddPenaltyTypeHandler} id="empapp" style={{ height: 30, width: "50%", minWidth: "50px" }}>
+                                                        <select onChange={this.editPenaltyTypeHandler} id="empapp" style={{ height: 30, width: "50%", minWidth: "50px" }}>
                                                             {penalties.map(penalty => (
                                                                 <option>{penalty}</option>
                                                             ))}
                                                             <option selected>اختر ...</option>
                                                         </select> : emp.PENALTY_TYPE_AR}</td>
                                                     <td>{this.state.edit && this.state.rowPen == emp.id ?
-                                                        <input onChange={this.addDateHandler} className="form-control" style={{ width: "70%", minWidth: "90px", margin: "0 auto" }} type="date" />
+                                                        <input onChange={this.editPenaltyDateHandler} className="form-control" style={{ width: "70%", minWidth: "90px", margin: "0 auto" }} type="date" />
                                                         : emp.PENALTY_DATE}</td>
                                                     <td><i onClick={this.state.edit ? this.handelEdit_2 : this.handelEdit_1} tableId={emp.id} style={{ fontSize: 20 }} empName={emp.NAME_ARABIC} penType={emp.PENALTY_TYPE_AR} penDate={emp.PENALTY_DATE} class="fas fa-edit"></i></td>
                                                     <td><i onClick={this.state.edit ? this.closeEditSectionHandler : null} tableId={emp.id} class="fas fa-backspace"></i></td>

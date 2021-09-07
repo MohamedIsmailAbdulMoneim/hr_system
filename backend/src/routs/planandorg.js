@@ -8,10 +8,12 @@ function getEmpExprerience(req, res, next) {
     const empname = req.query.empname
 
     const query = `
-    SELECT * FROM employee_experince WHERE EXP_TYP_CODE = 1 AND NATIONAL_ID_CARD_NO = (SELECT NATIONAL_ID_CARD_NO  FROM employee WHERE ${empid.length !== 0 ? `EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `NAME_ARABIC = "${empname}"` : null});
-    SELECT * FROM employee_experince WHERE EXP_TYP_CODE = 3 AND NATIONAL_ID_CARD_NO = (SELECT NATIONAL_ID_CARD_NO  FROM employee WHERE ${empid.length !== 0 ? `EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `NAME_ARABIC = "${empname}"` : null});
-    SELECT * FROM employee_experince WHERE EXP_TYP_CODE = 4 AND NATIONAL_ID_CARD_NO = (SELECT NATIONAL_ID_CARD_NO  FROM employee WHERE ${empid.length !== 0 ? `EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `NAME_ARABIC = "${empname}"` : null});
+    SELECT * FROM employee_experince WHERE is_shown AND EXP_TYP_CODE = 1 AND NATIONAL_ID_CARD_NO = (SELECT NATIONAL_ID_CARD_NO  FROM employee WHERE ${empid.length !== 0 ? `EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `NAME_ARABIC = "${empname}"` : null});
+    SELECT * FROM employee_experince WHERE is_shown AND EXP_TYP_CODE = 3 AND NATIONAL_ID_CARD_NO = (SELECT NATIONAL_ID_CARD_NO  FROM employee WHERE ${empid.length !== 0 ? `EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `NAME_ARABIC = "${empname}"` : null});
+    SELECT * FROM employee_experince WHERE is_shown AND EXP_TYP_CODE = 4 AND NATIONAL_ID_CARD_NO = (SELECT NATIONAL_ID_CARD_NO  FROM employee WHERE ${empid.length !== 0 ? `EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `NAME_ARABIC = "${empname}"` : null});
     `
+
+    console.log(query);
     db.query(query, (err, details) => {
         if (err) {
             next(err)
@@ -28,6 +30,22 @@ function getJobDgByCat(req, res, next) {
     db.query(query, (err, details) => {
         if (err) {
             next(err);
+            console.log(err);
+        } else {
+            console.log(details);
+            res.send(details);
+        }
+    })
+
+}
+
+function getJobDgByCatForOrgStructure(req, res, next) {
+    const catid = req.query.catid
+    const query = `SELECT * FROM a_job_dgree JOIN a_main_box ON a_job_dgree.J_D_ID = a_main_box.J_D_ID WHERE a_main_box.CAT_ID = ${catid}`
+    db.query(query, (err, details) => {
+        if (err) {
+            next(err);
+            console.log(err);
         } else {
             res.send(details);
         }
@@ -129,6 +147,7 @@ function updateAppraisal(req, res, next) {
             console.log(err);
             res.json({ data: null, status: 400 })
         } else {
+            console.log(query);
             res.json({ data: details, status: 200 });
         }
     })
@@ -230,7 +249,6 @@ function postnewtrans(req, res, next) {
     let query;
     let data = req.body
     let nameOrId = data[0][0].substring(1)
-
 
     query =
         `   update a_job_trans set INDICATOR = 3 WHERE INDICATOR = 2 AND NATIONAL_ID_CARD_NO = ${nameOrId};
@@ -356,11 +374,16 @@ function getUpJd(req, res, next) {
 
 function newEmpExp(req, res, next) {
     let data = req.body
-    db.query("INSERT INTO employee_experince (PLACE_NAME, JOB_NAME, START_DATE, END_DATE, EXP_TYP_CODE, NATIONAL_ID_CARD_NO) VALUES ?", [data], function (err, data) {
+    let query = `INSERT INTO employee_experince (PLACE_NAME, JOB_NAME, START_DATE, END_DATE, EXP_TYP_CODE, NATIONAL_ID_CARD_NO) VALUES ${data}`
+    console.log(query);
+    console.log(data);
+
+    db.query(query, function (err, data) {
         if (err) {
             next(err);
             res.json({ data: null, msg: "يوجد خطاء بقاعدة البيانات" });
         } else {
+        
             res.json({ data: data, msg: "تم إدخال البيانات بنجاح" });
         }
 
@@ -501,9 +524,42 @@ function postNewEmpEdu(req, res, next) {
             res.json({ msg: "تم إدخال البيانات بنجاح", data: data })
         }
     })
+}
 
+function editEmpExp(req, res, next) {
+    let data = req.body
+    console.log(data);
+    let id = data[data.length - 1]
+    data.pop()
+    let query = `UPDATE employee_experince SET ${data} WHERE id = ${id}`
+    db.query(query, (err, data) => {
+        if (err) {
+            next(err)
+            res.json({ msg: "يوجد خطاء بقاعدة البيانات", data: null })
 
+        } else {
+            res.json({ msg: "تم إدخال البيانات بنجاح", data: data })
+        }
+    })
+}
 
+function editEmpEdu(req, res, next) {
+    let data = req.body
+    console.log(data);
+    let id = data[data.length - 1]
+    data.pop()
+    let query = `UPDATE employee_education_degree SET ${data} WHERE id = ${id}`
+    db.query(query, (err, data) => {
+        if (err) {
+            next(err)
+            console.log(err);
+            res.json({ msg: "يوجد خطاء بقاعدة البيانات", data: null })
+
+        } else {
+            console.log(data);
+            res.json({ msg: "تم إدخال البيانات بنجاح", data: data })
+        }
+    })
 }
 
 
@@ -511,6 +567,7 @@ function postNewEmpEdu(req, res, next) {
 
 router
     .get('/getjobdgbycat/:catname', getJobDgByCat)
+    .get('/getJobdgbycatfororgstructure', getJobDgByCatForOrgStructure)
     .get(`/getsupboxnames/:jdid /:catid`, getSupBoxNames)
     .get(`/getboxandmangers/:mainid`, getsupboxmangers)
     .get(`/getmaincode/:jdid/:catid`, getMaincode)
@@ -520,6 +577,7 @@ router
     .get('/getemptrans', getEmpTrans)
     .put('/updateemptrans', updateEmpTrans)
     .get('/getempedu', getEmpEdu)
+    .put('/editempedu', editEmpEdu)
     .get('/getempfamily', getEmpFamily)
     .get('/currentjd/:empid', getCurrentJD)
     .get('/availjd/:catname/:jdname', getEmpAvljd)
@@ -528,6 +586,7 @@ router
     .get('/getUpJd/:catename/:supboxname', getUpJd)
     .get('/getempexp', getEmpExprerience)
     .post('/newempexp', newEmpExp)
+    .put('/editempexp', editEmpExp)
     .post('/newbulktrans', postBulkTrans)
     .post('/newfamily', newFamily)
     .put('/editfamily', editFamily)
@@ -536,5 +595,6 @@ router
     .put('/updatepenalty', updatePenalty)
     .post('/postnewtraining', postNewTraining)
     .post('/postnewempedu', postNewEmpEdu)
+    
 
 module.exports = router;
