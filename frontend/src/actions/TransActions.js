@@ -1,6 +1,6 @@
 import {
   NEW_APPRAISAL, updatetrans, fetchEmpTrans, updateAppraisal, fetchEmpFamily,
-  FETCHEMPEXP, NEW_EXP, fetchEmpPenalties, postNewFamilyMember,postNewTrans, postEmpEdu,fetchEmpEdu
+  FETCHEMPEXP, NEW_EXP, fetchEmpPenalties, postNewFamilyMember,postNewTrans, postEmpEdu,fetchEmpEdu,fetchEmpTraining
 
 } from "../actions/ActionTypes";
 import axios from "axios";
@@ -175,4 +175,13 @@ export const InsertNewEdu = (data) => (dispatch) => {
     payload: res.data
   })
 })
+}
+
+export const getEmpTraining = (nameOrId) => (dispatch) => {
+  axios.get(`http://localhost:5000/getemptraining/?nameOrId=${nameOrId}`).then(res => {
+    dispatch({
+      type: fetchEmpTraining,
+      payload: res.data
+    })
+  })
 }

@@ -23,7 +23,6 @@ class EmpFamily extends React.Component {
             empnameForAdd: null, empidForAdd: null, showMsg: false, rowFam: null, addConfirmed: false, updated: false
 
         };
-
     }
 
     idInputHandlerForSearch = (e) => {

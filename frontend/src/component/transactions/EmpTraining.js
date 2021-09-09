@@ -1,5 +1,6 @@
 import React, { Fragment } from "react";
 import { getEmpName, getEmpNameByName } from "../../actions/Actions"
+import {getEmpTraining} from "../../actions/TransActions"
 import { } from "../../actions/TransActions"
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
@@ -16,9 +17,13 @@ class EmpTraining extends React.Component {
             appraisalYear: "null", rowTrainning: false, add: false, edit: false, empid: null, messege: null,
             addTrainingArabicName: "", addTrainingEnglishName: "", addTrainingFromDate: "", addTrainingToDate: "", addTrainingType: "", addTrainingPlaceType: "", addTrainingPlace: "",
             empnameadd: "", empidadd: "", showNamesResultsForSearch: false, showNamesResultsForAdd: false, finalData: null,
-            empname: null, updated: false, firstArg: 0,
+            empname: null, updated: false, firstArg: 0, empnameforsearch: "", empidforsearch: "",
             secondArg: 20, currentPage: 1, firstArgPerBtn: 0, secondArgPerBtn: 10
         };
+    }
+
+    handleEmpNameForSearch = (e) => {
+
     }
 
     handleDataToSend = () => {
@@ -51,7 +56,7 @@ class EmpTraining extends React.Component {
         }
     }
 
-    submitNewPenalty = (e) => {
+    submitNewTrainning = (e) => {
         e.preventDefault()
         axios({
             method: "POST",
@@ -152,8 +157,15 @@ class EmpTraining extends React.Component {
 
     idInputHandlerForSearch = (e) => {
         this.refs.name.value = ''
+
+
+
+        let nameOrId = `employee_training.NATIONAL_ID_CARD_NO = (SELECT NATIONAL_ID_CARD_NO FROM employee WHERE EMPLOYEE_ID = ${e.target.value})`
         if (e.key === 'Enter') {
+
+            this.props.getEmpTraining(nameOrId)
             this.props.getEmpName(e.target.value)
+            
             this.setState({ edit: false, empid: e.target.value })
         }
     }
@@ -165,7 +177,13 @@ class EmpTraining extends React.Component {
     }
 
     namesOptionshandlerForSearch = (e) => {
+        let nameOrId = `NATIONAL_ID_CARD_NO = (SELECT NATIONAL_ID_CARD_NO FROM employee WHERE NAME_ARABIC = "${this.state.empname}")`
+        this.props.getEmpTraining(nameOrId)
+
         this.refs.name.value = e.target.value
+        this.setState({
+            empname: e.target.value
+        })
     }
 
     searchPenaltyTypeHandler = (e) => {
@@ -188,7 +206,7 @@ class EmpTraining extends React.Component {
 
 
 
-    /* ------------------------  */
+    /* ----------------------------------------------------------------  */
 
     changeArgs = (i) => (e) => {
         e.preventDefault()
@@ -232,7 +250,6 @@ class EmpTraining extends React.Component {
         this.changeArgs(this.state.currentPage + 1)
 
     }
-
 
     idInputAddHandler = (e) => {
         this.setState({ empid: e.target.value })
@@ -332,19 +349,8 @@ class EmpTraining extends React.Component {
         })
     }
 
-    // catClickHandeler = (e) => {
-
-    //     this.setState({ catname: e.target.value })
-    //     if (this.refs.selected) {
-    //         if (this.refs.selected.options) {
-    //             this.refs.selected.options.selectedIndex = 2
-    //         }
-    //     }
-
-    // }
-
-
     render() {
+        console.log(this.state.empname,this.state.empid)
         var dates = [];
         let start = 1996;
         let end = 2021;
@@ -455,7 +461,7 @@ class EmpTraining extends React.Component {
                                     </div>
                                     <button onClick={this.handleDataToSend} style={{ width: "92%", margin: "0 auto" }} type="button" class="btn btn-primary btn-block">إضافة تدريب جديد</button>
 
-                                    {this.state.confirmAdd ? <div style={{ width: "100%" }} class="alert alert-warning" role="alert"> هل انت متأكد من إضافة تدريب جديد ؟ <button onClick={this.submitNewPenalty} style={{ float: "left" }} type="button" class="btn btn-warning">تأكيد</button> <i onClick={this.submitButtonHandler} style={{ fontSize: 15, float: "right" }} class="fas fa-times-circle"></i></div> : null}
+                                    {this.state.confirmAdd ? <div style={{ width: "100%" }} class="alert alert-warning" role="alert"> هل انت متأكد من إضافة تدريب جديد ؟ <button onClick={this.submitNewTrainning} style={{ float: "left" }} type="button" class="btn btn-warning">تأكيد</button> <i onClick={this.submitButtonHandler} style={{ fontSize: 15, float: "right" }} class="fas fa-times-circle"></i></div> : null}
 
 
                                 </div>
@@ -470,29 +476,11 @@ class EmpTraining extends React.Component {
                 </div>
                 <div className="row">
                     <div className="col-lg-12" style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: 10 }}>
-                        <div style={{ height: "100%", width: 600 }} class="panel panel-default">
+                        <div style={{ height: "100%", width: 600, minHeight: 120 }} class="panel panel-default">
                             <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt", display: "flex", justifyContent: "space-between" }} class="panel-heading">
                                 <div></div>
                                 <span style={{ marginRight: 70 }}>تدريب العاملين</span>
                                 <button onClick={this.addButtonClickHandeler} type="button" class="btn btn-primary">إضافة تدريب جديد</button>
-                            </div>
-                            <h3>معايير البحث</h3>
-                            <div style={{ display: "flex", justifyContent: "center" }} >
-                                <label style={{ marginLeft: 10, marginRight: 10 }} for="vehicle1">الموظف</label><br />
-                                <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike" />
-                                <label style={{ marginLeft: 10, marginRight: 10 }} for="vehicle2">نوع التدريب</label><br />
-                                <input type="checkbox" id="vehicle2" name="vehicle2" value="Car" />
-                                <label style={{ marginLeft: 10, marginRight: 10 }} for="vehicle3">مكان التدريب</label><br />
-                                <input type="checkbox" id="vehicle3" name="vehicle3" value="Boat" />
-                                <label style={{ marginLeft: 10, marginRight: 10 }} for="vehicle3">نوع المكان</label><br />
-                                <input type="checkbox" id="vehicle3" name="vehicle3" value="Boat" />
-                                <label style={{ marginLeft: 10, marginRight: 10 }} for="vehicle3">اسم البرنامج</label><br />
-                                <input type="checkbox" id="vehicle3" name="vehicle3" value="Boat" />
-                                <label style={{ marginLeft: 10, marginRight: 10 }} for="vehicle3">السنة</label><br />
-                                <input type="checkbox" id="vehicle3" name="vehicle3" value="Boat" />
-                            </div>
-                            <div style={{ display: "flex", justifyContent: "right" }} >
-                                <hr style={{ boxShadow: "rgb(136 136 136) 1px 1px 8px 1px;", width: "90%", border: "1px solid black" }} />
                             </div>
                             <div style={{ display: "flex", justifyContent: "space-around" }}>
                                 <div className="form-group" controlId="formBasicEmail">
@@ -517,50 +505,6 @@ class EmpTraining extends React.Component {
                                     </div>
                                     : null
                             }
-                            <div style={{ display: "flex", justifyContent: "space-around" }}>
-                                <div className="form-group" controlId="formBasicEmail">
-                                    <label style={{ width: "100%", textAlign: "right" }}>نوع التدريب : </label>
-                                    <select onChange={this.addTrainingTypeHandler} id="empapp" style={{ height: 30, width: "100%", minWidth: "190px" }}>
-                                        <option selected>أخرى</option>
-                                        <option selected>مؤتمر</option>
-                                        <option selected>ملتقى</option>
-                                        <option selected>محاضرة</option>
-                                        <option selected>دورة تدريبية</option>
-                                        <option selected>اختر ...</option>
-                                    </select>
-                                </div>
-                                <div className="form-group" controlId="formBasicEmail">
-                                    <label style={{ width: "100%", textAlign: "right" }}> نوع المكان : </label>
-                                    <select onChange={this.addTrainingPlaceTypeHandler} id="empapp" style={{ height: 30, width: "100%", minWidth: "190px" }}>
-                                        <option >داخلي</option>
-                                        <option >خارجي</option>
-                                        <option selected>اختر ...</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div style={{ display: "flex", justifyContent: "space-around" }}>
-                                <div className="form-group" controlId="formBasicEmail">
-                                    <label style={{ width: "100%", textAlign: "right" }}>مكان التدريب : </label>
-                                    <input onChange={this.addTrainingPlaceHandler} className="form-control" style={{ width: "100%", minWidth: "250px", background: "white", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" />
-                                </div>
-                                <div className="form-group" controlId="formBasicEmail">
-                                    <label style={{ width: "100%", textAlign: "right" }}>اسم البرنامج : </label>
-                                    <input ref="name" id="name" id="empname" className="form-control" onKeyUp={this.nameInputHandlerForSearch} style={{ background: "white", width: "50%", minWidth: "250px", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
-                                </div>
-                            </div>
-                            <div style={{ display: "flex", justifyContent: "space-around" }}>
-                                <div className="form-group" controlId="formBasicEmail">
-                                    <label style={{ width: "100%", textAlign: "right" }}>السنة : </label>
-                                    <select onChange={this.addTrainingTypeHandler} id="empapp" style={{ height: 30, width: "100%", minWidth: "520px" }}>
-                                        {dates.map(year => (
-                                            <option year={year} >{year}</option>
-                                        ))}
-                                        <option selected>اختر السنة</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <button onClick={this.handleDataToSend} style={{ width: "92%", margin: "0 auto" }} type="button" class="btn btn-primary btn-block">بحث <i style={{ float: 'left' }} class="fas fa-search"></i>
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -568,36 +512,34 @@ class EmpTraining extends React.Component {
                     <div class="col-lg-12">
                         <div className="panel panel-default">
                             <div className="panel-heading" style={{ minHeight: 40 }}>
+                                {this.props.empTraining.length > 0 ? <h4>بيان بتدريبات السيد / {this.props.empTraining[0].NAME_ARABIC}</h4> : null}
                             </div>
                             <div class="panel-body">
                                 <div class="table-responsive">
                                     <table class="table table-striped table-bordered table-hover" id="dataTables-example">
                                         <thead>
                                             <tr>
-                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>الإسم</th>
                                                 <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>التدريب</th>
                                                 <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>التاريخ</th>
+                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>نوع التدريب</th>
+                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>نوع المكان</th>
                                                 <th>تعديل</th>
                                                 <th>حذف</th>
                                             </tr>
                                         </thead>
-                                        {/* {this.props.empApp.slice(this.state.firstArg, this.state.secondArg).map(emp => (
+                                        {this.props.empTraining.map(emp => (
                                             <tbody>
                                                 <tr id={emp.id}>
-                                                    <td>{emp.NAME_ARABIC}</td>
-                                                    <td>{this.state.edit && this.state.rowAppraisal == emp.id ? <select onChange={this.handelAppraisal} id="empapp" style={{ width: "50%", height: 30 }}>
-
-                                                        <option selected>اختر التقدير</option>
-
-                                                    </select> : this.state.updated && this.state.rowAppraisal == emp.id ? this.state.empAppraisal : emp.APPRAISAL_ARABIC}</td>
-                                                    <td style={{ width: "10%" }}>{this.state.edit && this.state.rowAppraisal == emp.id ? <input onChange={this.handelYear} value={this.state.appraisalYear} className="form-control" style={{ width: "100%" }} type="text" /> :
-                                                        this.state.updated && this.state.rowAppraisal == emp.id ? this.state.appraisalYear : emp.APPRAISAL_DATE}</td>
-                                                    <td><i onClick={this.state.edit ? this.handelEdit_2 : this.handelEdit_1} tableId={emp.id} style={{ fontSize: 20 }} empName={emp.NAME_ARABIC} empApp={emp.APPRAISAL_ARABIC} empDate={emp.APPRAISAL_DATE} empnatid={emp.NATIONAL_ID_CARD_NO} class="fas fa-edit"></i></td>
+                                                    <td>{emp.TRAINING_PROGRAM_ARABIC}</td>
+                                                    <td>{emp.TRAINING_COMPLETION_DATE}</td>
+                                                    <td>{emp.TRAINING_TYPE_NAME}</td>
+                                                    <td>{emp.LOCATION_TYPE_NAME}</td>
+                                                    <td><i onClick={this.state.edit ? this.handelEdit_2 : this.handelEdit_1} tableId={emp.id} relType={emp.RELATION_TYPE} famName={emp.FAMILY_NAME} birthDate={emp.BIRTH_DATE} marNid={emp.NATIONAL_ID_NUMBER} natIdCard={emp.NATIONAL_ID_CARD_NO} class="fas fa-edit"></i></td>
                                                     <td><i onClick={this.state.edit ? this.closeEditSectionHandler : null} tableId={emp.id} class="fas fa-backspace"></i></td>
                                                 </tr>
                                             </tbody>
                                         ))
-                                        } */}
+                                        }
                                     </table>
                                     {/* <Pagination minusFirstArg={this.minusFirstArg} plusSecondArg={this.plusSecondArg} firstArgPerBtn={this.state.firstArgPerBtn} secondArgPerBtn={this.state.secondArgPerBtn} changargs={this.changeArgs} pagesLength={this.props.empApp.length} currentPage={this.state.currentPage} /> */}
                                 </div>
@@ -616,10 +558,11 @@ const mapStateToProps = (state) => {
 
         empname: state.posts.empname,
         empNameByName: state.posts.empNameByName,
+        empTraining: state.trans.empTraining
 
 
     };
 };
 export default connect(mapStateToProps, {
-    getEmpName, getEmpNameByName,
+    getEmpName, getEmpNameByName,getEmpTraining
 })(EmpTraining);

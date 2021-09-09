@@ -7,9 +7,6 @@ function insertNewEmp(req,res,next){
     const data = req.body
     const milStatusIsCompleted = data.filter(inf => inf == '(SELECT MILITARY_SERVICE_STATUS FROM military_service_status WHERE STATUS_ARABIC ="ادي الخدمه العسكرية")')
     let fData = data.filter(inf => inf != '')
-
-    console.log(fData);
-
     let query = `INSERT INTO employee (ORGANIZATION,EMPLOYEE_ID,NAME_ARABIC,CONTRACT_TYPE,SECTOR_JOIN_DATE,
         JOB_LOCATION,JOB_AREA,JOB_GOVERNORATE,EMP_STATUS,NATIONAL_ID_CARD_NO,NATIONAL_ID_CARD_ISSUED_BY,NATIONAL_CARD_ISSUE_DATE,SOCIAL_INSURANCE_NUMBER
         ,INSURANCE_OFFICE,RESEDNTIAL_ADDRESS,PHONE_3_MOBILE,PHONE_2_HOME,PHONE_1_OFFICE,EMP_EMAIL,MARITAL_STATUS${data[0] == 'added' ? `,SYNDICATE,SYNDICATE_REGISTERATION,

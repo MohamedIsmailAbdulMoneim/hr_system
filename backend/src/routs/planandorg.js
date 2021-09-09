@@ -562,6 +562,23 @@ function editEmpEdu(req, res, next) {
     })
 }
 
+function getEmpTraining(req,res,next){
+    let nameOrId = req.query.nameOrId
+    console.log(nameOrId);
+    let query = `SELECT employee.NAME_ARABIC, employee_training.TRAINING_PROGRAM_ARABIC,employee_training.TRAINING_COMPLETION_DATE,TRAINING_TYPE.TRAINING_TYPE_NAME,LOCATION_TYPE.LOCATION_TYPE_NAME FROM employee_training JOIN TRAINING_TYPE JOIN LOCATION_TYPE JOIN employee ON
+    employee.NATIONAL_ID_CARD_NO = employee_training.NATIONAL_ID_CARD_NO AND employee_training.TRAINING_TYPE = training_type.TRAINING_TYPE AND
+    employee_training.LOCATION_TYPE = location_type.LOCATION_TYPE WHERE ${nameOrId}`
+
+    db.query(query, (err, data) => {
+        if (err) {
+            res.json({ msg: "يوجد خطاء بقاعدة البيانات", data: null })
+        } else {
+            console.log(err);
+            res.send(data)
+        }
+    })
+
+}
 
 
 
@@ -593,6 +610,7 @@ router
     .post('/postnewpenalty', postNewPenalty)
     .get('/getempspenalties', getEmpsPenalties)
     .put('/updatepenalty', updatePenalty)
+    .get('/getemptraining', getEmpTraining)
     .post('/postnewtraining', postNewTraining)
     .post('/postnewempedu', postNewEmpEdu)
     

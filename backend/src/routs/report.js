@@ -8,106 +8,91 @@ function getEmpDetails(req, res, next) {
     let empname = req.query.empname
     let query;
 
+    query = `SELECT `
+
     if (!empid || empid == "undefiened") {
-        query = `SELECT
-        *,
-        dateofj.TRANS_DATE,
-        (SELECT CAT_NAME FROM a_category WHERE CAT_ID = emp_box.CAT_ID) AS cat_name,
-    
-        (
-        SELECT
-            JOB_ASSIGNMENT_FORM_ARABIC
-        FROM
-            job_assignment_form
-        WHERE
-            job_assignment_form.JOB_ASSIGNMENT_FORM = emp_box.JOB_ASSIGNMENT_FORM
-    ) AS WOG
-    FROM
-        employee
-    JOIN(
-        SELECT
-            a_sup_box.sup_box_id,
-            a_sup_box.SUP_BOX_NAME,
-            a_job_trans.NATIONAL_ID_CARD_NO,
-            a_job_trans.JOB_ASSIGNMENT_FORM,
-            a_main_box.CAT_ID
-        FROM
-            a_sup_box
-        JOIN a_job_trans
-        JOIN a_main_box
-        ON a_job_trans.SUP_BOX_ID = a_sup_box.SUP_BOX_ID AND a_sup_box.MAIN_BOX_ID = a_main_box.MAIN_BOX_ID
-        WHERE
-            a_job_trans.INDICATOR = 2
-    ) AS emp_box
-    JOIN(
-        SELECT
-            NATIONAL_ID_CARD_NO,
-            TRANS_DATE
-        FROM
-            a_job_trans
-        WHERE
-            a_job_trans.JOB_ASSIGNMENT_FORM = 1
-    ) AS dateofj
-    JOIN employee_appraisal ON employee.NATIONAL_ID_CARD_NO = dateofj.NATIONAL_ID_CARD_NO AND employee.NATIONAL_ID_CARD_NO = emp_box.NATIONAL_ID_CARD_NO AND employee.NATIONAL_ID_CARD_NO = employee_appraisal.NATIONAL_ID_CARD_NO
-    WHERE
-        employee.NATIONAL_ID_CARD_NO =(
-        SELECT
-            NATIONAL_ID_CARD_NO
-        FROM
-            employee
-        WHERE
-            NAME_ARABIC = "${empname}"
-    ) AND APPRAISAL_DATE = 2020`
+        query = `
+        SELECT *,ADDRESS_GOVERNORATE_AR.GOVERNORATE_ARABIC as ADDRESS_GOVERNORATE_AR  dateofj.TRANS_DATE,(SELECT CAT_NAME FROM a_category WHERE CAT_ID = emp_box.CAT_ID) AS cat_name,
+        (SELECT JOB_ASSIGNMENT_FORM_ARABIC FROM job_assignment_form WHERE job_assignment_form.JOB_ASSIGNMENT_FORM
+        = emp_box.JOB_ASSIGNMENT_FORM) AS WOG FROM employee JOIN(SELECT a_sup_box.sup_box_id,a_sup_box.SUP_BOX_NAME,
+        a_job_trans.NATIONAL_ID_CARD_NO,a_job_trans.JOB_ASSIGNMENT_FORM,a_main_box.CAT_ID FROM a_sup_box JOIN a_job_trans
+        JOIN a_main_box ON a_job_trans.SUP_BOX_ID = a_sup_box.SUP_BOX_ID AND a_sup_box.MAIN_BOX_ID = a_main_box.MAIN_BOX_ID
+        WHERE a_job_trans.INDICATOR = 2) AS emp_box JOIN(SELECT NATIONAL_ID_CARD_NO,TRANS_DATE FROM a_job_trans WHERE
+        a_job_trans.JOB_ASSIGNMENT_FORM = 1) AS dateofj JOIN employee_appraisal JOIN (SELECT GOVERNORATE_ARABIC,GOVERNORATE FROM governorate)
+        AS ADDRESS_GOVERNORATE_AR JOIN (SELECT GOVERNORATE_ARABIC,GOVERNORATE FROM governorate) AS GOVERNORATE_OF_BIRTH_AR JOIN
+        (SELECT GOVERNORATE_ARABIC,GOVERNORATE FROM governorate) AS JOB_GOVERNORATE_AR ON employee.ADDRESS_GOVERNORATE = ADDRESS_GOVERNORATE_AR.GOVERNORATE
+        AND employee.GOVERNORATE_OF_BIRTH = GOVERNORATE_OF_BIRTH_AR.GOVERNORATE AND employee.JOB_GOVERNORATE = JOB_GOVERNORATE_AR.GOVERNORATE AND
+        employee.NATIONAL_ID_CARD_NO = dateofj.NATIONAL_ID_CARD_NO AND employee.NATIONAL_ID_CARD_NO = emp_box.NATIONAL_ID_CARD_NO
+        AND employee.NATIONAL_ID_CARD_NO = employee_appraisal.NATIONAL_ID_CARD_NO
+         WHERE employee.NATIONAL_ID_CARD_NO =(SELECT NATIONAL_ID_CARD_NO FROM
+        employee WHERE NAME_ARABIC = "${empname}" ) AND APPRAISAL_DATE = 2020
+        `    
     } else if (!empname || empname == "undefined") {
-        query = `SELECT
-        *,
-        dateofj.TRANS_DATE,
-        (SELECT CAT_NAME FROM a_category WHERE CAT_ID = emp_box.CAT_ID) AS cat_name,
+        query = `
+        SELECT *, dateofj.TRANS_DATE,(SELECT CAT_NAME FROM a_category WHERE CAT_ID = emp_box.CAT_ID) AS cat_name,
+        (SELECT JOB_ASSIGNMENT_FORM_ARABIC FROM job_assignment_form WHERE job_assignment_form.JOB_ASSIGNMENT_FORM
+        = emp_box.JOB_ASSIGNMENT_FORM) AS WOG FROM employee JOIN(SELECT a_sup_box.sup_box_id,a_sup_box.SUP_BOX_NAME,
+        a_job_trans.NATIONAL_ID_CARD_NO,a_job_trans.JOB_ASSIGNMENT_FORM,a_main_box.CAT_ID FROM a_sup_box JOIN a_job_trans
+        JOIN a_main_box ON a_job_trans.SUP_BOX_ID = a_sup_box.SUP_BOX_ID AND a_sup_box.MAIN_BOX_ID = a_main_box.MAIN_BOX_ID
+        WHERE a_job_trans.INDICATOR = 2) AS emp_box JOIN(SELECT NATIONAL_ID_CARD_NO,TRANS_DATE FROM a_job_trans WHERE
+        a_job_trans.JOB_ASSIGNMENT_FORM = 1) AS dateofj JOIN employee_appraisal JOIN (SELECT GOVERNORATE_ARABIC,GOVERNORATE FROM governorate)
+        AS ADDRESS_GOVERNORATE_AR JOIN (SELECT GOVERNORATE_ARABIC,GOVERNORATE FROM governorate) AS GOVERNORATE_OF_BIRTH_AR JOIN
+        (SELECT GOVERNORATE_ARABIC,GOVERNORATE FROM governorate) AS JOB_GOVERNORATE_AR ON employee.ADDRESS_GOVERNORATE = ADDRESS_GOVERNORATE_AR.GOVERNORATE
+        AND employee.GOVERNORATE_OF_BIRTH = GOVERNORATE_OF_BIRTH_AR.GOVERNORATE AND employee.JOB_GOVERNORATE = JOB_GOVERNORATE_AR.GOVERNORATE AND
+        employee.NATIONAL_ID_CARD_NO = dateofj.NATIONAL_ID_CARD_NO AND employee.NATIONAL_ID_CARD_NO = emp_box.NATIONAL_ID_CARD_NO
+        AND employee.NATIONAL_ID_CARD_NO = employee_appraisal.NATIONAL_ID_CARD_NO
+         WHERE employee.NATIONAL_ID_CARD_NO =(SELECT NATIONAL_ID_CARD_NO FROM
+        employee WHERE EMPLOYEE_ID = ${empid} ) AND APPRAISAL_DATE = 2020
+        `
+    //     query = `SELECT
+    //     *,
+    //     dateofj.TRANS_DATE,
+    //     (SELECT CAT_NAME FROM a_category WHERE CAT_ID = emp_box.CAT_ID) AS cat_name,
     
-        (
-        SELECT
-            JOB_ASSIGNMENT_FORM_ARABIC
-        FROM
-            job_assignment_form
-        WHERE
-            job_assignment_form.JOB_ASSIGNMENT_FORM = emp_box.JOB_ASSIGNMENT_FORM
-    ) AS WOG
-    FROM
-        employee
-    JOIN(
-        SELECT
-            a_sup_box.sup_box_id,
-            a_sup_box.SUP_BOX_NAME,
-            a_job_trans.NATIONAL_ID_CARD_NO,
-            a_job_trans.JOB_ASSIGNMENT_FORM,
-            a_main_box.CAT_ID
-        FROM
-            a_sup_box
-        JOIN a_job_trans
-        JOIN a_main_box
-        ON a_job_trans.SUP_BOX_ID = a_sup_box.SUP_BOX_ID AND a_sup_box.MAIN_BOX_ID = a_main_box.MAIN_BOX_ID
-        WHERE
-            a_job_trans.INDICATOR = 2
-    ) AS emp_box
-    JOIN(
-        SELECT
-            NATIONAL_ID_CARD_NO,
-            TRANS_DATE
-        FROM
-            a_job_trans
-        WHERE
-            a_job_trans.JOB_ASSIGNMENT_FORM = 1
-    ) AS dateofj
-    JOIN employee_appraisal ON employee.NATIONAL_ID_CARD_NO = dateofj.NATIONAL_ID_CARD_NO AND employee.NATIONAL_ID_CARD_NO = emp_box.NATIONAL_ID_CARD_NO AND employee.NATIONAL_ID_CARD_NO = employee_appraisal.NATIONAL_ID_CARD_NO
-    WHERE
-        employee.NATIONAL_ID_CARD_NO =(
-        SELECT
-            NATIONAL_ID_CARD_NO
-        FROM
-            employee
-        WHERE
-            EMPLOYEE_ID = ${empid}
-    ) AND APPRAISAL_DATE = 2020`
+    //     (
+    //     SELECT
+    //         JOB_ASSIGNMENT_FORM_ARABIC
+    //     FROM
+    //         job_assignment_form
+    //     WHERE
+    //         job_assignment_form.JOB_ASSIGNMENT_FORM = emp_box.JOB_ASSIGNMENT_FORM
+    // ) AS WOG
+    // FROM
+    //     employee
+    // JOIN(
+    //     SELECT
+    //         a_sup_box.sup_box_id,
+    //         a_sup_box.SUP_BOX_NAME,
+    //         a_job_trans.NATIONAL_ID_CARD_NO,
+    //         a_job_trans.JOB_ASSIGNMENT_FORM,
+    //         a_main_box.CAT_ID
+    //     FROM
+    //         a_sup_box
+    //     JOIN a_job_trans
+    //     JOIN a_main_box
+    //     ON a_job_trans.SUP_BOX_ID = a_sup_box.SUP_BOX_ID AND a_sup_box.MAIN_BOX_ID = a_main_box.MAIN_BOX_ID
+    //     WHERE
+    //         a_job_trans.INDICATOR = 2
+    // ) AS emp_box
+    // JOIN(
+    //     SELECT
+    //         NATIONAL_ID_CARD_NO,
+    //         TRANS_DATE
+    //     FROM
+    //         a_job_trans
+    //     WHERE
+    //         a_job_trans.JOB_ASSIGNMENT_FORM = 1
+    // ) AS dateofj
+    // JOIN employee_appraisal JOIN governorate ON employee.NATIONAL_ID_CARD_NO = dateofj.NATIONAL_ID_CARD_NO AND employee.NATIONAL_ID_CARD_NO = emp_box.NATIONAL_ID_CARD_NO AND employee.NATIONAL_ID_CARD_NO = employee_appraisal.NATIONAL_ID_CARD_NO AND employee.GOVERNORATE_OF_BIRTH = governorate.GOVERNORATE AND employee.ADDRESS_GOVERNORATE = governorate.GOVERNORATE
+    // WHERE
+    //     employee.NATIONAL_ID_CARD_NO =(
+    //     SELECT
+    //         NATIONAL_ID_CARD_NO
+    //     FROM
+    //         employee
+    //     WHERE
+    //         EMPLOYEE_ID = ${empid}
+    // ) AND APPRAISAL_DATE = 2020`
     }
     db.query(query, (err, details) => {
         if (err) {
