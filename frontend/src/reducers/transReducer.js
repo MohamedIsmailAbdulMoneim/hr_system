@@ -12,7 +12,7 @@ const initialState = {
     empsPenalties: [],
     empfamily: [],
     empEdu: [],
-    empTraining: []
+    empTraining: [],
 };
 
 export default function (state = initialState, action) {

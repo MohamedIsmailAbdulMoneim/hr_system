@@ -511,3 +511,13 @@ div .giant-input {
   margin-right: 105px;
   margin-top: 10px;
 }
+
+.dropdown-toggle .badge {
+  position: absolute;
+  top: -2px;
+  right: -10px;
+  padding: 5px 10px;
+  border-radius: 50%;
+  background: red;
+  color: white;
+}

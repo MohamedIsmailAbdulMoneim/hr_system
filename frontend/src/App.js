@@ -14,7 +14,8 @@ import OrgStructre from './component/transactions/OrgStructre';
 import EmpTrans from './component/transactions/EmpTrans'
 import Employee from './component/reports/Employee';
 import Empbystation from './component/reports/Empbystation';
-import EmpByDeps from './component/reports/Empbydeps'
+import EmpByDeps from './component/reports/Empbydeps';
+import NatIdExpired from './component/reports/NatIdExpired';
 import EmpsAppraisal from './component/transactions/EmpsAppraisal';
 import EmpExperience from './component/transactions/EmpExperience'
 import EmpEdu from './component/transactions/EmpEduDeg';
@@ -25,7 +26,7 @@ import Register from './component/register';
 import EmpPenalty from './component/transactions/EmpPenalty';
 import { loadUser } from './actions/AuthActions';
 import { getemps, getGid } from './actions/Actions'
-import { countEmpsInGoverns } from './actions/ReportActions'
+import { countEmpsInGoverns,getNatIdExpired } from './actions/ReportActions'
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 
@@ -40,7 +41,20 @@ class App extends React.Component {
     store.dispatch(getemps())
     store.dispatch(getGid())
     store.dispatch(countEmpsInGoverns())
+    // store.dispatch(getNatIdExpired(1))
+        var d = new Date();
+        var n = d.getDate();
+        if(!localStorage.getItem('day')){
 
+            localStorage.setItem('day', n)
+        }
+        if(d.getDate() > localStorage.getItem('day')){
+            store.dispatch(getNatIdExpired(1))
+            localStorage.setItem('day', n)
+
+        }else{
+            console.log('false');
+        }
   }
 
   render() {
@@ -65,6 +79,7 @@ class App extends React.Component {
               <Route path="/employee" exact component={Employee} />
               <Route path="/empbystation" exact component={Empbystation} />
               <Route path="/empbydeps" exact component={EmpByDeps} />
+              <Route path="/natidexpire" excact component={NatIdExpired} />
               <Route path="/empsappraisal" exact component={EmpsAppraisal} />
               <Route path="/empedudeg" exact component={EmpEdu} />
               <Route path="/EmpTraining" exact component={EmpTraining} />

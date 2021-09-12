@@ -44,7 +44,7 @@ export const postNewFamilyMember = "POST-NEW-FAMILY-MEMBER"
 export const postNewTrans = "POST-NEW-TRANS"
 export const postEmpEdu = "POST-NEW-EMP-EDU"
 export const fetchEmpTraining = "FETCH-EMP-TRAINING"
-
+export const fetchNatIdExpired = "FETCH-NAT-ID-EXPIRED"
 
 
 

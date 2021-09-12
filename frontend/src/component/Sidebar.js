@@ -212,6 +212,11 @@ class Sidebar extends React.Component {
                                         <a onClick={this.props.getDeps} href="/empbydeps">الموظفون بالإدارات</a>
                                     </li>
                                 </NavLink >
+                                <NavLink style={styles} to={`/natidexpire`}>
+                                    <li>
+                                        <a onClick={this.props.getDeps} href="/natidexpire">بطاقات رقم قومي منتهية</a>
+                                    </li>
+                                </NavLink >
                             </ul>
                         </li>
                     </ul>

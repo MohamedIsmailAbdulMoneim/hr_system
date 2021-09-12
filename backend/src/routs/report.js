@@ -251,6 +251,17 @@ function gethierarchicaldata(req,res,next){
     })
 }
 
+function getNatIdExpired(req,res,next){
+    let query = `SELECT NAME_ARABIC, EMPLOYEE_ID, NATIONAL_ID_CARD_EXPIRE_DATE FROM employee where NATIONAL_ID_CARD_EXPIRED = "true" ORDER BY NATIONAL_ID_CARD_EXPIRE_DATE`
+    db.query(query, (err,data)=>{
+        if(err){
+            next(err)
+        }else{
+            res.send(data)
+        }
+    })
+}
+
 router
     .get('/getdeps', getDeps)
     .get('/getempbydeps/:dep', getEmpByDeps)
@@ -263,6 +274,7 @@ router
     .get('/getgid', getgid)
     .get('/countempsingoverns', countEmpsInGoverns)
     .get('/gethierarchicaldata', gethierarchicaldata)
+    .get('/getnatidexpired',getNatIdExpired)
 
 
 
