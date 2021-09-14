@@ -41,7 +41,6 @@ class App extends React.Component {
     store.dispatch(getemps())
     store.dispatch(getGid())
     store.dispatch(countEmpsInGoverns())
-    // store.dispatch(getNatIdExpired(1))
         var d = new Date();
         var n = d.getDate();
         if(!localStorage.getItem('day')){

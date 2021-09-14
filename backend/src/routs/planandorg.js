@@ -12,8 +12,6 @@ function getEmpExprerience(req, res, next) {
     SELECT * FROM employee_experince WHERE is_shown AND EXP_TYP_CODE = 3 AND NATIONAL_ID_CARD_NO = (SELECT NATIONAL_ID_CARD_NO  FROM employee WHERE ${empid.length !== 0 ? `EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `NAME_ARABIC = "${empname}"` : null});
     SELECT * FROM employee_experince WHERE is_shown AND EXP_TYP_CODE = 4 AND NATIONAL_ID_CARD_NO = (SELECT NATIONAL_ID_CARD_NO  FROM employee WHERE ${empid.length !== 0 ? `EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `NAME_ARABIC = "${empname}"` : null});
     `
-
-    console.log(query);
     db.query(query, (err, details) => {
         if (err) {
             next(err)
@@ -32,7 +30,6 @@ function getJobDgByCat(req, res, next) {
             next(err);
             console.log(err);
         } else {
-            console.log(details);
             res.send(details);
         }
     })
@@ -147,7 +144,6 @@ function updateAppraisal(req, res, next) {
             console.log(err);
             res.json({ data: null, status: 400 })
         } else {
-            console.log(query);
             res.json({ data: details, status: 200 });
         }
     })
@@ -333,10 +329,14 @@ function updateEmpTrans(req, res, next) {
     db.query(query, (err, details) => {
         if (err) {
             next(err);
+            console.log(err);
         } else {
+            console.log(details);
             res.json(details);
         }
     })
+
+    console.log(query);
 }
 
 function getAvailSupBox(req, res, next) {
@@ -369,14 +369,11 @@ function getUpJd(req, res, next) {
             res.send(details.reverse());
         }
     })
-    console.log(query);
 }
 
 function newEmpExp(req, res, next) {
     let data = req.body
     let query = `INSERT INTO employee_experince (PLACE_NAME, JOB_NAME, START_DATE, END_DATE, EXP_TYP_CODE, NATIONAL_ID_CARD_NO) VALUES ${data}`
-    console.log(query);
-    console.log(data);
 
     db.query(query, function (err, data) {
         if (err) {
@@ -475,12 +472,10 @@ function postNewPenalty(req, res, next) {
 
 
 function updatePenalty(req, res, next) {
-    console.log(req.body);
     let data = req.body.filter(inf => inf != '')
     let id = data[data.length - 1]
     data.pop()
     let query = `UPDATE employee_penalty SET ${data} WHERE id = ${id}`
-    console.log(query);
     db.query(query, (err, data) => {
         if (err) {
             next(err)
@@ -528,7 +523,6 @@ function postNewEmpEdu(req, res, next) {
 
 function editEmpExp(req, res, next) {
     let data = req.body
-    console.log(data);
     let id = data[data.length - 1]
     data.pop()
     let query = `UPDATE employee_experince SET ${data} WHERE id = ${id}`
@@ -545,7 +539,6 @@ function editEmpExp(req, res, next) {
 
 function editEmpEdu(req, res, next) {
     let data = req.body
-    console.log(data);
     let id = data[data.length - 1]
     data.pop()
     let query = `UPDATE employee_education_degree SET ${data} WHERE id = ${id}`
@@ -556,7 +549,6 @@ function editEmpEdu(req, res, next) {
             res.json({ msg: "يوجد خطاء بقاعدة البيانات", data: null })
 
         } else {
-            console.log(data);
             res.json({ msg: "تم إدخال البيانات بنجاح", data: data })
         }
     })
@@ -564,7 +556,6 @@ function editEmpEdu(req, res, next) {
 
 function getEmpTraining(req,res,next){
     let nameOrId = req.query.nameOrId
-    console.log(nameOrId);
     let query = `SELECT employee.NAME_ARABIC, employee_training.TRAINING_PROGRAM_ARABIC,employee_training.TRAINING_COMPLETION_DATE,TRAINING_TYPE.TRAINING_TYPE_NAME,LOCATION_TYPE.LOCATION_TYPE_NAME FROM employee_training JOIN TRAINING_TYPE JOIN LOCATION_TYPE JOIN employee ON
     employee.NATIONAL_ID_CARD_NO = employee_training.NATIONAL_ID_CARD_NO AND employee_training.TRAINING_TYPE = training_type.TRAINING_TYPE AND
     employee_training.LOCATION_TYPE = location_type.LOCATION_TYPE WHERE ${nameOrId}`

@@ -365,7 +365,7 @@ class Employee extends React.Component {
 
     render() {
         let militaryStatus = ["لعدم اللياقة البدنية", "اعفاء من الخدمة العامة", "غير معروف", "ادي الخدمه العسكرية", "لم يصبه الدور", "مجند", "معاف مؤقت", "اعفاء نهائى", "أدى الخدمة العامة", "تحت الطلب", "ضابط عامل", "مستثنى من الخدمة", "عسكري سابق", "مستدعى", "تخلف عن التجنيد", "أمين شرطة سابقا", "ضابط سابق في شرطة"]
-        let governorate = ["القاهرة", "الاسكندرية", "بورسعيد", "السويس", "البحرالاحمر", "الـوادى الجديد", "مرسى مطروح", "جنوب سيناء", "الاسماعيلية", "البحيرة", "الدقهليـة", "الشرقية", "الغربيـة", "كفرالشيخ", "القليوبيـة", "المنوفيـة", "دميـاط", "الجـيزة", "الفيـوم", "بنى سويف", "المنيـا", "اسيـوط", "سوهاج", "قنـا", "اسوان", "شمال سيناء", "الاقصر", "حلوان", "دول خارجية"]
+        let governorate = ["القاهرة", "الاسكندرية", "بورسعيد", "السويس", "البحرالاحمر", "الـوادى الجديد", "مرسى مطروح", "جنوب سيناء", "الاسماعيلية", "البحيرة", "الدقهليـة", "الشرقية", "الغربيـة", "كفرالشيخ", "القليوبيـة", "المنوفيـة", "دميـاط", "الجـيزة", "الفيـوم", "بنى سويف", "المنيـا", "اسيـوط", "سوهاج", "قنـا", "اسوان", "شمال سيناء", "الاقصر", "حلوان", "دول خارجية","غيرمعروفه"]
         let station = ['الاستاد',
             'الإسكندرية',
             'الدخيلة',
@@ -914,7 +914,7 @@ class Employee extends React.Component {
                                                 <label className="medium-lable">رقم الأداء</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control small-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].EMPLOYEE_ID : null : null} readonly="readonly" type="number" />
+                                                <input className="form-control small-input" placeholder={this.props.empdetails ? this.props.empdetails.length == 2 ? this.props.empdetails[0].EMPLOYEE_ID : null : null} readonly="readonly" type="number" />
                                             </div>
 
                                             <div style={{ display: "table-cell" }}>
@@ -988,7 +988,7 @@ class Employee extends React.Component {
                                     <div style={{ display: "table" }}>
                                         <div style={{ display: "table-row" }}>
                                             <div style={{ display: "table-cell" }}>
-                                                <label className="medium-lable">الوظيفة الحالية</label>
+                                                <label className="medium-lable">الحالة الوظيفية</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <input className="form-control medium-input" type="text" disabled />
