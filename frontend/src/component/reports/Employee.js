@@ -14,15 +14,88 @@ class Employee extends React.Component {
         super(props);
         this.state = {
 
-            add: false, showNamesResults: false, addEmpId: "", addEmpName: "", addContractType: "", addDoc: "", addRetirementDate: "", addDoj: "",
+            add: false, edit: false, showNamesResults: false, addEmpId: "", addEmpName: "", addContractType: "", addDoc: "", addRetirementDate: "", addDoj: "",
             addStation: "", addArea: "", addGovern: "", addJS: "", addEmpNid: "",
             addPOIssuance: "", addDOIssuance: "", addinsuranceNum: "", addinsuranceOffice: "", addAddress: "", addMPhoneNum: "",
             addHPhoneNum: "", addOPhoneNum: "", addEmail: "", addMarStatus: "", addSyndicateType: "", addMemberShipNum: "",
             addMemberShipDate: "", addMirStatus: "", addDaysCountMir: "", addMonthsCountMir: "", addYearsCountMir: "", ExmpExpireDate: "",
             addSexType: "", addReligous: "", addDob: "", addPob: "", addGob: "", milStatusIsTempEx: false, milStatusIsCompleted: false,
-            syndicateAdded: false, confirmAdd: ""
+            syndicateAdded: false, confirmAdd: "", mainUpdateQuery: [], jtUpdateQuery: [], apUpdateQuery: ""
         };
     }
+
+    changeHandler = (e) => {
+        let targetValLen = e.target.value
+
+        this.setState({
+            updateQuery: targetValLen
+        })
+
+        if (e.target.getAttribute("colName") == "APPRAISAL") {
+            if (e.target.value.length < 1) {
+                this.setState({
+                    apUpdateQuery: ""
+                })
+            }
+            else if (e.target.value.length > 0) {
+                this.setState({
+                    apUpdateQuery: `${e.target.getAttribute("colName")} = (SELECT APPRAISAL_ARABIC FROM appraisal WHERE APPRAISAL ${e.target.value})`
+                })
+            }
+        }
+        else if (e.target.getAttribute("colName") == "TRANS_DATE" || e.target.getAttribute("colName") == "MAIN_BOX_NAME" ||
+            e.target.getAttribute("colName") == "JOB_ASSIGNMENT_FORM" || e.target.getAttribute("colName") == "SUP_BOX_NAME"
+        ) {
+
+        } else {
+
+
+            if (e.target.value.length < 1) {
+                let removedArrOfApQ = [...this.state.mainUpdateQuery]
+                if (removedArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName"))) != -1) {
+                    let removedIndex = removedArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName")))
+                    removedArrOfApQ.splice(removedIndex, 1)
+                    this.setState({
+                        mainUpdateQuery: removedArrOfApQ
+                    })
+
+                }
+            } else if(e.target.value.length > 0) {
+                let newArrOfApQ = [...this.state.mainUpdateQuery]
+                if (newArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName"))) != -1) {
+                    let updatedIndexOfNew = newArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName")))
+                    newArrOfApQ[updatedIndexOfNew] = `${e.target.getAttribute("colName")} = ${e.target.value}`
+                    this.setState({
+                        mainUpdateQuery: newArrOfApQ
+                    })
+                } else {
+                    let newArr = [...this.state.mainUpdateQuery]
+                    newArr.push(`${e.target.getAttribute("colName")} = ${e.target.value}`)
+                    this.setState({
+                        mainUpdateQuery: newArr
+                    })
+                }
+            }
+
+        }
+
+    }
+
+    clickHandler = (e) => {
+
+        if(this.state.edit){
+            this.setState({
+                edit: false
+            })
+        }else{
+            this.setState({
+                edit: true
+            })
+            e.target.removeAttribute("readonly");
+        }
+
+    }
+
 
     handleArrToSend = (e) => {
         let state = this.state
@@ -364,8 +437,9 @@ class Employee extends React.Component {
 
 
     render() {
+        console.log(this.state.mainUpdateQuery);
         let militaryStatus = ["لعدم اللياقة البدنية", "اعفاء من الخدمة العامة", "غير معروف", "ادي الخدمه العسكرية", "لم يصبه الدور", "مجند", "معاف مؤقت", "اعفاء نهائى", "أدى الخدمة العامة", "تحت الطلب", "ضابط عامل", "مستثنى من الخدمة", "عسكري سابق", "مستدعى", "تخلف عن التجنيد", "أمين شرطة سابقا", "ضابط سابق في شرطة"]
-        let governorate = ["القاهرة", "الاسكندرية", "بورسعيد", "السويس", "البحرالاحمر", "الـوادى الجديد", "مرسى مطروح", "جنوب سيناء", "الاسماعيلية", "البحيرة", "الدقهليـة", "الشرقية", "الغربيـة", "كفرالشيخ", "القليوبيـة", "المنوفيـة", "دميـاط", "الجـيزة", "الفيـوم", "بنى سويف", "المنيـا", "اسيـوط", "سوهاج", "قنـا", "اسوان", "شمال سيناء", "الاقصر", "حلوان", "دول خارجية","غيرمعروفه"]
+        let governorate = ["القاهرة", "الاسكندرية", "بورسعيد", "السويس", "البحرالاحمر", "الـوادى الجديد", "مرسى مطروح", "جنوب سيناء", "الاسماعيلية", "البحيرة", "الدقهليـة", "الشرقية", "الغربيـة", "كفرالشيخ", "القليوبيـة", "المنوفيـة", "دميـاط", "الجـيزة", "الفيـوم", "بنى سويف", "المنيـا", "اسيـوط", "سوهاج", "قنـا", "اسوان", "شمال سيناء", "الاقصر", "حلوان", "دول خارجية", "غيرمعروفه"]
         let station = ['الاستاد',
             'الإسكندرية',
             'الدخيلة',
@@ -498,7 +572,6 @@ class Employee extends React.Component {
             transition: "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out"
 
         }
-
         return (
             <div id="page-wrapper">
 
@@ -914,14 +987,14 @@ class Employee extends React.Component {
                                                 <label className="medium-lable">رقم الأداء</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control small-input" placeholder={this.props.empdetails ? this.props.empdetails.length == 2 ? this.props.empdetails[0].EMPLOYEE_ID : null : null} readonly="readonly" type="number" />
+                                                <input className="form-control small-input" colName={'EMPLOYEE_ID'} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].EMPLOYEE_ID : null : null} readonly="readonly" type="number" />
                                             </div>
 
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable towMediumInputsLableMargin" >الإسم</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input ref="nameinput" className="form-control medium-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].NAME_ARABIC : null : null} type="text" />
+                                                <input ref="nameinput" className="form-control medium-input" colName={"NAME_ARABIC"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].NAME_ARABIC : null : null} type="text" />
                                             </div>
                                         </div>
                                         <div style={{ display: "table-row" }}>
@@ -929,13 +1002,13 @@ class Employee extends React.Component {
                                                 <label className="medium-lable" >تاريخ العقد</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control medium-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].SECTOR_JOIN_DATE : null : null} type="text" readonly="readonly" />
+                                                <input className="form-control medium-input" colName={"SECTOR_JOIN_DATE"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].SECTOR_JOIN_DATE : null : null} type="text" readonly="readonly" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="big-lable towMediumInputsLableMargin">تاريخ التعيين</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control medium-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].TRANS_DATE : null : null} type="text" readonly="readonly" />
+                                                <input className="form-control medium-input" colName={"TRANS_DATE"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].TRANS_DATE : null : null} type="text" readonly="readonly" />
                                             </div>
                                         </div>
                                         <div style={{ display: "table-row" }}>
@@ -943,13 +1016,13 @@ class Employee extends React.Component {
                                                 <label className="medium-lable">الوظيفة الحالية</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control medium-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].SUP_BOX_NAME : null : null} type="text" readonly="readonly" />
+                                                <input className="form-control medium-input" colName={"MAIN_BOX_NAME"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].SUP_BOX_NAME : null : null} type="text" readonly="readonly" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="big-lable towMediumInputsLableMargin">طريقة شغلها</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control medium-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].WOG : null : null} type="text" readonly="readonly" />
+                                                <input className="form-control medium-input" colName={"JOB_ASSIGNMENT_FORM"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].WOG : null : null} type="text" readonly="readonly" />
                                             </div>
                                         </div>
                                     </div>
@@ -959,7 +1032,7 @@ class Employee extends React.Component {
                                                 <label className="medium-lable">الإدارة</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control giant-input oneInputMargin" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].cat_name : null : null} type="text" readonly="readonly" />
+                                                <input className="form-control giant-input oneInputMargin" colName={"SUP_BOX_NAME"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].cat_name : null : null} type="text" readonly="readonly" />
                                             </div>
                                         </div>
                                     </div>
@@ -969,19 +1042,23 @@ class Employee extends React.Component {
                                                 <label className="medium-lable">المحطة</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control  small-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].JOB_LOCATION : null : null} type="text" readonly="readonly" />
+                                                {this.state.edit ?
+                                                    <input className="form-control  small-input" colName={"JOB_LOCATION"} onChange={this.changeHandler} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].JOB_LOCATION : null : null} type="text" readonly="readonly" />
+                                                    :
+                                                    <input className="form-control  small-input" colName={"JOB_LOCATION"} onClick={this.clickHandler} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].JOB_LOCATION : null : null} type="text" readonly="readonly" />
+                                                }
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable threeSmallLableMargin">المنطقة</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control  small-input" type="text" readonly="readonly" />
+                                                <input className="form-control  small-input" colName={"JOB_AREA"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].JOB_AREA : null : null} type="text" readonly="readonly" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable threeSmallLableMargin">المحافظة</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control  small-input" type="text" readonly="readonly" />
+                                                <input className="form-control  small-input" colName={"JOB_GOVERNORATE"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].jobGov : null : null} type="text" readonly="readonly" />
                                             </div>
                                         </div>
                                     </div>
@@ -991,13 +1068,17 @@ class Employee extends React.Component {
                                                 <label className="medium-lable">الحالة الوظيفية</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control medium-input" type="text" disabled />
+                                                <input className="form-control medium-input" colName={"EMP_STATUS"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].empstatusar : null : null} type="text" disabled />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="big-lable towMediumInputsLableMargin">تقييم العام</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control medium-input" type="text" disabled />
+                                                {this.state.edit ?
+                                                    <input className="form-control medium-input" onChange={this.changeHandler} colName={"APPRAISAL"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].APPRAISAL_ARABIC : null : null} type="text" readOnly />
+                                                    :
+                                                    <input className="form-control medium-input" onClick={this.clickHandler} colName={"APPRAISAL"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].APPRAISAL_ARABIC : null : null} type="text" readOnly />
+                                                }
                                             </div>
                                         </div>
                                     </div>
@@ -1008,19 +1089,19 @@ class Employee extends React.Component {
                                                 <label className="medium-lable">الرقم القومي</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control medium-medium-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].JOB_LOCATION : null : null} type="text" readonly="readonly" />
+                                                <input className="form-control medium-medium-input" colName={"NATIONAL_ID_CARD_NO"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].NATIONAL_ID_CARD_NO : null : null} type="text" readonly="readonly" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable">المنطقة</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control  medium-medium-input" type="text" readonly="readonly" />
+                                                <input className="form-control  medium-medium-input" colName={"NATIONAL_ID_CARD_ISSUED_BY"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].NATIONAL_ID_CARD_ISSUED_BY : null : null} type="text" readonly="readonly" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable">المحافظة</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control  medium-medium-input" type="text" readonly="readonly" />
+                                                <input className="form-control  medium-medium-input" colName={"ADDRESS_GOVERNORATE"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].addressgov : null : null} type="text" readonly="readonly" />
                                             </div>
                                         </div>
                                     </div>
@@ -1030,13 +1111,13 @@ class Employee extends React.Component {
                                                 <label className="medium-lable">الرقم التأميني</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control medium-input" type="text" disabled />
+                                                <input className="form-control medium-input" colName={"SOCIAL_INSURANCE_NUMBER"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].SOCIAL_INSURANCE_NUMBER : null : null} type="text" disabled />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="big-lable towMediumInputsLableMargin">مكتب التأمينات</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control medium-input" type="text" disabled />
+                                                <input className="form-control medium-input" colName={"INSURANCE_OFFICE"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].INSURANCE_OFFICE : null : null} type="text" disabled />
                                             </div>
                                         </div>
                                     </div>
@@ -1046,7 +1127,7 @@ class Employee extends React.Component {
                                                 <label className="medium-lable">العنوان</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control giant-input oneInputMargin" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].cat_name : null : null} type="text" readonly="readonly" />
+                                                <input className="form-control giant-input oneInputMargin" colName={"ADDRESS"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].ADDRESS : null : null} type="text" readonly="readonly" />
                                             </div>
                                         </div>
                                     </div>
@@ -1056,19 +1137,30 @@ class Employee extends React.Component {
                                                 <label className="medium-lable">ت. المنزل</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control medium-medium-input threeMediumBigInputsLableMargin" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].JOB_LOCATION : null : null} type="text" readonly="readonly" />
+
+                                                {this.state.edit ?
+
+                                                    <input className="form-control medium-medium-input threeMediumBigInputsLableMargin" onChange={this.changeHandler} colName={"PHONE_2_HOME"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].PHONE_2_HOME : null : null} type="text" readonly="readonly" />
+                                                    :
+                                                    <input className="form-control medium-medium-input threeMediumBigInputsLableMargin" onClick={this.clickHandler} colName={"PHONE_2_HOME"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].PHONE_2_HOME : null : null} type="text" readonly="readonly" />
+
+                                                }
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable">ت. المكتب</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin" type="text" readonly="readonly" />
-                                            </div>
+                                            {this.state.edit ?
+                                                <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin" onChange={this.changeHandler} colName={"PHONE_1_OFFICE"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].PHONE_1_OFFICE : null : null} type="text" readonly="readonly" />
+                                                :
+                                                <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin" onClick={this.clickHandler} colName={"PHONE_1_OFFICE"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].PHONE_1_OFFICE : null : null} type="text" readonly="readonly" />
+                                            }
+                                                </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable">الموبايل</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin" type="text" readonly="readonly" />
+                                                <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin" colName={"PHONE_3_MOBILE"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].PHONE_3_MOBILE : null : null} type="text" readonly="readonly" />
                                             </div>
                                         </div>
                                     </div>
@@ -1078,13 +1170,13 @@ class Employee extends React.Component {
                                                 <label className="medium-lable">البريد الأليكتروني</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control medium-input" type="text" disabled />
+                                                <input className="form-control medium-input" colName={"EMP_EMAIL"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].EMP_EMAIL : null : null} type="text" disabled />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="big-lable towMediumInputsLableMargin">الحالة الإجتماعية</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control medium-input" type="text" disabled />
+                                                <input className="form-control medium-input" colName={"maritalstatear"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].maritalstatear : null : null} type="text" disabled />
                                             </div>
                                         </div>
                                     </div>
@@ -1094,19 +1186,19 @@ class Employee extends React.Component {
                                                 <label className="medium-lable">نوع النقابة</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control medium-medium-input threeMediumBigInputsLableMargin" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].JOB_LOCATION : null : null} type="text" readonly="readonly" />
+                                                <input className="form-control medium-medium-input threeMediumBigInputsLableMargin" colName={"syndicatear"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].syndicatear : null : null} type="text" readonly="readonly" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable">رقم العضوية</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin" type="text" readonly="readonly" />
+                                                <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin" colName={"SYNDICATE_REGISTERATION"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].SYNDICATE_REGISTERATION : null : null} type="text" readonly="readonly" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable">تاريخ العضوية </label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin" type="text" readonly="readonly" />
+                                                <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin" colName={"SYNDICATE_REGISTERATION_DATE"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].SYNDICATE_REGISTERATION_DATE : null : null} type="text" readonly="readonly" />
                                             </div>
                                         </div>
                                     </div>
@@ -1141,13 +1233,13 @@ class Employee extends React.Component {
                                                 <label className="medium-lable">النوع</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control medium-input" type="text" disabled />
+                                                <input className="form-control medium-input" colName={"genderar"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].genderar : null : null} type="text" disabled />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable towMediumInputsLableMargin">الديانة</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control medium-input" type="text" disabled />
+                                                <input className="form-control medium-input" colName={"religinar"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].religinar : null : null} type="text" disabled />
                                             </div>
                                         </div>
                                     </div>
@@ -1157,19 +1249,19 @@ class Employee extends React.Component {
                                                 <label className="medium-lable ">تاريخ الميلاد</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control medium-medium-input threeMediumBigInputsLableMargin" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].JOB_LOCATION : null : null} type="text" readonly="readonly" />
+                                                <input className="form-control medium-medium-input threeMediumBigInputsLableMargin" colName={"BIRTH_DATE"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].BIRTH_DATE : null : null} type="text" readonly="readonly" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable">جهة الميلاد</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin" type="text" readonly="readonly" />
+                                                <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin" colName={"PLACE_OF_BIRTH"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].PLACE_OF_BIRTH : 'لاتوجد بيانات' : 'لاتوجد بيانات'} type="text" readonly="readonly" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable">محافظة الميلاد</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin" type="text" readonly="readonly" />
+                                                <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin" colName={"birthGov"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].birthGov : null : null} type="text" readonly="readonly" />
                                             </div>
                                         </div>
                                     </div>

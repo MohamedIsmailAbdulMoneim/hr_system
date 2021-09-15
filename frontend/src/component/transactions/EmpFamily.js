@@ -158,7 +158,7 @@ class EmpFamily extends React.Component {
         this.setState(prevState => {
             return {
                 maritalLength: prevState.maritalLength + 1,
-                addMaritalName: [...this.state.addMaritalType, { value: " ", type: null, key: null }],
+                addMaritalType: [...this.state.addMaritalType, { value: " ", type: null, key: null }],
                 addMaritalName: [...this.state.addMaritalName, { value: " ", key: null }],
                 addMaritalNId: [...this.state.addMaritalNId, { value: " ", key: null }],
                 addMaritalBod: [...this.state.addMaritalBod, { value: " ", key: null }],
