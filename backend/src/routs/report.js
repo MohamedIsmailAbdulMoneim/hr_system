@@ -138,20 +138,33 @@ WHERE
             CAT_ID = emp_box.CAT_ID
     ) AS cat_name,
     (
-        
-        SELECT GOVERNORATE_ARABIC FROM governorate WHERE 
-        e.JOB_GOVERNORATE =  governorate.GOVERNORATE
+        SELECT
+            GOVERNORATE_ARABIC
+        FROM
+            governorate
+        WHERE
+            e.JOB_GOVERNORATE = governorate.GOVERNORATE
     ) AS jobGov,
     e.JOB_LOCATION,
     e.JOB_AREA,
-    emp_status.EMP_STATUS_NAME,
+    (
+        SELECT
+            EMP_STATUS_NAME
+        FROM
+            emp_status
+        WHERE
+            e.EMP_STATUS = emp_status.EMP_STATUS
+    ) AS empstatusar,
     empApp.APPRAISAL_ARABIC,
     e.NATIONAL_ID_CARD_NO,
     e.NATIONAL_ID_CARD_ISSUED_BY,
     (
-        
-        SELECT GOVERNORATE_ARABIC FROM governorate WHERE 
-        e.ADDRESS_GOVERNORATE = governorate.GOVERNORATE
+        SELECT
+            GOVERNORATE_ARABIC
+        FROM
+            governorate
+        WHERE
+            e.ADDRESS_GOVERNORATE = governorate.GOVERNORATE
     ) AS addressgov,
     e.SOCIAL_INSURANCE_NUMBER,
     e.INSURANCE_OFFICE,
@@ -160,25 +173,38 @@ WHERE
     e.PHONE_1_OFFICE,
     e.PHONE_3_MOBILE,
     e.EMP_EMAIL,
-    marital_status.STATUS_DESC,
-    syndicate.SYNDICATE_NAME,
+    (SELECT STATUS_DESC FROM marital_status WHERE e.MARITAL_STATUS = marital_status.MARITAL_STATUS) AS maritalstatear ,
+    (SELECT SYNDICATE_NAME FROM syndicate WHERE e.SYNDICATE = syndicate.SYNDICATE) AS syndicatear ,
     e.SYNDICATE_REGISTERATION,
     e.SYNDICATE_REGISTERATION_DATE,
-    genders.GENDER_NAME,
-    religions.RELIGION_NAME,
+    (
+        SELECT
+            GENDER_NAME
+        FROM
+            genders
+        WHERE
+            e.GENDER = genders.GENDER
+    ) AS genderar,
+    (
+        SELECT
+            RELIGION_NAME
+        FROM
+            religions
+        WHERE
+            e.RELIGION = religions.RELIGION
+    ) AS religinar,
     e.BIRTH_DATE,
     e.PLACE_OF_BIRTH,
     (
-        SELECT GOVERNORATE_ARABIC FROM governorate WHERE 
-        e.GOVERNORATE_OF_BIRTH = governorate.GOVERNORATE
+        SELECT
+            GOVERNORATE_ARABIC
+        FROM
+            governorate
+        WHERE
+            e.GOVERNORATE_OF_BIRTH = governorate.GOVERNORATE
     ) AS birthGov
     FROM
         employee e
-    JOIN emp_status ON e.EMP_STATUS = emp_status.EMP_STATUS
-    JOIN genders ON e.GENDER = genders.GENDER
-    JOIN religions ON e.RELIGION = religions.RELIGION
-    JOIN syndicate ON e.SYNDICATE = syndicate.SYNDICATE
-    JOIN marital_status ON e.MARITAL_STATUS = marital_status.MARITAL_STATUS
     JOIN(
         SELECT
             employee_appraisal.NATIONAL_ID_CARD_NO,
@@ -218,7 +244,7 @@ WHERE
         e.NATIONAL_ID_CARD_NO = dateofj.NATIONAL_ID_CARD_NO
     WHERE
         NAME_ARABIC = ${empname} AND APPRAISAL_DATE = 2020
-        `    
+        `
     } else if (!empname || empname == "undefined") {
         query = `
         SELECT
@@ -244,20 +270,33 @@ WHERE
             CAT_ID = emp_box.CAT_ID
     ) AS cat_name,
     (
-        
-        SELECT GOVERNORATE_ARABIC FROM governorate WHERE 
-        e.JOB_GOVERNORATE =  governorate.GOVERNORATE
+        SELECT
+            GOVERNORATE_ARABIC
+        FROM
+            governorate
+        WHERE
+            e.JOB_GOVERNORATE = governorate.GOVERNORATE
     ) AS jobGov,
     e.JOB_LOCATION,
     e.JOB_AREA,
-    emp_status.EMP_STATUS_NAME,
+    (
+        SELECT
+            EMP_STATUS_NAME
+        FROM
+            emp_status
+        WHERE
+            e.EMP_STATUS = emp_status.EMP_STATUS
+    ) AS empstatusar,
     empApp.APPRAISAL_ARABIC,
     e.NATIONAL_ID_CARD_NO,
     e.NATIONAL_ID_CARD_ISSUED_BY,
     (
-        
-        SELECT GOVERNORATE_ARABIC FROM governorate WHERE 
-        e.ADDRESS_GOVERNORATE = governorate.GOVERNORATE
+        SELECT
+            GOVERNORATE_ARABIC
+        FROM
+            governorate
+        WHERE
+            e.ADDRESS_GOVERNORATE = governorate.GOVERNORATE
     ) AS addressgov,
     e.SOCIAL_INSURANCE_NUMBER,
     e.INSURANCE_OFFICE,
@@ -266,25 +305,38 @@ WHERE
     e.PHONE_1_OFFICE,
     e.PHONE_3_MOBILE,
     e.EMP_EMAIL,
-    marital_status.STATUS_DESC,
-    syndicate.SYNDICATE_NAME,
+    (SELECT STATUS_DESC FROM marital_status WHERE e.MARITAL_STATUS = marital_status.MARITAL_STATUS) AS maritalstatear ,
+    (SELECT SYNDICATE_NAME FROM syndicate WHERE e.SYNDICATE = syndicate.SYNDICATE) AS syndicatear ,
     e.SYNDICATE_REGISTERATION,
     e.SYNDICATE_REGISTERATION_DATE,
-    genders.GENDER_NAME,
-    religions.RELIGION_NAME,
+    (
+        SELECT
+            GENDER_NAME
+        FROM
+            genders
+        WHERE
+            e.GENDER = genders.GENDER
+    ) AS genderar,
+    (
+        SELECT
+            RELIGION_NAME
+        FROM
+            religions
+        WHERE
+            e.RELIGION = religions.RELIGION
+    ) AS religinar,
     e.BIRTH_DATE,
     e.PLACE_OF_BIRTH,
     (
-        SELECT GOVERNORATE_ARABIC FROM governorate WHERE 
-        e.GOVERNORATE_OF_BIRTH = governorate.GOVERNORATE
+        SELECT
+            GOVERNORATE_ARABIC
+        FROM
+            governorate
+        WHERE
+            e.GOVERNORATE_OF_BIRTH = governorate.GOVERNORATE
     ) AS birthGov
     FROM
         employee e
-    JOIN emp_status ON e.EMP_STATUS = emp_status.EMP_STATUS
-    JOIN genders ON e.GENDER = genders.GENDER
-    JOIN religions ON e.RELIGION = religions.RELIGION
-    JOIN syndicate ON e.SYNDICATE = syndicate.SYNDICATE
-    JOIN marital_status ON e.MARITAL_STATUS = marital_status.MARITAL_STATUS
     JOIN(
         SELECT
             employee_appraisal.NATIONAL_ID_CARD_NO,
@@ -330,7 +382,6 @@ WHERE
         if (err) {
             next(err);
         } else {
-            console.log(details);
             res.send(details)
         }
     })
