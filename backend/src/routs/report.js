@@ -104,7 +104,7 @@ JOIN(
 ON
     employee.EMP_STATUS = emp_status.EMP_STATUS AND employee.ADDRESS_GOVERNORATE = ADDRESS_GOVERNORATE_AR.GOVERNORATE AND employee.GOVERNORATE_OF_BIRTH = GOVERNORATE_OF_BIRTH_AR.GOVERNORATE AND employee.JOB_GOVERNORATE = JOB_GOVERNORATE_AR.GOVERNORATE AND employee.NATIONAL_ID_CARD_NO = dateofj.NATIONAL_ID_CARD_NO AND employee.NATIONAL_ID_CARD_NO = emp_box.NATIONAL_ID_CARD_NO AND employee.NATIONAL_ID_CARD_NO = empApp.NATIONAL_ID_CARD_NO
 WHERE
-    employee.NATIONAL_ID_CARD_NO =(
+    employee.NATIONAL_ID_CARD_NO 🙁
     SELECT
         NATIONAL_ID_CARD_NO
     FROM
@@ -517,17 +517,17 @@ function countEmpsInGoverns(req, res, next) {
     })
 }
 
-function gethierarchicaldata(req,res,next){
+function gethierarchicaldata(req, res, next) {
 
     jobdesc = req.query.jobdesc
     console.log(jobdesc);
     let query = `SELECT * FROM hierarchicaldata where level_1 = "${jobdesc}"`
-    db.query(query, (err,data)=>{
-        if(err){
+    db.query(query, (err, data) => {
+        if (err) {
             next(err)
-        }else{
-            for(let i = 0; i< 1436; i++){
-               var ob =  data.filter(el => el.level_2 = "مدير ادارة الخدمات الاجتماعية")
+        } else {
+            for (let i = 0; i < 1436; i++) {
+                var ob = data.filter(el => el.level_2 = "مدير ادارة الخدمات الاجتماعية")
             }
             console.log(ob);
 
@@ -535,12 +535,12 @@ function gethierarchicaldata(req,res,next){
     })
 }
 
-function getNatIdExpired(req,res,next){
+function getNatIdExpired(req, res, next) {
     let query = `SELECT NAME_ARABIC, EMPLOYEE_ID, NATIONAL_ID_CARD_EXPIRE_DATE FROM employee where NATIONAL_ID_CARD_EXPIRED = "true" ORDER BY NATIONAL_ID_CARD_EXPIRE_DATE`
-    db.query(query, (err,data)=>{
-        if(err){
+    db.query(query, (err, data) => {
+        if (err) {
             next(err)
-        }else{
+        } else {
             res.send(data)
         }
     })
@@ -558,7 +558,7 @@ router
     .get('/getgid', getgid)
     .get('/countempsingoverns', countEmpsInGoverns)
     .get('/gethierarchicaldata', gethierarchicaldata)
-    .get('/getnatidexpired',getNatIdExpired)
+    .get('/getnatidexpired', getNatIdExpired)
 
 
 
