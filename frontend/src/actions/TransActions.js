@@ -1,6 +1,7 @@
 import {
   NEW_APPRAISAL, updatetrans, fetchEmpTrans, updateAppraisal, fetchEmpFamily,
-  FETCHEMPEXP, NEW_EXP, fetchEmpPenalties, postNewFamilyMember,postNewTrans, postEmpEdu,fetchEmpEdu,fetchEmpTraining
+  FETCHEMPEXP, NEW_EXP, fetchEmpPenalties, postNewFamilyMember,postNewTrans, postEmpEdu,fetchEmpEdu,fetchEmpTraining,deleteTraining,deleteFamily,
+  deletePenalty,deleteTrans,deleteAppraisal,deleteExperience,deleteEdu
 
 } from "../actions/ActionTypes";
 import axios from "axios";
@@ -185,3 +186,81 @@ export const getEmpTraining = (nameOrId) => (dispatch) => {
     })
   })
 }
+
+export const deleteEmpTraining = (id) => (dispatch) => {
+
+  axios({
+    method: "PUT",
+    data: id,
+    url: 'http://localhost:5000/deleteEmpTraining',
+    headers: { "Content-Type": "application/json" },
+  }).then(data => {
+    dispatch({
+      type: deleteTraining,
+      payload: { data: data.data, result: data.data.status }
+    })
+  })
+}
+
+export const deleteEmpFamily = (id) => (dispatch) => {
+
+  axios({
+    method: "PUT",
+    data: id,
+    url: 'http://localhost:5000/deleteEmpTraining',
+    headers: { "Content-Type": "application/json" },
+  }).then(data => {
+    dispatch({
+      type: deleteFamily,
+      payload: { data: data.data, result: data.data.status }
+    })
+  })
+}
+
+export const deleteEmpPenalty = (id) => (dispatch) => {
+
+  axios({
+    method: "PUT",
+    data: id,
+    url: 'http://localhost:5000/deleteEmpTraining',
+    headers: { "Content-Type": "application/json" },
+  }).then(data => {
+    dispatch({
+      type: deletePenalty,
+      payload: { data: data.data, result: data.data.status }
+    })
+  })
+}
+
+export const deleteEmpTrans = (query) => (dispatch) => {
+
+  axios({
+    method: "PUT",
+    data: query,
+    url: 'http://localhost:5000/deletetrans',
+    headers: { "Content-Type": "application/json" },
+  }).then(data => {
+    dispatch({
+      type: deleteTrans,
+      payload: { data: data.data, result: data.data.status }
+    })
+  })
+}
+
+export const deleteEmpAppraisal = (id,nat) => (dispatch) => {
+
+  axios({
+    method: "PUT",
+    data: id,
+    url: 'http://localhost:5000/deleteEmpTraining',
+    headers: { "Content-Type": "application/json" },
+  }).then(data => {
+    dispatch({
+      type: deleteAppraisal,
+      payload: { data: data.data, result: data.data.status }
+    })
+  })
+}
+
+// export const deleteExperience = "DELETE-EXPERIENCE"
+// export const deleteEdu = "DELETE-EDU"

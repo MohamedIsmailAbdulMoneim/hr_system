@@ -45,6 +45,13 @@ export const postNewTrans = "POST-NEW-TRANS"
 export const postEmpEdu = "POST-NEW-EMP-EDU"
 export const fetchEmpTraining = "FETCH-EMP-TRAINING"
 export const fetchNatIdExpired = "FETCH-NAT-ID-EXPIRED"
+export const deleteTraining = "DELETE-TRAINING"
+export const deleteFamily = "DELETE-FAMILY"
+export const deletePenalty = "DELETE-PENALTY"
+export const deleteTrans = "DELETE-TRANS"
+export const deleteAppraisal = "DELETE-APPRAISAL"
+export const deleteExperience = "DELETE-EXPERIENCE"
+export const deleteEdu = "DELETE-EDU"
 
 
 

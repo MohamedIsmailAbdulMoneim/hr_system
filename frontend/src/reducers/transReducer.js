@@ -1,7 +1,8 @@
 import {
     NEW_APPRAISAL, fetchEmpTrans, updatetrans, updateAppraisal,
     FETCHEMPEXP, NEW_EXP, fetchEmpPenalties, postNewFamilyMember,
-     fetchEmpFamily, postNewTrans,postEmpEdu,fetchEmpEdu,fetchEmpTraining
+     fetchEmpFamily, postNewTrans,postEmpEdu,fetchEmpEdu,fetchEmpTraining,deleteTraining,deleteFamily,
+     deletePenalty,deleteTrans,deleteAppraisal,deleteExperience,deleteEdu
 } from "../actions/ActionTypes";
 const initialState = {
     empTrans: [],
@@ -99,6 +100,12 @@ export default function (state = initialState, action) {
             return{
                 ...state,
                 empTraining: action.payload
+            }
+
+        case deleteTrans:
+            return{
+                ...state,
+                
             }
 
 

@@ -8,9 +8,9 @@ function getEmpExprerience(req, res, next) {
     const empname = req.query.empname
 
     const query = `
-    SELECT * FROM employee_experince WHERE is_shown AND EXP_TYP_CODE = 1 AND NATIONAL_ID_CARD_NO = (SELECT NATIONAL_ID_CARD_NO  FROM employee WHERE ${empid.length !== 0 ? `EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `NAME_ARABIC = "${empname}"` : null});
-    SELECT * FROM employee_experince WHERE is_shown AND EXP_TYP_CODE = 3 AND NATIONAL_ID_CARD_NO = (SELECT NATIONAL_ID_CARD_NO  FROM employee WHERE ${empid.length !== 0 ? `EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `NAME_ARABIC = "${empname}"` : null});
-    SELECT * FROM employee_experince WHERE is_shown AND EXP_TYP_CODE = 4 AND NATIONAL_ID_CARD_NO = (SELECT NATIONAL_ID_CARD_NO  FROM employee WHERE ${empid.length !== 0 ? `EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `NAME_ARABIC = "${empname}"` : null});
+    SELECT * FROM employee_experince WHERE EXP_TYP_CODE = 1 AND NATIONAL_ID_CARD_NO = (SELECT NATIONAL_ID_CARD_NO  FROM employee WHERE ${empid.length !== 0 ? `EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `NAME_ARABIC = "${empname}"` : null}) AND is_shown = "true";
+    SELECT * FROM employee_experince WHERE EXP_TYP_CODE = 3 AND NATIONAL_ID_CARD_NO = (SELECT NATIONAL_ID_CARD_NO  FROM employee WHERE ${empid.length !== 0 ? `EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `NAME_ARABIC = "${empname}"` : null}) AND is_shown = "true";
+    SELECT * FROM employee_experince WHERE EXP_TYP_CODE = 4 AND NATIONAL_ID_CARD_NO = (SELECT NATIONAL_ID_CARD_NO  FROM employee WHERE ${empid.length !== 0 ? `EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `NAME_ARABIC = "${empname}"` : null}) AND is_shown = "true";
     `
     db.query(query, (err, details) => {
         if (err) {
@@ -103,7 +103,7 @@ function getEmpApprails(req, res, next) {
     JOIN employee ON employee.NATIONAL_ID_CARD_NO = employee_appraisal.NATIONAL_ID_CARD_NO
     JOIN APPRAISAL ON APPRAISAL.APPRAISAL = employee_appraisal.APPRAISAL
     WHERE
-    ${(empid.length === 0 && !empname) && (!appraisal || appraisal === "اختر التقدير") ? `employee_appraisal.APPRAISAL_DATE = ${year}` : !appraisal || appraisal === "اختر التقدير" && (!year || year === "اختر السنة") ? `${empid.length !== 0 ? `employee.EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `employee.NAME_ARABIC = "${empname}"` : null}` : (empid.length === 0 && !empname) && (!year || year === "اختر السنة") ? `appraisal.APPRAISAL_ARABIC = "${appraisal}"` : empid.length === 0 && !empname ? `employee_appraisal.APPRAISAL_DATE = ${year} AND appraisal.APPRAISAL_ARABIC = "${appraisal}"` : !appraisal || appraisal === "اختر التقدير" ? `${empid.length !== 0 ? `employee.EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `employee.NAME_ARABIC = "${empname}"` : null} AND employee_appraisal.APPRAISAL_DATE = ${year}` : !year || year === "اختر السنة" ? `${empid.length !== 0 ? `employee.EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `employee.NAME_ARABIC = "${empname}"` : null} AND appraisal.APPRAISAL_ARABIC = "${appraisal}"` : null}
+    ${(empid.length === 0 && !empname) && (!appraisal || appraisal === "اختر التقدير") ? `employee_appraisal.APPRAISAL_DATE = ${year}` : !appraisal || appraisal === "اختر التقدير" && (!year || year === "اختر السنة") ? `${empid.length !== 0 ? `employee.EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `employee.NAME_ARABIC = "${empname}"` : null}` : (empid.length === 0 && !empname) && (!year || year === "اختر السنة") ? `appraisal.APPRAISAL_ARABIC = "${appraisal}"` : empid.length === 0 && !empname ? `employee_appraisal.APPRAISAL_DATE = ${year} AND appraisal.APPRAISAL_ARABIC = "${appraisal}"` : !appraisal || appraisal === "اختر التقدير" ? `${empid.length !== 0 ? `employee.EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `employee.NAME_ARABIC = "${empname}"` : null} AND employee_appraisal.APPRAISAL_DATE = ${year}` : !year || year === "اختر السنة" ? `${empid.length !== 0 ? `employee.EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `employee.NAME_ARABIC = "${empname}"` : null} AND appraisal.APPRAISAL_ARABIC = "${appraisal}" AND employee_appraisal.is_shown = "true"` : null}
     ORDER BY employee_appraisal.APPRAISAL_DATE`
 
     db.query(query, (err, details) => {
@@ -116,13 +116,13 @@ function getEmpApprails(req, res, next) {
 }
 
 function newAppraisal(req, res, next) {
-    const { appDate, appValue, empid, empname } = req.body
+    const { appDate, appValue, empid, empname, isShown } = req.body
 
     if (empid == "null" && empname == "null") {
         res.json({ data: null, msg: "يجب إدخال أي من الإسم ورقم الأداء" })
         return;
     }
-    let query = `INSERT INTO employee_appraisal (APPRAISAL_DATE, APPRAISAL , NATIONAL_ID_CARD_NO , ORGANIZATION) VALUES (${appDate},(select APPRAISAL FROM appraisal WHERE APPRAISAL_ARABIC = "${appValue}"),(select NATIONAL_ID_CARD_NO FROM employee WHERE ${empid != "null" ? `EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `NAME_ARABIC = "${empname}"` : null}),30)`
+    let query = `INSERT INTO employee_appraisal (APPRAISAL_DATE, APPRAISAL , NATIONAL_ID_CARD_NO , is_shown , ORGANIZATION) VALUES (${appDate},(select APPRAISAL FROM appraisal WHERE APPRAISAL_ARABIC = "${appValue}"),(select NATIONAL_ID_CARD_NO FROM employee WHERE ${empid != "null" ? `EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `NAME_ARABIC = "${empname}"` : null}), ${isShown} ,30)`
     db.query(query, (err, details) => {
         if (err) {
             next(err)
@@ -153,7 +153,8 @@ function getEmpTrans(req, res, next) {
     const empid = req.query.empid
     const empname = req.query.empname
 
-    let query = `select *, a_job_trans.SUP_BOX_NAME AS catename from a_job_trans JOIN employee JOIN job_assignment_form JOIN indicators JOIN a_sup_box JOIN a_category JOIN a_job_groups ON a_job_trans.G_ID = a_job_groups.G_ID AND a_category.CAT_ID = a_job_trans.CAT_ID AND a_sup_box.SUP_BOX_ID = a_job_trans.SUP_BOX_ID AND a_job_trans.NATIONAL_ID_CARD_NO = employee.NATIONAL_ID_CARD_NO AND a_job_trans.JOB_ASSIGNMENT_FORM = JOB_ASSIGNMENT_FORM.JOB_ASSIGNMENT_FORM AND a_job_trans.INDICATOR = indicators.INDICATOR WHERE ${empid.length !== 0 ? `employee.EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `employee.NAME_ARABIC = "${empname}"` : null} ORDER by a_job_trans.TRANS_DATE`
+    let query = `select *, a_job_trans.SUP_BOX_NAME AS catename from a_job_trans JOIN employee JOIN job_assignment_form JOIN indicators JOIN a_sup_box JOIN a_category JOIN a_job_groups ON a_job_trans.G_ID = a_job_groups.G_ID AND a_category.CAT_ID = a_job_trans.CAT_ID AND a_sup_box.SUP_BOX_ID = a_job_trans.SUP_BOX_ID AND a_job_trans.NATIONAL_ID_CARD_NO = employee.NATIONAL_ID_CARD_NO AND a_job_trans.JOB_ASSIGNMENT_FORM = JOB_ASSIGNMENT_FORM.JOB_ASSIGNMENT_FORM AND a_job_trans.INDICATOR = indicators.INDICATOR WHERE ${empid.length !== 0 ? `employee.EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `employee.NAME_ARABIC = "${empname}"` : null} AND a_job_trans.is_shown = "true" ORDER by a_job_trans.TRANS_DATE`
+    
     db.query(query, (err, details) => {
         if (err) {
             next(err);
@@ -215,7 +216,7 @@ function getEmpEdu(req, res, next) {
     let empid = req.query.empid
     let empname = req.query.empname
 
-    let query = `SELECT * FROM employee_education_degree JOIN education_degree JOIN dgree_speciality JOIN dgree_speciality_detail JOIN UNIVERSITY_SCHOOL JOIN GRADUATION_GRADE JOIN (SELECT employee.EMPLOYEE_ID, employee.NAME_ARABIC ,employee.NATIONAL_ID_CARD_NO FROM employee ) AS detofemp ON employee_education_degree.DEGREE = education_degree.DEGREE AND employee_education_degree.SPECIALITY = dgree_speciality.SPECIALITY AND employee_education_degree.SPECIALITY_DETAIL = dgree_speciality_detail.SPECIALITY_DETAIL AND employee_education_degree.UNIVERSITY_SCHOOL = university_school.UNIVERSITY_SCHOOL AND employee_education_degree.GRADUATION_GRADE = graduation_grade.GRADUATION_GRADE AND employee_education_degree.NATIONAL_ID_CARD_NO = detofemp.NATIONAL_ID_CARD_NO WHERE ${empid.length !== 0 ? `detofemp.EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `detofemp.NAME_ARABIC = "${empname}"` : null}`
+    let query = `SELECT * FROM employee_education_degree JOIN education_degree JOIN dgree_speciality JOIN dgree_speciality_detail JOIN UNIVERSITY_SCHOOL JOIN GRADUATION_GRADE JOIN (SELECT employee.EMPLOYEE_ID, employee.NAME_ARABIC ,employee.NATIONAL_ID_CARD_NO FROM employee ) AS detofemp ON employee_education_degree.DEGREE = education_degree.DEGREE AND employee_education_degree.SPECIALITY = dgree_speciality.SPECIALITY AND employee_education_degree.SPECIALITY_DETAIL = dgree_speciality_detail.SPECIALITY_DETAIL AND employee_education_degree.UNIVERSITY_SCHOOL = university_school.UNIVERSITY_SCHOOL AND employee_education_degree.GRADUATION_GRADE = graduation_grade.GRADUATION_GRADE AND employee_education_degree.NATIONAL_ID_CARD_NO = detofemp.NATIONAL_ID_CARD_NO WHERE ${empid.length !== 0 ? `detofemp.EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `detofemp.NAME_ARABIC = "${empname}"` : null} AND employee_education_degree.is_shown = "true"`
 
     db.query(query, (err, details) => {
         if (err) {
@@ -229,7 +230,7 @@ function getEmpEdu(req, res, next) {
 function getEmpFamily(req, res, next) {
     let empid = req.query.empid
     let empname = req.query.empname
-    let query = `SELECT *, detofemp.EMPLOYEE_ID, detofemp.NAME_ARABIC FROM employee_family_member JOIN(SELECT employee.EMPLOYEE_ID, employee.NAME_ARABIC, employee.NATIONAL_ID_CARD_NO FROM employee) AS detofemp ON employee_family_member.NATIONAL_ID_CARD_NO = detofemp.NATIONAL_ID_CARD_NO WHERE ${empid.length !== 0 ? `detofemp.EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `detofemp.NAME_ARABIC = "${empname}"` : null} `
+    let query = `SELECT *, detofemp.EMPLOYEE_ID, detofemp.NAME_ARABIC FROM employee_family_member JOIN(SELECT employee.EMPLOYEE_ID, employee.NAME_ARABIC, employee.NATIONAL_ID_CARD_NO FROM employee) AS detofemp ON employee_family_member.NATIONAL_ID_CARD_NO = detofemp.NATIONAL_ID_CARD_NO WHERE ${empid.length !== 0 ? `detofemp.EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `detofemp.NAME_ARABIC = "${empname}"` : null} and employee_family_member.is_shown = "true" `
     db.query(query, (err, details) => {
         if (err) {
             next(err);
@@ -244,12 +245,20 @@ function getEmpFamily(req, res, next) {
 function postnewtrans(req, res, next) {
     let query;
     let data = req.body
-    let nameOrId = data[0][0].substring(1)
+    let nameOrId = data[0][1].substring(1)
 
+    let curIndicator = data[0][0].substring(0) == "أصلية" ? 1 : data[0][0].substring(0) == "حالية" ? 2 : data[0][0].substring(0) == "سابقة" ? 3 : null
+    let nextIndicator = curIndicator == 1 ? 3 : curIndicator == 2 ? 3 : curIndicator == 3 ? 3 : null
+
+    data[0].splice(0,1)
+
+
+    
     query =
-        `   update a_job_trans set INDICATOR = 3 WHERE INDICATOR = 2 AND NATIONAL_ID_CARD_NO = ${nameOrId};
+        `   update a_job_trans set INDICATOR = ${nextIndicator} WHERE INDICATOR = ${curIndicator} AND NATIONAL_ID_CARD_NO = ${nameOrId};
     INSERT INTO a_job_trans(
         NATIONAL_ID_CARD_NO,
+        is_shown,
         TRANS_DATE,
         CAT_ID,
         ORGANIZATION,
@@ -263,8 +272,10 @@ function postnewtrans(req, res, next) {
     ) VALUES ${data};
     select *, a_job_trans.SUP_BOX_NAME AS catename from a_job_trans JOIN employee JOIN job_assignment_form JOIN indicators JOIN a_sup_box JOIN a_category JOIN a_job_groups ON a_job_trans.G_ID = a_job_groups.G_ID AND a_category.CAT_ID = a_job_trans.CAT_ID AND a_sup_box.SUP_BOX_ID = a_job_trans.SUP_BOX_ID AND a_job_trans.NATIONAL_ID_CARD_NO = employee.NATIONAL_ID_CARD_NO AND a_job_trans.JOB_ASSIGNMENT_FORM = JOB_ASSIGNMENT_FORM.JOB_ASSIGNMENT_FORM AND a_job_trans.INDICATOR = indicators.INDICATOR WHERE employee.NATIONAL_ID_CARD_NO IN ${data[0][0].substring(1)} ORDER by a_job_trans.TRANS_DATE;
     `
+
     db.query(query, (err, details) => {
         if (err) {
+            console.log(err);
             res.json({ msg: "يوجد خطاء بقاعدة البيانات", data: null })
         } else {
             res.json({ data: details, msg: "تم إدخال البيانات بنجاح" });
@@ -331,7 +342,6 @@ function updateEmpTrans(req, res, next) {
             next(err);
             console.log(err);
         } else {
-            console.log(details);
             res.json(details);
         }
     })
@@ -373,7 +383,7 @@ function getUpJd(req, res, next) {
 
 function newEmpExp(req, res, next) {
     let data = req.body
-    let query = `INSERT INTO employee_experince (PLACE_NAME, JOB_NAME, START_DATE, END_DATE, EXP_TYP_CODE, NATIONAL_ID_CARD_NO) VALUES ${data}`
+    let query = `INSERT INTO employee_experince (PLACE_NAME, JOB_NAME, START_DATE, END_DATE, EXP_TYP_CODE, is_shown ,NATIONAL_ID_CARD_NO) VALUES ${data}`
 
     db.query(query, function (err, data) {
         if (err) {
@@ -393,7 +403,7 @@ function newFamily(req, res, next) {
     let data = req.body
     let emp = data[0][0].substring(1)
     let query = `
-    INSERT INTO employee_family_member (NATIONAL_ID_CARD_NO,RELATION_TYPE, FAMILY_NAME, NATIONAL_ID_NUMBER, BIRTH_DATE, JOB, ORGANIZATION) VALUES ${data};
+    INSERT INTO employee_family_member (NATIONAL_ID_CARD_NO, is_shown ,RELATION_TYPE, FAMILY_NAME, NATIONAL_ID_NUMBER, BIRTH_DATE, JOB, ORGANIZATION) VALUES ${data};
     SELECT *, detofemp.EMPLOYEE_ID, detofemp.NAME_ARABIC, detofemp.NATIONAL_ID_CARD_NO FROM employee_family_member JOIN
     ( SELECT employee.EMPLOYEE_ID, employee.NAME_ARABIC, employee.NATIONAL_ID_CARD_NO FROM employee ) AS detofemp ON
      employee_family_member.NATIONAL_ID_CARD_NO = detofemp.NATIONAL_ID_CARD_NO WHERE detofemp.NATIONAL_ID_CARD_NO IN ${emp}`
@@ -431,42 +441,45 @@ function getEmpsPenalties(req, res, next) {
     penalty_type.PENALTY_TYPE_AR,
     PENALTY_DATE,
     employee_penalty.NATIONAL_ID_CARD_NO,
-    id
+    employee_penalty.id
 FROM
     employee_penalty
 JOIN employee JOIN penalty_type ON employee.NATIONAL_ID_CARD_NO = employee_penalty.NATIONAL_ID_CARD_NO AND penalty_type.PENALTY_ID = employee_penalty.PENALTY_TYPE
 WHERE
-    PENALTY_TYPE != 1;
+    PENALTY_TYPE != 1 AND employee_penalty.is_shown = "true";
     SELECT
     employee.NAME_ARABIC,
     PEN_NUM,
     PENALTY_DATE,
-    id
+    employee_penalty.id
 FROM
     employee_penalty
 JOIN employee JOIN penalty_type ON employee.NATIONAL_ID_CARD_NO = employee_penalty.NATIONAL_ID_CARD_NO AND penalty_type.PENALTY_ID = employee_penalty.PENALTY_TYPE
 WHERE
-    PENALTY_TYPE = 1
+    PENALTY_TYPE = 1 AND employee_penalty.is_shown = "true"
     `
     db.query(query, (err, data) => {
         if (err) {
+            console.log(err);
+
             res.json({ msg: "يوجد خطاء بقاعدة البيانات", data: null })
         } else {
-            console.log(err);
             res.send(data)
         }
     })
 }
 
 function postNewPenalty(req, res, next) {
-    let query = `INSERT INTO employee_penalty (NATIONAL_ID_CARD_NO, PENALTY_TYPE, PENALTY_DATE, PENALTY_YEAR, ORGANIZATION, PENALTY_REASON${req.body.length == 7 ? `,PEN_NUM` : ''}) VALUES ${req.body} `
+    let query = `INSERT INTO employee_penalty (NATIONAL_ID_CARD_NO, is_shown ,PENALTY_TYPE, PENALTY_DATE, PENALTY_YEAR, ORGANIZATION, PENALTY_REASON${req.body.length == 8 ? `,PEN_NUM` : ''}) VALUES ${req.body} `
 
     db.query(query, (err, data) => {
         if (err) {
+            console.log(err);
             res.json({ msg: "يوجد خطاء بقاعدة البيانات", data: null })
         } else {
             res.json({ msg: "تم إدخال البيانات بنجاح", data: data })
         }
+        console.log(query);
     })
 }
 
@@ -488,7 +501,7 @@ function updatePenalty(req, res, next) {
 }
 
 function postNewTraining(req, res, next) {
-    let query = `INSERT INTO employee_training (NATIONAL_ID_CARD_NO,TRAINING_PROGRAM_ARABIC,TRAINING_PROGRAM_ENGLISH,TRAINING_START_DATE, TRAINING_COMPLETION_DATE, TRAINING_TYPE ,LOCATION_TYPE, LOCATION_NAME, ORGANIZATION) VALUES ${req.body}`
+    let query = `INSERT INTO employee_training (NATIONAL_ID_CARD_NO, is_shown ,TRAINING_PROGRAM_ARABIC,TRAINING_PROGRAM_ENGLISH,TRAINING_START_DATE, TRAINING_COMPLETION_DATE, TRAINING_TYPE ,LOCATION_TYPE, LOCATION_NAME, ORGANIZATION) VALUES ${req.body}`
     db.query(query, (err, data) => {
         if (err) {
             res.json({ msg: "يوجد خطاء بقاعدة البيانات", data: null })
@@ -503,7 +516,7 @@ function postNewEmpEdu(req, res, next) {
     let emp = data[0].substring(1)
     let query =
         `
-        INSERT INTO employee_education_degree (NATIONAL_ID_CARD_NO, DEGREE,
+        INSERT INTO employee_education_degree (NATIONAL_ID_CARD_NO, is_shown ,DEGREE,
         SPECIALITY, SPECIALITY_DETAIL, GRADUATION_GRADE, UNIVERSITY_SCHOOL, GRADUATION_YEAR, ORGANIZATION) VALUES ${data};
         SELECT * FROM employee_education_degree JOIN education_degree JOIN dgree_speciality JOIN dgree_speciality_detail
         JOIN UNIVERSITY_SCHOOL JOIN GRADUATION_GRADE ON employee_education_degree.DEGREE = education_degree.DEGREE AND employee_education_degree.SPECIALITY =
@@ -516,8 +529,10 @@ function postNewEmpEdu(req, res, next) {
         if (err) {
             res.json({ msg: "يوجد خطاء بقاعدة البيانات", data: null })
         } else {
+            console.log(data);
             res.json({ msg: "تم إدخال البيانات بنجاح", data: data })
         }
+        console.log(query);
     })
 }
 
@@ -558,20 +573,134 @@ function getEmpTraining(req,res,next){
     let nameOrId = req.query.nameOrId
     let query = `SELECT employee.NAME_ARABIC, employee_training.TRAINING_PROGRAM_ARABIC,employee_training.TRAINING_COMPLETION_DATE,TRAINING_TYPE.TRAINING_TYPE_NAME,LOCATION_TYPE.LOCATION_TYPE_NAME FROM employee_training JOIN TRAINING_TYPE JOIN LOCATION_TYPE JOIN employee ON
     employee.NATIONAL_ID_CARD_NO = employee_training.NATIONAL_ID_CARD_NO AND employee_training.TRAINING_TYPE = training_type.TRAINING_TYPE AND
-    employee_training.LOCATION_TYPE = location_type.LOCATION_TYPE WHERE ${nameOrId}`
+    employee_training.LOCATION_TYPE = location_type.LOCATION_TYPE WHERE ${nameOrId} AND employee_training.is_shown = "true"`
 
     db.query(query, (err, data) => {
         if (err) {
             res.json({ msg: "يوجد خطاء بقاعدة البيانات", data: null })
-        } else {
             console.log(err);
+
+        } else {
             res.send(data)
         }
     })
 
 }
 
+function deleteEmpTraining(req,res,next){
+    let id = req.query.id
+    let query = `UPDATE employee_training SET is_shown = "false" where id = ${id}`
 
+    db.query(query, (err, data) => {
+        if (err) {
+            next(err)
+            console.log(err);
+            res.json({ msg: "يوجد خطاء بقاعدة البيانات", data: null })
+
+        } else {
+            res.json({ msg: "تم إدخال البيانات بنجاح", data: data })
+        }
+    })
+
+}
+
+function deleteEmpFamily(req,res,next){
+    let id = req.query.id
+    let query = `UPDATE employee_family_member SET is_shown = "false" where id = ${id}`
+
+    db.query(query, (err, data) => {
+        if (err) {
+            next(err)
+            console.log(err);
+            res.json({ msg: "يوجد خطاء بقاعدة البيانات", data: null })
+
+        } else {
+            res.json({ msg: "تم إدخال البيانات بنجاح", data: data })
+        }
+    })
+}
+
+function deletePenalty(req,res,next){
+    let id = req.query.id
+    let query = `UPDATE employee_penalty SET is_shown = "false" where id = ${id}`
+
+    db.query(query, (err, data) => {
+        if (err) {
+            next(err)
+            console.log(err);
+            res.json({ msg: "يوجد خطاء بقاعدة البيانات", data: null })
+
+        } else {
+            res.json({ msg: "تم إدخال البيانات بنجاح", data: data })
+        }
+    })
+}
+
+function deleteTrans(req,res,next){
+let data = req.body
+let query = `UPDATE a_job_trans SET ${data}`
+    db.query(query, (err, data) => {
+        if (err) {
+            next(err)
+            console.log(err);
+            res.json({ msg: "يوجد خطاء بقاعدة البيانات", data: null })
+
+        } else {
+            res.json({ msg: "تم إدخال البيانات بنجاح", data: data })
+        }
+    })
+
+    console.log(query);
+}
+
+
+function deleteAppraisal(req,res,next){
+    let id = req.query.id
+    let query = `UPDATE employee_appraisal SET is_shown = "false" where id = ${id}`
+
+    db.query(query, (err, data) => {
+        if (err) {
+            next(err)
+            res.json({ msg: "يوجد خطاء بقاعدة البيانات", data: null })
+
+        } else {
+            res.json({ msg: "تم إدخال البيانات بنجاح", data: data })
+        }
+    })
+}
+
+
+function deleteExperience(req,res,next){
+    let id = req.query.id
+    let query = `UPDATE employee_experince SET is_shown = "false" where id = ${id}`
+
+    db.query(query, (err, data) => {
+        if (err) {
+            next(err)
+            console.log(err);
+            res.json({ msg: "يوجد خطاء بقاعدة البيانات", data: null })
+
+        } else {
+            res.json({ msg: "تم إدخال البيانات بنجاح", data: data })
+        }
+    })
+}
+
+function deleteEdu(req,res,next){
+    let id = req.query.id
+    let query = `UPDATE employee_education_degree SET is_shown = "false" where id = ${id}`
+
+    db.query(query, (err, data) => {
+        if (err) {
+            next(err)
+            console.log(err);
+            res.json({ msg: "يوجد خطاء بقاعدة البيانات", data: null })
+
+        } else {
+            res.json({ msg: "تم إدخال البيانات بنجاح", data: data })
+        }
+    })
+}
 
 router
     .get('/getjobdgbycat/:catname', getJobDgByCat)
@@ -582,10 +711,13 @@ router
     .get('/empappraisal', getEmpApprails)
     .post('/empappraisal', newAppraisal)
     .put('/appraisalupdate', updateAppraisal)
+    .put('/deleteappraisal', deleteAppraisal)
     .get('/getemptrans', getEmpTrans)
     .put('/updateemptrans', updateEmpTrans)
+    .put('/deletetrans', deleteTrans)
     .get('/getempedu', getEmpEdu)
     .put('/editempedu', editEmpEdu)
+    .put('/deleteedu', deleteEdu)
     .get('/getempfamily', getEmpFamily)
     .get('/currentjd/:empid', getCurrentJD)
     .get('/availjd/:catname/:jdname', getEmpAvljd)
@@ -595,13 +727,17 @@ router
     .get('/getempexp', getEmpExprerience)
     .post('/newempexp', newEmpExp)
     .put('/editempexp', editEmpExp)
+    .put('/deleteexp',deleteExperience)
     .post('/newbulktrans', postBulkTrans)
     .post('/newfamily', newFamily)
     .put('/editfamily', editFamily)
+    .put('/deleteempfamily',deleteEmpFamily)
     .post('/postnewpenalty', postNewPenalty)
     .get('/getempspenalties', getEmpsPenalties)
     .put('/updatepenalty', updatePenalty)
+    .put('/deletepenalty', deletePenalty)
     .get('/getemptraining', getEmpTraining)
+    .put('/deleteemptraining',deleteEmpTraining)
     .post('/postnewtraining', postNewTraining)
     .post('/postnewempedu', postNewEmpEdu)
     

@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 import {
     getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox, getUpJd, gitDownJd
 } from "../../actions/Actions";
-import { updateEmpTrans, getEmpTrans, insertNewTrans } from "../../actions/TransActions";
+import { updateEmpTrans, getEmpTrans, insertNewTrans, deleteEmpTrans } from "../../actions/TransActions";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -272,7 +272,9 @@ class EmpTrans extends React.Component {
                 } else if (this.state.empidForAdd) {
                     nameOrId = `((SELECT NATIONAL_ID_CARD_NO FROM employee WHERE EMPLOYEE_ID = ${this.state.empidForAdd})`
                 }
+                smallArr.push(arrloop[6].value)
                 smallArr.push(nameOrId)
+                smallArr.push(`"true"`)
                 smallArr.push(`"${arrloop[0].value}"`)
                 smallArr.push(`(SELECT CAT_ID FROM a_category WHERE CAT_NAME = "${arrloop[1].value}")`)
                 smallArr.push(30)
@@ -654,6 +656,64 @@ class EmpTrans extends React.Component {
                 }
             })
         }
+    }
+
+    deleteSTrans = (e) => {
+        let query;
+        if (e.target.getAttribute("indicator") == 1) {
+            query = `
+is_shown = "false"
+WHERE
+ROW_ID = ${e.target.getAttribute("id")};
+UPDATE
+a_job_trans AS a2
+SET
+INDICATOR = 1
+WHERE
+TRANS_DATE =(
+SELECT
+    MIN(TRANS_DATE)
+FROM
+    (
+    SELECT
+        NATIONAL_ID_CARD_NO,
+        INDICATOR,
+        TRANS_DATE
+    FROM
+        a_job_trans
+    WHERE
+        NATIONAL_ID_CARD_NO = ${e.target.getAttribute("nat")} AND INDICATOR = 3
+) AS m3
+) AND NATIONAL_ID_CARD_NO = ${e.target.getAttribute("nat")}`
+
+        }
+        else if (e.target.getAttribute("indicator") == 2) {
+            query = `
+            is_shown = "false"
+        WHERE
+        ROW_ID = ${e.target.getAttribute("id")};
+        UPDATE
+            a_job_trans AS a2
+        SET
+            INDICATOR = 2
+        WHERE
+            TRANS_DATE = (
+            SELECT
+                MAX(TRANS_DATE)
+            FROM
+                ( SELECT NATIONAL_ID_CARD_NO,INDICATOR,TRANS_DATE FROM
+                a_job_trans WHERE NATIONAL_ID_CARD_NO = ${e.target.getAttribute("nat")} AND INDICATOR = 3 ) as m3
+        ) and NATIONAL_ID_CARD_NO = ${e.target.getAttribute("nat")}`
+        }
+        else if (e.target.getAttribute("indicator") == 3) {
+            query = `
+            is_shown = "false"
+        WHERE
+        ROW_ID = ${e.target.getAttribute("id")};`
+        }
+
+        this.props.deleteEmpTrans([query])
+
     }
     render() {
         let jobDgByCat = this.state.jobDgByCat
@@ -1461,7 +1521,7 @@ class EmpTrans extends React.Component {
                                                             <td>{trans.G_NAME}</td>
                                                             <td>{trans.INDICATOR_NAME}</td>
                                                             <td ><i onClick={this.state.edit ? this.handelEdit_2 : this.handelEdit_1} style={{ marginTop: 7 }} empname={trans.NAME_ARABIC} transdate={trans.TRANS_DATE} catid={trans.CAT_ID} catname={trans.CAT_NAME} mainboxid={trans.MAIN_BOX_ID} jdname={trans.MAIN_BOX_NAME} supboxid={trans.SUP_BOX_ID} supboxname={trans.SUP_BOX_NAME} jobgroup={trans.G_NAME} jasform={trans.JOB_ASSIGNMENT_FORM_ARABIC} indname={trans.INDICATOR_NAME} class="fas fa-edit"></i></td>
-                                                            <td><i transdate={trans.TRANS_DATE} style={{ marginTop: 7 }} class="fas fa-backspace"></i></td>
+                                                            <td><i onClick={this.deleteSTrans} id={trans.ROW_ID} nat={trans.NATIONAL_ID_CARD_NO} indicator={trans.INDICATOR} transdate={trans.TRANS_DATE} style={{ marginTop: 7 }} class="fas fa-backspace"></i></td>
                                                         </tr>
                                                     </tbody>
 
@@ -1506,5 +1566,5 @@ const mapStateToProps = (state) => {
 };
 export default connect(mapStateToProps, {
     getEmpTrans, getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox, getUpJd, gitDownJd, updateEmpTrans
-    , insertNewTrans
+    , insertNewTrans, deleteEmpTrans
 })(EmpTrans);

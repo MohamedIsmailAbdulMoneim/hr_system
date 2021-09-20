@@ -241,9 +241,9 @@ export const getemps = () => (dispatch) => {
   })
 }
 
-
 export const getGid = () => (dispatch) => {
   axios.get('http://localhost:5000/getgid').then(res => {
+    console.log(res.data);
     dispatch({
       type: fetchgid,
       payload: res.data

@@ -63,7 +63,7 @@ class EmpEduDeg extends React.Component {
         let uneversity = `(SELECT UNIVERSITY_SCHOOL FROM university_school WHERE UNIVERSITY_SCHOOL_ARABIC = "${this.state.addUneversity}")`
         let gradYear = `${this.state.addGradYear}`
         let organization = '30)'
-        let data = [nameOrId, eduDeg, spec, specDetails, grade, uneversity, gradYear, organization]
+        let data = [nameOrId, `"true"` ,eduDeg, spec, specDetails, grade, uneversity, gradYear, organization]
         if (this.state.addEduDeg.length < 1 || this.state.addSpec.length < 1 || this.state.addSpecDetails.length < 1 ||
             this.state.addGrade.length < 1 || this.state.addUneversity.length < 1 || this.state.addGradYear.length < 1) {
             this.setState({

@@ -242,7 +242,7 @@ class EmpPenalty extends React.Component {
         let reasonForPen = `"${this.state.addReasonOfPenalty}")`
 
 
-        let data = [nameOrId, penaltyType, penaltyDate, yearOfDate, organization, reasonForPen]
+        let data = [nameOrId, `"true"` ,penaltyType, penaltyDate, yearOfDate, organization, reasonForPen]
         if (numOfPen.length > 1) data.push(numOfPen)
         console.log(this.state.empidadd.length, this.state.addPenaltyType.length, this.state.addPenaltyDate.length, reasonForPen.length);
         if ((this.state.empidadd.length < 1 && this.state.empnameadd.length < 1) || this.state.addPenaltyType.length < 1 ||

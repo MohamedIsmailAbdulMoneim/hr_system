@@ -224,6 +224,7 @@ class EmpFamily extends React.Component {
                     nameOrId = `((SELECT NATIONAL_ID_CARD_NO FROM employee WHERE EMPLOYEE_ID = ${this.state.empidForAdd})`
                 }
                 smallArr.push(nameOrId)
+                smallArr.push(`"true"`)
                 smallArr.push(arrloop[0].type)
                 smallArr.push(`"${arrloop[1].value}"`)
                 smallArr.push(arrloop[2].value)

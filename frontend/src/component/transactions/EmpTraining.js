@@ -43,7 +43,7 @@ class EmpTraining extends React.Component {
         let organization = '30)'
         // this.state.trainingArabicName.length, this.state.trainingEnglishName.length, this.state.trainingFromDate.length, this.state.trainingToDate.length, this.state.trainingType.length, this.state.trainingPlace.length
         // console.log(this.state.addTrainingArabicName.length);
-        let data = [nameOrId, trainingArabicName, trainingEnglishName, trainingFromDate, trainingToDate, trainingType, TrainingPlaceType, trainingPlace, organization]
+        let data = [nameOrId, `"true"` ,trainingArabicName, trainingEnglishName, trainingFromDate, trainingToDate, trainingType, TrainingPlaceType, trainingPlace, organization]
         if ((this.state.empidadd.length < 1 && this.state.empnameadd.length < 1) || this.state.addTrainingArabicName.length < 1 ||
             this.state.addTrainingEnglishName.length < 1 || this.state.addTrainingFromDate.length < 1 || this.state.addTrainingToDate.length < 1 || this.state.addTrainingType.length < 1 || this.state.addTrainingPlaceType.length < 1 || this.state.addTrainingPlace.length < 1) {
             this.setState({
@@ -347,6 +347,10 @@ class EmpTraining extends React.Component {
         this.setState({
             add: false
         })
+    }
+
+    deleteHandler = (e) => {
+        
     }
 
     render() {

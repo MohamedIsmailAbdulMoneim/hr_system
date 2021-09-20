@@ -182,7 +182,6 @@ class EmpExperience extends React.Component {
         } else if (this.state.empIdAdd) {
             nameOrId = `(SELECT NATIONAL_ID_CARD_NO FROM employee WHERE EMPLOYEE_ID = ${this.state.empIdAdd}))`
         }
-        console.log(nameOrId);
         if (emptyInputs != undefined) {
         } else if (emptyInputs == undefined && (this.state.empNameAdd || this.state.empIdAdd)) {
             let militerExp = arrays.filter(el => el.expType == 1)
@@ -197,6 +196,7 @@ class EmpExperience extends React.Component {
                     smallArr.push(`"${arrloop[2].value}"`)
                     smallArr.push(`"${arrloop[3].value}"`)
                     smallArr.push(arrloop[0].expType)
+                    smallArr.push(`"true"`)
                     smallArr.push(nameOrId)
                     arr.push(smallArr)
                     i--
@@ -215,6 +215,7 @@ class EmpExperience extends React.Component {
                     smallArr.push(`"${arrloop[2].value}"`)
                     smallArr.push(`"${arrloop[3].value}"`)
                     smallArr.push(arrloop[0].expType)
+                    smallArr.push(`"true"`)
                     smallArr.push(nameOrId)
                     arr.push(smallArr)
                     i--
@@ -233,6 +234,7 @@ class EmpExperience extends React.Component {
                     smallArr.push(`"${arrloop[2].value}"`)
                     smallArr.push(`"${arrloop[3].value}"`)
                     smallArr.push(arrloop[0].expType)
+                    smallArr.push(`"true"`)
                     smallArr.push(nameOrId)
                     arr.push(smallArr)
                     i--
@@ -243,8 +245,6 @@ class EmpExperience extends React.Component {
             })
         }
         console.log(arr);
-
-
     }
 
     submitButtonHandler = (e) => {

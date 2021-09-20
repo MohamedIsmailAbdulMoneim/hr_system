@@ -98,7 +98,7 @@ class EmpsAppraisal extends React.Component {
 
     handleNewAppraisal = (e) => {
         let obj = {
-            appDate: this.state.appraisalYear, appValue: this.state.empAppraisal, empid: this.state.empid, empname: this.state.empname
+            appDate: this.state.appraisalYear, appValue: this.state.empAppraisal, empid: this.state.empid, empname: this.state.empname, isShown: `"true"`
         }
 
         obj.empid = this.state.empid || "null"
