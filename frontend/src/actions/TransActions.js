@@ -6,8 +6,6 @@ import {
 } from "../actions/ActionTypes";
 import axios from "axios";
 
-
-
 export const newAppraisal = (obj) => (dispatch) => {
   axios({
     method: "POST",
@@ -187,12 +185,11 @@ export const getEmpTraining = (nameOrId) => (dispatch) => {
   })
 }
 
-export const deleteEmpTraining = (id) => (dispatch) => {
-
+export const deleteEmpTraining = (data) => (dispatch) => {
   axios({
     method: "PUT",
-    data: id,
-    url: 'http://localhost:5000/deleteEmpTraining',
+    data: data,
+    url: 'http://localhost:5000/deleteemptraining',
     headers: { "Content-Type": "application/json" },
   }).then(data => {
     dispatch({
@@ -203,11 +200,10 @@ export const deleteEmpTraining = (id) => (dispatch) => {
 }
 
 export const deleteEmpFamily = (id) => (dispatch) => {
-
   axios({
     method: "PUT",
     data: id,
-    url: 'http://localhost:5000/deleteEmpTraining',
+    url: 'http://localhost:5000/deleteempfamily',
     headers: { "Content-Type": "application/json" },
   }).then(data => {
     dispatch({
@@ -218,11 +214,10 @@ export const deleteEmpFamily = (id) => (dispatch) => {
 }
 
 export const deleteEmpPenalty = (id) => (dispatch) => {
-
   axios({
     method: "PUT",
     data: id,
-    url: 'http://localhost:5000/deleteEmpTraining',
+    url: 'http://localhost:5000/deletepenalty',
     headers: { "Content-Type": "application/json" },
   }).then(data => {
     dispatch({
@@ -233,7 +228,6 @@ export const deleteEmpPenalty = (id) => (dispatch) => {
 }
 
 export const deleteEmpTrans = (query) => (dispatch) => {
-
   axios({
     method: "PUT",
     data: query,
@@ -248,11 +242,10 @@ export const deleteEmpTrans = (query) => (dispatch) => {
 }
 
 export const deleteEmpAppraisal = (id,nat) => (dispatch) => {
-
   axios({
     method: "PUT",
     data: id,
-    url: 'http://localhost:5000/deleteEmpTraining',
+    url: 'http://localhost:5000/deleteappraisal',
     headers: { "Content-Type": "application/json" },
   }).then(data => {
     dispatch({
@@ -262,5 +255,30 @@ export const deleteEmpAppraisal = (id,nat) => (dispatch) => {
   })
 }
 
-// export const deleteExperience = "DELETE-EXPERIENCE"
-// export const deleteEdu = "DELETE-EDU"
+export const deleteEmpExperience = (id,nat) => (dispatch) => {
+  axios({
+    method: "PUT",
+    data: id,
+    url: 'http://localhost:5000/deleteexp',
+    headers: { "Content-Type": "application/json" },
+  }).then(data => {
+    dispatch({
+      type: deleteExperience,
+      payload: { data: data.data, result: data.data.status }
+    })
+  })
+}
+
+export const deleteEmpEdu = (id,nat) => (dispatch) => {
+  axios({
+    method: "PUT",
+    data: id,
+    url: 'http://localhost:5000/deleteedu',
+    headers: { "Content-Type": "application/json" },
+  }).then(data => {
+    dispatch({
+      type: deleteEdu,
+      payload: { data: data.data, result: data.data.status }
+    })
+  })
+}

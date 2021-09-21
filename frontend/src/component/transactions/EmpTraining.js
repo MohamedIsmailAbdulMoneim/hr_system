@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import { getEmpName, getEmpNameByName } from "../../actions/Actions"
-import {getEmpTraining} from "../../actions/TransActions"
+import {getEmpTraining, deleteEmpTraining} from "../../actions/TransActions"
 import { } from "../../actions/TransActions"
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
@@ -350,7 +350,9 @@ class EmpTraining extends React.Component {
     }
 
     deleteHandler = (e) => {
-        
+
+        let data = [e.target.getAttribute("tableId"),e.target.getAttribute("natIdCard") ]
+        this.props.deleteEmpTraining(data)
     }
 
     render() {
@@ -539,7 +541,7 @@ class EmpTraining extends React.Component {
                                                     <td>{emp.TRAINING_TYPE_NAME}</td>
                                                     <td>{emp.LOCATION_TYPE_NAME}</td>
                                                     <td><i onClick={this.state.edit ? this.handelEdit_2 : this.handelEdit_1} tableId={emp.id} relType={emp.RELATION_TYPE} famName={emp.FAMILY_NAME} birthDate={emp.BIRTH_DATE} marNid={emp.NATIONAL_ID_NUMBER} natIdCard={emp.NATIONAL_ID_CARD_NO} class="fas fa-edit"></i></td>
-                                                    <td><i onClick={this.state.edit ? this.closeEditSectionHandler : null} tableId={emp.id} class="fas fa-backspace"></i></td>
+                                                    <td><i onClick={this.state.edit ? this.closeEditSectionHandler : this.deleteHandler} tableId={emp.id} natIdCard={emp.NATIONAL_ID_CARD_NO}  class="fas fa-backspace"></i></td>
                                                 </tr>
                                             </tbody>
                                         ))
@@ -568,5 +570,5 @@ const mapStateToProps = (state) => {
     };
 };
 export default connect(mapStateToProps, {
-    getEmpName, getEmpNameByName,getEmpTraining
+    getEmpName, getEmpNameByName,getEmpTraining,deleteEmpTraining
 })(EmpTraining);

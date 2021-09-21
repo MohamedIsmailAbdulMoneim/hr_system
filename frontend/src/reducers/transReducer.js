@@ -104,10 +104,32 @@ export default function (state = initialState, action) {
 
         case deleteTrans:
             return{
-                ...state,
-                
+                ...state,   
             }
-
+        case deleteTraining:
+            return{
+                ...state,
+            }
+        case deleteFamily:
+            return{
+                ...state,
+            }
+        case deletePenalty:
+            return{
+                ...state,
+            }
+        case deleteAppraisal:
+            return{
+                ...state,
+            }
+        case deleteExperience:
+            return{
+                ...state,
+            }
+        case deleteEdu:
+            return{
+                ...state,
+            }
 
         default:
             return state

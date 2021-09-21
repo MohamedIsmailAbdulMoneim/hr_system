@@ -588,19 +588,29 @@ function getEmpTraining(req,res,next){
 }
 
 function deleteEmpTraining(req,res,next){
-    let id = req.query.id
-    let query = `UPDATE employee_training SET is_shown = "false" where id = ${id}`
+    let data = req.body
+    // let id = data[0]
+    // let nat = data[1]
+    console.log(data);
+    // let query = `
+    // UPDATE employee_training SET is_shown = "false" where id = ${id}
+    // SELECT employee.NAME_ARABIC, employee_training.TRAINING_PROGRAM_ARABIC,employee_training.TRAINING_COMPLETION_DATE,TRAINING_TYPE.TRAINING_TYPE_NAME,LOCATION_TYPE.LOCATION_TYPE_NAME FROM employee_training JOIN TRAINING_TYPE JOIN LOCATION_TYPE JOIN employee ON
+    // employee.NATIONAL_ID_CARD_NO = employee_training.NATIONAL_ID_CARD_NO AND employee_training.TRAINING_TYPE = training_type.TRAINING_TYPE AND
+    // employee_training.LOCATION_TYPE = location_type.LOCATION_TYPE WHERE NATIONAL_ID_CARD_NO = ${nat} AND employee_training.is_shown = "true"
+    // `
 
-    db.query(query, (err, data) => {
-        if (err) {
-            next(err)
-            console.log(err);
-            res.json({ msg: "يوجد خطاء بقاعدة البيانات", data: null })
+    // db.query(query, (err, data) => {
+    //     if (err) {
+    //         next(err)
+    //         console.log(err);
+    //         res.json({ msg: "يوجد خطاء بقاعدة البيانات", data: null })
 
-        } else {
-            res.json({ msg: "تم إدخال البيانات بنجاح", data: data })
-        }
-    })
+    //     } else {
+    //         res.json({ msg: "تم إدخال البيانات بنجاح", data: data })
+    //     }
+    // })
+
+
 
 }
 
