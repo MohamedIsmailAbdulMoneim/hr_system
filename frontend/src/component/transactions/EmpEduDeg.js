@@ -34,8 +34,10 @@ class EmpEduDeg extends React.Component {
             add: false, edit: false, empidForAdd: "",
             empnameForAdd: "", qual: null, showNamesResultsForAdd: false,
             showNamesResultsForSearch: false, showSpeciality: false,
-            addEduDeg: "", specs: [], specsEdit: [], addSpec: "", showSpecialityDetails: false, specsDetails: [], specsDetailsEdit: [], addSpecDetails: "",
-            addGrade: "", showUneSchools: false, unes: [], unesEdit: [], addUneversity: "", addGradYear: "", rowEmpEdu: "", editDegree: "", editSpec: "",
+            addEduDeg: "", specs: [], specsEdit: [], addSpec: "", showSpecialityDetails: false,
+             specsDetails: [], specsDetailsEdit: [], addSpecDetails: "",
+            addGrade: "", showUneSchools: false, unes: [], unesEdit: [], addUneversity: "", addGradYear: "",
+            rowEmpEdu: "", editDegree: "", editSpec: "", delete:false,
             editSpecDetail: "", editGrade: "", editUni: "", editGradeYear: ""
         };
 
@@ -370,7 +372,42 @@ class EmpEduDeg extends React.Component {
     --------------------
     
     */
+    deleteHandler = (e) => {
+        this.setState({ delete: true })
+        let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
+        for (let i = 0; i < tds.length; i++) {
+            tds[i].style.background = "white"
+            tds[tds.length - 2].childNodes[0].classList.remove("fa-edit")
+            tds[tds.length - 2].childNodes[0].classList.add("fa-check")
+            tds[tds.length - 1].childNodes[0].classList.remove("fa-backspace")
+            tds[tds.length - 1].childNodes[0].classList.add("fa-times")
+        }
+    }
 
+    closeDeleteSectionHandler = (e) => {
+        let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
+        for (let i = 0; i < tds.length; i++) {
+            tds[i].style.background = "transparent"
+            tds[tds.length - 2].childNodes[0].classList.remove("fa-check")
+            tds[tds.length - 2].childNodes[0].classList.add("fa-edit")
+            tds[tds.length - 1].childNodes[0].classList.remove("fa-times")
+            tds[tds.length - 1].childNodes[0].classList.add("fa-backspace")
+        }
+        this.setState({ delete: false })
+    }
+    confirmDelete = (e) => {
+        let data = [e.target.getAttribute("tableId"), e.target.getAttribute("natIdCard")]
+        this.props.deleteEmpTraining(data)
+        this.setState({ delete: false })
+        let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
+        for (let i = 0; i < tds.length; i++) {
+            tds[i].style.background = "transparent"
+            tds[tds.length - 2].childNodes[0].classList.remove("fa-check")
+            tds[tds.length - 2].childNodes[0].classList.add("fa-edit")
+            tds[tds.length - 1].childNodes[0].classList.remove("fa-times")
+            tds[tds.length - 1].childNodes[0].classList.add("fa-backspace")
+        }
+    }
 
     /* 
     

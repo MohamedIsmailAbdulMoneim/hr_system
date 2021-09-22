@@ -4,7 +4,7 @@ import {
     getEmpByDeps, getEmpName, getEmpNameByName, getEmpAppraisal
 
 } from "../../actions/Actions";
-import { newAppraisal, updateEmpAppraisal } from "../../actions/TransActions"
+import { newAppraisal, updateEmpAppraisal, deleteEmpAppraisal } from "../../actions/TransActions"
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import moment from 'react-moment';
@@ -14,7 +14,11 @@ import Pagination from "../Pagination";
 class EmpsAppraisal extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { confirmAdd: false, showMsg: false, errorAdd: false, empAppraisal: "null", appraisalYear: "null", rowAppraisal: false, add: false, edit: false, empid: null, empname: null, empnat: null, showNamesResults: false, updated: false, firstArg: 0, secondArg: 20, currentPage: 1, firstArgPerBtn: 0, secondArgPerBtn: 10 };
+        this.state = { confirmAdd: false, showMsg: false, errorAdd: false, empAppraisal: "null",
+        appraisalYear: "null", rowAppraisal: false, add: false, edit: false, empid: null, empname: null,
+        empnat: null, showNamesResults: false, updated: false, firstArg: 0, secondArg: 20, currentPage: 1,
+        firstArgPerBtn: 0, secondArgPerBtn: 10, delete: false
+     };
     }
 
     changeArgs = (i) => (e) => {
@@ -188,6 +192,43 @@ class EmpsAppraisal extends React.Component {
         this.setState({
             add: false
         })
+    }
+
+    deleteHandler = (e) => {
+        this.setState({ delete: true })
+        let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
+        for (let i = 0; i < tds.length; i++) {
+            tds[i].style.background = "white"
+            tds[tds.length - 2].childNodes[0].classList.remove("fa-edit")
+            tds[tds.length - 2].childNodes[0].classList.add("fa-check")
+            tds[tds.length - 1].childNodes[0].classList.remove("fa-backspace")
+            tds[tds.length - 1].childNodes[0].classList.add("fa-times")
+        }
+    }
+
+    closeDeleteSectionHandler = (e) => {
+        let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
+        for (let i = 0; i < tds.length; i++) {
+            tds[i].style.background = "transparent"
+            tds[tds.length - 2].childNodes[0].classList.remove("fa-check")
+            tds[tds.length - 2].childNodes[0].classList.add("fa-edit")
+            tds[tds.length - 1].childNodes[0].classList.remove("fa-times")
+            tds[tds.length - 1].childNodes[0].classList.add("fa-backspace")
+        }
+        this.setState({ delete: false })
+    }
+    confirmDelete = (e) => {
+        let data = [e.target.getAttribute("tableId"), e.target.getAttribute("empnatid")]
+        this.props.deleteEmpAppraisal(data)
+        this.setState({ delete: false })
+        let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
+        for (let i = 0; i < tds.length; i++) {
+            tds[i].style.background = "transparent"
+            tds[tds.length - 2].childNodes[0].classList.remove("fa-check")
+            tds[tds.length - 2].childNodes[0].classList.add("fa-edit")
+            tds[tds.length - 1].childNodes[0].classList.remove("fa-times")
+            tds[tds.length - 1].childNodes[0].classList.add("fa-backspace")
+        }
     }
 
     // catClickHandeler = (e) => {
@@ -387,8 +428,8 @@ class EmpsAppraisal extends React.Component {
                                                     </select> : this.state.updated && this.state.rowAppraisal == emp.id ? this.state.empAppraisal : emp.APPRAISAL_ARABIC}</td>
                                                     <td style={{ width: "10%" }}>{this.state.edit && this.state.rowAppraisal == emp.id ? <input onChange={this.handelYear} value={this.state.appraisalYear} className="form-control" style={{ width: "100%" }} type="text" /> :
                                                         this.state.updated && this.state.rowAppraisal == emp.id ? this.state.appraisalYear : emp.APPRAISAL_DATE}</td>
-                                                    <td><i onClick={this.state.edit ? this.handelEdit_2 : this.handelEdit_1} tableId={emp.id} style={{ fontSize: 20 }} empName={emp.NAME_ARABIC} empApp={emp.APPRAISAL_ARABIC} empDate={emp.APPRAISAL_DATE} empnatid={emp.NATIONAL_ID_CARD_NO} class="fas fa-edit"></i></td>
-                                                    <td><i onClick={this.state.edit ? this.closeEditSectionHandler : null} tableId={emp.id} class="fas fa-backspace"></i></td>
+                                                    <td><i onClick={ this.state.delete ? this.confirmDelete : this.state.edit ? this.handelEdit_2 : this.handelEdit_1} tableId={emp.id} style={{ fontSize: 20 }} empName={emp.NAME_ARABIC} empApp={emp.APPRAISAL_ARABIC} empDate={emp.APPRAISAL_DATE} empnatid={emp.NATIONAL_ID_CARD_NO} class="fas fa-edit"></i></td>
+                                                    <td><i onClick={this.state.delete ? this.closeDeleteSectionHandler : this.state.edit ? this.closeEditSectionHandler : this.deleteHandler} tableId={emp.id} empnatid={emp.NATIONAL_ID_CARD_NO} class="fas fa-backspace"></i></td>
                                                 </tr>
                                             </tbody>
                                         ))
@@ -422,5 +463,5 @@ const mapStateToProps = (state) => {
     };
 };
 export default connect(mapStateToProps, {
-    getEmpByDeps, getEmpAppraisal, getEmpName, getEmpNameByName, newAppraisal, updateEmpAppraisal
+    getEmpByDeps, getEmpAppraisal, getEmpName, getEmpNameByName, newAppraisal, updateEmpAppraisal,deleteEmpAppraisal
 })(EmpsAppraisal);

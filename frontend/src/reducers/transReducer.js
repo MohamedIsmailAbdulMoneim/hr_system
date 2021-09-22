@@ -104,15 +104,18 @@ export default function (state = initialState, action) {
 
         case deleteTrans:
             return{
-                ...state,   
+                ...state,
+                empTrans: action.payload.data
             }
         case deleteTraining:
             return{
                 ...state,
+                empTraining: action.payload.data
             }
         case deleteFamily:
             return{
                 ...state,
+                empfamily:action.payload.data
             }
         case deletePenalty:
             return{
@@ -125,10 +128,12 @@ export default function (state = initialState, action) {
         case deleteExperience:
             return{
                 ...state,
+                empexp: action.payload.data
             }
         case deleteEdu:
             return{
                 ...state,
+                empEdu: action.payload.data
             }
 
         default:

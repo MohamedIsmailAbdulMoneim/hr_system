@@ -192,23 +192,24 @@ export const deleteEmpTraining = (data) => (dispatch) => {
     url: 'http://localhost:5000/deleteemptraining',
     headers: { "Content-Type": "application/json" },
   }).then(data => {
+    console.log(data.data.data[1]);
     dispatch({
       type: deleteTraining,
-      payload: { data: data.data, result: data.data.status }
+      payload: { data: data.data.data[1], result: data.data.status }
     })
   })
 }
 
-export const deleteEmpFamily = (id) => (dispatch) => {
+export const deleteEmpFamily = (data) => (dispatch) => {
   axios({
     method: "PUT",
-    data: id,
+    data: data,
     url: 'http://localhost:5000/deleteempfamily',
     headers: { "Content-Type": "application/json" },
   }).then(data => {
     dispatch({
       type: deleteFamily,
-      payload: { data: data.data, result: data.data.status }
+      payload: { data: data.data.data[1], result: data.data.status }
     })
   })
 }
@@ -234,17 +235,18 @@ export const deleteEmpTrans = (query) => (dispatch) => {
     url: 'http://localhost:5000/deletetrans',
     headers: { "Content-Type": "application/json" },
   }).then(data => {
+    console.log(data);
     dispatch({
       type: deleteTrans,
-      payload: { data: data.data, result: data.data.status }
-    })
+      payload: { data: data.data.data[2], result: data.data.status }
+      })
   })
 }
 
-export const deleteEmpAppraisal = (id,nat) => (dispatch) => {
+export const deleteEmpAppraisal = (data) => (dispatch) => {
   axios({
     method: "PUT",
-    data: id,
+    data: data,
     url: 'http://localhost:5000/deleteappraisal',
     headers: { "Content-Type": "application/json" },
   }).then(data => {
@@ -255,16 +257,17 @@ export const deleteEmpAppraisal = (id,nat) => (dispatch) => {
   })
 }
 
-export const deleteEmpExperience = (id,nat) => (dispatch) => {
+export const deleteEmpExperience = (data) => (dispatch) => {
   axios({
     method: "PUT",
-    data: id,
+    data: data,
     url: 'http://localhost:5000/deleteexp',
     headers: { "Content-Type": "application/json" },
   }).then(data => {
+    console.log(data);
     dispatch({
       type: deleteExperience,
-      payload: { data: data.data, result: data.data.status }
+      payload: { data: data.data.data[1], result: data.data.status }
     })
   })
 }
@@ -278,7 +281,7 @@ export const deleteEmpEdu = (id,nat) => (dispatch) => {
   }).then(data => {
     dispatch({
       type: deleteEdu,
-      payload: { data: data.data, result: data.data.status }
+      payload: { data: data.data.data[1], result: data.data.status }
     })
   })
 }

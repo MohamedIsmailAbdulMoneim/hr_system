@@ -230,7 +230,11 @@ function getEmpEdu(req, res, next) {
 function getEmpFamily(req, res, next) {
     let empid = req.query.empid
     let empname = req.query.empname
-    let query = `SELECT *, detofemp.EMPLOYEE_ID, detofemp.NAME_ARABIC FROM employee_family_member JOIN(SELECT employee.EMPLOYEE_ID, employee.NAME_ARABIC, employee.NATIONAL_ID_CARD_NO FROM employee) AS detofemp ON employee_family_member.NATIONAL_ID_CARD_NO = detofemp.NATIONAL_ID_CARD_NO WHERE ${empid.length !== 0 ? `detofemp.EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `detofemp.NAME_ARABIC = "${empname}"` : null} and employee_family_member.is_shown = "true" `
+    let query = `SELECT *, detofemp.EMPLOYEE_ID, detofemp.NAME_ARABIC FROM employee_family_member
+    JOIN(SELECT employee.EMPLOYEE_ID, employee.NAME_ARABIC, employee.NATIONAL_ID_CARD_NO FROM employee) AS detofemp
+    ON employee_family_member.NATIONAL_ID_CARD_NO = detofemp.NATIONAL_ID_CARD_NO WHERE
+    ${empid.length !== 0 ? `detofemp.EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ?
+    `detofemp.NAME_ARABIC = "${empname}"` : null} and employee_family_member.is_shown = "true" `
     db.query(query, (err, details) => {
         if (err) {
             next(err);
@@ -571,7 +575,7 @@ function editEmpEdu(req, res, next) {
 
 function getEmpTraining(req,res,next){
     let nameOrId = req.query.nameOrId
-    let query = `SELECT employee.NAME_ARABIC, employee_training.TRAINING_PROGRAM_ARABIC,employee_training.TRAINING_COMPLETION_DATE,TRAINING_TYPE.TRAINING_TYPE_NAME,LOCATION_TYPE.LOCATION_TYPE_NAME FROM employee_training JOIN TRAINING_TYPE JOIN LOCATION_TYPE JOIN employee ON
+    let query = `SELECT employee.NAME_ARABIC, employee_training.NATIONAL_ID_CARD_NO, employee_training.id ,employee_training.TRAINING_PROGRAM_ARABIC,employee_training.TRAINING_COMPLETION_DATE,TRAINING_TYPE.TRAINING_TYPE_NAME,LOCATION_TYPE.LOCATION_TYPE_NAME FROM employee_training JOIN TRAINING_TYPE JOIN LOCATION_TYPE JOIN employee ON
     employee.NATIONAL_ID_CARD_NO = employee_training.NATIONAL_ID_CARD_NO AND employee_training.TRAINING_TYPE = training_type.TRAINING_TYPE AND
     employee_training.LOCATION_TYPE = location_type.LOCATION_TYPE WHERE ${nameOrId} AND employee_training.is_shown = "true"`
 
@@ -589,35 +593,41 @@ function getEmpTraining(req,res,next){
 
 function deleteEmpTraining(req,res,next){
     let data = req.body
-    // let id = data[0]
-    // let nat = data[1]
-    console.log(data);
-    // let query = `
-    // UPDATE employee_training SET is_shown = "false" where id = ${id}
-    // SELECT employee.NAME_ARABIC, employee_training.TRAINING_PROGRAM_ARABIC,employee_training.TRAINING_COMPLETION_DATE,TRAINING_TYPE.TRAINING_TYPE_NAME,LOCATION_TYPE.LOCATION_TYPE_NAME FROM employee_training JOIN TRAINING_TYPE JOIN LOCATION_TYPE JOIN employee ON
-    // employee.NATIONAL_ID_CARD_NO = employee_training.NATIONAL_ID_CARD_NO AND employee_training.TRAINING_TYPE = training_type.TRAINING_TYPE AND
-    // employee_training.LOCATION_TYPE = location_type.LOCATION_TYPE WHERE NATIONAL_ID_CARD_NO = ${nat} AND employee_training.is_shown = "true"
-    // `
+    let id = data[0]
+    let nat = data[1]
+    let query = `
+    UPDATE employee_training SET is_shown = "false" where id = ${id};
+    SELECT employee.NAME_ARABIC,  employee_training.NATIONAL_ID_CARD_NO, employee_training.id , employee_training.TRAINING_PROGRAM_ARABIC,employee_training.TRAINING_COMPLETION_DATE,TRAINING_TYPE.TRAINING_TYPE_NAME,LOCATION_TYPE.LOCATION_TYPE_NAME FROM employee_training JOIN TRAINING_TYPE JOIN LOCATION_TYPE JOIN employee ON
+    employee.NATIONAL_ID_CARD_NO = employee_training.NATIONAL_ID_CARD_NO AND employee_training.TRAINING_TYPE = training_type.TRAINING_TYPE AND
+    employee_training.LOCATION_TYPE = location_type.LOCATION_TYPE WHERE employee_training.NATIONAL_ID_CARD_NO = ${nat} AND employee_training.is_shown = "true"
+    `
 
-    // db.query(query, (err, data) => {
-    //     if (err) {
-    //         next(err)
-    //         console.log(err);
-    //         res.json({ msg: "يوجد خطاء بقاعدة البيانات", data: null })
+    db.query(query, (err, data) => {
+        if (err) {
+            next(err)
+            console.log(err);
+            res.json({ msg: "يوجد خطاء بقاعدة البيانات", data: null })
 
-    //     } else {
-    //         res.json({ msg: "تم إدخال البيانات بنجاح", data: data })
-    //     }
-    // })
+        } else {
+            res.json({ msg: "تم إدخال البيانات بنجاح", data: data })
+        }
+    })
 
 
 
 }
 
 function deleteEmpFamily(req,res,next){
-    let id = req.query.id
-    let query = `UPDATE employee_family_member SET is_shown = "false" where id = ${id}`
-
+    let data = req.body
+    let id = data[0]
+    let nat = data[1]
+    let query = `
+    UPDATE employee_family_member SET is_shown = "false" where id = ${id};
+    SELECT *, detofemp.EMPLOYEE_ID, detofemp.NAME_ARABIC FROM employee_family_member
+    JOIN(SELECT employee.EMPLOYEE_ID, employee.NAME_ARABIC, employee.NATIONAL_ID_CARD_NO FROM employee) AS detofemp
+    ON employee_family_member.NATIONAL_ID_CARD_NO = detofemp.NATIONAL_ID_CARD_NO WHERE
+    employee_family_member.NATIONAL_ID_CARD_NO = ${nat} and employee_family_member.is_shown = "true"
+    `
     db.query(query, (err, data) => {
         if (err) {
             next(err)
@@ -649,6 +659,8 @@ function deletePenalty(req,res,next){
 function deleteTrans(req,res,next){
 let data = req.body
 let query = `UPDATE a_job_trans SET ${data}`
+console.log(data);
+
     db.query(query, (err, data) => {
         if (err) {
             next(err)
@@ -658,15 +670,19 @@ let query = `UPDATE a_job_trans SET ${data}`
         } else {
             res.json({ msg: "تم إدخال البيانات بنجاح", data: data })
         }
+        console.log(query);
     })
 
-    console.log(query);
 }
 
 
 function deleteAppraisal(req,res,next){
-    let id = req.query.id
-    let query = `UPDATE employee_appraisal SET is_shown = "false" where id = ${id}`
+    let data = req.body
+    let id = data[0]
+    let nat = data[1]
+    let query = `UPDATE employee_appraisal SET is_shown = "false" where id = ${id}
+    
+    `
 
     db.query(query, (err, data) => {
         if (err) {
@@ -681,8 +697,15 @@ function deleteAppraisal(req,res,next){
 
 
 function deleteExperience(req,res,next){
-    let id = req.query.id
-    let query = `UPDATE employee_experince SET is_shown = "false" where id = ${id}`
+    let data = req.body
+    let id = data[0]
+    let expType = data[1]
+    let nat = data[2]
+
+        let query = `
+    UPDATE employee_experince SET is_shown = "false" where id = ${id};
+    SELECT * FROM employee_experince WHERE EXP_TYP_CODE = ${expType} AND NATIONAL_ID_CARD_NO = ${nat} AND is_shown = "true";
+    `
 
     db.query(query, (err, data) => {
         if (err) {
@@ -698,7 +721,10 @@ function deleteExperience(req,res,next){
 
 function deleteEdu(req,res,next){
     let id = req.query.id
-    let query = `UPDATE employee_education_degree SET is_shown = "false" where id = ${id}`
+    let query = `
+    UPDATE employee_education_degree SET is_shown = "false" where id = ${id};
+    
+    `
 
     db.query(query, (err, data) => {
         if (err) {

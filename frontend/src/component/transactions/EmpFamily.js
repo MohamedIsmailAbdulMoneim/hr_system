@@ -4,7 +4,7 @@ import {
 } from "../../actions/Actions";
 
 import {
-    submitNewFamily, getEmpFamily,
+    submitNewFamily, getEmpFamily,deleteEmpFamily
 } from "../../actions/TransActions"
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
@@ -18,7 +18,8 @@ class EmpFamily extends React.Component {
             finalData: [], messege: "", addMaritalType: [{ value: " ", type: null, key: null }],
             addMaritalName: [{ value: " ", key: null }], addMaritalNId: [{ value: " ", key: null }],
             addMaritalBod: [{ value: " ", key: null }], addMaritalWorkStatus: [{ value: " ", key: null }],
-            addMarital: false, editMaritalType: null, editMaritalName: null, editNid: null, editMaritalNid: null, editMaritalBod: null, maritalLength: 0, showFamilyResult: true, add: false, edit: false, empid: null,
+            addMarital: false, editMaritalType: null, editMaritalName: null, editNid: null, editMaritalNid: null, editMaritalBod: null,
+             maritalLength: 0, showFamilyResult: true, add: false, edit: false, empid: null, delete: false,
             empname: null, showMaritalstate: false, showNamesResultsForSearch: false, showNamesResultsForAdd: false,
             empnameForAdd: null, empidForAdd: null, showMsg: false, rowFam: null, addConfirmed: false, updated: false
 
@@ -417,6 +418,42 @@ class EmpFamily extends React.Component {
         this.setState({ edit: false })
     }
 
+    deleteHandler = (e) => {
+        this.setState({ delete: true })
+        let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
+        for (let i = 0; i < tds.length; i++) {
+            tds[i].style.background = "white"
+            tds[tds.length - 2].childNodes[0].classList.remove("fa-edit")
+            tds[tds.length - 2].childNodes[0].classList.add("fa-check")
+            tds[tds.length - 1].childNodes[0].classList.remove("fa-backspace")
+            tds[tds.length - 1].childNodes[0].classList.add("fa-times")
+        }
+    }
+
+    closeDeleteSectionHandler = (e) => {
+        let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
+        for (let i = 0; i < tds.length; i++) {
+            tds[i].style.background = "transparent"
+            tds[tds.length - 2].childNodes[0].classList.remove("fa-check")
+            tds[tds.length - 2].childNodes[0].classList.add("fa-edit")
+            tds[tds.length - 1].childNodes[0].classList.remove("fa-times")
+            tds[tds.length - 1].childNodes[0].classList.add("fa-backspace")
+        }
+        this.setState({ delete: false })
+    }
+    confirmDelete = (e) => {
+        let data = [e.target.getAttribute("tableId"), e.target.getAttribute("natIdCard")]
+        this.props.deleteEmpFamily(data)
+        this.setState({ delete: false })
+        let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
+        for (let i = 0; i < tds.length; i++) {
+            tds[i].style.background = "transparent"
+            tds[tds.length - 2].childNodes[0].classList.remove("fa-check")
+            tds[tds.length - 2].childNodes[0].classList.add("fa-edit")
+            tds[tds.length - 1].childNodes[0].classList.remove("fa-times")
+            tds[tds.length - 1].childNodes[0].classList.add("fa-backspace")
+        }
+    }
 
     render() {
         console.log(this.state.messege);
@@ -612,8 +649,8 @@ class EmpFamily extends React.Component {
                                                     <td></td>
                                                     <td></td>
 
-                                                    <td><i onClick={this.state.edit ? this.handelEdit_2 : this.handelEdit_1} tableId={fam.id} relType={fam.RELATION_TYPE} famName={fam.FAMILY_NAME} birthDate={fam.BIRTH_DATE} marNid={fam.NATIONAL_ID_NUMBER} natIdCard={fam.NATIONAL_ID_CARD_NO} class="fas fa-edit"></i></td>
-                                                    <td><i onClick={this.state.edit ? this.closeEditSectionHandler : null} tableId={fam.id} class="fas fa-backspace"></i></td>
+                                                    <td><i onClick={ this.state.delete ? this.confirmDelete : this.state.edit ? this.handelEdit_2 : this.handelEdit_1} tableId={fam.id} relType={fam.RELATION_TYPE} famName={fam.FAMILY_NAME} birthDate={fam.BIRTH_DATE} marNid={fam.NATIONAL_ID_NUMBER} natIdCard={fam.NATIONAL_ID_CARD_NO} class="fas fa-edit"></i></td>
+                                                    <td><i onClick={this.state.delete ? this.closeDeleteSectionHandler : this.state.edit ? this.closeEditSectionHandler : this.deleteHandler} tableId={fam.id} natIdCard={fam.NATIONAL_ID_CARD_NO} class="fas fa-backspace"></i></td>
                                                 </tr>
                                             </tbody>
                                         ))}
@@ -642,5 +679,5 @@ const mapStateToProps = (state) => {
     };
 };
 export default connect(mapStateToProps, {
-    getEmpFamily, getEmpName, getEmpNameByName, submitNewFamily
+    getEmpFamily, getEmpName, getEmpNameByName, submitNewFamily,deleteEmpFamily
 })(EmpFamily);

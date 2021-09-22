@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import { getEmpName, getEmpNameByName } from "../../actions/Actions"
-import {getEmpTraining, deleteEmpTraining} from "../../actions/TransActions"
+import { getEmpTraining, deleteEmpTraining } from "../../actions/TransActions"
 import { } from "../../actions/TransActions"
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
@@ -18,7 +18,7 @@ class EmpTraining extends React.Component {
             addTrainingArabicName: "", addTrainingEnglishName: "", addTrainingFromDate: "", addTrainingToDate: "", addTrainingType: "", addTrainingPlaceType: "", addTrainingPlace: "",
             empnameadd: "", empidadd: "", showNamesResultsForSearch: false, showNamesResultsForAdd: false, finalData: null,
             empname: null, updated: false, firstArg: 0, empnameforsearch: "", empidforsearch: "",
-            secondArg: 20, currentPage: 1, firstArgPerBtn: 0, secondArgPerBtn: 10
+            secondArg: 20, currentPage: 1, firstArgPerBtn: 0, secondArgPerBtn: 10, delete: false
         };
     }
 
@@ -43,7 +43,7 @@ class EmpTraining extends React.Component {
         let organization = '30)'
         // this.state.trainingArabicName.length, this.state.trainingEnglishName.length, this.state.trainingFromDate.length, this.state.trainingToDate.length, this.state.trainingType.length, this.state.trainingPlace.length
         // console.log(this.state.addTrainingArabicName.length);
-        let data = [nameOrId, `"true"` ,trainingArabicName, trainingEnglishName, trainingFromDate, trainingToDate, trainingType, TrainingPlaceType, trainingPlace, organization]
+        let data = [nameOrId, `"true"`, trainingArabicName, trainingEnglishName, trainingFromDate, trainingToDate, trainingType, TrainingPlaceType, trainingPlace, organization]
         if ((this.state.empidadd.length < 1 && this.state.empnameadd.length < 1) || this.state.addTrainingArabicName.length < 1 ||
             this.state.addTrainingEnglishName.length < 1 || this.state.addTrainingFromDate.length < 1 || this.state.addTrainingToDate.length < 1 || this.state.addTrainingType.length < 1 || this.state.addTrainingPlaceType.length < 1 || this.state.addTrainingPlace.length < 1) {
             this.setState({
@@ -65,27 +65,27 @@ class EmpTraining extends React.Component {
             url: "http://localhost:5000/postnewtraining",
             headers: { "Content-Type": "application/json" },
         })
-        .then((res) => {
-            console.log(res.data);
-            this.setState({
-                messege: res.data,
-                showMsg: true,
-                empidadd: "",
-                empnameadd: "",
-                addTrainingArabicName: "",
-                addTrainingEnglishName: "",
-                addTrainingFromDate: "",
-                addTrainingToDate: "",
-                addTrainingType: "",
-                addTrainingPlaceType: "",
-                addTrainingPlace: ""
-            })
-            let addInputs = document.getElementsByClassName("add")
-            for(let i = 0; i < addInputs.length; i++){
-                addInputs[i].value = ""
-            }
+            .then((res) => {
+                console.log(res.data);
+                this.setState({
+                    messege: res.data,
+                    showMsg: true,
+                    empidadd: "",
+                    empnameadd: "",
+                    addTrainingArabicName: "",
+                    addTrainingEnglishName: "",
+                    addTrainingFromDate: "",
+                    addTrainingToDate: "",
+                    addTrainingType: "",
+                    addTrainingPlaceType: "",
+                    addTrainingPlace: ""
+                })
+                let addInputs = document.getElementsByClassName("add")
+                for (let i = 0; i < addInputs.length; i++) {
+                    addInputs[i].value = ""
+                }
 
-        })
+            })
     }
 
     /* ------------------------------------------------------ */
@@ -165,7 +165,7 @@ class EmpTraining extends React.Component {
 
             this.props.getEmpTraining(nameOrId)
             this.props.getEmpName(e.target.value)
-            
+
             this.setState({ edit: false, empid: e.target.value })
         }
     }
@@ -348,15 +348,44 @@ class EmpTraining extends React.Component {
             add: false
         })
     }
-
     deleteHandler = (e) => {
+        this.setState({ delete: true })
+        let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
+        for (let i = 0; i < tds.length; i++) {
+            tds[i].style.background = "white"
+            tds[tds.length - 2].childNodes[0].classList.remove("fa-edit")
+            tds[tds.length - 2].childNodes[0].classList.add("fa-check")
+            tds[tds.length - 1].childNodes[0].classList.remove("fa-backspace")
+            tds[tds.length - 1].childNodes[0].classList.add("fa-times")
+        }
+    }
 
-        let data = [e.target.getAttribute("tableId"),e.target.getAttribute("natIdCard") ]
+    closeDeleteSectionHandler = (e) => {
+        let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
+        for (let i = 0; i < tds.length; i++) {
+            tds[i].style.background = "transparent"
+            tds[tds.length - 2].childNodes[0].classList.remove("fa-check")
+            tds[tds.length - 2].childNodes[0].classList.add("fa-edit")
+            tds[tds.length - 1].childNodes[0].classList.remove("fa-times")
+            tds[tds.length - 1].childNodes[0].classList.add("fa-backspace")
+        }
+        this.setState({ delete: false })
+    }
+    confirmDelete = (e) => {
+        let data = [e.target.getAttribute("tableId"), e.target.getAttribute("natIdCard")]
         this.props.deleteEmpTraining(data)
+        this.setState({ delete: false })
+        let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
+        for (let i = 0; i < tds.length; i++) {
+            tds[i].style.background = "transparent"
+            tds[tds.length - 2].childNodes[0].classList.remove("fa-check")
+            tds[tds.length - 2].childNodes[0].classList.add("fa-edit")
+            tds[tds.length - 1].childNodes[0].classList.remove("fa-times")
+            tds[tds.length - 1].childNodes[0].classList.add("fa-backspace")
+        }
     }
 
     render() {
-        console.log(this.state.empname,this.state.empid)
         var dates = [];
         let start = 1996;
         let end = 2021;
@@ -540,8 +569,8 @@ class EmpTraining extends React.Component {
                                                     <td>{emp.TRAINING_COMPLETION_DATE}</td>
                                                     <td>{emp.TRAINING_TYPE_NAME}</td>
                                                     <td>{emp.LOCATION_TYPE_NAME}</td>
-                                                    <td><i onClick={this.state.edit ? this.handelEdit_2 : this.handelEdit_1} tableId={emp.id} relType={emp.RELATION_TYPE} famName={emp.FAMILY_NAME} birthDate={emp.BIRTH_DATE} marNid={emp.NATIONAL_ID_NUMBER} natIdCard={emp.NATIONAL_ID_CARD_NO} class="fas fa-edit"></i></td>
-                                                    <td><i onClick={this.state.edit ? this.closeEditSectionHandler : this.deleteHandler} tableId={emp.id} natIdCard={emp.NATIONAL_ID_CARD_NO}  class="fas fa-backspace"></i></td>
+                                                    <td><i onClick={ this.state.delete ? this.confirmDelete : this.state.edit ? this.handelEdit_2 : this.handelEdit_1} tableId={emp.id} relType={emp.RELATION_TYPE} famName={emp.FAMILY_NAME} birthDate={emp.BIRTH_DATE} marNid={emp.NATIONAL_ID_NUMBER} natIdCard={emp.NATIONAL_ID_CARD_NO} class="fas fa-edit"></i></td>
+                                                    <td><i onClick={this.state.delete ? this.closeDeleteSectionHandler : this.state.edit ? this.closeEditSectionHandler : this.deleteHandler} tableId={emp.id} natIdCard={emp.NATIONAL_ID_CARD_NO} class="fas fa-backspace"></i></td>
                                                 </tr>
                                             </tbody>
                                         ))
@@ -570,5 +599,5 @@ const mapStateToProps = (state) => {
     };
 };
 export default connect(mapStateToProps, {
-    getEmpName, getEmpNameByName,getEmpTraining,deleteEmpTraining
+    getEmpName, getEmpNameByName, getEmpTraining, deleteEmpTraining
 })(EmpTraining);

@@ -4,7 +4,7 @@ import {
     getEmpByDeps, getEmpName, getEmpNameByName, getEmpAppraisal
 
 } from "../../actions/Actions";
-import { newAppraisal, getEmpExp, newEmpExp } from "../../actions/TransActions"
+import { newAppraisal, getEmpExp, newEmpExp,deleteEmpExperience } from "../../actions/TransActions"
 import { connect } from "react-redux";
 import axios from "axios";
 import Moment from 'react-moment';
@@ -22,7 +22,7 @@ class EmpExperience extends React.Component {
             , length: 0, exp: [], empNameAdd: "", empIdAdd: "", empNameSearch: "", empIdSearch: ""
             , finalData: [], showFamilyResult: true, editExpTyp: "" ,editPlaceOfExp: "", editJobOfExp: "", editFromOfExp: "", editToOfExp: "",
             confirmAdd: false, showMsg: false, errorAdd: false,
-            add: false, edit: false,
+            add: false, edit: false,delete:false,
             empid: null, empname: null, catname: null, catid: null, showNamesResults: false, rowExp: ""
         };
     }
@@ -404,6 +404,43 @@ class EmpExperience extends React.Component {
             }
             this.setState({ edit: false })
         }
+        deleteHandler = (e) => {
+            this.setState({ delete: true })
+            let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
+            for (let i = 0; i < tds.length; i++) {
+                tds[i].style.background = "white"
+                tds[tds.length - 2].childNodes[0].classList.remove("fa-edit")
+                tds[tds.length - 2].childNodes[0].classList.add("fa-check")
+                tds[tds.length - 1].childNodes[0].classList.remove("fa-backspace")
+                tds[tds.length - 1].childNodes[0].classList.add("fa-times")
+            }
+        }
+    
+        closeDeleteSectionHandler = (e) => {
+            let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
+            for (let i = 0; i < tds.length; i++) {
+                tds[i].style.background = "transparent"
+                tds[tds.length - 2].childNodes[0].classList.remove("fa-check")
+                tds[tds.length - 2].childNodes[0].classList.add("fa-edit")
+                tds[tds.length - 1].childNodes[0].classList.remove("fa-times")
+                tds[tds.length - 1].childNodes[0].classList.add("fa-backspace")
+            }
+            this.setState({ delete: false })
+        }
+        confirmDelete = (e) => {
+            let data = [e.target.getAttribute("tableId"), e.target.getAttribute("expType"),e.target.getAttribute("natIdCard")]
+            console.log(data);
+            this.props.deleteEmpExperience(data)
+            this.setState({ delete: false })
+            let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
+            for (let i = 0; i < tds.length; i++) {
+                tds[i].style.background = "transparent"
+                tds[tds.length - 2].childNodes[0].classList.remove("fa-check")
+                tds[tds.length - 2].childNodes[0].classList.add("fa-edit")
+                tds[tds.length - 1].childNodes[0].classList.remove("fa-times")
+                tds[tds.length - 1].childNodes[0].classList.add("fa-backspace")
+            }
+        }
     
     
     
@@ -540,8 +577,8 @@ class EmpExperience extends React.Component {
                                                     <td>{this.handleExpTime(emp.START_DATE, emp.END_DATE).days()}</td>
                                                     <td>{this.handleExpTime(emp.START_DATE, emp.END_DATE).months()}</td>
                                                     <td>{this.handleExpTime(emp.START_DATE, emp.END_DATE).years()}</td>
-                                                    <td><i onClick={this.state.edit ? this.handelEdit_2 : this.handelEdit_1} style={{ fontSize: 20 }} tableId={emp.id} expType={emp.EXP_TYP_CODE} placeName={emp.PLACE_NAME} jobName={emp.JOB_NAME} startDate={emp.START_DATE} endDate={emp.END_DATE} class="fas fa-edit"></i></td>
-                                                    <td><i onClick={this.state.edit ? this.closeEditSectionHandler : null} tableId={emp.id} class="fas fa-backspace"></i></td>
+                                                    <td><i onClick={ this.state.delete ? this.confirmDelete : this.state.edit ? this.handelEdit_2 : this.handelEdit_1} style={{ fontSize: 20 }} tableId={emp.id} expType={emp.EXP_TYP_CODE} natIdCard={emp.NATIONAL_ID_CARD_NO} placeName={emp.PLACE_NAME} jobName={emp.JOB_NAME} startDate={emp.START_DATE} endDate={emp.END_DATE} class="fas fa-edit"></i></td>
+                                                    <td><i onClick={this.state.delete ? this.closeDeleteSectionHandler : this.state.edit ? this.closeEditSectionHandler : this.deleteHandler} tableId={emp.id} expType={emp.EXP_TYP_CODE} natIdCard={emp.NATIONAL_ID_CARD_NO} class="fas fa-backspace"></i></td>
                                                 </tr>
                                             </tbody>
                                         ))
@@ -587,8 +624,8 @@ class EmpExperience extends React.Component {
                                                     <td>{this.handleExpTime(emp.START_DATE, emp.END_DATE).days()}</td>
                                                     <td>{this.handleExpTime(emp.START_DATE, emp.END_DATE).months()}</td>
                                                     <td>{this.handleExpTime(emp.START_DATE, emp.END_DATE).years()}</td>
-                                                    <td><i onClick={this.state.edit ? this.handelEdit_2 : this.handelEdit_1} style={{ fontSize: 20 }} tableId={emp.id} expType={emp.EXP_TYP_CODE} placeName={emp.PLACE_NAME} jobName={emp.JOB_NAME} startDate={emp.START_DATE} endDate={emp.END_DATE} class="fas fa-edit"></i></td>
-                                                    <td><i onClick={this.state.edit ? this.closeEditSectionHandler : null} tableId={emp.id} class="fas fa-backspace"></i></td>
+                                                    <td><i onClick={ this.state.delete ? this.confirmDelete : this.state.edit ? this.handelEdit_2 : this.handelEdit_1} style={{ fontSize: 20 }} tableId={emp.id} expType={emp.EXP_TYP_CODE} placeName={emp.PLACE_NAME} natIdCard={emp.NATIONAL_ID_CARD_NO} jobName={emp.JOB_NAME} startDate={emp.START_DATE} endDate={emp.END_DATE} class="fas fa-edit"></i></td>
+                                                    <td><i onClick={this.state.delete ? this.closeDeleteSectionHandler : this.state.edit ? this.closeEditSectionHandler : this.deleteHandler} tableId={emp.id} expType={emp.EXP_TYP_CODE} natIdCard={emp.NATIONAL_ID_CARD_NO} class="fas fa-backspace"></i></td>
                                                 </tr>
                                             </tbody>
                                         ))
@@ -634,8 +671,8 @@ class EmpExperience extends React.Component {
                                                     <td>{this.handleExpTime(emp.START_DATE, emp.END_DATE).days()}</td>
                                                     <td>{this.handleExpTime(emp.START_DATE, emp.END_DATE).months()}</td>
                                                     <td>{this.handleExpTime(emp.START_DATE, emp.END_DATE).years()}</td>
-                                                    <td ><i onClick={this.state.edit ? this.handelEdit_2 : this.handelEdit_1} tableId={emp.id} style={{ fontSize: 20 }} expType={emp.EXP_TYP_CODE} placeName={emp.PLACE_NAME} jobName={emp.JOB_NAME} startDate={emp.START_DATE} endDate={emp.END_DATE} class="fas fa-edit"></i></td>
-                                                    <td><i onClick={this.state.edit ? this.closeEditSectionHandler : null} tableId={emp.id} class="fas fa-backspace"></i></td>
+                                                    <td ><i onClick={ this.state.delete ? this.confirmDelete : this.state.edit ? this.handelEdit_2 : this.handelEdit_1} tableId={emp.id} style={{ fontSize: 20 }} expType={emp.EXP_TYP_CODE} placeName={emp.PLACE_NAME} natIdCard={emp.NATIONAL_ID_CARD_NO} jobName={emp.JOB_NAME} startDate={emp.START_DATE} endDate={emp.END_DATE} class="fas fa-edit"></i></td>
+                                                    <td><i onClick={this.state.delete ? this.closeDeleteSectionHandler : this.state.edit ? this.closeEditSectionHandler : this.deleteHandler} tableId={emp.id} expType={emp.EXP_TYP_CODE} natIdCard={emp.NATIONAL_ID_CARD_NO} class="fas fa-backspace"></i></td>
                                                 </tr>
                                             </tbody>
                                         ))
@@ -668,5 +705,5 @@ const mapStateToProps = (state) => {
     };
 };
 export default connect(mapStateToProps, {
-    getEmpByDeps, getEmpAppraisal, getEmpName, getEmpNameByName, newAppraisal, getEmpExp, newEmpExp
+    getEmpByDeps, getEmpAppraisal, getEmpName, getEmpNameByName, newAppraisal, getEmpExp, newEmpExp, deleteEmpExperience
 })(EmpExperience);

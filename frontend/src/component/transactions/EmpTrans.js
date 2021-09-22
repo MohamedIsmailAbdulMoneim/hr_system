@@ -24,7 +24,7 @@ class EmpTrans extends React.Component {
             confirmAdd: false, showDateUnlessEdit: true, showTransResult: true, add: false,
             edit: false, empid: null, empname: null, transdate: null, jdname: null,
             supboxname: null, gname: null, jasi: null, indname: null, catname: null,
-            catid: null, supboxid: null, mainboxid: null, levels: null, showStructWAdd: false,
+            catid: null, supboxid: null, mainboxid: null, levels: null, showStructWAdd: false, delete: false,
             showStruct: false, showNamesResultsForAdd: false, showNamesResultsForSearch: false, index: null, jobDgByCat: [{ data: [" "], IdNum: 0 }], empavailsup: [{ data: [" "], IdNumSP: 0 }]
         };
 
@@ -594,7 +594,6 @@ class EmpTrans extends React.Component {
         let data = { mainboxid: this.state.mainboxid, date: this.state.transdate, catname: this.state.catname, jdname: this.state.jdname, supboxname: this.state.supboxname, gname: this.state.gname, jasi: this.state.jasi, indname: this.state.indname, empid: this.state.empid, empname: this.props.empNameByName ? this.props.empNameByName.length >= 1 ? this.props.empNameByName[0].NAME_ARABIC : null : null }
         this.props.updateEmpTrans(data)
         let tds = document.getElementById(e.target.getAttribute("transdate")).childNodes
-
         for (let i = 0; i < tds.length; i++) {
             tds[i].style.background = "transparent"
             tds[tds.length - 2].childNodes[0].classList.remove("fa-check")
@@ -659,61 +658,87 @@ class EmpTrans extends React.Component {
     }
 
     deleteSTrans = (e) => {
+        this.setState({delete: true})
+        let tds = document.getElementById(e.target.getAttribute("transdate")).childNodes
+        for (let i = 0; i < tds.length; i++) {
+            tds[i].style.background = "white"
+            tds[tds.length - 2].childNodes[0].classList.remove("fa-edit")
+            tds[tds.length - 2].childNodes[0].classList.add("fa-check")
+            tds[tds.length - 1].childNodes[0].classList.remove("fa-backspace")
+            tds[tds.length - 1].childNodes[0].classList.add("fa-times")
+        }
+    }
+
+    closeDeleteSSectionHandler = (e) => {
+        let tds = document.getElementById(e.target.getAttribute("transdate")).childNodes
+        for (let i = 0; i < tds.length; i++) {
+            tds[i].style.background = "transparent"
+            tds[tds.length - 2].childNodes[0].classList.remove("fa-check")
+            tds[tds.length - 2].childNodes[0].classList.add("fa-edit")
+            tds[tds.length - 1].childNodes[0].classList.remove("fa-times")
+            tds[tds.length - 1].childNodes[0].classList.add("fa-backspace")
+        }
+        this.setState({ delete: false })
+    }
+
+    confirmDeleteSTrans = (e) => {
         let query;
         if (e.target.getAttribute("indicator") == 1) {
             query = `
-is_shown = "false"
-WHERE
-ROW_ID = ${e.target.getAttribute("id")};
-UPDATE
-a_job_trans AS a2
-SET
-INDICATOR = 1
-WHERE
-TRANS_DATE =(
-SELECT
-    MIN(TRANS_DATE)
-FROM
-    (
-    SELECT
-        NATIONAL_ID_CARD_NO,
-        INDICATOR,
-        TRANS_DATE
-    FROM
-        a_job_trans
-    WHERE
-        NATIONAL_ID_CARD_NO = ${e.target.getAttribute("nat")} AND INDICATOR = 3
-) AS m3
-) AND NATIONAL_ID_CARD_NO = ${e.target.getAttribute("nat")}`
-
+            is_shown = "false" WHERE ROW_ID = ${e.target.getAttribute("id")};
+            UPDATE a_job_trans AS a2 SET INDICATOR = 1 WHERE TRANS_DATE =(SELECT
+            MIN(TRANS_DATE) FROM (SELECT NATIONAL_ID_CARD_NO,INDICATOR,TRANS_DATE FROM a_job_trans WHERE NATIONAL_ID_CARD_NO
+            = ${e.target.getAttribute("nat")} AND INDICATOR = 3 ) AS m3 ) AND NATIONAL_ID_CARD_NO = ${e.target.getAttribute("nat")};
+            select *, a_job_trans.SUP_BOX_NAME AS catename from a_job_trans JOIN employee JOIN job_assignment_form JOIN indicators
+            JOIN a_sup_box JOIN a_category JOIN a_job_groups ON a_job_trans.G_ID = a_job_groups.G_ID
+            AND a_category.CAT_ID = a_job_trans.CAT_ID AND a_sup_box.SUP_BOX_ID = a_job_trans.SUP_BOX_ID
+            AND a_job_trans.NATIONAL_ID_CARD_NO = employee.NATIONAL_ID_CARD_NO 
+            AND a_job_trans.JOB_ASSIGNMENT_FORM = JOB_ASSIGNMENT_FORM.JOB_ASSIGNMENT_FORM
+            AND a_job_trans.INDICATOR = indicators.INDICATOR WHERE employee.NATIONAL_ID_CARD_NO = ${e.target.getAttribute("nat")}
+            AND a_job_trans.is_shown = "true" ORDER by a_job_trans.TRANS_DATE
+            `
         }
         else if (e.target.getAttribute("indicator") == 2) {
-            query = `
-            is_shown = "false"
-        WHERE
-        ROW_ID = ${e.target.getAttribute("id")};
-        UPDATE
-            a_job_trans AS a2
-        SET
-            INDICATOR = 2
-        WHERE
-            TRANS_DATE = (
-            SELECT
-                MAX(TRANS_DATE)
-            FROM
-                ( SELECT NATIONAL_ID_CARD_NO,INDICATOR,TRANS_DATE FROM
-                a_job_trans WHERE NATIONAL_ID_CARD_NO = ${e.target.getAttribute("nat")} AND INDICATOR = 3 ) as m3
-        ) and NATIONAL_ID_CARD_NO = ${e.target.getAttribute("nat")}`
+            query = ` 
+            is_shown = "false" WHERE ROW_ID = ${e.target.getAttribute("id")};
+            UPDATE a_job_trans AS a2 SET INDICATOR = 2 WHERE TRANS_DATE = (SELECT
+            MAX(TRANS_DATE) FROM ( SELECT NATIONAL_ID_CARD_NO,INDICATOR,TRANS_DATE FROM
+            a_job_trans WHERE NATIONAL_ID_CARD_NO = ${e.target.getAttribute("nat")} AND INDICATOR = 3 ) as m3
+            ) and NATIONAL_ID_CARD_NO = ${e.target.getAttribute("nat")};
+            select *, a_job_trans.SUP_BOX_NAME AS catename from a_job_trans JOIN employee JOIN job_assignment_form JOIN indicators
+            JOIN a_sup_box JOIN a_category JOIN a_job_groups ON a_job_trans.G_ID = a_job_groups.G_ID
+            AND a_category.CAT_ID = a_job_trans.CAT_ID AND a_sup_box.SUP_BOX_ID = a_job_trans.SUP_BOX_ID
+            AND a_job_trans.NATIONAL_ID_CARD_NO = employee.NATIONAL_ID_CARD_NO 
+            AND a_job_trans.JOB_ASSIGNMENT_FORM = JOB_ASSIGNMENT_FORM.JOB_ASSIGNMENT_FORM
+            AND a_job_trans.INDICATOR = indicators.INDICATOR WHERE employee.NATIONAL_ID_CARD_NO = ${e.target.getAttribute("nat")}
+            AND a_job_trans.is_shown = "true" ORDER by a_job_trans.TRANS_DATE
+            `
         }
         else if (e.target.getAttribute("indicator") == 3) {
             query = `
-            is_shown = "false"
-        WHERE
-        ROW_ID = ${e.target.getAttribute("id")};`
+            is_shown = "false" WHERE ROW_ID = ${e.target.getAttribute("id")};
+            select *, a_job_trans.SUP_BOX_NAME AS catename from a_job_trans JOIN employee JOIN job_assignment_form JOIN indicators
+            JOIN a_sup_box JOIN a_category JOIN a_job_groups ON a_job_trans.G_ID = a_job_groups.G_ID
+            AND a_category.CAT_ID = a_job_trans.CAT_ID AND a_sup_box.SUP_BOX_ID = a_job_trans.SUP_BOX_ID
+            AND a_job_trans.NATIONAL_ID_CARD_NO = employee.NATIONAL_ID_CARD_NO 
+            AND a_job_trans.JOB_ASSIGNMENT_FORM = JOB_ASSIGNMENT_FORM.JOB_ASSIGNMENT_FORM
+            AND a_job_trans.INDICATOR = indicators.INDICATOR WHERE employee.NATIONAL_ID_CARD_NO = ${e.target.getAttribute("nat")}
+            AND a_job_trans.is_shown = "true" ORDER by a_job_trans.TRANS_DATE
+            `
         }
-
         this.props.deleteEmpTrans([query])
-
+        this.setState({ delete: false })
+        let tds = document.getElementById(e.target.getAttribute("transdate")).childNodes
+        for (let i = 0; i < tds.length; i++) {
+            tds[i].style.background = "transparent"
+            tds[tds.length - 2].childNodes[0].classList.remove("fa-check")
+            tds[tds.length - 2].childNodes[0].classList.add("fa-edit")
+            tds[tds.length - 1].childNodes[0].classList.remove("fa-times")
+            tds[tds.length - 1].childNodes[0].classList.add("fa-backspace")
+        }
+        this.setState({
+            edit: false
+        })
     }
     render() {
         let jobDgByCat = this.state.jobDgByCat
@@ -1395,7 +1420,8 @@ FROM
                         <div class="panel panel-default" style={{ width: "100%" }}>
                             <div class="panel-heading" style={{ display: "flex", width: "100%", justifyContent: "space-between" }}>
                                 <ExcelSheet colNames={colNames} data={this.handleDataSet()} />
-                                {this.props.empname && !this.state.edit && !this.state.add ? this.props.empname.length >= 1 ? <h3>  بيان بحركة السيد / {this.props.empname[0].NAME_ARABIC}</h3> : null : null || this.props.empNameByName ? this.props.empNameByName.length >= 1 ? `  ${this.props.empNameByName[0].NAME_ARABIC} ` : null : null}
+                                {/* {this.props.empname && !this.state.edit && !this.state.add ? this.props.empname.length >= 1 ? <h3>  بيان بحركة السيد / {this.props.empname[0].NAME_ARABIC}</h3> : null : null || this.props.empNameByName ? this.props.empNameByName.length >= 1 ? `  ${this.props.empNameByName[0].NAME_ARABIC} ` : null : null} */}
+                                {this.props.empTrans.length > 0 ? <h4>بيان بالتدرج الوظيفي للسيد / {this.props.empTrans[0].NAME_ARABIC}</h4> : null}
                                 <img onClick={this.showStruct} src={structure} style={{ width: 50, height: 50 }} />
 
                             </div>
@@ -1520,9 +1546,10 @@ FROM
                                                             <td>{trans.JOB_ASSIGNMENT_FORM_ARABIC}</td>
                                                             <td>{trans.G_NAME}</td>
                                                             <td>{trans.INDICATOR_NAME}</td>
-                                                            <td ><i onClick={this.state.edit ? this.handelEdit_2 : this.handelEdit_1} style={{ marginTop: 7 }} empname={trans.NAME_ARABIC} transdate={trans.TRANS_DATE} catid={trans.CAT_ID} catname={trans.CAT_NAME} mainboxid={trans.MAIN_BOX_ID} jdname={trans.MAIN_BOX_NAME} supboxid={trans.SUP_BOX_ID} supboxname={trans.SUP_BOX_NAME} jobgroup={trans.G_NAME} jasform={trans.JOB_ASSIGNMENT_FORM_ARABIC} indname={trans.INDICATOR_NAME} class="fas fa-edit"></i></td>
-                                                            <td><i onClick={this.deleteSTrans} id={trans.ROW_ID} nat={trans.NATIONAL_ID_CARD_NO} indicator={trans.INDICATOR} transdate={trans.TRANS_DATE} style={{ marginTop: 7 }} class="fas fa-backspace"></i></td>
+                                                            <td ><i onClick={this.state.delete ? this.confirmDeleteSTrans : this.state.edit ? this.handelEdit_2 : this.handelEdit_1} style={{ marginTop: 7 }} id={trans.ROW_ID} nat={trans.NATIONAL_ID_CARD_NO} indicator={trans.INDICATOR} empname={trans.NAME_ARABIC} transdate={trans.TRANS_DATE} catid={trans.CAT_ID} catname={trans.CAT_NAME} mainboxid={trans.MAIN_BOX_ID} jdname={trans.MAIN_BOX_NAME} supboxid={trans.SUP_BOX_ID} supboxname={trans.SUP_BOX_NAME} jobgroup={trans.G_NAME} jasform={trans.JOB_ASSIGNMENT_FORM_ARABIC} indname={trans.INDICATOR_NAME} class="fas fa-edit"></i></td>
+                                                            <td><i onClick={this.state.delete ? this.closeDeleteSSectionHandler : this.state.edit ? this.closeEditSectionHandler : this.deleteSTrans} id={trans.ROW_ID} nat={trans.NATIONAL_ID_CARD_NO} indicator={trans.INDICATOR} transdate={trans.TRANS_DATE} style={{ marginTop: 7 }} class="fas fa-backspace"></i></td>
                                                         </tr>
+                                                        
                                                     </tbody>
 
                                                 ))}

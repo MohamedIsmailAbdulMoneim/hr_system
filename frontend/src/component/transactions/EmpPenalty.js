@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import { getEmpName, getEmpNameByName } from "../../actions/Actions"
-import { getempspenalties } from "../../actions/TransActions"
+import { getempspenalties, deleteEmpPenalty } from "../../actions/TransActions"
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -344,6 +344,43 @@ class EmpPenalty extends React.Component {
         })
     }
 
+    deleteHandler = (e) => {
+        this.setState({ delete: true })
+        let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
+        for (let i = 0; i < tds.length; i++) {
+            tds[i].style.background = "white"
+            tds[tds.length - 2].childNodes[0].classList.remove("fa-edit")
+            tds[tds.length - 2].childNodes[0].classList.add("fa-check")
+            tds[tds.length - 1].childNodes[0].classList.remove("fa-backspace")
+            tds[tds.length - 1].childNodes[0].classList.add("fa-times")
+        }
+    }
+
+    closeDeleteSectionHandler = (e) => {
+        let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
+        for (let i = 0; i < tds.length; i++) {
+            tds[i].style.background = "transparent"
+            tds[tds.length - 2].childNodes[0].classList.remove("fa-check")
+            tds[tds.length - 2].childNodes[0].classList.add("fa-edit")
+            tds[tds.length - 1].childNodes[0].classList.remove("fa-times")
+            tds[tds.length - 1].childNodes[0].classList.add("fa-backspace")
+        }
+        this.setState({ delete: false })
+    }
+    confirmDelete = (e) => {
+        let data = [e.target.getAttribute("tableId"), e.target.getAttribute("natIdCard")]
+        this.props.deleteEmpPenalty(data)
+        this.setState({ delete: false })
+        let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
+        for (let i = 0; i < tds.length; i++) {
+            tds[i].style.background = "transparent"
+            tds[tds.length - 2].childNodes[0].classList.remove("fa-check")
+            tds[tds.length - 2].childNodes[0].classList.add("fa-edit")
+            tds[tds.length - 1].childNodes[0].classList.remove("fa-times")
+            tds[tds.length - 1].childNodes[0].classList.add("fa-backspace")
+        }
+    }
+
 
 
     render() {
@@ -559,8 +596,8 @@ class EmpPenalty extends React.Component {
                                                     <td>{this.state.edit && this.state.rowPen == emp.id ?
                                                         <input onChange={this.editPenaltyDateHandler} className="form-control" style={{ width: "70%", minWidth: "90px", margin: "0 auto" }} type="date" />
                                                         : emp.PENALTY_DATE}</td>
-                                                    <td><i onClick={this.state.edit ? this.handelEdit_2 : this.handelEdit_1} tableId={emp.id} style={{ fontSize: 20 }} empName={emp.NAME_ARABIC} penType={emp.PENALTY_TYPE_AR} penDate={emp.PENALTY_DATE} class="fas fa-edit"></i></td>
-                                                    <td><i onClick={this.state.edit ? this.closeEditSectionHandler : null} tableId={emp.id} class="fas fa-backspace"></i></td>
+                                                    <td><i onClick={ this.state.delete ? this.confirmDelete : this.state.edit ? this.handelEdit_2 : this.handelEdit_1} tableId={emp.id} style={{ fontSize: 20 }} empName={emp.NAME_ARABIC} penType={emp.PENALTY_TYPE_AR} penDate={emp.PENALTY_DATE} class="fas fa-edit"></i></td>
+                                                    <td><i onClick={this.state.delete ? this.closeDeleteSectionHandler : this.state.edit ? this.closeEditSectionHandler : this.deleteHandler} tableId={emp.id} natIdCard={emp.NATIONAL_ID_CARD_NO} class="fas fa-backspace"></i></td>
                                                 </tr>
                                             </tbody>
                                         )) : <tbody>
@@ -647,5 +684,5 @@ const mapStateToProps = (state) => {
     };
 };
 export default connect(mapStateToProps, {
-    getEmpName, getEmpNameByName, getempspenalties
+    getEmpName, getEmpNameByName, getempspenalties, deleteEmpPenalty
 })(EmpPenalty);
