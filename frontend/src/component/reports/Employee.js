@@ -25,12 +25,6 @@ class Employee extends React.Component {
     }
 
     changeHandler = (e) => {
-        let targetValLen = e.target.value
-
-        this.setState({
-            updateQuery: targetValLen
-        })
-
         if (e.target.getAttribute("colName") == "APPRAISAL") {
             if (e.target.value.length < 1) {
                 this.setState({
@@ -85,6 +79,7 @@ class Employee extends React.Component {
             }
         } else {
             if (e.target.value.length < 1) {
+                console.log(this.state.mainUpdateQuery);
                 let removedArrOfApQ = [...this.state.mainUpdateQuery]
                 if (removedArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName"))) != -1) {
                     let removedIndex = removedArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName")))
@@ -576,7 +571,7 @@ class Employee extends React.Component {
 
 
     render() {
-        console.log(this.state.jtUpdateQuery);
+        console.log(this.state.mainUpdateQuery);
         let marStatus = ["اعزب",
             "متزوج",
             "متزوج ويعول",

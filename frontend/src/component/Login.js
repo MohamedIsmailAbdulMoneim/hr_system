@@ -4,6 +4,9 @@ import { connect } from "react-redux";
 import {
      getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox, getUpJd, gitDownJd, getQn
 } from "../actions/Actions";
+import {
+    login,
+} from "../actions/AuthActions";
 import axios from "axios"
 
 class Login extends Component {
@@ -33,20 +36,12 @@ class Login extends Component {
             uname: this.state.username,
             pw: this.state.password,
         };
-        axios({
-            method: "POST",
-            data: fd,
-            withCredentials: true,
-            url: "http://localhost:5000/login",
-            headers: { "Content-Type": "application/json" },
-        }).then((res) => {
-            console.log(res.data);
-        })
+        this.props.login(fd)
+
     }
 
     render() {
         return (
-
             <div class="row">
                 <div class="col-md-4 col-md-offset-4">
                     <div class="login-panel panel panel-default">
@@ -87,5 +82,5 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, {
-     getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox, getUpJd, gitDownJd, getQn
+     getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox, getUpJd, gitDownJd, getQn,login
 })(Login);

@@ -14,11 +14,32 @@ import Pagination from "../Pagination";
 class EmpsAppraisal extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { confirmAdd: false, showMsg: false, errorAdd: false, empAppraisal: "null",
-        appraisalYear: "null", rowAppraisal: false, add: false, edit: false, empid: null, empname: null,
-        empnat: null, showNamesResults: false, updated: false, firstArg: 0, secondArg: 20, currentPage: 1,
-        firstArgPerBtn: 0, secondArgPerBtn: 10, delete: false
-     };
+        this.state = {
+            confirmAdd: false, showMsg: false, errorAdd: false, empAppraisal: "",
+            appraisalYear: "null", rowAppraisal: false, add: false, edit: false, empid: "", empname: "",
+            empnat: null, showNamesResults: false, updated: false, firstArg: 0, secondArg: 20, currentPage: 1,
+            firstArgPerBtn: 0, secondArgPerBtn: 10, delete: false, selectQuery: ""
+        };
+    }
+
+    selectQueryHandler = (e) => {
+        console.log('hit');
+
+        
+        // let nameOrId;
+        // if (this.refs.name.value.length > 0) {
+        //     nameOrId = `NATIONAL_ID_CARD_NO = (SELECT NATIONAL_ID_CARD_NO FROM employee WHERE NAME_ARABIC = "${this.state.empnameadd}")`
+        // } else if (this.state.empid) {
+        //     nameOrId = `NATIONAL_ID_CARD_NO (SELECT NATIONAL_ID_CARD_NO FROM employee WHERE EMPLOYEE_ID = ${this.state.empidadd})`
+        // }
+
+        if(e.target.getAttribute("colName") == "APPRAISAL_DATE"){
+            let clonedState = this.state.selectQuery
+            if(clonedState.search(`${e.target.getAttribute("colName")} ${e.target.value}`)){
+                
+            }
+        }
+
     }
 
     changeArgs = (i) => (e) => {
@@ -34,25 +55,6 @@ class EmpsAppraisal extends React.Component {
 
         }
 
-    }
-
-    namesOptionshandlerForAdd = (e) => {
-        this.setState({
-            empnameForAdd: e.target.value, empidForAdd: null
-        })
-        if (this.refs.nameadd) this.refs.nameadd.value = e.target.value
-    }
-
-    namesOptionshandlerForSearch = (e) => {
-        this.refs.name.value = e.target.value
-        this.props.getEmpFamily("", e.target.value)
-        this.setState({ showFamilyResult: true, showMaritalstate: true })
-    }
-
-    namesOptionshandler = (e) => {
-        document.getElementById('empname').value = e.target.value
-        if (document.getElementById('nameinputadd')) document.getElementById('nameinputadd').value = e.target.value
-        this.setState({ showFamilyResult: true, empname: e.target.value })
     }
 
     addButtonClickHandeler = (e) => {
@@ -85,11 +87,12 @@ class EmpsAppraisal extends React.Component {
 
     idInputAddHandler = (e) => {
         this.setState({ empid: e.target.value })
+        this.refs.empnameAdd.value = ''
     }
 
     nameInputAddHandler = (e) => {
         this.setState({ empname: e.target.value })
-
+        this.refs.empidAdd.value = ''
     }
 
     submitButtonHandler = (e) => {
@@ -116,17 +119,36 @@ class EmpsAppraisal extends React.Component {
     }
 
     idInputHandler = (e) => {
+        this.setState({ empid: e.target.value })
+        this.refs.name.value = ''
+        // if (this.refs.searchbox) {
 
-        this.props.getEmpName(e.target.value)
-        this.setState({ showStruct: false, showStructWAdd: false, edit: false, empid: e.target.value, showTransResult: true, showMaritalstate: true })
-
+        //     this.refs.searchbox.options.selectedIndex = 0
+        // }
     }
     nameInputHandler = (e) => {
-        this.setState({ showNamesResults: true })
+        this.setState({ showNamesResultsForSearch: true })
         this.props.getEmpNameByName(e.target.value)
         this.refs.empid.value = ''
+        console.log(e.target.value);
 
     }
+
+    namesOptionshandlerForAdd = (e) => {
+        this.setState({
+            empnameForAdd: e.target.value, empidForAdd: null
+        })
+        if (this.refs.nameadd) this.refs.nameadd.value = e.target.value
+    }
+
+    namesOptionshandlerForSearch = (e) => {
+        this.refs.name.value = e.target.value
+        this.setState({ empname: e.target.value })
+        console.log(e.target.value);
+
+    }
+
+
     handelAppraisal = (e) => {
         e.preventDefault()
         this.setState({ empAppraisal: e.target.value })
@@ -288,13 +310,26 @@ class EmpsAppraisal extends React.Component {
                                     <div style={{ display: "flex", justifyContent: "space-around" }}>
                                         <div className="form-group" controlId="formBasicEmail">
                                             <label style={{ width: "100%", textAlign: "right" }}>رقم الأداء : </label>
-                                            <input onChange={this.idInputAddHandler} className="form-control" style={{ width: "100%", minWidth: "250px" }} onKeyDown={this.nameInputHandler} type="text" />
+                                            <input ref={"empidAdd"} onChange={this.idInputAddHandler} className="form-control" style={{ width: "100%", minWidth: "250px" }} type="text" />
                                         </div>
                                         <div className="form-group" controlId="formBasicEmail">
                                             <label style={{ width: "100%", textAlign: "right" }}>الأسم : </label>
-                                            <input onKeyDown={this.nameInputAddHandler} id="nameinputadd" className="form-control" style={{ width: "100%", minWidth: "250px" }} onChange={this.nameInputHandler} type="text" />
+                                            <input ref={'empnameAdd'} onKeyDown={this.nameInputAddHandler} id="nameinputadd" className="form-control" style={{ width: "100%", minWidth: "250px" }} type="text" />
                                         </div>
                                     </div>
+                                    {
+                                        this.state.showNamesResultsForAdd ?
+                                            <div style={{ marginRight: 20, display: "flex", justifyContent: "center", alignItems: "center", marginLeft: 40 }}>
+                                                <div></div>
+                                                <select className="add" onClick={this.namesOptionshandlerForAdd} style={{ marginTop: 20, marginRight: 15, marginBottom: 5, width: "40%", background: "transparent", border: "none" }} multiple name="pets" id="pet-select">
+                                                    {this.props.empNameByName.map((name => (
+                                                        <option>{name.NAME_ARABIC}</option>
+                                                    )))}
+                                                </select>
+                                                <div></div>
+                                            </div>
+                                            : null
+                                    }
                                     <div style={{ display: "flex", justifyContent: "space-around" }}>
                                         <div className="form-group" controlId="formBasicEmail">
                                             <label style={{ width: "100%", textAlign: "right" }}>التقدير : </label>
@@ -307,7 +342,7 @@ class EmpsAppraisal extends React.Component {
                                         </div>
                                         <div className="form-group" controlId="formBasicEmail">
                                             <label style={{ width: "100%", textAlign: "right" }}>السنة : </label>
-                                            <input onChange={this.handelYear} className="form-control" style={{ width: "100%", minWidth: "250px" }} onKeyDown={this.nameInputHandler} type="text" />
+                                            <input onChange={this.handelYear} className="form-control" style={{ width: "100%", minWidth: "250px" }} type="text" />
                                         </div>
                                     </div>
                                     <button onClick={this.submitButtonHandler} style={{ width: "92%", margin: "0 auto" }} type="button" class="btn btn-primary btn-block">إضافة تقييم جديد</button>
@@ -320,16 +355,6 @@ class EmpsAppraisal extends React.Component {
                         </div>
 
                     </Fragment> : null
-                }
-                {
-                    this.state.showNamesResults ?
-                        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}>
-                            <select onClick={this.namesOptionshandler} style={styles} multiple name="pets" id="pet-select">
-                                {this.props.empNameByName.map((name => (
-                                    <option>{name.NAME_ARABIC}</option>
-                                )))}
-                            </select>
-                        </div> : null
                 }
 
                 <div class="row">
@@ -349,11 +374,11 @@ class EmpsAppraisal extends React.Component {
                                 <div style={{ display: "flex", justifyContent: "space-between" }}>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>رقم الأداء : </label>
-                                        <input id="empid" ref="empid" className="form-control" onKeyDown={this.idInputHandler} style={{ background: "white", width: "40%", marginBottom: 5, marginRight: 5, border: "1px solid black" }} type="text" name="first_name" />
+                                        <input id="empid" ref="empid" className="form-control" colName={"NATIONAL_ID_CARD_NO"} onKeyDown={this.idInputHandler} style={{ background: "white", width: "40%", marginBottom: 5, marginRight: 5, border: "1px solid black" }} type="text" name="first_name" />
                                     </div>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>الإسم : </label>
-                                        <input id="name" id="empname" className="form-control" onKeyUp={this.nameInputHandler} style={{ background: "white", width: "100%", minWidth: "250px", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
+                                        <input ref="name" id="empname" className="form-control" colName={"NATIONAL_ID_CARD_NO"} onKeyUp={this.nameInputHandler} style={{ background: "white", width: "100%", minWidth: "250px", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
                                     </div>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}></label>
@@ -366,7 +391,7 @@ class EmpsAppraisal extends React.Component {
                             <div style={{ display: "flex", justifyContent: "space-around" }}>
                                 <div className="form-group" controlId="formBasicEmail">
                                     <label style={{ width: "80%", textAlign: "right" }}>السنة : </label>
-                                    <select id="year1" style={{ width: "80%", height: 30 }} onKeyDown={this.handelYear}>
+                                    <select colName={"APPRAISAL_DATE"} id="year1" style={{ width: "80%", height: 30 }} onChange={this.selectQueryHandler}>
                                         {dates.map(year => (
                                             <option year={year} >{year}</option>
                                         ))}
@@ -376,7 +401,7 @@ class EmpsAppraisal extends React.Component {
                                 </div>
                                 <div className="form-group" controlId="formBasicEmail">
                                     <label style={{ width: "80%", textAlign: "right" }}>التقدير : </label>
-                                    <select id="empapp" style={{ width: "80%", height: 30 }}>
+                                    <select colName={"APPRAISAL"} id="empapp" style={{ width: "80%", height: 30 }} onChange={this.selectQueryHandler}>
                                         {appraisals.map(apprsl => (
                                             <option>{apprsl}</option>
                                         ))}
@@ -395,6 +420,19 @@ class EmpsAppraisal extends React.Component {
                                     </select>
                                 </div>
                             </div>
+                            {
+                                this.state.showNamesResultsForSearch ?
+                                    <div style={{ marginRight: 20, display: "flex", justifyContent: "center", alignItems: "center", marginLeft: 40 }}>
+                                        <div></div>
+                                        <select ref={"searchbox"} onClick={this.namesOptionshandlerForSearch} style={{ marginTop: 20, marginRight: 15, marginBottom: 5, width: "40%", background: "transparent", border: "none" }} multiple name="pets" id="pet-select">
+                                            {this.props.empNameByName.map((name => (
+                                                <option>{name.NAME_ARABIC}</option>
+                                            )))}
+                                        </select>
+                                        <div></div>
+                                    </div>
+                                    : null
+                            }
                         </div>
                     </div>
                 </div>
@@ -428,7 +466,7 @@ class EmpsAppraisal extends React.Component {
                                                     </select> : this.state.updated && this.state.rowAppraisal == emp.id ? this.state.empAppraisal : emp.APPRAISAL_ARABIC}</td>
                                                     <td style={{ width: "10%" }}>{this.state.edit && this.state.rowAppraisal == emp.id ? <input onChange={this.handelYear} value={this.state.appraisalYear} className="form-control" style={{ width: "100%" }} type="text" /> :
                                                         this.state.updated && this.state.rowAppraisal == emp.id ? this.state.appraisalYear : emp.APPRAISAL_DATE}</td>
-                                                    <td><i onClick={ this.state.delete ? this.confirmDelete : this.state.edit ? this.handelEdit_2 : this.handelEdit_1} tableId={emp.id} style={{ fontSize: 20 }} empName={emp.NAME_ARABIC} empApp={emp.APPRAISAL_ARABIC} empDate={emp.APPRAISAL_DATE} empnatid={emp.NATIONAL_ID_CARD_NO} class="fas fa-edit"></i></td>
+                                                    <td><i onClick={this.state.delete ? this.confirmDelete : this.state.edit ? this.handelEdit_2 : this.handelEdit_1} tableId={emp.id} style={{ fontSize: 20 }} empName={emp.NAME_ARABIC} empApp={emp.APPRAISAL_ARABIC} empDate={emp.APPRAISAL_DATE} empnatid={emp.NATIONAL_ID_CARD_NO} class="fas fa-edit"></i></td>
                                                     <td><i onClick={this.state.delete ? this.closeDeleteSectionHandler : this.state.edit ? this.closeEditSectionHandler : this.deleteHandler} tableId={emp.id} empnatid={emp.NATIONAL_ID_CARD_NO} class="fas fa-backspace"></i></td>
                                                 </tr>
                                             </tbody>
@@ -463,5 +501,5 @@ const mapStateToProps = (state) => {
     };
 };
 export default connect(mapStateToProps, {
-    getEmpByDeps, getEmpAppraisal, getEmpName, getEmpNameByName, newAppraisal, updateEmpAppraisal,deleteEmpAppraisal
+    getEmpByDeps, getEmpAppraisal, getEmpName, getEmpNameByName, newAppraisal, updateEmpAppraisal, deleteEmpAppraisal
 })(EmpsAppraisal);

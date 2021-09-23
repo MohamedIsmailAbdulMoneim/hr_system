@@ -23,7 +23,7 @@ export const loadUser = () => (dispatch, getState) => {
         payload: res.data
     })).catch(err => {
         console.log(err);
-        // dispatch(returnErrors(err.response.data, err.response.status))
+        dispatch(returnErrors(err.response.data, err.response.status))
         dispatch({
             type: AUTH_ERROR
         })
@@ -55,10 +55,27 @@ export const register = ({ uname, pw }) => (dispatch) => {
 
 }
 
+export const login = (fd) => (dispatch) => {
+
+    axios({
+        method: "POST",
+        data: fd,
+        withCredentials: true,
+        url: "http://localhost:5000/login",
+        headers: { "Content-Type": "application/json" },
+    }).then((res) => {
+        dispatch({
+            type:LOGIN_SUCCESS,
+            payload: {
+                id: res.data.data.id,
+                token: res.data.data.token
+            }
+        })
+    })
+}
+
 export const tokenConfig = getState => {
     const token = getState().auth.token
-
-
     const config = {
         headers: {
             "Content-type": "application/json"
