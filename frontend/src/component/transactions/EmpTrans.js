@@ -658,7 +658,7 @@ class EmpTrans extends React.Component {
     }
 
     deleteSTrans = (e) => {
-        this.setState({delete: true})
+        this.setState({ delete: true })
         let tds = document.getElementById(e.target.getAttribute("transdate")).childNodes
         for (let i = 0; i < tds.length; i++) {
             tds[i].style.background = "white"
@@ -847,8 +847,6 @@ class EmpTrans extends React.Component {
                                                                 {job.J_D_NAME}
                                                             </option>
                                                         )) : null : null}
-
-                                                        // )) : null : null }
                                                         <option selected>اختر ...</option>
 
                                                     </select>
@@ -1549,7 +1547,7 @@ class EmpTrans extends React.Component {
                                                             <td ><i onClick={this.state.delete ? this.confirmDeleteSTrans : this.state.edit ? this.handelEdit_2 : this.handelEdit_1} style={{ marginTop: 7 }} id={trans.ROW_ID} nat={trans.NATIONAL_ID_CARD_NO} indicator={trans.INDICATOR} empname={trans.NAME_ARABIC} transdate={trans.TRANS_DATE} catid={trans.CAT_ID} catname={trans.CAT_NAME} mainboxid={trans.MAIN_BOX_ID} jdname={trans.MAIN_BOX_NAME} supboxid={trans.SUP_BOX_ID} supboxname={trans.SUP_BOX_NAME} jobgroup={trans.G_NAME} jasform={trans.JOB_ASSIGNMENT_FORM_ARABIC} indname={trans.INDICATOR_NAME} class="fas fa-edit"></i></td>
                                                             <td><i onClick={this.state.delete ? this.closeDeleteSSectionHandler : this.state.edit ? this.closeEditSectionHandler : this.deleteSTrans} id={trans.ROW_ID} nat={trans.NATIONAL_ID_CARD_NO} indicator={trans.INDICATOR} transdate={trans.TRANS_DATE} style={{ marginTop: 7 }} class="fas fa-backspace"></i></td>
                                                         </tr>
-                                                        
+
                                                     </tbody>
 
                                                 ))}

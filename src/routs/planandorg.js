@@ -154,11 +154,12 @@ function getEmpTrans(req, res, next) {
     const empname = req.query.empname
 
     let query = `select *, a_job_trans.SUP_BOX_NAME AS catename from a_job_trans JOIN employee JOIN job_assignment_form JOIN indicators JOIN a_sup_box JOIN a_category JOIN a_job_groups ON a_job_trans.G_ID = a_job_groups.G_ID AND a_category.CAT_ID = a_job_trans.CAT_ID AND a_sup_box.SUP_BOX_ID = a_job_trans.SUP_BOX_ID AND a_job_trans.NATIONAL_ID_CARD_NO = employee.NATIONAL_ID_CARD_NO AND a_job_trans.JOB_ASSIGNMENT_FORM = JOB_ASSIGNMENT_FORM.JOB_ASSIGNMENT_FORM AND a_job_trans.INDICATOR = indicators.INDICATOR WHERE ${empid.length !== 0 ? `employee.EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `employee.NAME_ARABIC = "${empname}"` : null} AND a_job_trans.is_shown = "true" ORDER by a_job_trans.TRANS_DATE`
-    
+
     db.query(query, (err, details) => {
         if (err) {
             next(err);
         } else {
+            console.log(query);
             res.send(details);
         }
     })
@@ -234,7 +235,7 @@ function getEmpFamily(req, res, next) {
     JOIN(SELECT employee.EMPLOYEE_ID, employee.NAME_ARABIC, employee.NATIONAL_ID_CARD_NO FROM employee) AS detofemp
     ON employee_family_member.NATIONAL_ID_CARD_NO = detofemp.NATIONAL_ID_CARD_NO WHERE
     ${empid.length !== 0 ? `detofemp.EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ?
-    `detofemp.NAME_ARABIC = "${empname}"` : null} and employee_family_member.is_shown = "true" `
+            `detofemp.NAME_ARABIC = "${empname}"` : null} and employee_family_member.is_shown = "true" `
     db.query(query, (err, details) => {
         if (err) {
             next(err);
@@ -254,10 +255,10 @@ function postnewtrans(req, res, next) {
     let curIndicator = data[0][0].substring(0) == "أصلية" ? 1 : data[0][0].substring(0) == "حالية" ? 2 : data[0][0].substring(0) == "سابقة" ? 3 : null
     let nextIndicator = curIndicator == 1 ? 3 : curIndicator == 2 ? 3 : curIndicator == 3 ? 3 : null
 
-    data[0].splice(0,1)
+    data[0].splice(0, 1)
 
 
-    
+
     query =
         `   update a_job_trans set INDICATOR = ${nextIndicator} WHERE INDICATOR = ${curIndicator} AND NATIONAL_ID_CARD_NO = ${nameOrId};
     INSERT INTO a_job_trans(
@@ -394,7 +395,7 @@ function newEmpExp(req, res, next) {
             next(err);
             res.json({ data: null, msg: "يوجد خطاء بقاعدة البيانات" });
         } else {
-        
+
             res.json({ data: data, msg: "تم إدخال البيانات بنجاح" });
         }
 
@@ -573,7 +574,7 @@ function editEmpEdu(req, res, next) {
     })
 }
 
-function getEmpTraining(req,res,next){
+function getEmpTraining(req, res, next) {
     let nameOrId = req.query.nameOrId
     let query = `SELECT employee.NAME_ARABIC, employee_training.NATIONAL_ID_CARD_NO, employee_training.id ,employee_training.TRAINING_PROGRAM_ARABIC,employee_training.TRAINING_COMPLETION_DATE,TRAINING_TYPE.TRAINING_TYPE_NAME,LOCATION_TYPE.LOCATION_TYPE_NAME FROM employee_training JOIN TRAINING_TYPE JOIN LOCATION_TYPE JOIN employee ON
     employee.NATIONAL_ID_CARD_NO = employee_training.NATIONAL_ID_CARD_NO AND employee_training.TRAINING_TYPE = training_type.TRAINING_TYPE AND
@@ -591,7 +592,7 @@ function getEmpTraining(req,res,next){
 
 }
 
-function deleteEmpTraining(req,res,next){
+function deleteEmpTraining(req, res, next) {
     let data = req.body
     let id = data[0]
     let nat = data[1]
@@ -617,7 +618,7 @@ function deleteEmpTraining(req,res,next){
 
 }
 
-function deleteEmpFamily(req,res,next){
+function deleteEmpFamily(req, res, next) {
     let data = req.body
     let id = data[0]
     let nat = data[1]
@@ -640,7 +641,7 @@ function deleteEmpFamily(req,res,next){
     })
 }
 
-function deletePenalty(req,res,next){
+function deletePenalty(req, res, next) {
     let id = req.query.id
     let query = `UPDATE employee_penalty SET is_shown = "false" where id = ${id}`
 
@@ -656,10 +657,10 @@ function deletePenalty(req,res,next){
     })
 }
 
-function deleteTrans(req,res,next){
-let data = req.body
-let query = `UPDATE a_job_trans SET ${data}`
-console.log(data);
+function deleteTrans(req, res, next) {
+    let data = req.body
+    let query = `UPDATE a_job_trans SET ${data}`
+    console.log(data);
 
     db.query(query, (err, data) => {
         if (err) {
@@ -676,7 +677,7 @@ console.log(data);
 }
 
 
-function deleteAppraisal(req,res,next){
+function deleteAppraisal(req, res, next) {
     let data = req.body
     let id = data[0]
     let nat = data[1]
@@ -696,13 +697,13 @@ function deleteAppraisal(req,res,next){
 }
 
 
-function deleteExperience(req,res,next){
+function deleteExperience(req, res, next) {
     let data = req.body
     let id = data[0]
     let expType = data[1]
     let nat = data[2]
 
-        let query = `
+    let query = `
     UPDATE employee_experince SET is_shown = "false" where id = ${id};
     SELECT * FROM employee_experince WHERE EXP_TYP_CODE = ${expType} AND NATIONAL_ID_CARD_NO = ${nat} AND is_shown = "true";
     `
@@ -719,7 +720,7 @@ function deleteExperience(req,res,next){
     })
 }
 
-function deleteEdu(req,res,next){
+function deleteEdu(req, res, next) {
     let id = req.query.id
     let query = `
     UPDATE employee_education_degree SET is_shown = "false" where id = ${id};
@@ -763,19 +764,19 @@ router
     .get('/getempexp', getEmpExprerience)
     .post('/newempexp', newEmpExp)
     .put('/editempexp', editEmpExp)
-    .put('/deleteexp',deleteExperience)
+    .put('/deleteexp', deleteExperience)
     .post('/newbulktrans', postBulkTrans)
     .post('/newfamily', newFamily)
     .put('/editfamily', editFamily)
-    .put('/deleteempfamily',deleteEmpFamily)
+    .put('/deleteempfamily', deleteEmpFamily)
     .post('/postnewpenalty', postNewPenalty)
     .get('/getempspenalties', getEmpsPenalties)
     .put('/updatepenalty', updatePenalty)
     .put('/deletepenalty', deletePenalty)
     .get('/getemptraining', getEmpTraining)
-    .put('/deleteemptraining',deleteEmpTraining)
+    .put('/deleteemptraining', deleteEmpTraining)
     .post('/postnewtraining', postNewTraining)
     .post('/postnewempedu', postNewEmpEdu)
-    
+
 
 module.exports = router;
