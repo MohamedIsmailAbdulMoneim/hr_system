@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import {
-    getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox, getUpJd, gitDownJd
+    getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox, getUpJd, gitDownJd, getStations
 } from "../../actions/Actions";
 import { updateEmpTrans, getEmpTrans, insertNewTrans, deleteEmpTrans } from "../../actions/TransActions";
 import { connect } from "react-redux";
@@ -20,6 +20,7 @@ class EmpTrans extends React.Component {
         super(props);
         this.state = {
             addDate: [" "], catnameAdd: [" "], jdNameAdd: [" "], addSupbox: [" "], addGName: [" "], addJasi: [" "], addInd: [" "],
+            addStation: [" "],
             trnasLength: 0, catnameChanged: false, rowTrans: null, editConfirmed: false,
             confirmAdd: false, showDateUnlessEdit: true, showTransResult: true, add: false,
             edit: false, empid: null, empname: null, transdate: null, jdname: null,
@@ -117,7 +118,8 @@ class EmpTrans extends React.Component {
                         addJasi: [...this.state.addJasi, " "],
                         addInd: [...this.state.addInd, " "],
                         jobDgByCat: [...this.state.jobDgByCat, { data: [" "], IdNum: prevState.trnasLength + 1 }],
-                        empavailsup: [...this.state.empavailsup, { data: [" "], IdNumSP: prevState.trnasLength + 1 }]
+                        empavailsup: [...this.state.empavailsup, { data: [" "], IdNumSP: prevState.trnasLength + 1 }],
+                        addStation: [...this.state.addStation, " "]
 
 
                     }
@@ -142,10 +144,55 @@ class EmpTrans extends React.Component {
                     jobDgByCat: [...this.state.jobDgByCat, { data: [" "], IdNum: prevState.trnasLength + 1 }],
                     empavailsup: [...this.state.empavailsup, { data: [" "], IdNumSP: prevState.trnasLength + 1 }],
 
+
                 }
             })
         }
 
+    }
+
+    deleteTrans = (e) => {
+        e.preventDefault()
+        // catnameAdd: [], jdNameAdd: [], addSupbox: [], addGName: [], addJasi: [], addInd: []
+        let newArrOfDate = [...this.state.addDate]
+        let newArrOfCat = [...this.state.catnameAdd]
+        let newArrOfJd = [...this.state.jdNameAdd]
+        let newArrOfSupBox = [...this.state.addSupbox]
+        let newArrOfGname = [...this.state.addGName]
+        let newArrOfJasi = [...this.state.addJasi]
+        let newArrOfInd = [...this.state.addInd]
+        let newArrOfJobDgByCat = [...this.state.jobDgByCat]
+        let newArrOfempavailsup = [...this.state.empavailsup]
+        let newArrOfStation = [...this.state.addStation]
+
+        newArrOfDate.pop()
+        newArrOfCat.pop()
+        newArrOfJd.pop()
+        newArrOfSupBox.pop()
+        newArrOfGname.pop()
+        newArrOfJasi.pop()
+        newArrOfInd.pop()
+        newArrOfJobDgByCat.pop()
+        newArrOfempavailsup.pop()
+        newArrOfStation.pop()
+
+        if (this.state.trnasLength !== 0) {
+            this.setState(prevState => {
+                return {
+                    trnasLength: prevState.trnasLength - 1,
+                    addDate: newArrOfDate,
+                    catnameAdd: newArrOfCat,
+                    jdNameAdd: newArrOfJd,
+                    addSupbox: newArrOfSupBox,
+                    addGName: newArrOfGname,
+                    addJasi: newArrOfJasi,
+                    addInd: newArrOfInd,
+                    jobDgByCat: newArrOfJobDgByCat,
+                    empavailsup: newArrOfempavailsup,
+                    addStation: newArrOfStation,
+                }
+            })
+        }
     }
 
     addCatClickHandeler = (e) => {
@@ -252,20 +299,32 @@ class EmpTrans extends React.Component {
 
     }
 
+    addStationClickeHandeler = (e) => {
+        let nodes = document.getElementsByClassName("station");
+        let index = Array.prototype.indexOf.call(nodes, e.target);
+        let newArr = this.state.addStation.slice()
+        newArr[index] = { value: e.target.value, key: index }
+        this.setState({
+            addStation: newArr
+        })
+    }
+
     handleArrToSend = (e) => {
         e.preventDefault()
         var state = this.state
-        var arrays = state.addDate.concat(state.catnameAdd, state.jdNameAdd, state.addSupbox, state.addGName, state.addJasi, state.addInd)
+        var arrays = state.addDate.concat(state.catnameAdd, state.jdNameAdd, state.addSupbox, state.addGName, state.addJasi, state.addInd, state.addStation)
         var emptyInputs = arrays.find(i => i.length <= 1) || null
         let arr = []
+        console.log(arrays);
 
         if (emptyInputs != undefined) {
             console.log('hit');
         } else if (emptyInputs == undefined && (this.state.empnameForAdd || this.state.empidForAdd)) {
-            let i = arrays.length / 7
+            let i = arrays.length / 8
             while (i > 0) {
                 let smallArr = []
                 var arrloop = arrays.filter(el => el.key == i - 1)
+                console.log(arrloop);
                 let nameOrId;
                 if (this.state.empnameForAdd) {
                     nameOrId = `((SELECT NATIONAL_ID_CARD_NO FROM employee WHERE NAME_ARABIC = "${this.state.empnameForAdd}")`
@@ -284,6 +343,9 @@ class EmpTrans extends React.Component {
                 smallArr.push(`"${arrloop[1].value}"`)
                 smallArr.push(`(SELECT JOB_ASSIGNMENT_FORM FROM JOB_ASSIGNMENT_FORM WHERE JOB_ASSIGNMENT_FORM_ARABIC = "${arrloop[5].value}")`)
                 smallArr.push(`(SELECT INDICATOR FROM indicators WHERE INDICATOR_NAME = "${arrloop[6].value}")`)
+                smallArr.push(`(SELECT id FROM stations WHERE station_name = "${arrloop[7].value}")`)
+                smallArr.push(`(SELECT area_id FROM stations WHERE station_name = "${arrloop[7].value}" )`)
+                smallArr.push(`(SELECT GOVERNORATE_ID FROM stations WHERE station_name = "${arrloop[7].value}")`)
                 smallArr.push(`"${arrloop[2].value}")`)
                 arr.push(smallArr)
                 i--
@@ -340,6 +402,8 @@ class EmpTrans extends React.Component {
             document.getElementsByTagName('select')[index].selectedIndex = document.getElementsByTagName('select')[index].options.length - 1
         }
     }
+
+
 
     closeAddConfirmHandler = (e) => {
         this.setState({ addConfirmed: false })
@@ -449,7 +513,6 @@ class EmpTrans extends React.Component {
                 this.refs.insertName.placeholder = ''
             }
         }
-
         this.setState({ showTransResult: false })
         if (e.key === 'Enter') {
             this.props.getEmpName(e.target.value)
@@ -478,6 +541,7 @@ class EmpTrans extends React.Component {
     }
 
     addNewButtonClickHandeler = () => {
+        this.props.getStations()
         this.setState({ add: true })
         this.setState({ empid: null, empname: null, transdate: null, catname: null, jdname: null, supboxname: null, gname: null, jasi: null, indname: null, shoshowStructWAddw: false, showStruct: false, showNamesResults: false })
     }
@@ -615,48 +679,6 @@ class EmpTrans extends React.Component {
     }
 
 
-
-    deleteTrans = (e) => {
-        e.preventDefault()
-        // catnameAdd: [], jdNameAdd: [], addSupbox: [], addGName: [], addJasi: [], addInd: []
-        let newArrOfDate = [...this.state.addDate]
-        let newArrOfCat = [...this.state.catnameAdd]
-        let newArrOfJd = [...this.state.jdNameAdd]
-        let newArrOfSupBox = [...this.state.addSupbox]
-        let newArrOfGname = [...this.state.addGName]
-        let newArrOfJasi = [...this.state.addJasi]
-        let newArrOfInd = [...this.state.addInd]
-        let newArrOfJobDgByCat = [...this.state.jobDgByCat]
-        let newArrOfempavailsup = [...this.state.empavailsup]
-
-
-        newArrOfDate.pop()
-        newArrOfCat.pop()
-        newArrOfJd.pop()
-        newArrOfSupBox.pop()
-        newArrOfGname.pop()
-        newArrOfJasi.pop()
-        newArrOfInd.pop()
-        newArrOfJobDgByCat.pop()
-        newArrOfempavailsup.pop()
-        if (this.state.trnasLength !== 0) {
-            this.setState(prevState => {
-                return {
-                    trnasLength: prevState.trnasLength - 1,
-                    addDate: newArrOfDate,
-                    catnameAdd: newArrOfCat,
-                    jdNameAdd: newArrOfJd,
-                    addSupbox: newArrOfSupBox,
-                    addGName: newArrOfGname,
-                    addJasi: newArrOfJasi,
-                    addInd: newArrOfInd,
-                    jobDgByCat: newArrOfJobDgByCat,
-                    empavailsup: newArrOfempavailsup
-                }
-            })
-        }
-    }
-
     deleteSTrans = (e) => {
         this.setState({ delete: true })
         let tds = document.getElementById(e.target.getAttribute("transdate")).childNodes
@@ -757,9 +779,6 @@ class EmpTrans extends React.Component {
         let fifthRenderSp = empavailsup.filter(el => el.IdNumSP == "4" && el.data.length >= 1)
         let sixthRenderSp = empavailsup.filter(el => el.IdNumSP == "5" && el.data.length >= 1)
 
-
-
-
         const styles = {
             display: "block",
             padding: "0.375rem 2.25rem 0.375rem 0.75rem",
@@ -818,6 +837,7 @@ class EmpTrans extends React.Component {
                                                 <th>نوع التخصص</th>
                                                 <th>طريقة شغل الوظيفة</th>
                                                 <th>حالة الوظيفة</th>
+                                                <th>المحطة</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -903,6 +923,15 @@ class EmpTrans extends React.Component {
                                                         <option>حالية</option>
                                                         <option>سابقة</option>
                                                         <option selected>اختر  ...</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select className="station" onChange={this.addStationClickeHandeler}>
+                                                        {this.props.stations.map(station => (
+                                                            <option>
+                                                                {station.station_name}
+                                                            </option>
+                                                        ))}
                                                     </select>
                                                 </td>
                                             </tr>
@@ -991,6 +1020,15 @@ class EmpTrans extends React.Component {
                                                                 <option selected>اختر  ...</option>
                                                             </select>
                                                         </td>
+                                                        <td>
+                                                            <select>
+                                                                {this.props.stations.map(station => (
+                                                                    <option>
+                                                                        {station.station_name}
+                                                                    </option>
+                                                                ))}
+                                                            </select>
+                                                        </td>
                                                     </tr>
                                                 </Fragment> : null}
                                             {this.state.trnasLength > 1 ?
@@ -1074,6 +1112,15 @@ class EmpTrans extends React.Component {
                                                                 <option>حالية</option>
                                                                 <option>سابقة</option>
                                                                 <option selected>اختر  ...</option>
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <select onChange={this.addStationClickeHandeler}>
+                                                                {this.props.stations.map(station => (
+                                                                    <option>
+                                                                        {station.station_name}
+                                                                    </option>
+                                                                ))}
                                                             </select>
                                                         </td>
                                                     </tr>
@@ -1161,6 +1208,15 @@ class EmpTrans extends React.Component {
                                                                 <option selected>اختر  ...</option>
                                                             </select>
                                                         </td>
+                                                        <td>
+                                                            <select onChange={this.addStationClickeHandeler}>
+                                                                {this.props.stations.map(station => (
+                                                                    <option>
+                                                                        {station.station_name}
+                                                                    </option>
+                                                                ))}
+                                                            </select>
+                                                        </td>
                                                     </tr>
                                                 </Fragment> : null}
                                             {this.state.trnasLength > 3 ?
@@ -1244,6 +1300,15 @@ class EmpTrans extends React.Component {
                                                                 <option>حالية</option>
                                                                 <option>سابقة</option>
                                                                 <option selected>اختر  ...</option>
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <select onChange={this.addStationClickeHandeler}>
+                                                                {this.props.stations.map(station => (
+                                                                    <option>
+                                                                        {station.station_name}
+                                                                    </option>
+                                                                ))}
                                                             </select>
                                                         </td>
                                                     </tr>
@@ -1330,6 +1395,15 @@ class EmpTrans extends React.Component {
                                                                 <option>حالية</option>
                                                                 <option>سابقة</option>
                                                                 <option selected>اختر  ...</option>
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <select onChange={this.addStationClickeHandeler}>
+                                                                {this.props.stations.map(station => (
+                                                                    <option>
+                                                                        {station.station_name}
+                                                                    </option>
+                                                                ))}
                                                             </select>
                                                         </td>
                                                     </tr>
@@ -1437,6 +1511,7 @@ class EmpTrans extends React.Component {
                                                         <th>طريقة شغل الوظيفة</th>
                                                         <th>نوع التخصص</th>
                                                         <th>حالة الوظيفة</th>
+                                                        <th>المحطة</th>
                                                         <th>تعديل</th>
                                                         <th>حذف</th>
                                                     </tr>
@@ -1514,6 +1589,15 @@ class EmpTrans extends React.Component {
                                                                 <option>سابقة</option>
                                                                 <option selected>{this.state.indname}</option>
                                                             </select> : trans.INDICATOR_NAME}</td>
+                                                            <td>
+                                                                <select>
+                                                                    {this.props.stations.map(station => (
+                                                                        <option>
+                                                                            {station.station_name}
+                                                                        </option>
+                                                                    ))}
+                                                                </select>
+                                                            </td>
                                                             <td transdate={trans.TRANS_DATE}><i onClick={this.state.edit ? this.handelEdit_2 : this.handelEdit_1} style={{ marginTop: 7 }} empname={trans.NAME_ARABIC} transdate={trans.TRANS_DATE} catid={trans.CAT_ID} catname={trans.CAT_NAME} mainboxid={trans.MAIN_BOX_ID} jdname={trans.MAIN_BOX_NAME} supboxid={trans.SUP_BOX_ID} supboxname={trans.SUP_BOX_NAME} jobgroup={trans.G_NAME} jasform={trans.JOB_ASSIGNMENT_FORM_ARABIC} indname={trans.INDICATOR_NAME} class="fas fa-edit"></i></td>
                                                             <td transdate={trans.TRANS_DATE}><i onClick={this.state.edit ? this.closeEditSectionHandler : null} transdate={trans.TRANS_DATE} style={{ marginTop: 7 }} class="fas fa-backspace"></i></td>
                                                         </tr>
@@ -1530,6 +1614,9 @@ class EmpTrans extends React.Component {
                                                         <th>طريقة شغل الوظيفة</th>
                                                         <th>نوع التخصص</th>
                                                         <th>حالة الوظيفة</th>
+                                                        <th>المحطة</th>
+                                                        <th>المنطقة</th>
+                                                        <th>المحافظة</th>
                                                         <th>تعديل</th>
                                                         <th>حذف</th>
                                                     </tr>
@@ -1544,6 +1631,9 @@ class EmpTrans extends React.Component {
                                                             <td>{trans.JOB_ASSIGNMENT_FORM_ARABIC}</td>
                                                             <td>{trans.G_NAME}</td>
                                                             <td>{trans.INDICATOR_NAME}</td>
+                                                            <td>{trans.station}</td>
+                                                            <td>{trans.AREA}</td>
+                                                            <td>{trans.GOV}</td>
                                                             <td ><i onClick={this.state.delete ? this.confirmDeleteSTrans : this.state.edit ? this.handelEdit_2 : this.handelEdit_1} style={{ marginTop: 7 }} id={trans.ROW_ID} nat={trans.NATIONAL_ID_CARD_NO} indicator={trans.INDICATOR} empname={trans.NAME_ARABIC} transdate={trans.TRANS_DATE} catid={trans.CAT_ID} catname={trans.CAT_NAME} mainboxid={trans.MAIN_BOX_ID} jdname={trans.MAIN_BOX_NAME} supboxid={trans.SUP_BOX_ID} supboxname={trans.SUP_BOX_NAME} jobgroup={trans.G_NAME} jasform={trans.JOB_ASSIGNMENT_FORM_ARABIC} indname={trans.INDICATOR_NAME} class="fas fa-edit"></i></td>
                                                             <td><i onClick={this.state.delete ? this.closeDeleteSSectionHandler : this.state.edit ? this.closeEditSectionHandler : this.deleteSTrans} id={trans.ROW_ID} nat={trans.NATIONAL_ID_CARD_NO} indicator={trans.INDICATOR} transdate={trans.TRANS_DATE} style={{ marginTop: 7 }} class="fas fa-backspace"></i></td>
                                                         </tr>
@@ -1585,11 +1675,12 @@ const mapStateToProps = (state) => {
         empavailsup: state.posts.empavailsup,
         upjd: state.posts.upjd,
         downJd: state.posts.downJd,
+        stations: state.posts.stations
 
 
     };
 };
 export default connect(mapStateToProps, {
     getEmpTrans, getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox, getUpJd, gitDownJd, updateEmpTrans
-    , insertNewTrans, deleteEmpTrans
+    , insertNewTrans, deleteEmpTrans, getStations
 })(EmpTrans);

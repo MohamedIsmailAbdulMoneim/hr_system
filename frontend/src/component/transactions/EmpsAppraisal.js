@@ -15,30 +15,15 @@ class EmpsAppraisal extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            confirmAdd: false, showMsg: false, errorAdd: false, empAppraisal: "",
-            appraisalYear: "null", rowAppraisal: false, add: false, edit: false, empid: "", empname: "",
+            confirmAdd: false, showMsg: false, errorAdd: false, addEmpAppraisal: "", editEmpAppraisal: "", searchEmpAppraisal: "",
+            addAppraisalYear: "",  editEmpAppraisalYear: "", searchEmpAppraisalYear: "" ,rowAppraisal: false, add: false, edit: false, empid: "", empname: "",
             empnat: null, showNamesResults: false, updated: false, firstArg: 0, secondArg: 20, currentPage: 1,
             firstArgPerBtn: 0, secondArgPerBtn: 10, delete: false, selectQuery: ""
         };
     }
 
     selectQueryHandler = (e) => {
-        console.log('hit');
 
-        
-        // let nameOrId;
-        // if (this.refs.name.value.length > 0) {
-        //     nameOrId = `NATIONAL_ID_CARD_NO = (SELECT NATIONAL_ID_CARD_NO FROM employee WHERE NAME_ARABIC = "${this.state.empnameadd}")`
-        // } else if (this.state.empid) {
-        //     nameOrId = `NATIONAL_ID_CARD_NO (SELECT NATIONAL_ID_CARD_NO FROM employee WHERE EMPLOYEE_ID = ${this.state.empidadd})`
-        // }
-
-        if(e.target.getAttribute("colName") == "APPRAISAL_DATE"){
-            let clonedState = this.state.selectQuery
-            if(clonedState.search(`${e.target.getAttribute("colName")} ${e.target.value}`)){
-                
-            }
-        }
 
     }
 
@@ -105,7 +90,7 @@ class EmpsAppraisal extends React.Component {
 
     handleNewAppraisal = (e) => {
         let obj = {
-            appDate: this.state.appraisalYear, appValue: this.state.empAppraisal, empid: this.state.empid, empname: this.state.empname, isShown: `"true"`
+            appDate: this.state.addAppraisalYear, appValue: this.state.addEmpAppraisal, empid: this.state.empid, empname: this.state.empname, isShown: `"true"`
         }
 
         obj.empid = this.state.empid || "null"
@@ -149,19 +134,61 @@ class EmpsAppraisal extends React.Component {
     }
 
 
-    handelAppraisal = (e) => {
+    handelAddAppraisal = (e) => {
         e.preventDefault()
-        this.setState({ empAppraisal: e.target.value })
+        this.setState({ addEmpAppraisal: e.target.value })
     }
 
-    handelYear = (e) => {
+    handelAddYear = (e) => {
         e.preventDefault()
-        this.setState({ appraisalYear: e.target.value })
+        this.setState({ addAppraisalYear: e.target.value })
+    }
+
+    handelEditAppraisal = (e) => {
+        e.preventDefault()
+        this.setState({ editEmpAppraisal: e.target.value })
+    }
+
+    handelEditYear = (e) => {
+        e.preventDefault()
+        this.setState({ editAppraisalYear: e.target.value })
+    }
+
+    handelSearchAppraisal = (e) => {
+        e.preventDefault()
+        this.setState({ searchEmpAppraisal: e.target.value })
+        if(e.target.value === "اختر التقدير"){
+            this.setState({ searchEmpAppraisal: "" })
+        }
+    }
+
+    handelSearchYear = (e) => {
+        e.preventDefault()
+        this.setState({ searchEmpAppraisalYear: e.target.value })
+        if(e.target.value === "اختر السنة"){
+            this.setState({ searchEmpAppraisalYear: ""})
+
+        }
+
     }
 
     handelSearch = () => {
         this.setState({ edit: false, updated: false, firstArg: 0, secondArg: 20, currentPage: 1, firstArgPerBtn: 0, secondArgPerBtn: 10 })
-        this.props.getEmpAppraisal(document.getElementById("empid").value, document.getElementById("empname").value, document.getElementById("empapp").value, document.getElementById("year1").value)
+        let nameOrId = ''
+        // if (this.refs.name.value.length > 0) {
+            if (this.refs.name.value.length > 0) {
+            nameOrId = `(SELECT NATIONAL_ID_CARD_NO FROM employee WHERE NAME_ARABIC = "${this.refs.name.value}")`
+        } else if (this.refs.empid.value.length > 0) {
+            nameOrId = `(SELECT NATIONAL_ID_CARD_NO FROM employee WHERE EMPLOYEE_ID = ${this.refs.empid.value})`
+        }
+        let data = `${this.state.searchEmpAppraisal.length > 0 ? `appraisal.APPRAISAL = (SELECT APPRAISAL FROM appraisal WHERE APPRAISAL_ARABIC  = "${this.state.searchEmpAppraisal}")` : '' }
+        ${(this.state.searchEmpAppraisalYear.length > 0 && this.state.searchEmpAppraisal.length > 0) ? `AND` : ''}
+        ${this.state.searchEmpAppraisalYear.length > 0 ? `employee_appraisal.APPRAISAL_DATE = ${this.state.searchEmpAppraisalYear}` : ''}
+        ${(this.state.searchEmpAppraisalYear.length > 0 && nameOrId.length > 0) ||
+        (this.state.searchEmpAppraisal.length > 0 && nameOrId.length > 0) ? 'AND' : ''}
+        ${nameOrId.length > 0 ? `employee_appraisal.NATIONAL_ID_CARD_NO = ${nameOrId}` : ''}
+        `
+        this.props.getEmpAppraisal(data)
     }
 
     handelEdit_1 = (e) => {
@@ -192,7 +219,7 @@ class EmpsAppraisal extends React.Component {
     handelEdit_2 = (e) => {
         e.preventDefault()
         // let data = { , appraisal: this.refs.newAppraisal.value, year: document.getElementById("year").placeholder }
-        let data = { empNat: this.state.empnat, appraisal: this.state.empAppraisal, year: this.state.appraisalYear }
+        let data = { empNat: this.state.empnat, appraisal: this.state.addEmpAppraisal, year: this.state.addAppraisalYear }
         this.props.updateEmpAppraisal(data)
         let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
         for (let i = 0; i < tds.length; i++) {
@@ -333,7 +360,7 @@ class EmpsAppraisal extends React.Component {
                                     <div style={{ display: "flex", justifyContent: "space-around" }}>
                                         <div className="form-group" controlId="formBasicEmail">
                                             <label style={{ width: "100%", textAlign: "right" }}>التقدير : </label>
-                                            <select onChange={this.handelAppraisal} id="empapp" style={{ height: 30, width: "100%", minWidth: "215px" }}>
+                                            <select onChange={this.handelAddAppraisal} id="empapp" style={{ height: 30, width: "100%", minWidth: "215px" }}>
                                                 {appraisals.map(apprsl => (
                                                     <option>{apprsl}</option>
                                                 ))}
@@ -342,7 +369,7 @@ class EmpsAppraisal extends React.Component {
                                         </div>
                                         <div className="form-group" controlId="formBasicEmail">
                                             <label style={{ width: "100%", textAlign: "right" }}>السنة : </label>
-                                            <input onChange={this.handelYear} className="form-control" style={{ width: "100%", minWidth: "250px" }} type="text" />
+                                            <input onChange={this.handelAddYear} className="form-control" style={{ width: "100%", minWidth: "250px" }} type="text" />
                                         </div>
                                     </div>
                                     <button onClick={this.submitButtonHandler} style={{ width: "92%", margin: "0 auto" }} type="button" class="btn btn-primary btn-block">إضافة تقييم جديد</button>
@@ -391,7 +418,7 @@ class EmpsAppraisal extends React.Component {
                             <div style={{ display: "flex", justifyContent: "space-around" }}>
                                 <div className="form-group" controlId="formBasicEmail">
                                     <label style={{ width: "80%", textAlign: "right" }}>السنة : </label>
-                                    <select colName={"APPRAISAL_DATE"} id="year1" style={{ width: "80%", height: 30 }} onChange={this.selectQueryHandler}>
+                                    <select colName={"APPRAISAL_DATE"} id="year1" style={{ width: "80%", height: 30 }} onChange={this.handelSearchYear}>
                                         {dates.map(year => (
                                             <option year={year} >{year}</option>
                                         ))}
@@ -401,7 +428,7 @@ class EmpsAppraisal extends React.Component {
                                 </div>
                                 <div className="form-group" controlId="formBasicEmail">
                                     <label style={{ width: "80%", textAlign: "right" }}>التقدير : </label>
-                                    <select colName={"APPRAISAL"} id="empapp" style={{ width: "80%", height: 30 }} onChange={this.selectQueryHandler}>
+                                    <select colName={"APPRAISAL"} id="empapp" style={{ width: "80%", height: 30 }} onChange={this.handelSearchAppraisal}>
                                         {appraisals.map(apprsl => (
                                             <option>{apprsl}</option>
                                         ))}
@@ -457,15 +484,15 @@ class EmpsAppraisal extends React.Component {
                                             <tbody>
                                                 <tr id={emp.id}>
                                                     <td>{emp.NAME_ARABIC}</td>
-                                                    <td>{this.state.edit && this.state.rowAppraisal == emp.id ? <select onChange={this.handelAppraisal} id="empapp" style={{ width: "50%", height: 30 }}>
+                                                    <td>{this.state.edit && this.state.rowAppraisal == emp.id ? <select onChange={this.handelEditAppraisal} id="empapp" style={{ width: "50%", height: 30 }}>
                                                         {appraisals.map(apprsl => (
                                                             <option>{apprsl}</option>
                                                         ))}
                                                         <option selected>اختر التقدير</option>
 
-                                                    </select> : this.state.updated && this.state.rowAppraisal == emp.id ? this.state.empAppraisal : emp.APPRAISAL_ARABIC}</td>
-                                                    <td style={{ width: "10%" }}>{this.state.edit && this.state.rowAppraisal == emp.id ? <input onChange={this.handelYear} value={this.state.appraisalYear} className="form-control" style={{ width: "100%" }} type="text" /> :
-                                                        this.state.updated && this.state.rowAppraisal == emp.id ? this.state.appraisalYear : emp.APPRAISAL_DATE}</td>
+                                                    </select> : this.state.updated && this.state.rowAppraisal == emp.id ? this.state.addEmpAppraisal : emp.APPRAISAL_ARABIC}</td>
+                                                    <td style={{ width: "10%" }}>{this.state.edit && this.state.rowAppraisal == emp.id ? <input onChange={this.handelEditYear} value={this.state.addAppraisalYear} className="form-control" style={{ width: "100%" }} type="text" /> :
+                                                        this.state.updated && this.state.rowAppraisal == emp.id ? this.state.addAppraisalYear : emp.APPRAISAL_DATE}</td>
                                                     <td><i onClick={this.state.delete ? this.confirmDelete : this.state.edit ? this.handelEdit_2 : this.handelEdit_1} tableId={emp.id} style={{ fontSize: 20 }} empName={emp.NAME_ARABIC} empApp={emp.APPRAISAL_ARABIC} empDate={emp.APPRAISAL_DATE} empnatid={emp.NATIONAL_ID_CARD_NO} class="fas fa-edit"></i></td>
                                                     <td><i onClick={this.state.delete ? this.closeDeleteSectionHandler : this.state.edit ? this.closeEditSectionHandler : this.deleteHandler} tableId={emp.id} empnatid={emp.NATIONAL_ID_CARD_NO} class="fas fa-backspace"></i></td>
                                                 </tr>

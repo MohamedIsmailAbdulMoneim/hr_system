@@ -1,10 +1,10 @@
 import React, { Fragment } from "react";
 import {
 
-    getEmpByDeps, getEmpName, getEmpNameByName, getEmpAppraisal
+    getEmpName, getEmpNameByName
 
 } from "../../actions/Actions";
-import { newAppraisal, getEmpExp, newEmpExp,deleteEmpExperience } from "../../actions/TransActions"
+import { newAppraisal, getEmpExp, newEmpExp, deleteEmpExperience } from "../../actions/TransActions"
 import { connect } from "react-redux";
 import axios from "axios";
 import Moment from 'react-moment';
@@ -18,11 +18,13 @@ class EmpExperience extends React.Component {
             poe: []
             , job: [],
             from: []
-            , to: []
-            , length: 0, exp: [], empNameAdd: "", empIdAdd: "", empNameSearch: "", empIdSearch: ""
-            , finalData: [], showFamilyResult: true, editExpTyp: "" ,editPlaceOfExp: "", editJobOfExp: "", editFromOfExp: "", editToOfExp: "",
+            , to: [],
+            calcfrom: [],
+            calcto: []
+            , length: 0, exp: [], empNameAdd: "", empIdAdd: "", empNameSearch: "", empIdSearch: "", expTypeForSearch: ""
+            , finalData: [], showFamilyResult: true, editExpTyp: "", editPlaceOfExp: "", editJobOfExp: "", editFromOfExp: "", editToOfExp: "",
             confirmAdd: false, showMsg: false, errorAdd: false,
-            add: false, edit: false,delete:false,
+            add: false, edit: false, delete: false,
             empid: null, empname: null, catname: null, catid: null, showNamesResults: false, rowExp: ""
         };
     }
@@ -79,6 +81,30 @@ class EmpExperience extends React.Component {
         })
     }
 
+    calcFromHandler = (e) => {
+        e.preventDefault()
+        var selectedArr = e.target.getAttribute('uniqueClass')
+        let nodes = document.getElementsByClassName(selectedArr);
+        let index = Array.prototype.indexOf.call(nodes, e.target);
+        let newArr = this.state[selectedArr].slice()
+        newArr[index] = { value: e.target.value, key: index, expType: e.target.getAttribute('uniqueIndex') }
+        this.setState({
+            [selectedArr]: newArr
+        })
+    }
+
+    calcToHandler = (e) => {
+        e.preventDefault()
+        var selectedArr = e.target.getAttribute('uniqueClass')
+        let nodes = document.getElementsByClassName(selectedArr);
+        let index = Array.prototype.indexOf.call(nodes, e.target);
+        let newArr = this.state[selectedArr].slice()
+        newArr[index] = { value: e.target.value, key: index, expType: e.target.getAttribute('uniqueIndex') }
+        this.setState({
+            [selectedArr]: newArr
+        })
+    }
+
     addExp = (e) => {
         e.preventDefault()
         this.setState(prevState => {
@@ -87,7 +113,9 @@ class EmpExperience extends React.Component {
                 poe: [...this.state.poe, " "],
                 job: [...this.state.job, " "],
                 from: [...this.state.from, " "],
-                to: [...this.state.to, " "]
+                to: [...this.state.to, " "],
+                calcfrom: [...this.state.calcfrom, ""],
+                calcsto: [...this.state.calcto, ""]
             }
         })
     }
@@ -101,11 +129,15 @@ class EmpExperience extends React.Component {
         let newArrOfJob = [...this.state.job]
         let newArrOfFrom = [...this.state.from]
         let newArrOfTo = [...this.state.to]
+        let newArrOfCalcFrom = [...this.state.calcfrom]
+        let newArrOfCalcTo = [...this.state.calcto]
         if (index !== -1) {
             newArrOfPoe.splice(index, 1)
             newArrOfJob.splice(index, 1)
             newArrOfFrom.splice(index, 1)
             newArrOfTo.splice(index, 1)
+            newArrOfCalcFrom.splice(index, 1)
+            newArrOfCalcTo.splice(index, 1)
         }
         this.setState(prevState => {
             return {
@@ -113,7 +145,9 @@ class EmpExperience extends React.Component {
                 poe: newArrOfPoe,
                 job: newArrOfJob,
                 from: newArrOfFrom,
-                to: newArrOfTo
+                to: newArrOfTo,
+                calcfrom: newArrOfCalcFrom,
+                calcto: newArrOfCalcTo
 
             }
         })
@@ -155,6 +189,7 @@ class EmpExperience extends React.Component {
                                 <input onChange={this.jobHandler} uniqueClass={'job'} uniqueIndex={4} ref="nameinput" className="form-control job" style={{ width: "100%", minWidth: "250px" }} type="text" />
                             </div>
                         </div>
+                        <h4 style={{ textAlign: "right", marginRight: 10 }}>المدة الفعلية</h4>
                         <div style={{ display: "flex", justifyContent: "space-around" }}>
                             <div className="form-group" controlId="formBasicEmail">
                                 <label style={{ width: "100%", textAlign: "right" }}>من : </label>
@@ -165,6 +200,17 @@ class EmpExperience extends React.Component {
                                 <input onChange={this.toHandler} uniqueClass={'to'} uniqueIndex={4} ref="nameinput" className="form-control to" style={{ width: "100%", minWidth: "250px" }} type="date" />
                             </div>
                         </div>
+                        <h4 style={{ textAlign: "right", marginRight: 10 }}>المدة المحتسبة</h4>
+                        <div style={{ display: "flex", justifyContent: "space-around" }}>
+                            <div className="form-group" controlId="formBasicEmail">
+                                <label style={{ width: "100%", textAlign: "right" }}>من : </label>
+                                <input onChange={this.calcFromHandler} uniqueClass={'calcfrom'} uniqueIndex={4} ref="nameinput" className="form-control calcfrom" style={{ width: "100%", minWidth: "250px" }} type="date" />
+                            </div>
+                            <div className="form-group" controlId="formBasicEmail">
+                                <label style={{ width: "100%", textAlign: "right" }}>إلى : </label>
+                                <input onChange={this.calcToHandler} uniqueClass={'calcto'} uniqueIndex={4} ref="nameinput" className="form-control calcto" style={{ width: "100%", minWidth: "250px" }} type="date" />
+                            </div>
+                        </div>
                     </div >)
             }
         }
@@ -173,7 +219,7 @@ class EmpExperience extends React.Component {
 
     handleArrToSend = (e) => {
         var state = this.state
-        var arrays = state.poe.concat(state.job, state.from, state.to)
+        var arrays = state.poe.concat(state.job, state.from, state.to, state.calcfrom, state.calcto)
         var emptyInputs = arrays.find(i => i.length <= 1) || null
         let arr = []
         let nameOrId;
@@ -186,15 +232,16 @@ class EmpExperience extends React.Component {
         } else if (emptyInputs == undefined && (this.state.empNameAdd || this.state.empIdAdd)) {
             let militerExp = arrays.filter(el => el.expType == 1)
             if (militerExp.length > 0) {
-                let i = militerExp.length / 4
+                let i = militerExp.length / 6
                 while (i > 0) {
                     let smallArr = []
                     var arrloop = militerExp.filter(el => el.key == i - 1)
-                    console.log(arrloop);
                     smallArr.push(`("${arrloop[0].value}"`)
                     smallArr.push(`"${arrloop[1].value}"`)
                     smallArr.push(`"${arrloop[2].value}"`)
                     smallArr.push(`"${arrloop[3].value}"`)
+                    smallArr.push(`"${arrloop[4].value}"`)
+                    smallArr.push(`"${arrloop[5].value}"`)
                     smallArr.push(arrloop[0].expType)
                     smallArr.push(`"true"`)
                     smallArr.push(nameOrId)
@@ -205,15 +252,16 @@ class EmpExperience extends React.Component {
             let innerExp = arrays.filter(el => el.expType == 3)
 
             if (innerExp.length > 0) {
-                let i = innerExp.length / 4
+                let i = innerExp.length / 6
                 while (i > 0) {
                     let smallArr = []
                     var arrloop = innerExp.filter(el => el.key == i - 1)
-                    console.log(arrloop);
                     smallArr.push(`("${arrloop[0].value}"`)
                     smallArr.push(`"${arrloop[1].value}"`)
                     smallArr.push(`"${arrloop[2].value}"`)
                     smallArr.push(`"${arrloop[3].value}"`)
+                    smallArr.push(`"${arrloop[4].value}"`)
+                    smallArr.push(`"${arrloop[5].value}"`)
                     smallArr.push(arrloop[0].expType)
                     smallArr.push(`"true"`)
                     smallArr.push(nameOrId)
@@ -224,7 +272,8 @@ class EmpExperience extends React.Component {
             }
             let outerExp = arrays.filter(el => el.expType == 4)
             if (outerExp.length > 0) {
-                let i = outerExp.length / 4
+                let i = outerExp.length / 6
+                console.log(outerExp.length);
                 while (i > 0) {
                     let smallArr = []
                     var arrloop = outerExp.filter(el => el.key == i - 1)
@@ -233,6 +282,8 @@ class EmpExperience extends React.Component {
                     smallArr.push(`"${arrloop[1].value}"`)
                     smallArr.push(`"${arrloop[2].value}"`)
                     smallArr.push(`"${arrloop[3].value}"`)
+                    smallArr.push(`"${arrloop[4].value}"`)
+                    smallArr.push(`"${arrloop[5].value}"`)
                     smallArr.push(arrloop[0].expType)
                     smallArr.push(`"true"`)
                     smallArr.push(nameOrId)
@@ -244,7 +295,6 @@ class EmpExperience extends React.Component {
                 confirmAdd: true, finalData: arr
             })
         }
-        console.log(arr);
     }
 
     submitButtonHandler = (e) => {
@@ -271,11 +321,6 @@ class EmpExperience extends React.Component {
         this.refs.idAdd.value = ''
     }
 
-    namesOptionshandlerForSearch = (e) => {
-        this.refs.name.value = e.target.value
-        this.props.getEmpFamily("", e.target.value)
-        this.setState({ showFamilyResult: true, showMaritalstate: true })
-    }
     namesOptionshandlerForAdd = (e) => {
         this.setState({
             empnameForAdd: e.target.value, empidForAdd: null
@@ -284,21 +329,53 @@ class EmpExperience extends React.Component {
     }
 
     nameInputHandlerForSearch = (e) => {
-        this.setState({ showNamesResultsForSearch: true, showFamilyResult: false })
+        this.setState({ showNamesResultsForSearch: true })
         this.props.getEmpNameByName(e.target.value)
         this.refs.empid.value = ''
         if (e.key === 'Enter') {
-            this.props.getEmpExp("", e.target.value)
+            // this.props.getEmpExp("", e.target.value)
         }
     }
 
+    
+
     idInputHandlerForSearch = (e) => {
         this.refs.empname.value = ''
-        if (e.key === 'Enter') {
-            this.props.getEmpName(e.target.value)
-            this.props.getEmpExp(e.target.value, "")
+            // this.props.getEmpExp(e.target.value, "")
             this.setState({ empIdSearch: e.target.value })
+    }
+
+    namesOptionshandlerForSearch = (e) => {
+        this.refs.name.value = e.target.value
+        // this.props.getEmpFamily("", e.target.value)
+        this.setState({ empNameSearch: e.target.value })
+    }
+
+    expTypeForSearchHandler = (e) => {
+            this.setState({
+                expTypeForSearch: e.target.value
+            })
+        if(e.target.value === "اختر"){
+            this.setState({
+                expTypeForSearch: ""
+            })
         }
+    }
+
+    handelSearch = (e) => {
+        let nameOrId = ''
+        if (this.state.empNameSearch.length > 0) {
+            nameOrId = `(SELECT NATIONAL_ID_CARD_NO FROM employee WHERE NAME_ARABIC = "${this.state.empNameSearch}")`
+        } else if (this.state.empIdSearch.length > 0) {
+            nameOrId = `(SELECT NATIONAL_ID_CARD_NO FROM employee WHERE EMPLOYEE_ID = ${this.state.empIdSearch})`
+        }
+        let data = `${nameOrId.length > 0 ? `employee_experince.NATIONAL_ID_CARD_NO = ${nameOrId}` : ''}
+        ${(nameOrId.length > 0 && this.state.expTypeForSearch.length > 0) ? `AND` : ''}
+        ${this.state.expTypeForSearch.length > 0 ? `exp_type.EXP_TYP_CODE = (SELECT EXP_TYP_CODE FROM exp_type WHERE EXP_TYP_NAME = "${this.state.expTypeForSearch}")` : ''}
+        `
+
+        this.props.getEmpExp(data)
+
     }
 
     handleExpTime = (startDate, endDate) => {
@@ -312,140 +389,137 @@ class EmpExperience extends React.Component {
 
     handleNewExp = (e) => {
         this.props.newEmpExp(this.state.finalData)
-        console.log(this.state.finalData);
         this.setState({
             confirmAdd: false, showMsg: true
         })
     }
 
-        /* ______________________________ */
+    /* ______________________________ */
 
-        editPlaceOfExpHandler = (e) => {
-            this.setState({ editPlaceOfExp: e.target.value })
+    editPlaceOfExpHandler = (e) => {
+        this.setState({ editPlaceOfExp: e.target.value })
+    }
+
+    editJobOfExpHandler = (e) => {
+        this.setState({ editJobOfExp: e.target.value })
+    }
+
+    editFromOfExpHandler = (e) => {
+        this.setState({ editFromOfExp: e.target.value })
+    }
+
+    editToOfExpHandler = (e) => {
+        this.setState({ editToOfExp: e.target.value })
+    }
+
+    handelEdit_1 = (e) => {
+        this.setState({
+            edit: true, rowExp: e.target.getAttribute("tableId"), editExpTyp: e.target.getAttribute("expType")
+            , editPlaceOfExp: e.target.getAttribute("placeName"), editJobOfExp: e.target.getAttribute("jobName"),
+            editFromOfExp: e.target.getAttribute("startDate"), editToOfExp: e.target.getAttribute("endDate")
+        })
+        let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
+        for (let i = 0; i < tds.length; i++) {
+            tds[i].style.background = "white"
+            tds[tds.length - 2].childNodes[0].classList.remove("fa-edit")
+            tds[tds.length - 2].childNodes[0].classList.add("fa-check")
+            tds[tds.length - 1].childNodes[0].classList.remove("fa-backspace")
+            tds[tds.length - 1].childNodes[0].classList.add("fa-times")
         }
-    
-        editJobOfExpHandler = (e) => {
-            this.setState({ editJobOfExp: e.target.value })
-        }
-    
-        editFromOfExpHandler = (e) => {
-            this.setState({ editFromOfExp: e.target.value })
-        }
-    
-        editToOfExpHandler = (e) => {
-            this.setState({ editToOfExp: e.target.value })
-        }
-    
-        handelEdit_1 = (e) => {
-            this.setState({
-                edit: true, rowExp: e.target.getAttribute("tableId"),editExpTyp: e.target.getAttribute("expType") 
-                ,editPlaceOfExp: e.target.getAttribute("placeName"), editJobOfExp: e.target.getAttribute("jobName"),
-                editFromOfExp: e.target.getAttribute("startDate"), editToOfExp: e.target.getAttribute("endDate")
-            })
-            let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
-            for (let i = 0; i < tds.length; i++) {
-                tds[i].style.background = "white"
-                tds[tds.length - 2].childNodes[0].classList.remove("fa-edit")
-                tds[tds.length - 2].childNodes[0].classList.add("fa-check")
-                tds[tds.length - 1].childNodes[0].classList.remove("fa-backspace")
-                tds[tds.length - 1].childNodes[0].classList.add("fa-times")
+    }
+
+    handelEdit_2 = (e) => {
+        e.preventDefault()
+        let expType = `EXP_TYP_CODE = ${this.state.editExpTyp}`
+        let placeOfExp = `PLACE_NAME = "${this.state.editPlaceOfExp}"`
+        let jobOfExp = `JOB_NAME = "${this.state.editJobOfExp}"`
+        let fromOfExparName = `START_DATE = "${this.state.editFromOfExp}"`
+        let toOfExp = `END_DATE = "${this.state.editToOfExp}"`
+        let lastSentence = this.state.rowExp
+
+        let data = [expType, placeOfExp, jobOfExp, fromOfExparName, toOfExp, lastSentence]
+
+        axios({
+            method: "PUT",
+            data: data,
+            url: `http://localhost:5000/editempexp`,
+            headers: { "Content-Type": "application/json" },
+        }).then(data => {
+            if (data.data.msg == "تم إدخال البيانات بنجاح") {
+                this.setState({
+                    updated: true
+                })
+            } else {
+                this.setState({
+                    updated: false
+                })
             }
+        })
+        let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
+        for (let i = 0; i < tds.length; i++) {
+            tds[i].style.background = "transparent"
+            tds[tds.length - 2].childNodes[0].classList.remove("fa-check")
+            tds[tds.length - 2].childNodes[0].classList.add("fa-edit")
+            tds[tds.length - 1].childNodes[0].classList.remove("fa-times")
+            tds[tds.length - 1].childNodes[0].classList.add("fa-backspace")
         }
-    
-        handelEdit_2 = (e) => {
-            e.preventDefault()
-            let expType = `EXP_TYP_CODE = ${this.state.editExpTyp}`
-            let placeOfExp = `PLACE_NAME = "${this.state.editPlaceOfExp}"`
-            let jobOfExp = `JOB_NAME = "${this.state.editJobOfExp}"`
-            let fromOfExparName = `START_DATE = "${this.state.editFromOfExp}"`
-            let toOfExp = `END_DATE = "${this.state.editToOfExp}"`
-            let lastSentence = this.state.rowExp
-    
-            let data = [expType,placeOfExp, jobOfExp, fromOfExparName, toOfExp, lastSentence]
-    
-            axios({
-                method: "PUT",
-                data: data,
-                url: `http://localhost:5000/editempexp`,
-                headers: { "Content-Type": "application/json" },
-            }).then(data => {
-                console.log(data.data.msg);
-                if (data.data.msg == "تم إدخال البيانات بنجاح") {
-                    this.setState({
-                        updated: true
-                    })
-                } else {
-                    this.setState({
-                        updated: false
-                    })
-                }
-            })
-            let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
-            for (let i = 0; i < tds.length; i++) {
-                tds[i].style.background = "transparent"
-                tds[tds.length - 2].childNodes[0].classList.remove("fa-check")
-                tds[tds.length - 2].childNodes[0].classList.add("fa-edit")
-                tds[tds.length - 1].childNodes[0].classList.remove("fa-times")
-                tds[tds.length - 1].childNodes[0].classList.add("fa-backspace")
-            }
-            this.setState({
-                edit: false
-            })
+        this.setState({
+            edit: false
+        })
+    }
+
+    closeEditSectionHandler = (e) => {
+        let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
+        for (let i = 0; i < tds.length; i++) {
+            tds[i].style.background = "transparent"
+            tds[tds.length - 2].childNodes[0].classList.remove("fa-check")
+            tds[tds.length - 2].childNodes[0].classList.add("fa-edit")
+            tds[tds.length - 1].childNodes[0].classList.remove("fa-times")
+            tds[tds.length - 1].childNodes[0].classList.add("fa-backspace")
         }
-    
-        closeEditSectionHandler = (e) => {
-            let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
-            for (let i = 0; i < tds.length; i++) {
-                tds[i].style.background = "transparent"
-                tds[tds.length - 2].childNodes[0].classList.remove("fa-check")
-                tds[tds.length - 2].childNodes[0].classList.add("fa-edit")
-                tds[tds.length - 1].childNodes[0].classList.remove("fa-times")
-                tds[tds.length - 1].childNodes[0].classList.add("fa-backspace")
-            }
-            this.setState({ edit: false })
+        this.setState({ edit: false })
+    }
+    deleteHandler = (e) => {
+        this.setState({ delete: true })
+        let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
+        for (let i = 0; i < tds.length; i++) {
+            tds[i].style.background = "white"
+            tds[tds.length - 2].childNodes[0].classList.remove("fa-edit")
+            tds[tds.length - 2].childNodes[0].classList.add("fa-check")
+            tds[tds.length - 1].childNodes[0].classList.remove("fa-backspace")
+            tds[tds.length - 1].childNodes[0].classList.add("fa-times")
         }
-        deleteHandler = (e) => {
-            this.setState({ delete: true })
-            let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
-            for (let i = 0; i < tds.length; i++) {
-                tds[i].style.background = "white"
-                tds[tds.length - 2].childNodes[0].classList.remove("fa-edit")
-                tds[tds.length - 2].childNodes[0].classList.add("fa-check")
-                tds[tds.length - 1].childNodes[0].classList.remove("fa-backspace")
-                tds[tds.length - 1].childNodes[0].classList.add("fa-times")
-            }
+    }
+
+    closeDeleteSectionHandler = (e) => {
+        let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
+        for (let i = 0; i < tds.length; i++) {
+            tds[i].style.background = "transparent"
+            tds[tds.length - 2].childNodes[0].classList.remove("fa-check")
+            tds[tds.length - 2].childNodes[0].classList.add("fa-edit")
+            tds[tds.length - 1].childNodes[0].classList.remove("fa-times")
+            tds[tds.length - 1].childNodes[0].classList.add("fa-backspace")
         }
-    
-        closeDeleteSectionHandler = (e) => {
-            let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
-            for (let i = 0; i < tds.length; i++) {
-                tds[i].style.background = "transparent"
-                tds[tds.length - 2].childNodes[0].classList.remove("fa-check")
-                tds[tds.length - 2].childNodes[0].classList.add("fa-edit")
-                tds[tds.length - 1].childNodes[0].classList.remove("fa-times")
-                tds[tds.length - 1].childNodes[0].classList.add("fa-backspace")
-            }
-            this.setState({ delete: false })
+        this.setState({ delete: false })
+    }
+    confirmDelete = (e) => {
+        let data = [e.target.getAttribute("tableId"), e.target.getAttribute("expType"), e.target.getAttribute("natIdCard")]
+        this.props.deleteEmpExperience(data)
+        this.setState({ delete: false })
+        let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
+        for (let i = 0; i < tds.length; i++) {
+            tds[i].style.background = "transparent"
+            tds[tds.length - 2].childNodes[0].classList.remove("fa-check")
+            tds[tds.length - 2].childNodes[0].classList.add("fa-edit")
+            tds[tds.length - 1].childNodes[0].classList.remove("fa-times")
+            tds[tds.length - 1].childNodes[0].classList.add("fa-backspace")
         }
-        confirmDelete = (e) => {
-            let data = [e.target.getAttribute("tableId"), e.target.getAttribute("expType"),e.target.getAttribute("natIdCard")]
-            console.log(data);
-            this.props.deleteEmpExperience(data)
-            this.setState({ delete: false })
-            let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
-            for (let i = 0; i < tds.length; i++) {
-                tds[i].style.background = "transparent"
-                tds[tds.length - 2].childNodes[0].classList.remove("fa-check")
-                tds[tds.length - 2].childNodes[0].classList.add("fa-edit")
-                tds[tds.length - 1].childNodes[0].classList.remove("fa-times")
-                tds[tds.length - 1].childNodes[0].classList.add("fa-backspace")
-            }
-        }
-    
-    
-    
-    
-        /* ___________________________________ */
+    }
+
+
+
+
+    /* ___________________________________ */
 
     render() {
         const styles = {
@@ -465,7 +539,6 @@ class EmpExperience extends React.Component {
 
         }
 
-        console.log(this.props.msg);
 
         return (
             <div id="page-wrapper" >
@@ -532,11 +605,43 @@ class EmpExperience extends React.Component {
                                 <div style={{ display: "flex", justifyContent: "space-between" }}>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>رقم الأداء : </label>
-                                        <input id="empid" ref="empid" className="form-control" onKeyDown={this.idInputHandlerForSearch} style={{ background: "white", width: "40%", marginBottom: 5, marginRight: 5, border: "1px solid black" }} type="text" name="first_name" />
+                                        <input id="empid" ref="empid" className="form-control" onKeyUp={this.idInputHandlerForSearch} style={{ background: "white", width: "40%", marginBottom: 5, marginRight: 5, border: "1px solid black" }} type="text" name="first_name" />
                                     </div>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>الإسم : </label>
                                         <input id="name" ref="empname" className="form-control" onChange={this.nameInputHandlerForSearch} style={{ background: "white", width: "100%", minWidth: "250px", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
+                                    </div>
+                                </div>
+                            </div>
+                            {
+                                this.state.showNamesResultsForSearch ?
+                                    <div style={{ marginRight: 20, display: "flex", justifyContent: "center", alignItems: "center", marginLeft: 40 }}>
+                                        <div></div>
+                                        <select onClick={this.namesOptionshandlerForSearch} style={{ marginTop: 20, marginRight: 15, marginBottom: 5, width: "40%", background: "transparent", border: "none" }} multiple name="pets" id="pet-select">
+                                            {this.props.empNameByName.map((name => (
+                                                <option>{name.NAME_ARABIC}</option>
+                                            )))}
+                                        </select>
+                                        <div></div>
+                                    </div>
+                                    : null
+                            }
+                            <div style={{ marginRight: 20, display: "flex", justifyContent: "center", alignItems: "center", marginLeft: 40 }}>
+                                <div style={{ display: "flex", justifyContent: "space-around" }}>
+                                    <div className="form-group" controlId="formBasicEmail">
+                                        <label style={{ width: "100%", textAlign: "right" }}>نوع الخبرة : </label>
+                                        <select onChange={this.expTypeForSearchHandler} id="empapp" style={{ height: 30, width: "100%", minWidth: "215px" }}>
+                                            <option>خبرة داخل القطاع</option>
+                                            <option>خبرة خارج القطاع</option>
+                                            <option>الخدمة العسكرية</option>
+                                            <option selected>اختر</option>
+                                        </select>
+                                    </div>
+                                    <div className="form-group" controlId="formBasicEmail">
+                                        <label style={{ width: "100%", textAlign: "right" }}></label>
+                                        <button onClick={this.handelSearch} type="button" style={{ marginRight: 30, marginTop: 6 }} >
+                                            <i class="fas fa-search"></i>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -548,28 +653,35 @@ class EmpExperience extends React.Component {
                     {this.props.empexp.length >= 1 ? <h1>بيان بخبرة السيد  : {this.props.empname.length >= 1 ? this.props.empname[0].NAME_ARABIC : this.props.empNameByName.length >= 1 ? this.props.empNameByName[0].NAME_ARABIC : null} - رقم أداء : {this.props.empname.length >= 1 ? this.props.empname[0].EMPLOYEE_ID : this.props.empNameByName.length >= 1 ? this.props.empNameByName[0].EMPLOYEE_ID : null} </h1> : null}
                     <div class="col-lg-12">
                         <div className="panel panel-default">
-                            <div className="panel-heading" style={{ minHeight: 40 }}>
-                                خبرة داخل القطاع
-                            </div>
                             <div class="panel-body">
                                 <div class="table-responsive">
                                     <table class="table table-striped table-bordered table-hover" id="dataTables-example">
-                                        <thead>
+                                        <thead style={{ height: 2 }}>
+                                            <tr style={{ height: 2 }}>
+                                                <th rowspan="2" style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt", padding: 0, margin: 0 }}><h3 style={{ marginBottom: 30 }}>نوع الخبرة</h3></th>
+                                                <th rowspan="2" style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt", padding: 0, margin: 0 }}><h3 style={{ marginBottom: 30 }}>جهة الخبرة</h3></th>
+                                                <th rowspan="2" style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt", padding: 0, margin: 0 }}><h3 style={{ marginBottom: 30 }}>الوظيفة</h3></th>
+                                                <th rowspan="2" style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt", padding: 0, margin: 0 }}><h3 style={{ marginBottom: 30 }}>من</h3></th>
+                                                <th rowspan="2" style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt", padding: 0, margin: 0 }}><h3 style={{ marginBottom: 30 }}>إلى</h3></th>
+                                                <th colspan="3" style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt", padding: 0, margin: 0 }}><h3>المدة الفعلية</h3></th>
+                                                <th colspan="3" style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt", padding: 0, margin: 0 }}><h3>المدة المحتسبة</h3></th>
+                                                <th rowspan="2"><h3 style={{ marginBottom: 30 }}>تعديل</h3></th>
+                                                <th rowspan="2"><h3 style={{ marginBottom: 30 }}>حذف</h3></th>
+                                            </tr>
                                             <tr>
-                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>جهة الخبرة</th>
-                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>الوظيفة</th>
-                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>من</th>
-                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>إلى</th>
-                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>يوم</th>
-                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>شهر</th>
-                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>سنة</th>
-                                                <th>تعديل</th>
-                                                <th>حذف</th>
+                                                <td style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>يوم</td>
+                                                <td style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>شهر</td>
+                                                <td style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>سنة</td>
+                                                <td style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>يوم</td>
+                                                <td style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>شهر</td>
+                                                <td style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>سنة</td>
                                             </tr>
                                         </thead>
-                                        {this.props.empexp.length >= 1 ? this.props.empexp[2].length >= 1 ? this.props.empexp[2].map(emp => (
+
+                                        {this.props.empexp.length >= 1 ? this.props.empexp.map(emp => (
                                             <tbody>
                                                 <tr id={emp.id}>
+                                                    <td>{this.state.edit && this.state.rowExp == emp.id ? <input onChange={this.editPlaceOfExpHandler} className="form-control job" style={{ width: "100%", minWidth: "90px" }} type="text" /> : emp.EXP_TYP_NAME}</td>
                                                     <td>{this.state.edit && this.state.rowExp == emp.id ? <input onChange={this.editPlaceOfExpHandler} className="form-control job" style={{ width: "100%", minWidth: "90px" }} type="text" /> : emp.PLACE_NAME}</td>
                                                     <td>{this.state.edit && this.state.rowExp == emp.id ? <input onChange={this.editJobOfExpHandler} className="form-control job" style={{ width: "100%", minWidth: "90px" }} type="text" /> : emp.JOB_NAME}</td>
                                                     <td>{this.state.edit && this.state.rowExp == emp.id ? <input onChange={this.editFromOfExpHandler} className="form-control job" style={{ width: "100%", minWidth: "90px" }} type="date" /> : emp.START_DATE}</td>
@@ -577,54 +689,10 @@ class EmpExperience extends React.Component {
                                                     <td>{this.handleExpTime(emp.START_DATE, emp.END_DATE).days()}</td>
                                                     <td>{this.handleExpTime(emp.START_DATE, emp.END_DATE).months()}</td>
                                                     <td>{this.handleExpTime(emp.START_DATE, emp.END_DATE).years()}</td>
-                                                    <td><i onClick={ this.state.delete ? this.confirmDelete : this.state.edit ? this.handelEdit_2 : this.handelEdit_1} style={{ fontSize: 20 }} tableId={emp.id} expType={emp.EXP_TYP_CODE} natIdCard={emp.NATIONAL_ID_CARD_NO} placeName={emp.PLACE_NAME} jobName={emp.JOB_NAME} startDate={emp.START_DATE} endDate={emp.END_DATE} class="fas fa-edit"></i></td>
-                                                    <td><i onClick={this.state.delete ? this.closeDeleteSectionHandler : this.state.edit ? this.closeEditSectionHandler : this.deleteHandler} tableId={emp.id} expType={emp.EXP_TYP_CODE} natIdCard={emp.NATIONAL_ID_CARD_NO} class="fas fa-backspace"></i></td>
-                                                </tr>
-                                            </tbody>
-                                        ))
-                                            :
-                                            <tbody>
-                                                <tr>
-                                                    <td colspan="9">لاتوجد بيانات</td>
-                                                </tr>
-                                            </tbody>
-                                            : null}
-
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="panel panel-default">
-                            <div className="panel-heading" style={{ minHeight: 40 }}>
-                                خبرة خارج القطاع
-                            </div>
-                            <div class="panel-body">
-                                <div class="table-responsive">
-                                    <table class="table table-striped table-bordered table-hover" id="dataTables-example">
-                                        <thead>
-                                            <tr>
-                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>جهة الخبرة</th>
-                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>الوظيفة</th>
-                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>من</th>
-                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>إلى</th>
-                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>يوم</th>
-                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>شهر</th>
-                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>سنة</th>
-                                                <th>تعديل</th>
-                                                <th>حذف</th>
-                                            </tr>
-                                        </thead>
-                                        {this.props.empexp.length >= 1 ? this.props.empexp[1].length >= 1 ? this.props.empexp[1].map(emp => (
-                                            <tbody>
-                                                <tr id={emp.id}>
-                                                    <td>{this.state.edit && this.state.rowExp == emp.id ? <input onChange={this.editPlaceOfExpHandler} className="form-control job" style={{ width: "100%", minWidth: "90px" }} type="text" /> : emp.PLACE_NAME}</td>
-                                                    <td>{this.state.edit && this.state.rowExp == emp.id ? <input onChange={this.editJobOfExpHandler} className="form-control job" style={{ width: "100%", minWidth: "90px" }} type="text" /> : emp.JOB_NAME}</td>
-                                                    <td>{this.state.edit && this.state.rowExp == emp.id ? <input onChange={this.editFromOfExpHandler} className="form-control job" style={{ width: "100%", minWidth: "90px" }} type="date" /> : emp.START_DATE}</td>
-                                                    <td>{this.state.edit && this.state.rowExp == emp.id ? <input onChange={this.editToOfExpHandler} className="form-control job" style={{ width: "100%", minWidth: "90px" }} type="date" /> : emp.END_DATE}</td>
                                                     <td>{this.handleExpTime(emp.START_DATE, emp.END_DATE).days()}</td>
                                                     <td>{this.handleExpTime(emp.START_DATE, emp.END_DATE).months()}</td>
                                                     <td>{this.handleExpTime(emp.START_DATE, emp.END_DATE).years()}</td>
-                                                    <td><i onClick={ this.state.delete ? this.confirmDelete : this.state.edit ? this.handelEdit_2 : this.handelEdit_1} style={{ fontSize: 20 }} tableId={emp.id} expType={emp.EXP_TYP_CODE} placeName={emp.PLACE_NAME} natIdCard={emp.NATIONAL_ID_CARD_NO} jobName={emp.JOB_NAME} startDate={emp.START_DATE} endDate={emp.END_DATE} class="fas fa-edit"></i></td>
+                                                    <td><i onClick={this.state.delete ? this.confirmDelete : this.state.edit ? this.handelEdit_2 : this.handelEdit_1} style={{ fontSize: 20 }} tableId={emp.id} expType={emp.EXP_TYP_CODE} natIdCard={emp.NATIONAL_ID_CARD_NO} placeName={emp.PLACE_NAME} jobName={emp.JOB_NAME} startDate={emp.START_DATE} endDate={emp.END_DATE} class="fas fa-edit"></i></td>
                                                     <td><i onClick={this.state.delete ? this.closeDeleteSectionHandler : this.state.edit ? this.closeEditSectionHandler : this.deleteHandler} tableId={emp.id} expType={emp.EXP_TYP_CODE} natIdCard={emp.NATIONAL_ID_CARD_NO} class="fas fa-backspace"></i></td>
                                                 </tr>
                                             </tbody>
@@ -635,54 +703,7 @@ class EmpExperience extends React.Component {
                                                     <td colspan="9">لاتوجد بيانات</td>
                                                 </tr>
                                             </tbody>
-                                            : null}
-
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="panel panel-default">
-                            <div className="panel-heading" style={{ minHeight: 40 }}>
-                                الخدمة العسكرية
-                            </div>
-                            <div class="panel-body">
-                                <div class="table-responsive">
-                                    <table class="table table-striped table-bordered table-hover" id="dataTables-example">
-                                        <thead>
-                                            <tr>
-                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>جهة الخبرة</th>
-                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>الوظيفة</th>
-                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>من</th>
-                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>إلى</th>
-                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>يوم</th>
-                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>شهر</th>
-                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>سنة</th>
-                                                <th>تعديل</th>
-                                                <th>حذف</th>
-                                            </tr>
-                                        </thead>
-                                        {this.props.empexp.length >= 1 ? this.props.empexp[0].length >= 1 ? this.props.empexp[0].map(emp => (
-                                            <tbody>
-                                                <tr id={emp.id}>
-                                                    <td>القوات المسلحة</td>
-                                                    <td>{this.state.edit && this.state.rowExp == emp.id ? <input onChange={this.editJobOfExpHandler} className="form-control job" style={{ width: "100%", minWidth: "90px" }} type="text" /> : emp.JOB_NAME}</td>
-                                                    <td>{this.state.edit && this.state.rowExp == emp.id ? <input onChange={this.editFromOfExpHandler} className="form-control job" style={{ width: "100%", minWidth: "90px" }} type="date" /> : emp.START_DATE}</td>
-                                                    <td>{this.state.edit && this.state.rowExp == emp.id ? <input onChange={this.editToOfExpHandler} className="form-control job" style={{ width: "100%", minWidth: "90px" }} type="date" /> : emp.END_DATE}</td>
-                                                    <td>{this.handleExpTime(emp.START_DATE, emp.END_DATE).days()}</td>
-                                                    <td>{this.handleExpTime(emp.START_DATE, emp.END_DATE).months()}</td>
-                                                    <td>{this.handleExpTime(emp.START_DATE, emp.END_DATE).years()}</td>
-                                                    <td ><i onClick={ this.state.delete ? this.confirmDelete : this.state.edit ? this.handelEdit_2 : this.handelEdit_1} tableId={emp.id} style={{ fontSize: 20 }} expType={emp.EXP_TYP_CODE} placeName={emp.PLACE_NAME} natIdCard={emp.NATIONAL_ID_CARD_NO} jobName={emp.JOB_NAME} startDate={emp.START_DATE} endDate={emp.END_DATE} class="fas fa-edit"></i></td>
-                                                    <td><i onClick={this.state.delete ? this.closeDeleteSectionHandler : this.state.edit ? this.closeEditSectionHandler : this.deleteHandler} tableId={emp.id} expType={emp.EXP_TYP_CODE} natIdCard={emp.NATIONAL_ID_CARD_NO} class="fas fa-backspace"></i></td>
-                                                </tr>
-                                            </tbody>
-                                        ))
-                                            :
-                                            <tbody>
-                                                <tr>
-                                                    <td colspan="9">لاتوجد بيانات</td>
-                                                </tr>
-                                            </tbody>
-                                            : null}
+                                            }
 
                                     </table>
                                 </div>
@@ -705,5 +726,5 @@ const mapStateToProps = (state) => {
     };
 };
 export default connect(mapStateToProps, {
-    getEmpByDeps, getEmpAppraisal, getEmpName, getEmpNameByName, newAppraisal, getEmpExp, newEmpExp, deleteEmpExperience
+    getEmpName, getEmpNameByName, newAppraisal, getEmpExp, newEmpExp, deleteEmpExperience
 })(EmpExperience);

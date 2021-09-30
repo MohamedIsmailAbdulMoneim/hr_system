@@ -52,6 +52,7 @@ export const deleteTrans = "DELETE-TRANS"
 export const deleteAppraisal = "DELETE-APPRAISAL"
 export const deleteExperience = "DELETE-EXPERIENCE"
 export const deleteEdu = "DELETE-EDU"
+export const fetchStations = "FETCH-STATIONS"
 
 
 

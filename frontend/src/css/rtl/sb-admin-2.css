@@ -526,3 +526,10 @@ div .giant-input {
   background: red;
   color: white;
 }
+
+table {
+  font-family: 'Lateef', cursive !important;
+  font-size: large !important;
+  font-weight: bold;
+
+}

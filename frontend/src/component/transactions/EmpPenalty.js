@@ -13,7 +13,7 @@ class EmpPenalty extends React.Component {
         super(props);
         this.state = {
             confirmAdd: false, showMsg: false, addPenaltyType: "", addPenaltyDate: "", addDayesOfPenalty: "",
-            empname: null, updated: false, firstArg: 0, addReasonOfPenalty: "", searchPenaltyType: "", searchPenaltyYear: "", messege: null,
+            empname: null, updated: false, firstArg: 0, addReasonOfPenalty: "", empnameSearch: "", empidSearch: "", searchPenaltyType: "", searchPenaltyYear: "", messege: null,
             secondArg: 20, currentPage: 1, firstArgPerBtn: 0, secondArgPerBtn: 10, empnameadd: "", empidadd: "",
             showNamesResultsForSearch: false, showNamesResultsForAdd: false, finalData: null, penIsdisDeduct: false,
             editName: "", editPenaltyType: "", editPenaltyDate: "", editDayesOfPenalty: "", editReasonOfPenalty: "", add: false, edit: false, rowPen: ""
@@ -167,20 +167,21 @@ class EmpPenalty extends React.Component {
 
     idInputHandlerForSearch = (e) => {
         this.refs.name.value = ''
-        if (e.key === 'Enter') {
-            this.props.getEmpName(e.target.value)
-            this.setState({ edit: false, empid: e.target.value })
-        }
+        this.props.getEmpName(e.target.value)
+        this.setState({ edit: false, empidSearch: e.target.value })
     }
 
     nameInputHandlerForSearch = (e) => {
-        this.setState({ showNamesResultsForSearch: true })
+        this.setState({ showNamesResultsForSearch: true, empidSearch: e.target.value })
         this.props.getEmpNameByName(e.target.value)
         this.refs.empid.value = ''
     }
 
     namesOptionshandlerForSearch = (e) => {
         this.refs.name.value = e.target.value
+        this.setState({
+            empnameSearch: e.target.value
+        })
     }
 
     searchPenaltyTypeHandler = (e) => {
@@ -195,7 +196,23 @@ class EmpPenalty extends React.Component {
         })
     }
 
-
+    handelSearch = () => {
+        let nameOrId = ''
+        // if (this.refs.name.value.length > 0) {
+        if (this.state.empnameSearch.length > 0) {
+            nameOrId = `(SELECT NATIONAL_ID_CARD_NO FROM employee WHERE NAME_ARABIC = "${this.state.empnameSearch}")`
+        } else if (this.state.empidSearch.length > 0) {
+            nameOrId = `(SELECT NATIONAL_ID_CARD_NO FROM employee WHERE EMPLOYEE_ID = ${this.state.empidSearch})`
+        }
+        let data = `${this.state.searchPenaltyType.length > 0 ? `penalty_type.PENALTY_ID = (SELECT PENALTY_ID FROM penalty_type WHERE PENALTY_TYPE_AR  = "${this.state.searchPenaltyType}")` : ''}
+        ${(this.state.searchPenaltyType.length > 0 && this.state.searchPenaltyYear.length > 0) ? `AND` : ''}
+        ${this.state.searchPenaltyYear.length > 0 ? `PENALTY_YEAR = ${this.state.searchPenaltyYear}` : ''}
+        ${(this.state.searchPenaltyType.length > 0 && nameOrId.length > 0) ||
+                (this.state.searchPenaltyYear.length > 0 && nameOrId.length > 0) ? 'AND' : ''}
+        ${nameOrId.length > 0 ? `employee_penalty.NATIONAL_ID_CARD_NO = ${nameOrId}` : ''}
+        `
+        this.props.getempspenalties(data)
+    }
 
     /* ------------------------------------------------------------------*/
 
@@ -242,7 +259,7 @@ class EmpPenalty extends React.Component {
         let reasonForPen = `"${this.state.addReasonOfPenalty}")`
 
 
-        let data = [nameOrId, `"true"` ,penaltyType, penaltyDate, yearOfDate, organization, reasonForPen]
+        let data = [nameOrId, `"true"`, penaltyType, penaltyDate, yearOfDate, organization, reasonForPen]
         if (numOfPen.length > 1) data.push(numOfPen)
         console.log(this.state.empidadd.length, this.state.addPenaltyType.length, this.state.addPenaltyDate.length, reasonForPen.length);
         if ((this.state.empidadd.length < 1 && this.state.empnameadd.length < 1) || this.state.addPenaltyType.length < 1 ||
@@ -255,6 +272,7 @@ class EmpPenalty extends React.Component {
             console.log('done');
             this.setState({ finalData: data, confirmAdd: true })
         }
+
     }
 
 
@@ -286,11 +304,6 @@ class EmpPenalty extends React.Component {
         }
 
         this.changeArgs(this.state.currentPage - 1)
-    }
-
-    handelSearch = () => {
-        this.setState({ edit: false, updated: false, firstArg: 0, secondArg: 20, currentPage: 1, firstArgPerBtn: 0, secondArgPerBtn: 10 })
-        this.props.getempspenalties()
     }
 
     /* ------------------------  */
@@ -502,7 +515,7 @@ class EmpPenalty extends React.Component {
                                 <div style={{ display: "flex", justifyContent: "space-between" }}>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>رقم الأداء : </label>
-                                        <input id="empid" ref="empid" className="form-control" onKeyDown={this.idInputHandlerForSearch} style={{ background: "white", width: "40%", marginBottom: 5, marginRight: 5, border: "1px solid black" }} type="text" name="first_name" />
+                                        <input id="empid" ref="empid" className="form-control" onKeyUp={this.idInputHandlerForSearch} style={{ background: "white", width: "40%", marginBottom: 5, marginRight: 5, border: "1px solid black" }} type="text" name="first_name" />
                                     </div>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>الإسم : </label>
@@ -532,7 +545,7 @@ class EmpPenalty extends React.Component {
                             <div style={{ display: "flex", justifyContent: "space-around" }}>
                                 <div className="form-group" controlId="formBasicEmail">
                                     <label style={{ width: "80%", textAlign: "right" }}>السنة : </label>
-                                    <select id="year1" style={{ width: "80%", height: 30 }} onKeyDown={this.handelYear}>
+                                    <select id="year1" style={{ width: "80%", height: 30 }} onKeyDown={this.searchPenaltyYearHandler}>
                                         {dates.map(year => (
                                             <option year={year} >{year}</option>
                                         ))}
@@ -542,7 +555,7 @@ class EmpPenalty extends React.Component {
                                 </div>
                                 <div className="form-group" controlId="formBasicEmail">
                                     <label style={{ width: "80%", textAlign: "right" }}>الجزاء : </label>
-                                    <select id="empapp" style={{ width: "80%", height: 30 }}>
+                                    <select onChange={this.searchPenaltyTypeHandler} id="empapp" style={{ width: "80%", height: 30 }}>
                                         {penalties.map(penalty => (
                                             <option>{penalty}</option>
                                         ))}
@@ -568,12 +581,13 @@ class EmpPenalty extends React.Component {
                                             <tr>
                                                 <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>الإسم</th>
                                                 <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>الجزاء</th>
+                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>عدد أيام الخصم</th>
                                                 <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>التاريخ</th>
                                                 <th>تعديل</th>
                                                 <th>حذف</th>
                                             </tr>
                                         </thead>
-                                        {this.props.empsPenalties.length >= 1 ? this.props.empsPenalties[0].length >= 1 ? this.props.empsPenalties[0].map(emp => (
+                                        {this.props.empsPenalties.length >= 1 ? this.props.empsPenalties.map(emp => (
                                             <tbody>
                                                 <tr id={emp.id}>
                                                     <td>{this.state.edit && this.state.rowPen == emp.id ?
@@ -594,76 +608,26 @@ class EmpPenalty extends React.Component {
                                                             <option selected>اختر ...</option>
                                                         </select> : emp.PENALTY_TYPE_AR}</td>
                                                     <td>{this.state.edit && this.state.rowPen == emp.id ?
+                                                        <select onChange={this.editPenaltyTypeHandler} id="empapp" style={{ height: 30, width: "50%", minWidth: "50px" }}>
+                                                            {penalties.map(penalty => (
+                                                                <option>{penalty}</option>
+                                                            ))}
+                                                            <option selected>اختر ...</option>
+                                                        </select> : emp.PEN_NUM}</td>
+                                                    <td>{this.state.edit && this.state.rowPen == emp.id ?
                                                         <input onChange={this.editPenaltyDateHandler} className="form-control" style={{ width: "70%", minWidth: "90px", margin: "0 auto" }} type="date" />
                                                         : emp.PENALTY_DATE}</td>
-                                                    <td><i onClick={ this.state.delete ? this.confirmDelete : this.state.edit ? this.handelEdit_2 : this.handelEdit_1} tableId={emp.id} style={{ fontSize: 20 }} empName={emp.NAME_ARABIC} penType={emp.PENALTY_TYPE_AR} penDate={emp.PENALTY_DATE} class="fas fa-edit"></i></td>
+                                                    <td><i onClick={this.state.delete ? this.confirmDelete : this.state.edit ? this.handelEdit_2 : this.handelEdit_1} tableId={emp.id} style={{ fontSize: 20 }} empName={emp.NAME_ARABIC} penType={emp.PENALTY_TYPE_AR} penDate={emp.PENALTY_DATE} class="fas fa-edit"></i></td>
                                                     <td><i onClick={this.state.delete ? this.closeDeleteSectionHandler : this.state.edit ? this.closeEditSectionHandler : this.deleteHandler} tableId={emp.id} natIdCard={emp.NATIONAL_ID_CARD_NO} class="fas fa-backspace"></i></td>
                                                 </tr>
                                             </tbody>
-                                        )) : <tbody>
-                                            <tr>
-                                                <td colspan="9">لاتوجد بيانات</td>
-                                            </tr>
-                                        </tbody>
-                                            : null}
-
-                                    </table>
-                                    {/* <Pagination minusFirstArg={this.minusFirstArg} plusSecondArg={this.plusSecondArg} firstArgPerBtn={this.state.firstArgPerBtn} secondArgPerBtn={this.state.secondArgPerBtn} changargs={this.changeArgs} pagesLength={this.props.empApp.length} currentPage={this.state.currentPage} /> */}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div className="panel panel-default">
-                            <div className="panel-heading" style={{ minHeight: 40 }}>
-                                جزاءات بالخصم
-                            </div>
-                            <div class="panel-body">
-                                <div class="table-responsive">
-                                    <table class="table table-striped table-bordered table-hover" id="dataTables-example">
-                                        <thead>
-                                            <tr>
-                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>الإسم</th>
-                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>عدد أيام الخصم</th>
-                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>التاريخ</th>
-                                                <th>تعديل</th>
-                                                <th>حذف</th>
-                                            </tr>
-                                        </thead>
-                                        {this.props.empsPenalties.length >= 1 ? this.props.empsPenalties[1].length >= 1 ? this.props.empsPenalties[1].map(emp => (
+                                        )) :
                                             <tbody>
-                                                <tr id={emp.id}>
-                                                    <td>{this.state.edit && this.state.rowPen == emp.id ?
-                                                        <div style={{ display: "flex", alignItems: "center", flexDirection: "column" }}>
-                                                            <input onKeyUp={this.searchEditNameHandler} className="form-control" style={{ width: 220, marginBottom: 5 }} name="brow501" />
-                                                            <select onChange={this.editNameHandler} id="brow501" style={{ width: 220, height: 30 }}>
-                                                                {this.props.empNameByName.map(name => (
-                                                                    <option for="brow501">{name.NAME_ARABIC}</option>
-                                                                ))}
-                                                            </select>
-                                                        </div>
-                                                        : emp.NAME_ARABIC}</td>
-                                                    <td>{this.state.edit && this.state.rowPen == emp.id ?
-                                                        <input onChange={this.editDayesOfPenaltyHanler} className="form-control" style={{ width: "100%", minWidth: "50px" }} type="number" />
-                                                        :
-                                                        emp.PEN_NUM}
-                                                    </td>
-                                                    <td>{this.state.edit && this.state.rowPen == emp.id ?
-                                                        <input onChange={this.editPenaltyDateHandler} className="form-control" style={{ width: "50%", minWidth: "90px", margin: "0 auto" }} type="date" />
-                                                        : emp.PENALTY_DATE}</td>
-                                                    <td><i onClick={this.state.edit ? this.handelEdit_2 : this.handelEdit_1} penType={'خصم'} tableId={emp.id} style={{ fontSize: 20 }} empName={emp.NAME_ARABIC} penDate={emp.PENALTY_DATE} penNum={emp.PEN_NUM} class="fas fa-edit"></i></td>
-                                                    <td><i onClick={this.state.edit ? this.closeEditSectionHandler : null} tableId={emp.id} class="fas fa-backspace"></i></td>
+                                                <tr>
+                                                    <td colspan="9">لاتوجد بيانات</td>
                                                 </tr>
-                                            </tbody>
-                                        )) : <tbody>
-                                            <tr>
-                                                <td colspan="9">لاتوجد بيانات</td>
-                                            </tr>
-                                        </tbody>
-                                            : null}
+                                            </tbody>}
+
                                     </table>
                                     {/* <Pagination minusFirstArg={this.minusFirstArg} plusSecondArg={this.plusSecondArg} firstArgPerBtn={this.state.firstArgPerBtn} secondArgPerBtn={this.state.secondArgPerBtn} changargs={this.changeArgs} pagesLength={this.props.empApp.length} currentPage={this.state.currentPage} /> */}
                                 </div>

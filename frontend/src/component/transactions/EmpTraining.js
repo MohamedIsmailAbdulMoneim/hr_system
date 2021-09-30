@@ -554,10 +554,14 @@ class EmpTraining extends React.Component {
                                     <table class="table table-striped table-bordered table-hover" id="dataTables-example">
                                         <thead>
                                             <tr>
-                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>التدريب</th>
-                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>التاريخ</th>
+                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>اسم الدور التدريبية</th>
+                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>مكان الدورة التدريبية</th>
+                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>من</th>
+                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>إلى</th>
                                                 <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>نوع التدريب</th>
                                                 <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>نوع المكان</th>
+                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>تكلفة الدورة</th>
+                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>الشهادة</th>
                                                 <th>تعديل</th>
                                                 <th>حذف</th>
                                             </tr>
@@ -566,9 +570,13 @@ class EmpTraining extends React.Component {
                                             <tbody>
                                                 <tr id={emp.id}>
                                                     <td>{emp.TRAINING_PROGRAM_ARABIC}</td>
+                                                    <td>{emp.LOCATION_NAME}</td>
+                                                    <td>{emp.TRAINING_START_DATE}</td>
                                                     <td>{emp.TRAINING_COMPLETION_DATE}</td>
                                                     <td>{emp.TRAINING_TYPE_NAME}</td>
                                                     <td>{emp.LOCATION_TYPE_NAME}</td>
+                                                    <td>{emp.TRAINING_COST}</td>
+                                                    <td>{emp.TRAINING_COST}</td>
                                                     <td><i onClick={ this.state.delete ? this.confirmDelete : this.state.edit ? this.handelEdit_2 : this.handelEdit_1} tableId={emp.id} relType={emp.RELATION_TYPE} famName={emp.FAMILY_NAME} birthDate={emp.BIRTH_DATE} marNid={emp.NATIONAL_ID_NUMBER} natIdCard={emp.NATIONAL_ID_CARD_NO} class="fas fa-edit"></i></td>
                                                     <td><i onClick={this.state.delete ? this.closeDeleteSectionHandler : this.state.edit ? this.closeEditSectionHandler : this.deleteHandler} tableId={emp.id} natIdCard={emp.NATIONAL_ID_CARD_NO} class="fas fa-backspace"></i></td>
                                                 </tr>

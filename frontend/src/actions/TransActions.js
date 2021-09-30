@@ -36,8 +36,13 @@ export const getEmpEdu = (empid, empname) => (dispatch) => {
 }
 
 export const getEmpTrans = (empid, empname) => (dispatch) => {
-  console.log('hit getemptrans');
-  axios.get(`http://localhost:5000/getemptrans/?empid=${empid}&empname=${empname}`).then(res => {
+  let nameOrId;
+  if (empname.length > 0) {
+    nameOrId = `(SELECT NATIONAL_ID_CARD_NO FROM employee WHERE NAME_ARABIC = "${empname}")`
+} else if (empid.length > 0) {
+    nameOrId = `(SELECT NATIONAL_ID_CARD_NO FROM employee WHERE EMPLOYEE_ID = ${empid})`
+}
+  axios.get(`http://localhost:5000/getemptrans/?nameOrId=${nameOrId}`).then(res => {
     dispatch({
       type: fetchEmpTrans,
       payload: res.data
@@ -77,8 +82,8 @@ export const updateEmpAppraisal = (obj) => (dispatch) => {
 }
 
 
-export const getEmpExp = (empid, empname) => (dispatch) => {
-  axios.get(`http://localhost:5000/getempexp/?empid=${empid}&empname=${empname}`).then(res => {
+export const getEmpExp = (data) => (dispatch) => {
+  axios.get(`http://localhost:5000/getempexp/?data=${data}`).then(res => {
     console.log(res);
     dispatch({
       type: FETCHEMPEXP,
@@ -105,9 +110,11 @@ export const newEmpExp = (data) => (dispatch) => {
   })
 }
 
-export const getempspenalties = (nameOrId, penalty, year) => (dispatch) => {
+export const getempspenalties = (data) => (dispatch) => {
 
-  axios.get(`http://localhost:5000/getempspenalties/?nameorid=${nameOrId}&penalty=${penalty}&year=${year}`).then(res => {
+  axios.get(`http://localhost:5000/getempspenalties/?data=${data}`).then(res => {
+    console.log(res.data);
+
     dispatch({
       type: fetchEmpPenalties,
       payload: res.data
@@ -152,7 +159,6 @@ export const insertNewTrans = (data) => (dispatch) => {
     url: "http://localhost:5000/postnewtrans",
     headers: { "Content-Type": "application/json" },
   }).then((res) => {
-    console.log(res.data);
     dispatch({
       type: postNewTrans,
       payload: res.data

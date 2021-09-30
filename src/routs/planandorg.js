@@ -4,16 +4,12 @@ const db = require("../database/connection")
 let router = express.Router();
 
 function getEmpExprerience(req, res, next) {
-    const empid = req.query.empid
-    const empname = req.query.empname
+    const data = req.query.data || 0
 
-    const query = `
-    SELECT * FROM employee_experince WHERE EXP_TYP_CODE = 1 AND NATIONAL_ID_CARD_NO = (SELECT NATIONAL_ID_CARD_NO  FROM employee WHERE ${empid.length !== 0 ? `EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `NAME_ARABIC = "${empname}"` : null}) AND is_shown = "true";
-    SELECT * FROM employee_experince WHERE EXP_TYP_CODE = 3 AND NATIONAL_ID_CARD_NO = (SELECT NATIONAL_ID_CARD_NO  FROM employee WHERE ${empid.length !== 0 ? `EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `NAME_ARABIC = "${empname}"` : null}) AND is_shown = "true";
-    SELECT * FROM employee_experince WHERE EXP_TYP_CODE = 4 AND NATIONAL_ID_CARD_NO = (SELECT NATIONAL_ID_CARD_NO  FROM employee WHERE ${empid.length !== 0 ? `EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `NAME_ARABIC = "${empname}"` : null}) AND is_shown = "true";
-    `
+    let query = `SELECT * FROM employee_experince JOIN exp_type ON employee_experince.EXP_TYP_CODE = exp_type.EXP_TYP_CODE WHERE ${data}`
     db.query(query, (err, details) => {
         if (err) {
+            console.log(err);
             next(err)
         } else {
             res.send(details);
@@ -91,10 +87,7 @@ function getsupboxmangers(req, res, next) {
 
 function getEmpApprails(req, res, next) {
 
-    const empid = req.query.empid
-    const empname = req.query.empname
-    const appraisal = req.query.appraisal
-    const year = req.query.year
+    const data = req.query.data || 0
 
     let query = `SELECT employee.NAME_ARABIC, employee_appraisal.APPRAISAL_DATE, appraisal.APPRAISAL_ARABIC,employee_appraisal.id,
     employee.EMPLOYEE_ID, employee_appraisal.NATIONAL_ID_CARD_NO
@@ -102,10 +95,7 @@ function getEmpApprails(req, res, next) {
     employee_appraisal
     JOIN employee ON employee.NATIONAL_ID_CARD_NO = employee_appraisal.NATIONAL_ID_CARD_NO
     JOIN APPRAISAL ON APPRAISAL.APPRAISAL = employee_appraisal.APPRAISAL
-    WHERE
-    ${(empid.length === 0 && !empname) && (!appraisal || appraisal === "اختر التقدير") ? `employee_appraisal.APPRAISAL_DATE = ${year}` : !appraisal || appraisal === "اختر التقدير" && (!year || year === "اختر السنة") ? `${empid.length !== 0 ? `employee.EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `employee.NAME_ARABIC = "${empname}"` : null}` : (empid.length === 0 && !empname) && (!year || year === "اختر السنة") ? `appraisal.APPRAISAL_ARABIC = "${appraisal}"` : empid.length === 0 && !empname ? `employee_appraisal.APPRAISAL_DATE = ${year} AND appraisal.APPRAISAL_ARABIC = "${appraisal}"` : !appraisal || appraisal === "اختر التقدير" ? `${empid.length !== 0 ? `employee.EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `employee.NAME_ARABIC = "${empname}"` : null} AND employee_appraisal.APPRAISAL_DATE = ${year}` : !year || year === "اختر السنة" ? `${empid.length !== 0 ? `employee.EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `employee.NAME_ARABIC = "${empname}"` : null} AND appraisal.APPRAISAL_ARABIC = "${appraisal}" AND employee_appraisal.is_shown = "true"` : null}
-    ORDER BY employee_appraisal.APPRAISAL_DATE`
-
+    WHERE ${data}`
     db.query(query, (err, details) => {
         if (err) {
             next(err)
@@ -150,16 +140,18 @@ function updateAppraisal(req, res, next) {
 }
 
 function getEmpTrans(req, res, next) {
-    const empid = req.query.empid
-    const empname = req.query.empname
+    const nameOrId = req.query.nameOrId
 
-    let query = `select *, a_job_trans.SUP_BOX_NAME AS catename from a_job_trans JOIN employee JOIN job_assignment_form JOIN indicators JOIN a_sup_box JOIN a_category JOIN a_job_groups ON a_job_trans.G_ID = a_job_groups.G_ID AND a_category.CAT_ID = a_job_trans.CAT_ID AND a_sup_box.SUP_BOX_ID = a_job_trans.SUP_BOX_ID AND a_job_trans.NATIONAL_ID_CARD_NO = employee.NATIONAL_ID_CARD_NO AND a_job_trans.JOB_ASSIGNMENT_FORM = JOB_ASSIGNMENT_FORM.JOB_ASSIGNMENT_FORM AND a_job_trans.INDICATOR = indicators.INDICATOR WHERE ${empid.length !== 0 ? `employee.EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? `employee.NAME_ARABIC = "${empname}"` : null} AND a_job_trans.is_shown = "true" ORDER by a_job_trans.TRANS_DATE`
-
+    let query = `select *, (SELECT station_name FROM stations WHERE a_job_trans.JOB_LOCATION = id) AS station, (SELECT area_name FROM areas WHERE a_job_trans.JOB_AREA = id) AS AREA, (SELECT GOVERNORATE_ARABIC FROM governorate WHERE a_job_trans.JOB_GOVERNORATE = GOVERNORATE) AS GOV ,a_job_trans.SUP_BOX_NAME AS catename from a_job_trans
+    JOIN job_assignment_form JOIN indicators JOIN a_sup_box JOIN a_category
+    JOIN a_job_groups ON a_job_trans.G_ID = a_job_groups.G_ID AND a_category.CAT_ID = a_job_trans.CAT_ID
+    AND a_sup_box.SUP_BOX_ID = a_job_trans.SUP_BOX_ID AND
+    a_job_trans.JOB_ASSIGNMENT_FORM = JOB_ASSIGNMENT_FORM.JOB_ASSIGNMENT_FORM AND a_job_trans.INDICATOR = indicators.INDICATOR
+    WHERE NATIONAL_ID_CARD_NO = ${nameOrId} AND a_job_trans.is_shown = "true" ORDER by a_job_trans.TRANS_DATE`
     db.query(query, (err, details) => {
         if (err) {
             next(err);
         } else {
-            console.log(query);
             res.send(details);
         }
     })
@@ -273,11 +265,14 @@ function postnewtrans(req, res, next) {
         SUP_BOX_NAME,
         JOB_ASSIGNMENT_FORM,
         INDICATOR,
+        JOB_LOCATION,
+        JOB_AREA,
+        JOB_GOVERNORATE,
         MAIN_BOX_NAME
     ) VALUES ${data};
     select *, a_job_trans.SUP_BOX_NAME AS catename from a_job_trans JOIN employee JOIN job_assignment_form JOIN indicators JOIN a_sup_box JOIN a_category JOIN a_job_groups ON a_job_trans.G_ID = a_job_groups.G_ID AND a_category.CAT_ID = a_job_trans.CAT_ID AND a_sup_box.SUP_BOX_ID = a_job_trans.SUP_BOX_ID AND a_job_trans.NATIONAL_ID_CARD_NO = employee.NATIONAL_ID_CARD_NO AND a_job_trans.JOB_ASSIGNMENT_FORM = JOB_ASSIGNMENT_FORM.JOB_ASSIGNMENT_FORM AND a_job_trans.INDICATOR = indicators.INDICATOR WHERE employee.NATIONAL_ID_CARD_NO IN ${data[0][0].substring(1)} ORDER by a_job_trans.TRANS_DATE;
     `
-
+    console.log(query);
     db.query(query, (err, details) => {
         if (err) {
             console.log(err);
@@ -388,11 +383,14 @@ function getUpJd(req, res, next) {
 
 function newEmpExp(req, res, next) {
     let data = req.body
-    let query = `INSERT INTO employee_experince (PLACE_NAME, JOB_NAME, START_DATE, END_DATE, EXP_TYP_CODE, is_shown ,NATIONAL_ID_CARD_NO) VALUES ${data}`
+    let query = `INSERT INTO employee_experince (PLACE_NAME, JOB_NAME, START_DATE, END_DATE, calculated_start_date, calculated_end_date ,EXP_TYP_CODE, is_shown ,NATIONAL_ID_CARD_NO) VALUES ${data}`
 
+
+    console.log(query);
     db.query(query, function (err, data) {
         if (err) {
             next(err);
+            console.log(err);
             res.json({ data: null, msg: "يوجد خطاء بقاعدة البيانات" });
         } else {
 
@@ -440,29 +438,23 @@ function editFamily(req, res, next) {
 }
 
 function getEmpsPenalties(req, res, next) {
+    let data = req.query.data
     let query = `
     SELECT
     employee.NAME_ARABIC,
     penalty_type.PENALTY_TYPE_AR,
     PENALTY_DATE,
+    PEN_NUM,
     employee_penalty.NATIONAL_ID_CARD_NO,
     employee_penalty.id
 FROM
     employee_penalty
 JOIN employee JOIN penalty_type ON employee.NATIONAL_ID_CARD_NO = employee_penalty.NATIONAL_ID_CARD_NO AND penalty_type.PENALTY_ID = employee_penalty.PENALTY_TYPE
 WHERE
-    PENALTY_TYPE != 1 AND employee_penalty.is_shown = "true";
-    SELECT
-    employee.NAME_ARABIC,
-    PEN_NUM,
-    PENALTY_DATE,
-    employee_penalty.id
-FROM
-    employee_penalty
-JOIN employee JOIN penalty_type ON employee.NATIONAL_ID_CARD_NO = employee_penalty.NATIONAL_ID_CARD_NO AND penalty_type.PENALTY_ID = employee_penalty.PENALTY_TYPE
-WHERE
-    PENALTY_TYPE = 1 AND employee_penalty.is_shown = "true"
+    ${data} AND employee_penalty.is_shown = "true";
+
     `
+    console.log(query);
     db.query(query, (err, data) => {
         if (err) {
             console.log(err);
@@ -576,10 +568,10 @@ function editEmpEdu(req, res, next) {
 
 function getEmpTraining(req, res, next) {
     let nameOrId = req.query.nameOrId
-    let query = `SELECT employee.NAME_ARABIC, employee_training.NATIONAL_ID_CARD_NO, employee_training.id ,employee_training.TRAINING_PROGRAM_ARABIC,employee_training.TRAINING_COMPLETION_DATE,TRAINING_TYPE.TRAINING_TYPE_NAME,LOCATION_TYPE.LOCATION_TYPE_NAME FROM employee_training JOIN TRAINING_TYPE JOIN LOCATION_TYPE JOIN employee ON
+    let query = `SELECT employee.NAME_ARABIC, employee_training.NATIONAL_ID_CARD_NO, employee_training.TRAINING_COST ,employee_training.TRAINING_START_DATE, employee_training.LOCATION_NAME ,employee_training.id ,employee_training.TRAINING_PROGRAM_ARABIC,employee_training.TRAINING_COMPLETION_DATE,TRAINING_TYPE.TRAINING_TYPE_NAME,LOCATION_TYPE.LOCATION_TYPE_NAME FROM employee_training JOIN TRAINING_TYPE JOIN LOCATION_TYPE JOIN employee ON
     employee.NATIONAL_ID_CARD_NO = employee_training.NATIONAL_ID_CARD_NO AND employee_training.TRAINING_TYPE = training_type.TRAINING_TYPE AND
     employee_training.LOCATION_TYPE = location_type.LOCATION_TYPE WHERE ${nameOrId} AND employee_training.is_shown = "true"`
-
+    console.log(query);
     db.query(query, (err, data) => {
         if (err) {
             res.json({ msg: "يوجد خطاء بقاعدة البيانات", data: null })

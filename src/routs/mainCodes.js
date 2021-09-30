@@ -126,6 +126,18 @@ function getUneSchool(req, res, next) {
 }
 
 
+function getStations(req,res, next){
+    db.query('SELECT * FROM stations', (err,details) => {
+        if (err) {
+            next(err);
+        } else {
+            res.send(details);
+        }
+    })
+}
+
+
+
 
 
 router
@@ -135,6 +147,7 @@ router
     .get('/empnamebyid/:empid', getEmpNameById)
     .get('/empnamebyName/:empname', getEmpNameByName)
     .get('/specarabic', getQulSpeciality)
+    .get('/stations', getStations)
     .get('/specDetail', getSpecDetail)
     .get('/uneschool', getUneSchool)
     .post('/insertnewemp',insertNewEmp)

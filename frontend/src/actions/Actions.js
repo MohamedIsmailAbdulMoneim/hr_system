@@ -20,7 +20,8 @@ import {
   fetchDownJd,
   fetchqn,
   fetchemps,
-  fetchgid
+  fetchgid,
+  fetchStations
 } from "../actions/ActionTypes";
 import axios from "axios";
 
@@ -171,10 +172,9 @@ export const getEmpNameByName = (val) => (dispatch) => {
 
 
 
-export const getEmpAppraisal = (empid, empname, appraisal, year) => (dispatch) => {
-  console.log(empid, appraisal, year);
+export const getEmpAppraisal = (data) => (dispatch) => {
   // axios.get(`http://localhost:5000/getempappraisal/${empid}/${appraisal}/${year}`).then(res => {
-  axios.get(`http://localhost:5000/empappraisal/?empid=${empid}&empname=${empname}&appraisal=${appraisal}&year=${year}`).then(res => {
+  axios.get(`http://localhost:5000/empappraisal/?data=${data}`).then(res => {
     dispatch({
       type: fetchEmpAppraisal,
       payload: res.data
@@ -246,6 +246,15 @@ export const getGid = () => (dispatch) => {
     console.log(res.data);
     dispatch({
       type: fetchgid,
+      payload: res.data
+    })
+  })
+}
+
+export const getStations = () => (dispatch) => {
+  axios.get('http://localhost:5000/stations').then(res => {
+    dispatch({
+      type: fetchStations,
       payload: res.data
     })
   })

@@ -4,7 +4,7 @@ import {
 } from "../../actions/Actions";
 
 import {
-    submitNewFamily, getEmpFamily,deleteEmpFamily
+    submitNewFamily, getEmpFamily, deleteEmpFamily
 } from "../../actions/TransActions"
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
@@ -19,7 +19,7 @@ class EmpFamily extends React.Component {
             addMaritalName: [{ value: " ", key: null }], addMaritalNId: [{ value: " ", key: null }],
             addMaritalBod: [{ value: " ", key: null }], addMaritalWorkStatus: [{ value: " ", key: null }],
             addMarital: false, editMaritalType: null, editMaritalName: null, editNid: null, editMaritalNid: null, editMaritalBod: null,
-             maritalLength: 0, showFamilyResult: true, add: false, edit: false, empid: null, delete: false,
+            maritalLength: 0, showFamilyResult: true, add: false, edit: false, empid: null, delete: false,
             empname: null, showMaritalstate: false, showNamesResultsForSearch: false, showNamesResultsForAdd: false,
             empnameForAdd: null, empidForAdd: null, showMsg: false, rowFam: null, addConfirmed: false, updated: false
 
@@ -608,19 +608,19 @@ class EmpFamily extends React.Component {
                     <div class="col-lg-12">
                         <div class="panel panel-default">
                             <div class="panel-heading" style={{ display: "flex", justifyContent: "space-evenly" }}>
+                                البيانات العائلية
                             </div>
                             <div class="panel-body">
                                 <div class="table-responsive">
                                     <div style={{ display: "flex", justifyContent: "space-between" }}>
                                         <div></div>
-                                        {this.props.empfamily.length > 0 ? <h4 style={{ textAlign: "right", fontWeight: "bolder" }}>البيانات العائلية الخاصة بالسيد / {this.props.empfamily[0].NAME_ARABIC}</h4> : null}
+                                        {this.props.empfamily.length > 0 ? <h4 style={{ textAlign: "right", fontWeight: "bolder" }}>{this.props.empfamily[0].NAME_ARABIC}</h4> : null}
                                         <div></div>
                                     </div>
-
+                                    <h3 style={{ textAlign: "right" }}>بيانات الزوجة</h3>
                                     <table class="table table-striped table-bordered table-hover" id="dataTables-example">
                                         <thead>
                                             <tr>
-                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>القرابة</th>
                                                 <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>الإسم</th>
                                                 <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>تاريخ الميلاد</th>
                                                 <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>الرقم القومي</th>
@@ -633,30 +633,61 @@ class EmpFamily extends React.Component {
                                             </tr>
                                         </thead>
                                         {this.props.empfamily.map((fam) => (
-                                            <tbody>
-                                                <tr id={fam.id}>
-                                                    <td>{this.state.edit && this.state.rowFam == fam.id ?
-                                                        <select onChange={this.handleMarType} style={{ width: "100%", height: 30 }}>
-                                                            <option type={1}>الزوجة</option>
-                                                            <option type={2}>الأبن</option>
-                                                            <option selected>{this.state.editMaritalType == 1 ? "الزوجة" : "الأبن"}</option>
-                                                        </select> : fam.RELATION_TYPE == 1 ? "الزوجة" : "الأبن"}</td>
-                                                    <td>{this.state.edit && this.state.rowFam == fam.id ? <input onChange={this.handleMarName} value={this.state.editMaritalName} className="form-control" style={{ width: "100%" }} type="text" /> : this.state.updated && this.state.rowFam == fam.id ? this.state.editMaritalName : fam.FAMILY_NAME}</td>
-                                                    <td>{this.state.edit && this.state.rowFam == fam.id ? <input onChange={this.handleBod} value={this.state.editMaritalBod} className="form-control" style={{ width: "100%" }} type="date" /> : this.state.updated && this.state.rowFam == fam.id ? this.state.editMaritalBod : fam.BIRTH_DATE}</td>
-                                                    <td>{this.state.edit && this.state.rowFam == fam.id ? <input onChange={this.handleNid} value={this.state.editMaritalNid} className="form-control" style={{ width: "100%" }} type="text" /> : this.state.updated && this.state.rowFam == fam.id ? this.state.editMaritalNid : fam.NATIONAL_ID_NUMBER}</td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-
-                                                    <td><i onClick={ this.state.delete ? this.confirmDelete : this.state.edit ? this.handelEdit_2 : this.handelEdit_1} tableId={fam.id} relType={fam.RELATION_TYPE} famName={fam.FAMILY_NAME} birthDate={fam.BIRTH_DATE} marNid={fam.NATIONAL_ID_NUMBER} natIdCard={fam.NATIONAL_ID_CARD_NO} class="fas fa-edit"></i></td>
-                                                    <td><i onClick={this.state.delete ? this.closeDeleteSectionHandler : this.state.edit ? this.closeEditSectionHandler : this.deleteHandler} tableId={fam.id} natIdCard={fam.NATIONAL_ID_CARD_NO} class="fas fa-backspace"></i></td>
-                                                </tr>
-                                            </tbody>
+                                            fam.RELATION_TYPE === 1 ?
+                                                <tbody>
+                                                    <tr id={fam.id}>
+                                                        <td>{this.state.edit && this.state.rowFam == fam.id ? <input onChange={this.handleMarName} value={this.state.editMaritalName} className="form-control" style={{ width: "100%" }} type="text" /> : this.state.updated && this.state.rowFam == fam.id ? this.state.editMaritalName : fam.FAMILY_NAME}</td>
+                                                        <td>{this.state.edit && this.state.rowFam == fam.id ? <input onChange={this.handleBod} value={this.state.editMaritalBod} className="form-control" style={{ width: "100%" }} type="date" /> : this.state.updated && this.state.rowFam == fam.id ? this.state.editMaritalBod : fam.BIRTH_DATE}</td>
+                                                        <td>{this.state.edit && this.state.rowFam == fam.id ? <input onChange={this.handleNid} value={this.state.editMaritalNid} className="form-control" style={{ width: "100%" }} type="text" /> : this.state.updated && this.state.rowFam == fam.id ? this.state.editMaritalNid : fam.NATIONAL_ID_NUMBER}</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td><i onClick={this.state.delete ? this.confirmDelete : this.state.edit ? this.handelEdit_2 : this.handelEdit_1} tableId={fam.id} relType={fam.RELATION_TYPE} famName={fam.FAMILY_NAME} birthDate={fam.BIRTH_DATE} marNid={fam.NATIONAL_ID_NUMBER} natIdCard={fam.NATIONAL_ID_CARD_NO} class="fas fa-edit"></i></td>
+                                                        <td><i onClick={this.state.delete ? this.closeDeleteSectionHandler : this.state.edit ? this.closeEditSectionHandler : this.deleteHandler} tableId={fam.id} natIdCard={fam.NATIONAL_ID_CARD_NO} class="fas fa-backspace"></i></td>
+                                                    </tr>
+                                                </tbody>
+                                                :
+                                                null
                                         ))}
 
 
                                     </table>
+
+                                    <h3 style={{ textAlign: "right" }}>بيانات الأبناء</h3>
+                                    <table class="table table-striped table-bordered table-hover" id="dataTables-example">
+                                        <thead>
+                                            <tr>
+                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>الإسم</th>
+                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>تاريخ الميلاد</th>
+                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>الرقم القومي</th>
+                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>يدرس أو لا يدرس</th>
+                                                <th>تعديل</th>
+                                                <th>حذف</th>
+                                            </tr>
+                                        </thead>
+                                        {this.props.empfamily.map((fam) => (
+                                            fam.RELATION_TYPE === 2 ?
+                                                <tbody>
+                                                    <tr id={fam.id}>
+                                                        <td>{this.state.edit && this.state.rowFam == fam.id ? <input onChange={this.handleMarName} value={this.state.editMaritalName} className="form-control" style={{ width: "100%" }} type="text" /> : this.state.updated && this.state.rowFam == fam.id ? this.state.editMaritalName : fam.FAMILY_NAME}</td>
+                                                        <td>{this.state.edit && this.state.rowFam == fam.id ? <input onChange={this.handleBod} value={this.state.editMaritalBod} className="form-control" style={{ width: "100%" }} type="date" /> : this.state.updated && this.state.rowFam == fam.id ? this.state.editMaritalBod : fam.RELATION_TYPE === 2 ? fam.BIRTH_DATE : null}</td>
+                                                        <td>{this.state.edit && this.state.rowFam == fam.id ? <input onChange={this.handleNid} value={this.state.editMaritalNid} className="form-control" style={{ width: "100%" }} type="text" /> : this.state.updated && this.state.rowFam == fam.id ? this.state.editMaritalNid : fam.RELATION_TYPE === 2 ? fam.NATIONAL_ID_NUMBER : null}</td>
+                                                        <td></td>
+                                                        <td><i onClick={this.state.delete ? this.confirmDelete : this.state.edit ? this.handelEdit_2 : this.handelEdit_1} tableId={fam.id} relType={fam.RELATION_TYPE} famName={fam.FAMILY_NAME} birthDate={fam.BIRTH_DATE} marNid={fam.NATIONAL_ID_NUMBER} natIdCard={fam.NATIONAL_ID_CARD_NO} class="fas fa-edit"></i></td>
+                                                        <td><i onClick={this.state.delete ? this.closeDeleteSectionHandler : this.state.edit ? this.closeEditSectionHandler : this.deleteHandler} tableId={fam.id} natIdCard={fam.NATIONAL_ID_CARD_NO} class="fas fa-backspace"></i></td>
+                                                    </tr>
+                                                </tbody>
+                                                :
+                                                null
+                                        ))
+
+                                        }
+
+
+                                    </table>
+
+
 
                                     {this.state.showMaritalstate ? <div><h3 style={{ textAlign: "left", fontFamily: 'Markazi Text ,serif' }}>الحالة الإجتماعية : <span style={{ color: "#7d7272" }}> {this.props.empfamily ? this.props.empfamily.length == 1 ? "متزوج" : this.props.empfamily.length > 1 ? `متزوج ويعول ${this.props.empfamily.length - 1}` : "أعزب" : null} </span> </h3></div> : null}
                                 </div>
@@ -679,5 +710,5 @@ const mapStateToProps = (state) => {
     };
 };
 export default connect(mapStateToProps, {
-    getEmpFamily, getEmpName, getEmpNameByName, submitNewFamily,deleteEmpFamily
+    getEmpFamily, getEmpName, getEmpNameByName, submitNewFamily, deleteEmpFamily
 })(EmpFamily);
