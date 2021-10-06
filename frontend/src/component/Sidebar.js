@@ -37,6 +37,13 @@ class Sidebar extends React.Component {
                             <a onClick={this.handle} className="active" href="/"><i className="fa fa-dashboard fa-fw"></i> Dashboard</a>
                         </li>
                         <li>
+                            <NavLink to={`/Employee`}>
+                                <li>
+                                    <a href="/Employee">الشاشة الرئيسية</a>
+                                </li>
+                            </NavLink>
+                        </li>
+                        <li>
                             <a href="#"><i className="fa fa-sitemap fa-fw"></i>  أكواد الوزارة<span className="fa arrow"></span></a>
                             <ul className="nav nav-second-level">
                                 <li>
@@ -168,14 +175,21 @@ class Sidebar extends React.Component {
                                 {/* <li>
                                     <a href="morris.html">سفر</a>
                                 </li> */}
-                                {/* <li>
-                                    <a href="morris.html">جزاءات</a>
-                                </li> */}
+                                <NavLink style={styles} to={`/emppenalty`}>
+                                    <li>
+                                        <a href="/emppenalty">جزاءات</a>
+                                    </li>
+                                </NavLink>
                                 <NavLink style={styles} to={`/empfamily`}>
                                     <li >
                                         <a href="/empfamily">البيانات العائلية</a>
                                     </li>
-                                </NavLink >
+                                </NavLink>
+                                <NavLink style={styles} to={`/EmpTraining`}>
+                                    <li>
+                                        <a href="/EmpTraining">تدريب العاملين</a>
+                                    </li>
+                                </NavLink>
                                 <NavLink style={styles} to={`/orgstructure`}>
                                     <li>
                                         <a href="/orgstructure">الهيكل</a>
@@ -184,13 +198,43 @@ class Sidebar extends React.Component {
                             </ul>
                         </li>
                         <li>
+                                    <a href="#"><i className="fa fa-sitemap fa-fw"></i> العمالة المؤقتة<span className="fa arrow"></span></a>
+                                    <ul className="nav nav-first-level">
+                                    <NavLink style={styles} to={`/empbystation`}>
+                                            <li>
+                                                <a  href="/empbystation">بيانات العامل</a>
+                                            </li>
+                                        </NavLink >
+                                        <NavLink style={styles} to={`/empbystation`}>
+                                            <li>
+                                                <a href="/empbystation">المؤهلات</a>
+                                            </li>
+                                        </NavLink >
+                                        <NavLink style={styles} to={`/empbydeps`}>
+                                            <li>
+                                                <a href="/empbydeps">التقييمات</a>
+                                            </li>
+                                        </NavLink >
+                                        <NavLink style={styles} to={`/natidexpire`}>
+                                            <li>
+                                                <a href="/natidexpire">جزاءات</a>
+                                            </li>
+                                        </NavLink >
+                                        <NavLink style={styles} to={`/natidexpire`}>
+                                            <li>
+                                                <a href="/natidexpire">بيانات عائلية</a>
+                                            </li>
+                                        </NavLink >
+                                        <NavLink style={styles} to={`/natidexpire`}>
+                                            <li>
+                                                <a href="/natidexpire">تدريب</a>
+                                            </li>
+                                        </NavLink >
+                                    </ul>
+                                </li>
+                        <li>
                             <a href="#"><i className="fa fa-bar-chart-o fa-fw"></i> تقارير<span className="fa arrow"></span></a>
                             <ul className="nav nav-first-level">
-                                <NavLink style={styles} to={`/Employee`}>
-                                    <li>
-                                        <a href="/Employee">بيانات الموظفين</a>
-                                    </li>
-                                </NavLink>
                                 <NavLink style={styles} to={`/empbystation`}>
                                     <li>
                                         <a onClick={this.props.getJobGovern} href="/empbystation">الموظفون بالمحطات</a>
@@ -201,17 +245,11 @@ class Sidebar extends React.Component {
                                         <a onClick={this.props.getDeps} href="/empbydeps">الموظفون بالإدارات</a>
                                     </li>
                                 </NavLink >
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="#"><i className="fa fa-files-o fa-fw"></i> Sample Pages<span className="fa arrow"></span></a>
-                            <ul className="nav nav-second-level">
-                                <li>
-                                    <a href="blank.html">Blank Page</a>
-                                </li>
-                                <li>
-                                    <a href="login.html">Login Page</a>
-                                </li>
+                                <NavLink style={styles} to={`/natidexpire`}>
+                                    <li>
+                                        <a onClick={this.props.getDeps} href="/natidexpire">بطاقات رقم قومي منتهية</a>
+                                    </li>
+                                </NavLink >
                             </ul>
                         </li>
                     </ul>

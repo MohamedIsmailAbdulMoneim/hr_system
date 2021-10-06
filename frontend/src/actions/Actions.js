@@ -11,9 +11,6 @@ import {
   fetchEmpByDeps,
   fetchEmpName,
   fetchEmpAppraisal,
-  fetchEmpTrans,
-  fetchEmpEdu,
-  fetchEmpFamily,
   fetchEmpNameByName,
   fetchCurrentjd,
   fetchavailjd,
@@ -22,14 +19,11 @@ import {
   fetchEmpDetails,
   fetchDownJd,
   fetchqn,
-  fetchuneschool,
-  fetchspecarabic,
   fetchemps,
-  fetchgid
+  fetchgid,
+  fetchStations
 } from "../actions/ActionTypes";
 import axios from "axios";
-
-let outDocsData = [];
 
 export const gitDownJd = () => (dispatch) => {
   axios.get(`http://localhost:5000/gitDownJd`).then((res) => {
@@ -88,9 +82,8 @@ export const getCates = () => (dispatch) => {
   }))
 }
 
-// planandorganize folder
-export const getJobDgByCat = (val, mainboxid) => (dispatch) => {
-  axios.get(`http://localhost:5000/getjobdgbycat/${val}/${mainboxid}`).then((res => {
+export const getJobDgByCat = (val) => async (dispatch) => {
+  axios.get(`http://localhost:5000/getjobdgbycat/${val}`).then((res => {
     dispatch({
       type: fetchJobByCat,
       payload: { data: res.data }
@@ -161,7 +154,6 @@ export const getEmpStationAndGovern = (val_1, val_2) => (dispatch) => {
 
 export const getEmpName = (val) => (dispatch) => {
   axios.get(`http://localhost:5000/empnamebyid/${val}`).then(res => {
-    console.log('hitempname');
     dispatch({
       type: fetchEmpName,
       payload: res.data
@@ -180,10 +172,9 @@ export const getEmpNameByName = (val) => (dispatch) => {
 
 
 
-export const getEmpAppraisal = (empid, empname, appraisal, year) => (dispatch) => {
-  console.log(empid, appraisal, year);
+export const getEmpAppraisal = (data) => (dispatch) => {
   // axios.get(`http://localhost:5000/getempappraisal/${empid}/${appraisal}/${year}`).then(res => {
-  axios.get(`http://localhost:5000/empappraisal/?empid=${empid}&empname=${empname}&appraisal=${appraisal}&year=${year}`).then(res => {
+  axios.get(`http://localhost:5000/empappraisal/?data=${data}`).then(res => {
     dispatch({
       type: fetchEmpAppraisal,
       payload: res.data
@@ -191,35 +182,7 @@ export const getEmpAppraisal = (empid, empname, appraisal, year) => (dispatch) =
   })
 }
 
-export const getEmpTrans = (empid, empname) => (dispatch) => {
-  axios.get(`http://localhost:5000/getemptrans/?empid=${empid}&empname=${empname}`).then(res => {
-    dispatch({
-      type: fetchEmpTrans,
-      payload: res.data
-    })
-  })
-}
 
-
-export const getEmpEdu = (empid, empname) => (dispatch) => {
-  console.log(empid, empname);
-  axios.get(`http://localhost:5000/getempedu/?empid=${empid}&empname=${empname}`).then(res => {
-    dispatch({
-      type: fetchEmpEdu,
-      payload: res.data
-    })
-  })
-}
-
-export const getEmpFamily = (empid, empname) => (dispatch) => {
-  axios.get(`http://localhost:5000/getempfamily/?empid=${empid}&empname=${empname}`).then(res => {
-    dispatch({
-      type: fetchEmpFamily,
-      payload: res.data
-    })
-  })
-
-}
 
 export const getCurrentJd = (empid) => (dispatch) => {
   axios.get(`http://localhost:5000/currentjd/${empid}`).then(res => {
@@ -248,8 +211,8 @@ export const getAvailSupBox = (catname, jdname) => (dispatch) => {
   })
 }
 
-export const getUpJd = (len, supboxname) => (dispatch) => {
-  axios.get(`http://localhost:5000/getUpJd/${len}/${supboxname}`).then(res => {
+export const getUpJd = (catename, supboxname) => (dispatch) => {
+  axios.get(`http://localhost:5000/getUpJd/${catename}/${supboxname}`).then(res => {
     dispatch({
       type: fetchupjd,
       payload: res.data
@@ -269,27 +232,8 @@ export const getQn = () => (dispatch) => {
 
 }
 
-export const getQulSpeciality = (specarabic) => (dispatch) => {
-  axios.get(`http://localhost:5000/specarabic/?specarabic=${specarabic}`).then(res => {
-    dispatch({
-      type: fetchspecarabic,
-      payload: res.data
-    })
-  })
-}
-
-export const getUneSchool = (uneschool) => (dispatch) => {
-  axios.get(`http://localhost:5000/uneschool/?uneschool=${uneschool}`).then(res => {
-    dispatch({
-      type: fetchuneschool,
-      payload: res.data
-    })
-  })
-}
-
 export const getemps = () => (dispatch) => {
   axios.get('http://localhost:5000/getemps').then(res => {
-    console.log(res.data);
     dispatch({
       type: fetchemps,
       payload: res.data
@@ -297,12 +241,20 @@ export const getemps = () => (dispatch) => {
   })
 }
 
-
 export const getGid = () => (dispatch) => {
   axios.get('http://localhost:5000/getgid').then(res => {
     console.log(res.data);
     dispatch({
       type: fetchgid,
+      payload: res.data
+    })
+  })
+}
+
+export const getStations = () => (dispatch) => {
+  axios.get('http://localhost:5000/stations').then(res => {
+    dispatch({
+      type: fetchStations,
       payload: res.data
     })
   })

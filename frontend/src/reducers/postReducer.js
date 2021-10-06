@@ -1,7 +1,10 @@
 import {
   fetchCates,
-  fetchJobDgreeCodes, fetchMainCodes, fetchJobByCat, fetchSupBoxNamesandmanager, fetchJobGovern, fetchJobStation, fetchEmpStationAndGovern, fetchDeps, fetchEmpByDeps, fetchEmpName, fetchEmpAppraisal, fetchEmpTrans, fetchEmpEdu, fetchEmpNameByName, fetchCurrentjd, fetchavailjd, fetchavailsupbox, fetchupjd, fetchEmpDetails, fetchDownJd, fetchEmpFamily, fetchqn, fetchspecarabic, fetchuneschool, fetchemps, fetchgid
-
+  fetchJobDgreeCodes, fetchMainCodes, fetchJobByCat, fetchSupBoxNamesandmanager,
+  fetchJobGovern, fetchJobStation, fetchEmpStationAndGovern, fetchDeps, fetchEmpByDeps,
+  fetchEmpName, fetchEmpAppraisal, fetchEmpNameByName, fetchCurrentjd, fetchavailjd,
+  fetchavailsupbox, fetchupjd, fetchEmpDetails, fetchDownJd, fetchqn, fetchemps, fetchgid,
+  fetchStations
 } from "../actions/ActionTypes";
 
 const initialState = {
@@ -16,9 +19,6 @@ const initialState = {
   deps: [],
   empdep: [],
   empApp: [],
-  empTrans: [],
-  empEdu: [],
-  empfamily: [],
   empavailjd: [],
   empavailsup: [],
   empcurrentjd: [],
@@ -27,10 +27,10 @@ const initialState = {
   downJd: [],
   empNameByName: [],
   qn: [],
-  specarabic: [],
-  uneshcool: [],
   emps: [],
-  gid: []
+  gid: [],
+  empname:[],
+  stations: []
 
 
 };
@@ -105,16 +105,7 @@ export default function (state = initialState, action) {
         ...state,
         empApp: action.payload
       }
-    case fetchEmpTrans:
-      return {
-        ...state,
-        empTrans: action.payload
-      }
-    case fetchEmpEdu:
-      return {
-        ...state,
-        empEdu: action.payload
-      }
+
     case fetchCurrentjd:
       return {
         ...state,
@@ -125,7 +116,6 @@ export default function (state = initialState, action) {
         ...state,
         empNameByName: action.payload
       }
-
 
     case fetchavailjd:
       return {
@@ -156,27 +146,10 @@ export default function (state = initialState, action) {
         downJd: action.payload.data
       }
 
-    case fetchEmpFamily:
-      return {
-        ...state,
-        empfamily: action.payload
-      }
-
     case fetchqn:
       return {
         ...state,
         qn: action.payload
-      }
-    case fetchspecarabic:
-      return {
-        ...state,
-        specarabic: action.payload
-      }
-
-    case fetchuneschool:
-      return {
-        ...state,
-        uneshcool: action.payload
       }
 
     case fetchemps:
@@ -188,6 +161,12 @@ export default function (state = initialState, action) {
       return {
         ...state,
         gid: action.payload
+      }
+    case fetchStations:
+      return {
+        ...state,
+        stations: action.payload
+
       }
 
 

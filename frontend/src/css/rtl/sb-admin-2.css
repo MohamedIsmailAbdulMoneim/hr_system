@@ -97,7 +97,8 @@ body {
 }
 
 .sidebar ul li {
-  border-bottom: 1px solid #e7e7e7;
+  /* border-bottom: 1px solid #e7e7e7; */
+  background-color: rgb(4, 41, 3);
 }
 
 .sidebar ul li a.active {
@@ -412,4 +413,123 @@ td {
 
 .nav>a>li>a{
   position:relative;display:block
+}
+
+.pagination {
+  display: inline-block;
+}
+
+.pagination a {
+  color: black;
+  float: left;
+  padding: 8px 16px;
+  text-decoration: none;
+}
+
+.pagination a.active {
+  background-color: #4CAF50;
+  color: white;
+  border-radius: 5px;
+}
+
+.pagination a:hover:not(.active) {
+  background-color: #ddd;
+  border-radius: 5px;
+}
+
+input[type="text"]:read-only{
+  background-color:white;
+  color: black;
+  font-weight: bolder;
+}
+
+div .small-lable {
+  width: 70px;
+}
+
+div .medium-lable{
+  width: 50%;
+  min-width: 100px;
+
+}
+
+div .big-lable {
+
+  width: 100px
+}
+
+
+div .small-input {
+  width: 80px
+}
+
+div .medium-small-input {
+  width: 120px;
+}
+
+div .medium-input {
+  width: 200px
+}
+
+div .medium-select {
+  width:650px;
+  height: 35px;
+}
+
+div .medium-medium-input {
+  width: 150px
+}
+
+div .big-input {
+  width: 250px
+}
+
+div .giant-input {
+  width: 650px;
+}
+
+.oneInputMargin {
+  margin-top: 4px;
+}
+
+.towMediumInputsLableMargin {
+  margin-right: 150px;
+  margin-top: 10px;
+}
+
+.towMediumInputsLableMargin2{
+  margin-right: 240px;
+  margin-top: 10px;
+}
+
+.threeMediumSmallInputsLableMargin {
+  margin-right: 45px;
+  margin-top: 10px;
+}
+
+.threeMediumBigInputsLableMargin {
+  margin-top: 4px;
+
+}
+
+.threeSmallLableMargin {
+  margin-right: 105px;
+  margin-top: 10px;
+}
+
+.dropdown-toggle .badge {
+  position: absolute;
+  top: -2px;
+  right: -10px;
+  padding: 5px 10px;
+  border-radius: 50%;
+  background: red;
+  color: white;
+}
+
+table {
+  font-family: 'Lateef', cursive !important;
+  font-size: large !important;
+  font-weight: bold;
+
 }

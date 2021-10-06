@@ -4,12 +4,13 @@ import dashboard from './dashboard.png'
 import { Button } from '@material-ui/core';
 import { logOut } from '../actions/AuthActions'
 import { connect } from "react-redux";
+import { getNatIdExpired } from "../actions/ReportActions"
 
 
 class Header extends React.Component {
     constructor(props) {
         super(props);
-        // this.state = { : false };
+        this.state = { notNum: 0, idCardExpired: false };
 
     }
 
@@ -17,6 +18,36 @@ class Header extends React.Component {
     handleLogout = (e) => {
         e.preventDefault()
         this.props.logOut()
+    }
+
+    componentDidMount() {
+
+        <ul className="dropdown-menu dropdown-alerts">
+        <Fragment>
+            <li>
+                <a href="/natidexpire">
+                    <div>
+                        {/* <i style={{marginTop: 5}} class="far fa-id-card"></i> */}
+                        <div style={{ marginLeft: 5 }} className="pull-right">بطاقات رقم قومي منتهية</div>
+                    </div>
+                </a>
+            </li>
+        </Fragment>
+
+
+    {/* <li>
+        <a href="#">
+            <div>
+                <i className="fa fa-comment fa-fw"></i> New Comment
+                <span className="pull-right text-muted small">4 minutes ago</span>
+            </div>
+        </a>
+    </li>
+    <li className="divider"></li> */}
+</ul>
+        this.props.getNatIdExpired()
+
+
     }
 
     render() {
@@ -40,17 +71,13 @@ class Header extends React.Component {
                         <span className="icon-bar"></span>
                         <span className="icon-bar"></span>
                     </button>
+                    <a className="navbar-brand" href="/">لوحة التحكم</a>
 
-                    <a className="navbar-brand" href="index.html">لوحة التحكم</a>
-                    
                 </div>
-
-                
-
                 <ul className="nav navbar-top-links navbar-right">
                     <li className="dropdown">
                         <a className="dropdown-toggle" data-toggle="dropdown" href="#">
-                            <i className="fa fa-envelope fa-fw"></i> <i className="fa fa-caret-down"></i>
+                            <i style={{ color: "blue" }} className="fa fa-envelope fa-fw"></i> <i style={{ color: "blue" }} className="fa fa-caret-down"></i>
                         </a>
                         <ul className="dropdown-menu dropdown-messages">
                             <li>
@@ -99,7 +126,7 @@ class Header extends React.Component {
                     </li>
                     <li className="dropdown">
                         <a className="dropdown-toggle" data-toggle="dropdown" href="#">
-                            <i className="fa fa-tasks fa-fw"></i> <i className="fa fa-caret-down"></i>
+                            <i style={{ color: "blue" }} className="fa fa-tasks fa-fw"></i> <i style={{ color: "blue" }} className="fa fa-caret-down"></i>
                         </a>
                         <ul className="dropdown-menu dropdown-tasks">
                             <li>
@@ -176,65 +203,41 @@ class Header extends React.Component {
                     </li>
                     <li className="dropdown">
                         <a className="dropdown-toggle" data-toggle="dropdown" href="#">
-                            <i className="fa fa-bell fa-fw"></i> <i className="fa fa-caret-down"></i>
+                            <i style={{ color: "blue" }} className="fa fa-bell fa-fw"></i> <i style={{ color: "blue" }} className="fa fa-caret-down"></i>
+                            <span class="badge">{this.props.notification > 0 ? this.props.notification : null}</span>
                         </a>
-                        <ul className="dropdown-menu dropdown-alerts">
-                            <li>
-                                <a href="#">
-                                    <div>
-                                        <i className="fa fa-comment fa-fw"></i> New Comment
-                                        <span className="pull-right text-muted small">4 minutes ago</span>
-                                    </div>
-                                </a>
-                            </li>
-                            <li className="divider"></li>
-                            <li>
-                                <a href="#">
-                                    <div>
-                                        <i className="fa fa-twitter fa-fw"></i> 3 New Followers
-                                        <span className="pull-right text-muted small">12 minutes ago</span>
-                                    </div>
-                                </a>
-                            </li>
-                            <li className="divider"></li>
-                            <li>
-                                <a href="#">
-                                    <div>
-                                        <i className="fa fa-envelope fa-fw"></i> Message Sent
-                                        <span className="pull-right text-muted small">4 minutes ago</span>
-                                    </div>
-                                </a>
-                            </li>
-                            <li className="divider"></li>
-                            <li>
-                                <a href="#">
-                                    <div>
-                                        <i className="fa fa-tasks fa-fw"></i> New Task
-                                        <span className="pull-right text-muted small">4 minutes ago</span>
-                                    </div>
-                                </a>
-                            </li>
-                            <li className="divider"></li>
-                            <li>
-                                <a href="#">
-                                    <div>
-                                        <i className="fa fa-upload fa-fw"></i> Server Rebooted
-                                        <span className="pull-right text-muted small">4 minutes ago</span>
-                                    </div>
-                                </a>
-                            </li>
-                            <li className="divider"></li>
-                            <li>
-                                <a className="text-center" href="#">
-                                    <strong>See All Alerts</strong>
-                                    <i className="fa fa-angle-right"></i>
-                                </a>
-                            </li>
-                        </ul>
+                        {this.props.notification > 0 ?
+                            <ul className="dropdown-menu dropdown-alerts">
+                                <Fragment>
+                                    <li>
+                                        <a href="/natidexpire">
+                                            <div>
+                                                {/* <i style={{marginTop: 5}} class="far fa-id-card"></i> */}
+                                                <div style={{ marginLeft: 5 }} className="pull-right">بطاقات رقم قومي منتهية</div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                </Fragment>
+
+
+                                {/* <li>
+                        <a href="#">
+                            <div>
+                                <i className="fa fa-comment fa-fw"></i> New Comment
+                                <span className="pull-right text-muted small">4 minutes ago</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li className="divider"></li> */}
+                            </ul>
+
+                            : null
+                        }
+
                     </li>
                     <li className="dropdown">
                         <a className="dropdown-toggle" data-toggle="dropdown" href="#">
-                            <i className="fa fa-user fa-fw"></i> <i className="fa fa-caret-down"></i>
+                            <i style={{ color: "blue" }} className="fa fa-user fa-fw"></i> <i style={{ color: "blue" }} className="fa fa-caret-down"></i>
                         </a>
                         <ul className="dropdown-menu dropdown-user">
                             <li><a href="#"><i className="fa fa-user fa-fw"></i> User Profile</a>
@@ -264,6 +267,14 @@ class Header extends React.Component {
     }
 
 }
-export default connect(null, {
-    logOut
+
+const mapStateToProps = (state) => {
+    return {
+        expiredIdCard: state.reports.expiredIdCard,
+        notification: state.reports.notification
+    };
+};
+
+export default connect(mapStateToProps, {
+    logOut, getNatIdExpired
 })(Header);

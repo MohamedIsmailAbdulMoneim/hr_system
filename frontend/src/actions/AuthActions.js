@@ -18,15 +18,11 @@ export const loadUser = () => (dispatch, getState) => {
         type: USER_LOADING
     });
 
-    console.log('hit');
-
-
     axios.get('http://localhost:5000/protected', tokenConfig(getState)).then(res => dispatch({
         type: USER_LOADED,
         payload: res.data
-
     })).catch(err => {
-        dispatch(returnErrors(err.response.data, err.response.status))
+        dispatch(returnErrors({msg: "an error happen", status: 400}))
         dispatch({
             type: AUTH_ERROR
         })
@@ -58,10 +54,27 @@ export const register = ({ uname, pw }) => (dispatch) => {
 
 }
 
+export const login = (fd) => (dispatch) => {
+
+    axios({
+        method: "POST",
+        data: fd,
+        withCredentials: true,
+        url: "http://localhost:5000/login",
+        headers: { "Content-Type": "application/json" },
+    }).then((res) => {
+        dispatch({
+            type:LOGIN_SUCCESS,
+            payload: {
+                id: res.data.data.id,
+                token: res.data.data.token
+            }
+        })
+    })
+}
+
 export const tokenConfig = getState => {
     const token = getState().auth.token
-
-
     const config = {
         headers: {
             "Content-type": "application/json"

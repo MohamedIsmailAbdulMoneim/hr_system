@@ -1,32 +1,30 @@
-import {
-    fetchCates,
-    fetchJobDgreeCodes, fetchMainCodes, fetchJobByCat, fetchSupBoxNamesandmanager, fetchJobGovern, fetchJobStation, fetchEmpStationAndGovern, fetchDeps, fetchEmpByDeps, fetchEmpName, fetchEmpAppraisal, fetchEmpTrans, fetchEmpEdu, fetchEmpNameByName, fetchCurrentjd, fetchavailjd, fetchavailsupbox, fetchupjd, fetchEmpDetails, fetchDownJd, fetchEmpFamily, fetchqn, fetchspecarabic, fetchuneschool
-
-} from "../actions/ActionTypes";
-
+import { fetchCountEmpsInGoverns,fetchNatIdExpired,callFetchNatIdExpired } from "../actions/ActionTypes";
 const initialState = {
-    items: [],
-    mainCodes: [],
-    cates: [],
-    jobdgbycat: [],
-    supandmang: [],
-    jobgovern: [],
-    jobstation: [],
-    empstationandgovern: [],
-    deps: [],
-    empdep: [],
-    empApp: [],
-    empTrans: [],
-    empEdu: [],
-    empfamily: [],
-    empavailjd: [],
-    empavailsup: [],
-    empcurrentjd: [],
-    upjd: [],
-    empdetails: [],
-    downJd: [],
-    empNameByName: [],
-    qn: [],
-    specarabic: [],
-    uneshcool: []
+    ceig: [],
+    expiredIdCard: [],
+    notification: 0
+
 };
+
+export default function (state = initialState, action) {
+    switch (action.type) {
+
+        case fetchCountEmpsInGoverns:
+            return {
+                ...state,
+                ceig: action.payload
+            }
+
+            case fetchNatIdExpired :
+                return {
+                    ...state,
+                    expiredIdCard: action.payload.data,
+                    notification: action.payload.notification
+                }
+
+        default:
+            return state
+
+    }
+
+}
