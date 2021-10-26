@@ -4,7 +4,7 @@ import {
     getEmpName, getEmpNameByName
 
 } from "../../actions/Actions";
-import { newAppraisal, getEmpExp, newEmpExp, deleteEmpExperience } from "../../actions/TransActions"
+import { newAppraisal, getEmpExp, newEmpExp, deleteEmpExperience, editeEmpExperience } from "../../actions/TransActions"
 import { connect } from "react-redux";
 import axios from "axios";
 import Moment from 'react-moment';
@@ -25,7 +25,7 @@ class EmpExperience extends React.Component {
             , finalData: [], showFamilyResult: true, editExpTyp: "", editPlaceOfExp: "", editJobOfExp: "", editFromOfExp: "", editToOfExp: "",
             confirmAdd: false, showMsg: false, errorAdd: false,
             add: false, edit: false, delete: false,
-            empid: null, empname: null, catname: null, catid: null, showNamesResults: false, rowExp: ""
+            empid: null, empname: null, catname: null, catid: null, showNamesResults: false, rowExp: "", searchQuery: "", nameOrId: "", NATID: ""
         };
     }
 
@@ -228,6 +228,7 @@ class EmpExperience extends React.Component {
         } else if (this.state.empIdAdd) {
             nameOrId = `(SELECT NATIONAL_ID_CARD_NO FROM employee WHERE EMPLOYEE_ID = ${this.state.empIdAdd}))`
         }
+        this.setState({ nameOrId })
         if (emptyInputs != undefined) {
         } else if (emptyInputs == undefined && (this.state.empNameAdd || this.state.empIdAdd)) {
             let militerExp = arrays.filter(el => el.expType == 1)
@@ -268,8 +269,8 @@ class EmpExperience extends React.Component {
                     arr.push(smallArr)
                     i--
                 }
-                this.props.newEmpExp(arr)
             }
+
             let outerExp = arrays.filter(el => el.expType == 4)
             if (outerExp.length > 0) {
                 let i = outerExp.length / 6
@@ -337,12 +338,12 @@ class EmpExperience extends React.Component {
         }
     }
 
-    
+
 
     idInputHandlerForSearch = (e) => {
         this.refs.empname.value = ''
-            // this.props.getEmpExp(e.target.value, "")
-            this.setState({ empIdSearch: e.target.value })
+        // this.props.getEmpExp(e.target.value, "")
+        this.setState({ empIdSearch: e.target.value })
     }
 
     namesOptionshandlerForSearch = (e) => {
@@ -352,10 +353,10 @@ class EmpExperience extends React.Component {
     }
 
     expTypeForSearchHandler = (e) => {
-            this.setState({
-                expTypeForSearch: e.target.value
-            })
-        if(e.target.value === "اختر"){
+        this.setState({
+            expTypeForSearch: e.target.value
+        })
+        if (e.target.value === "اختر") {
             this.setState({
                 expTypeForSearch: ""
             })
@@ -373,7 +374,9 @@ class EmpExperience extends React.Component {
         ${(nameOrId.length > 0 && this.state.expTypeForSearch.length > 0) ? `AND` : ''}
         ${this.state.expTypeForSearch.length > 0 ? `exp_type.EXP_TYP_CODE = (SELECT EXP_TYP_CODE FROM exp_type WHERE EXP_TYP_NAME = "${this.state.expTypeForSearch}")` : ''}
         `
-
+        this.setState({
+            searchQuery: data
+        })
         this.props.getEmpExp(data)
 
     }
@@ -388,7 +391,12 @@ class EmpExperience extends React.Component {
     }
 
     handleNewExp = (e) => {
-        this.props.newEmpExp(this.state.finalData)
+        if (this.state.searchQuery.length < 1) {
+            console.log(this.state.searchQuery);
+            this.props.newEmpExp({ insertedData: this.state.finalData, getData: `NATIONAL_ID_CARD_NO = ${this.state.nameOrId.slice(0, -1)}` })
+        } else {
+            this.props.newEmpExp({ insertedData: this.state.finalData, getData: this.state.searchQuery })
+        }
         this.setState({
             confirmAdd: false, showMsg: true
         })
@@ -416,7 +424,8 @@ class EmpExperience extends React.Component {
         this.setState({
             edit: true, rowExp: e.target.getAttribute("tableId"), editExpTyp: e.target.getAttribute("expType")
             , editPlaceOfExp: e.target.getAttribute("placeName"), editJobOfExp: e.target.getAttribute("jobName"),
-            editFromOfExp: e.target.getAttribute("startDate"), editToOfExp: e.target.getAttribute("endDate")
+            editFromOfExp: e.target.getAttribute("startDate"), editToOfExp: e.target.getAttribute("endDate"),
+            NATID: e.target.getAttribute("natIdCard")
         })
         let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
         for (let i = 0; i < tds.length; i++) {
@@ -438,23 +447,8 @@ class EmpExperience extends React.Component {
         let lastSentence = this.state.rowExp
 
         let data = [expType, placeOfExp, jobOfExp, fromOfExparName, toOfExp, lastSentence]
-
-        axios({
-            method: "PUT",
-            data: data,
-            url: `http://localhost:5000/editempexp`,
-            headers: { "Content-Type": "application/json" },
-        }).then(data => {
-            if (data.data.msg == "تم إدخال البيانات بنجاح") {
-                this.setState({
-                    updated: true
-                })
-            } else {
-                this.setState({
-                    updated: false
-                })
-            }
-        })
+        let nat = this.state.NATID
+        this.props.editeEmpExperience({ data, nat })
         let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
         for (let i = 0; i < tds.length; i++) {
             tds[i].style.background = "transparent"
@@ -650,7 +644,7 @@ class EmpExperience extends React.Component {
                 </div>
 
                 <div class="row">
-                    {this.props.empexp.length >= 1 ? <h1>بيان بخبرة السيد  : {this.props.empname.length >= 1 ? this.props.empname[0].NAME_ARABIC : this.props.empNameByName.length >= 1 ? this.props.empNameByName[0].NAME_ARABIC : null} - رقم أداء : {this.props.empname.length >= 1 ? this.props.empname[0].EMPLOYEE_ID : this.props.empNameByName.length >= 1 ? this.props.empNameByName[0].EMPLOYEE_ID : null} </h1> : null}
+                    {this.props.empexp.length >= 1 ? <h1>بيان بخبرة السيد  : {this.props.empexp.length >= 1 ? this.props.empexp[0].NAME_ARABIC : null} </h1> : null}
                     <div class="col-lg-12">
                         <div className="panel panel-default">
                             <div class="panel-body">
@@ -681,11 +675,11 @@ class EmpExperience extends React.Component {
                                         {this.props.empexp.length >= 1 ? this.props.empexp.map(emp => (
                                             <tbody>
                                                 <tr id={emp.id}>
-                                                    <td>{this.state.edit && this.state.rowExp == emp.id ? <input onChange={this.editPlaceOfExpHandler} className="form-control job" style={{ width: "100%", minWidth: "90px" }} type="text" /> : emp.EXP_TYP_NAME}</td>
-                                                    <td>{this.state.edit && this.state.rowExp == emp.id ? <input onChange={this.editPlaceOfExpHandler} className="form-control job" style={{ width: "100%", minWidth: "90px" }} type="text" /> : emp.PLACE_NAME}</td>
-                                                    <td>{this.state.edit && this.state.rowExp == emp.id ? <input onChange={this.editJobOfExpHandler} className="form-control job" style={{ width: "100%", minWidth: "90px" }} type="text" /> : emp.JOB_NAME}</td>
-                                                    <td>{this.state.edit && this.state.rowExp == emp.id ? <input onChange={this.editFromOfExpHandler} className="form-control job" style={{ width: "100%", minWidth: "90px" }} type="date" /> : emp.START_DATE}</td>
-                                                    <td>{this.state.edit && this.state.rowExp == emp.id ? <input onChange={this.editToOfExpHandler} className="form-control job" style={{ width: "100%", minWidth: "90px" }} type="date" /> : emp.END_DATE}</td>
+                                                    <td>{this.state.edit && this.state.rowExp == emp.id ? <input onChange={this.editPlaceOfExpHandler} className="form-control job" style={{ width: "100%", minWidth: "90px" }} type="text" placeholder={emp.EXP_TYP_NAME} /> : emp.EXP_TYP_NAME}</td>
+                                                    <td>{this.state.edit && this.state.rowExp == emp.id ? <input onChange={this.editPlaceOfExpHandler} className="form-control job" style={{ width: "100%", minWidth: "90px" }} type="text" placeholder={emp.PLACE_NAME} /> : emp.PLACE_NAME}</td>
+                                                    <td>{this.state.edit && this.state.rowExp == emp.id ? <input onChange={this.editJobOfExpHandler} className="form-control job" style={{ width: "100%", minWidth: "90px" }} type="text" placeholder={emp.JOB_NAME} /> : emp.JOB_NAME}</td>
+                                                    <td>{this.state.edit && this.state.rowExp == emp.id ? <input onChange={this.editFromOfExpHandler} className="form-control job" style={{ width: "100%", minWidth: "90px" }} type="date" placeholder={emp.START_DATE} /> : emp.START_DATE}</td>
+                                                    <td>{this.state.edit && this.state.rowExp == emp.id ? <input onChange={this.editToOfExpHandler} className="form-control job" style={{ width: "100%", minWidth: "90px" }} type="date" placeholder={emp.END_DATE} /> : emp.END_DATE}</td>
                                                     <td>{this.handleExpTime(emp.START_DATE, emp.END_DATE).days()}</td>
                                                     <td>{this.handleExpTime(emp.START_DATE, emp.END_DATE).months()}</td>
                                                     <td>{this.handleExpTime(emp.START_DATE, emp.END_DATE).years()}</td>
@@ -703,7 +697,7 @@ class EmpExperience extends React.Component {
                                                     <td colspan="9">لاتوجد بيانات</td>
                                                 </tr>
                                             </tbody>
-                                            }
+                                        }
 
                                     </table>
                                 </div>
@@ -726,5 +720,5 @@ const mapStateToProps = (state) => {
     };
 };
 export default connect(mapStateToProps, {
-    getEmpName, getEmpNameByName, newAppraisal, getEmpExp, newEmpExp, deleteEmpExperience
+    getEmpName, getEmpNameByName, newAppraisal, getEmpExp, newEmpExp, deleteEmpExperience, editeEmpExperience
 })(EmpExperience);

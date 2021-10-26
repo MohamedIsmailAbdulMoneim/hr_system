@@ -27,7 +27,7 @@ const styles = {
     },
 }
 
-class EmpEduDeg extends React.Component {
+class OutsourceEmpEduDeg extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -54,9 +54,9 @@ class EmpEduDeg extends React.Component {
     handleDataToSend = () => {
         let nameOrId;
         if (this.state.empnameForAdd) {
-            nameOrId = `((SELECT NATIONAL_ID_CARD_NO FROM employee WHERE NAME_ARABIC = "${this.state.empnameForAdd}")`
+            nameOrId = `((SELECT NATIONAL_ID_CARD_NO FROM outsource_employee_education_degree WHERE NAME_ARABIC = "${this.state.empnameForAdd}")`
         } else if (this.state.empidForAdd) {
-            nameOrId = `((SELECT NATIONAL_ID_CARD_NO FROM employee WHERE EMPLOYEE_ID = ${this.state.empidForAdd})`
+            nameOrId = `((SELECT NATIONAL_ID_CARD_NO FROM outsource_employee_education_degree WHERE EMPLOYEE_ID = ${this.state.empidForAdd})`
         }
         let eduDeg = `(SELECT DEGREE FROM education_degree WHERE DEGREE_ARABIC = "${this.state.addEduDeg}")`
         let spec = `(SELECT SPECIALITY FROM dgree_speciality WHERE SPECIALITY_ARABIC = "${this.state.addSpec}")`
@@ -722,4 +722,4 @@ const mapStateToProps = (state) => {
 };
 export default connect(mapStateToProps, {
     getEmpEdu, getEmpName, getEmpNameByName, InsertNewEdu
-})((EmpEduDeg));
+})((OutsourceEmpEduDeg));

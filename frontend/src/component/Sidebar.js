@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import {
-    getJobDgreeCodes, getMainCodes, getJobGovern, getDeps, getEmpName, getCates
+    getJobDgreeCodes, getMainCodes, getJobGovern, getDeps, getEmpName, getCates,getStations
 } from "../actions/Actions";
 import { connect } from "react-redux";
 import { NavLink } from "react-router-dom";
@@ -13,6 +13,7 @@ class Sidebar extends React.Component {
     }
     componentDidMount() {
         this.props.getCates()
+        this.props.getStations()
     }
 
     handleSidebarClick = (e) => {
@@ -200,34 +201,34 @@ class Sidebar extends React.Component {
                         <li>
                                     <a href="#"><i className="fa fa-sitemap fa-fw"></i> العمالة المؤقتة<span className="fa arrow"></span></a>
                                     <ul className="nav nav-first-level">
-                                    <NavLink style={styles} to={`/empbystation`}>
+                                    <NavLink style={styles} to={`/outSourceEmployee`}>
                                             <li>
-                                                <a  href="/empbystation">بيانات العامل</a>
+                                                <a  href="/outSourceEmployee">بيانات العامل</a>
                                             </li>
                                         </NavLink >
-                                        <NavLink style={styles} to={`/empbystation`}>
+                                        <NavLink style={styles} to={`/outSourceEmpEduDeg`}>
                                             <li>
-                                                <a href="/empbystation">المؤهلات</a>
+                                                <a href="/outSourceEmpEduDeg">المؤهلات</a>
                                             </li>
                                         </NavLink >
-                                        <NavLink style={styles} to={`/empbydeps`}>
+                                        <NavLink style={styles} to={`/outSourceEmpsAppraisal`}>
                                             <li>
-                                                <a href="/empbydeps">التقييمات</a>
+                                                <a href="/outSourceEmpsAppraisal">التقييمات</a>
                                             </li>
                                         </NavLink >
-                                        <NavLink style={styles} to={`/natidexpire`}>
+                                        <NavLink style={styles} to={`/outSourceEmpPenalty`}>
                                             <li>
-                                                <a href="/natidexpire">جزاءات</a>
+                                                <a href="/outSourceEmpPenalty">جزاءات</a>
                                             </li>
                                         </NavLink >
-                                        <NavLink style={styles} to={`/natidexpire`}>
+                                        <NavLink style={styles} to={`/outSourceEmpFamily`}>
                                             <li>
-                                                <a href="/natidexpire">بيانات عائلية</a>
+                                                <a href="/outSourceEmpFamily">بيانات عائلية</a>
                                             </li>
                                         </NavLink >
-                                        <NavLink style={styles} to={`/natidexpire`}>
+                                        <NavLink style={styles} to={`/outSourceEmpTraining`}>
                                             <li>
-                                                <a href="/natidexpire">تدريب</a>
+                                                <a href="/outSourceEmpTraining">تدريب</a>
                                             </li>
                                         </NavLink >
                                     </ul>
@@ -264,10 +265,10 @@ class Sidebar extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        posts: state.posts.items,
+        posts: state.posts.items
 
     };
 };
 export default connect(mapStateToProps, {
-    getJobDgreeCodes, getMainCodes, getJobGovern, getDeps, getEmpName, getCates
+    getJobDgreeCodes, getMainCodes, getJobGovern, getDeps, getEmpName, getCates, getStations
 })(Sidebar);

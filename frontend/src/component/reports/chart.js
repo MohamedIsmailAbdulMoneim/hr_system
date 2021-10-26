@@ -1,13 +1,14 @@
 import React, { Component, Fragment } from "react";
 import { Bar, Line, Pie } from 'react-chartjs-2';
 import { connect } from "react-redux";
+var jp = require('jsonpath');
+
 
 
 class Chart extends Component {
 
-
-
     render() {
+        var names = jp.query(this.props.ceig, '$..result');
         return (
             <Fragment>
                 <div style={{ display: "flex" }}>
@@ -99,9 +100,11 @@ class Chart extends Component {
                                 datasets: [
                                     {
                                         label: 'عدد العمالين بالمحافظات',
-                                        data: [
-                                            this.props.ceig.length ? this.props.ceig[0][0].result : null, this.props.ceig.length ? this.props.ceig[1][0].result : null, this.props.ceig.length ? this.props.ceig[2][0].result : null, this.props.ceig.length ? this.props.ceig[3][0].result : null, this.props.ceig.length ? this.props.ceig[4][0].result : null, this.props.ceig.length ? this.props.ceig[5][0].result : null, this.props.ceig.length ? this.props.ceig[6][0].result : null, this.props.ceig.length ? this.props.ceig[7][0].result : null, this.props.ceig.length ? this.props.ceig[8][0].result : null, , this.props.ceig.length ? this.props.ceig[9][0].result : null, this.props.ceig.length ? this.props.ceig[10][0].result : null, this.props.ceig.length ? this.props.ceig[11][0].result : null, this.props.ceig.length ? this.props.ceig[12][0].result : null, this.props.ceig.length ? this.props.ceig[13][0].result : null, this.props.ceig.length ? this.props.ceig[14][0].result : null, this.props.ceig.length ? this.props.ceig[15][0].result : null, this.props.ceig.length ? this.props.ceig[16][0].result : null
-                                        ],
+                                        data : names
+                                        
+
+                                            // this.props.ceig.length ? this.props.ceig[0][0] ? this.props.ceig[0][0].result : null : null, this.props.ceig.length ? this.props.ceig[1][0] ? this.props.ceig[1][0].result : null : null, this.props.ceig.length ? this.props.ceig[2][0] ? this.props.ceig[2][0].result : null : null, this.props.ceig.length ? this.props.ceig[3][0] ?this.props.ceig[3][0].result : null : null, this.props.ceig.length ? this.props.ceig[4][0].result : null, this.props.ceig.length ? this.props.ceig[5][0].result : null, this.props.ceig.length ? this.props.ceig[6][0].result : null, this.props.ceig.length ? this.props.ceig[7][0].result : null, this.props.ceig.length ? this.props.ceig[8][0].result : null, , this.props.ceig.length ? this.props.ceig[9][0].result : null, this.props.ceig.length ? this.props.ceig[10][0].result : null, this.props.ceig.length ? this.props.ceig[11][0].result : null, this.props.ceig.length ? this.props.ceig[12][0].result : null, this.props.ceig.length ? this.props.ceig[13][0].result : null, this.props.ceig.length ? this.props.ceig[14][0].result : null, this.props.ceig.length ? this.props.ceig[15][0].result : null, this.props.ceig.length ? this.props.ceig[16][0].result : null
+                                        ,
                                         backgroundColor: [
                                             '#d1830e',
                                             'rgb(76, 104, 72)',

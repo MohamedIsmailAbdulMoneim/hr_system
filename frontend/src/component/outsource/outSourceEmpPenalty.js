@@ -8,7 +8,7 @@ import moment from 'react-moment';
 import 'moment-timezone';
 import Pagination from "../Pagination";
 
-class EmpPenalty extends React.Component {
+class OutsourceEmpPenalty extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -649,4 +649,4 @@ const mapStateToProps = (state) => {
 };
 export default connect(mapStateToProps, {
     getEmpName, getEmpNameByName, getempspenalties, deleteEmpPenalty
-})(EmpPenalty);
+})(OutsourceEmpPenalty);

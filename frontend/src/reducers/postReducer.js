@@ -2,12 +2,15 @@ import {
   fetchCates,
   fetchJobDgreeCodes, fetchMainCodes, fetchJobByCat, fetchSupBoxNamesandmanager,
   fetchJobGovern, fetchJobStation, fetchEmpStationAndGovern, fetchDeps, fetchEmpByDeps,
-  fetchEmpName, fetchEmpAppraisal, fetchEmpNameByName, fetchCurrentjd, fetchavailjd,
+  fetchEmpName, fetchEmpNameByName, fetchCurrentjd, fetchavailjd,
   fetchavailsupbox, fetchupjd, fetchEmpDetails, fetchDownJd, fetchqn, fetchemps, fetchgid,
-  fetchStations
+  fetchStations, fetchOutsourceEmpDetails, fetchOutsourceEmpNameByName, addnewEmp,
+  updateEmpDetails ,addnewOutsourceEmp,
+  updateOutsourceEmpDetails
 } from "../actions/ActionTypes";
 
 const initialState = {
+  msg: null,
   items: [],
   mainCodes: [],
   cates: [],
@@ -18,14 +21,15 @@ const initialState = {
   empstationandgovern: [],
   deps: [],
   empdep: [],
-  empApp: [],
   empavailjd: [],
   empavailsup: [],
   empcurrentjd: [],
   upjd: [],
   empdetails: [],
+  outsourceEmpDetails: [],
   downJd: [],
   empNameByName: [],
+  outsourceNameByName: [],
   qn: [],
   emps: [],
   gid: [],
@@ -37,6 +41,37 @@ const initialState = {
 
 export default function (state = initialState, action) {
   switch (action.type) {
+
+    case addnewEmp:
+      return {
+        ...state,
+        empdetails : action.payload.data[1],
+        msg: action.payload.msg
+      }
+
+    case updateEmpDetails:
+      return{
+        ...state,
+        empdetails : action.payload.data[1],
+        msg: action.payload.msg
+
+      }
+
+    case addnewOutsourceEmp:
+      return {
+        ...state,
+        outsourceEmpDetails : action.payload.data[1],
+        msg: action.payload.msg
+      }
+
+    case updateOutsourceEmpDetails:
+      return{
+        ...state,
+        outsourceEmpDetails : action.payload.data[1],
+        msg: action.payload.msg
+
+      }
+
     case fetchJobDgreeCodes:
       return {
         ...state,
@@ -100,12 +135,6 @@ export default function (state = initialState, action) {
         empname: action.payload
       }
 
-    case fetchEmpAppraisal:
-      return {
-        ...state,
-        empApp: action.payload
-      }
-
     case fetchCurrentjd:
       return {
         ...state,
@@ -115,6 +144,12 @@ export default function (state = initialState, action) {
       return {
         ...state,
         empNameByName: action.payload
+      }
+
+    case fetchOutsourceEmpNameByName:
+      return {
+        ...state,
+        outsourceNameByName: action.payload
       }
 
     case fetchavailjd:
@@ -138,6 +173,13 @@ export default function (state = initialState, action) {
       return {
         ...state,
         empdetails: action.payload.data
+      }
+
+    case fetchOutsourceEmpDetails:
+      return{
+        ...state,
+        outsourceEmpDetails: action.payload.data
+
       }
 
     case fetchDownJd:
@@ -165,7 +207,7 @@ export default function (state = initialState, action) {
     case fetchStations:
       return {
         ...state,
-        stations: action.payload
+        stations: action.payload.data
 
       }
 

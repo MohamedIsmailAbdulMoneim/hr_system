@@ -645,6 +645,7 @@ class EmpTrans extends React.Component {
             tds[tds.length - 1].childNodes[0].classList.remove("fa-backspace")
             tds[tds.length - 1].childNodes[0].classList.add("fa-times")
         }
+        console.log(e.target.getAttribute("empname"));
         this.setState({ edit: true, mainboxid: e.target.getAttribute("mainboxid"), edit: true, empname: e.target.getAttribute("empname"), transdate: e.target.getAttribute("transdate"), catname: e.target.getAttribute("catname"), catid: e.target.getAttribute("catid"), jdname: e.target.getAttribute("jdname"), supboxname: e.target.getAttribute("supboxname"), gname: e.target.getAttribute("jobgroup"), jasi: e.target.getAttribute("jasform"), indname: e.target.getAttribute("indname") })
     }
 
@@ -653,9 +654,12 @@ class EmpTrans extends React.Component {
     }
 
     handelEdit_2 = (e) => {
+        console.log(this.state.jdname);
         e.preventDefault()
         // let data = { empNat: this.state.empNat, appraisal: this.refs.newAppraisal.value, year: document.getElementById("year").placeholder }
-        let data = { mainboxid: this.state.mainboxid, date: this.state.transdate, catname: this.state.catname, jdname: this.state.jdname, supboxname: this.state.supboxname, gname: this.state.gname, jasi: this.state.jasi, indname: this.state.indname, empid: this.state.empid, empname: this.props.empNameByName ? this.props.empNameByName.length >= 1 ? this.props.empNameByName[0].NAME_ARABIC : null : null }
+        let data = { mainboxid: this.state.mainboxid, date: this.state.transdate, catname: this.state.catname, jdname: this.state.jdname, supboxname: this.state.supboxname, gname: this.state.gname, jasi: this.state.jasi, indname: this.state.indname, empid: this.state.empid, empname: this.state.empname }
+        console.log(data);
+
         this.props.updateEmpTrans(data)
         let tds = document.getElementById(e.target.getAttribute("transdate")).childNodes
         for (let i = 0; i < tds.length; i++) {
@@ -707,7 +711,7 @@ class EmpTrans extends React.Component {
         let query;
         if (e.target.getAttribute("indicator") == 1) {
             query = `
-            is_shown = "false" WHERE ROW_ID = ${e.target.getAttribute("id")};
+            is_shown = "false${e.target.getAttribute("id")}" WHERE ROW_ID = ${e.target.getAttribute("id")};
             UPDATE a_job_trans AS a2 SET INDICATOR = 1 WHERE TRANS_DATE =(SELECT
             MIN(TRANS_DATE) FROM (SELECT NATIONAL_ID_CARD_NO,INDICATOR,TRANS_DATE FROM a_job_trans WHERE NATIONAL_ID_CARD_NO
             = ${e.target.getAttribute("nat")} AND INDICATOR = 3 ) AS m3 ) AND NATIONAL_ID_CARD_NO = ${e.target.getAttribute("nat")};

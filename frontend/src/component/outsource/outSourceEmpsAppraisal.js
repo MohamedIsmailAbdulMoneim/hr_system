@@ -1,17 +1,17 @@
 import React, { Fragment } from "react";
 import {
 
-    getEmpByDeps, getEmpName, getEmpNameByName, getEmpAppraisal
+    getEmpByDeps, getEmpName, getEmpNameByName
 
 } from "../../actions/Actions";
-import { newAppraisal, updateEmpAppraisal, deleteEmpAppraisal } from "../../actions/TransActions"
+import { newAppraisal, updateEmpAppraisal, deleteEmpAppraisal, getEmpAppraisal } from "../../actions/TransActions"
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import moment from 'react-moment';
 import 'moment-timezone';
 import Pagination from "../Pagination";
 
-class EmpsAppraisal extends React.Component {
+class OutsourceEmpsAppraisal extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -529,4 +529,4 @@ const mapStateToProps = (state) => {
 };
 export default connect(mapStateToProps, {
     getEmpByDeps, getEmpAppraisal, getEmpName, getEmpNameByName, newAppraisal, updateEmpAppraisal, deleteEmpAppraisal
-})(EmpsAppraisal);
+})(OutsourceEmpsAppraisal);

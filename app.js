@@ -1,19 +1,17 @@
 const express = require("express");
 const app = express()
-const db = require("./src/database/connection")
 const mainCodes = require("./src/routs/mainCodes")
 const planandorg = require("./src/routs/planandorg")
 const report = require("./src/routs/report")
 const users = require("./src/routs/users")
 const cors = require("cors")
-const bodyParser = require("body-parser")
 const passport = require('passport');
 const ExcelJS = require('exceljs');
 var session = require('express-session');
-const e = require("express");
-const path = require("path");
 
 // var MySQLStore = require('express-mysql-session')(session);
+
+
 
 app.use(session({
   key: 'session_cookie_name',
@@ -53,15 +51,10 @@ app.use(
 );
 
 // app.use(cors())
-
+app.use('/uploads', express.static('uploads'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-
 console.log(process.env.NODE_ENV);
-
-
-
 app.use(mainCodes)
 app.use(planandorg)
 app.use(report)

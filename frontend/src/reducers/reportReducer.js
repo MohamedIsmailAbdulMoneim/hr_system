@@ -1,4 +1,4 @@
-import { fetchCountEmpsInGoverns,fetchNatIdExpired,callFetchNatIdExpired } from "../actions/ActionTypes";
+import { fetchCountEmpsInGoverns, fetchNatIdExpired, callFetchNatIdExpired } from "../actions/ActionTypes";
 const initialState = {
     ceig: [],
     expiredIdCard: [],
@@ -15,12 +15,12 @@ export default function (state = initialState, action) {
                 ceig: action.payload
             }
 
-            case fetchNatIdExpired :
-                return {
-                    ...state,
-                    expiredIdCard: action.payload.data,
-                    notification: action.payload.notification
-                }
+        case fetchNatIdExpired:
+            return {
+                ...state,
+                expiredIdCard: action.payload.data,
+                notification: action.payload.notification
+            }
 
         default:
             return state

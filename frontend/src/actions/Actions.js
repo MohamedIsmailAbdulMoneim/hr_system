@@ -10,8 +10,8 @@ import {
   fetchDeps,
   fetchEmpByDeps,
   fetchEmpName,
-  fetchEmpAppraisal,
   fetchEmpNameByName,
+  fetchOutsourceEmpNameByName,
   fetchCurrentjd,
   fetchavailjd,
   fetchavailsupbox,
@@ -21,9 +21,88 @@ import {
   fetchqn,
   fetchemps,
   fetchgid,
-  fetchStations
+  fetchStations,
+  fetchOutsourceEmpDetails,
+  addnewEmp,
+  addnewOutsourceEmp,
+  updateEmpDetails,
+  updateOutsourceEmpDetails
 } from "../actions/ActionTypes";
 import axios from "axios";
+const CancelToken = axios.CancelToken;
+const source = CancelToken.source();
+
+export const newEmp = (data) => (dispatch) => {
+  axios({
+    method: "POST",
+    data,
+    withCredentials: true,
+    url: "http://localhost:5000/insertnewemp",
+    headers: { "Content-Type": "application/json" },
+}).then((res) => {
+  console.log(res);
+})
+}
+
+
+export const newEmpImg = (formData) => (dispatch) => {
+  axios({
+    method: "POST",
+    data:formData,
+    url: "http://localhost:5000/insertempimg",
+    headers: { "Content-Type": "multipart/form-data" },
+}).then(data=> console.log(data)
+    // dispatch({
+    //   type: addnewEmp,
+    //   payload: res.data
+    // })
+)
+}
+export const newOutsourceEmp = (data) => (dispatch) => {
+  axios({
+    method: "POST",
+    data,
+    withCredentials: true,
+    url: "http://localhost:5000/insertnewoutsourceemp",
+    headers: { "Content-Type": "application/json" },
+}).then((res) => {
+    dispatch({
+      type: addnewOutsourceEmp,
+      payload: res.data
+    })
+
+})
+}
+
+export const editEmpDetails = (data) => (dispatch) => {
+  axios({
+    method: "PUT",
+    data,
+    withCredentials: true,
+    url: "http://localhost:5000/updateempdata",
+    headers: { "Content-Type": "application/json" },
+}).then((res) => {
+    dispatch({
+      type: updateEmpDetails,
+      payload: res.data
+    })
+})
+}
+
+export const editOutsourceEmpDetails = (data) => (dispatch) => {
+  axios({
+    method: "PUT",
+    data,
+    withCredentials: true,
+    url: "http://localhost:5000/updateoutsourceempdata",
+    headers: { "Content-Type": "application/json" },
+}).then((res) => {
+    dispatch({
+      type: updateOutsourceEmpDetails,
+      payload: res.data
+    })
+})
+}
 
 export const gitDownJd = () => (dispatch) => {
   axios.get(`http://localhost:5000/gitDownJd`).then((res) => {
@@ -54,6 +133,15 @@ export const getEmpDetails = (empid, empname) => (dispatch) => {
   });
 
 }
+export const getOutSourceEmpDetails = (empid, empname) => (dispatch) => {
+  axios.get(`http://localhost:5000/outsourceempdetails/?empid=${empid}&empname=${empname}`).then((res) => {
+    dispatch({
+      type: fetchOutsourceEmpDetails,
+      payload: { data: res.data },
+    });
+  });
+
+}
 
 export const getJobDgreeCodes = (value) => (dispatch) => {
   axios.get(`http://localhost:5000/getjobdgreecodes/${value}`).then((res) => {
@@ -72,6 +160,15 @@ export const getMainCodes = (value) => (dispatch) => {
     });
   });
 };
+
+export const getStations = () => (dispatch) => {
+  axios.get(`http://localhost:5000/stations`).then((res) => {
+    dispatch({
+      type: fetchStations,
+      payload: { data: res.data },
+    });
+  });
+}
 
 export const getCates = () => (dispatch) => {
   axios.get(`http://localhost:5000/category`).then((res => {
@@ -170,13 +267,10 @@ export const getEmpNameByName = (val) => (dispatch) => {
   })
 }
 
-
-
-export const getEmpAppraisal = (data) => (dispatch) => {
-  // axios.get(`http://localhost:5000/getempappraisal/${empid}/${appraisal}/${year}`).then(res => {
-  axios.get(`http://localhost:5000/empappraisal/?data=${data}`).then(res => {
+export const getOutsourceEmpNameByName = (val) => (dispatch) => {
+  axios.get(`http://localhost:5000/outsourceempnamebyName/${val}`).then(res => {
     dispatch({
-      type: fetchEmpAppraisal,
+      type: fetchOutsourceEmpNameByName,
       payload: res.data
     })
   })
@@ -246,15 +340,6 @@ export const getGid = () => (dispatch) => {
     console.log(res.data);
     dispatch({
       type: fetchgid,
-      payload: res.data
-    })
-  })
-}
-
-export const getStations = () => (dispatch) => {
-  axios.get('http://localhost:5000/stations').then(res => {
-    dispatch({
-      type: fetchStations,
       payload: res.data
     })
   })

@@ -1,3 +1,7 @@
+export const addnewEmp = "ADD-NEW-EMP"
+export const addnewOutsourceEmp = "ADD-NEW-OUTSOURCE-EMP"
+export const updateOutsourceEmpDetails = "UPDATE-EMP-DETAILS"
+export const updateEmpDetails = "UPDATE-EMP-DETAILS"
 export const fetchJobDgreeCodes = "FETCH-JOB-DGREE";
 export const fetchMainCodes = "FETCH-MAIN-CODES";
 export const fetchCates = "FETCH-CATES"
@@ -13,11 +17,13 @@ export const fetchEmpAppraisal = "FETCH-EMP-APPRAISAL"
 export const fetchEmpTrans = "FETCH-EMP-TRANS"
 export const fetchEmpEdu = "FETCH-EMP-EDU"
 export const fetchEmpNameByName = "FETCH-EMP-BY-NAME"
+export const fetchOutsourceEmpNameByName = "FETCH-OUTSOURCE-EMP-BY-NAME"
 export const fetchavailjd = "FETCH-AVAIL-JD"
 export const fetchCurrentjd = "FETCH-CURRENT-JD"
 export const fetchavailsupbox = "FETCH-AVAIL-SUPBOX"
 export const fetchupjd = "FETCH-UP-JD"
 export const fetchEmpDetails = "FETCH-EMP-DETAILS"
+export const fetchOutsourceEmpDetails = "FETCH-OUTSOURCE-EMP-DETAILS"
 export const fetchDownJd = "FETCH-DOWN-JD"
 export const fetchEmpFamily = "FETCH-EMP-FAMILY"
 export const fetchqn = "FETCH-Q-N"
@@ -53,6 +59,9 @@ export const deleteAppraisal = "DELETE-APPRAISAL"
 export const deleteExperience = "DELETE-EXPERIENCE"
 export const deleteEdu = "DELETE-EDU"
 export const fetchStations = "FETCH-STATIONS"
+export const addEmpTraining = "ADD-EMP-TRAINING"
+export const updateExperience = "UPDATE-EXPERIENCE"
+
 
 
 

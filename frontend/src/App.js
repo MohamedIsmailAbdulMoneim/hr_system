@@ -21,6 +21,12 @@ import EmpExperience from './component/transactions/EmpExperience'
 import EmpEdu from './component/transactions/EmpEduDeg';
 import EmpTraining from './component/transactions/EmpTraining';
 import EmpFamily from './component/transactions/EmpFamily';
+import outsourceEmployee from './component/outsource/outsourceEmployee';
+import outsourceEmpEduDeg from './component/outsource/outsourceEmpEduDeg';
+import outsourceEmpFamily from './component/outsource/outsourceEmpFamily';
+import outsourceEmpPenalty from './component/outsource/outsourceEmpPenalty';
+import outsourceEmpTraining from './component/outsource/outsourceEmpTraining';
+import outsourceEmpsAppraisal from './component/outsource/outsourceEmpsAppraisal';
 import Login from './component/Login';
 import Register from './component/register';
 import EmpPenalty from './component/transactions/EmpPenalty';
@@ -87,6 +93,14 @@ class App extends React.Component {
               <Route path="/register" exact component={Register} />
               <Route path="/empexperience" exact component={EmpExperience} />
               <Route path="/emppenalty" exact component={EmpPenalty} />
+              <Route path="/outsourceEmployee" exact component={outsourceEmployee} />
+              <Route path="/outsourceEmpEduDeg" exact component={outsourceEmpEduDeg} />
+              <Route path="/outsourceEmpFamily" exact component={outsourceEmpFamily} />
+              <Route path="/outsourceEmpPenalty" exact component={outsourceEmpPenalty} />
+              <Route path="/outsourceEmpTraining" exact component={outsourceEmpTraining} />
+              <Route path="/outsourceEmpsAppraisal" exact component={outsourceEmpsAppraisal} />
+
+
 
             </Switch>
 

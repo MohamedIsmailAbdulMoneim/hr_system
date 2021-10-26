@@ -1,29 +1,32 @@
 import React, { Fragment } from "react";
 import {
-    getEmpDetails, getUpJd, getEmpNameByName, newEmp, editEmpDetails,newEmpImg
+    getOutSourceEmpDetails, getUpJd, getOutsourceEmpNameByName, newOutsourceEmp,editOutsourceEmpDetails
 } from "../../actions/Actions";
-import { getEmpTrans, getEmpExp, getEmpFamily, getEmpEdu, getEmpAppraisal, getempspenalties, getEmpTraining } from "../../actions/TransActions"
+import { getEmpTrans, getEmpExp, getEmpFamily, getEmpEdu, getEmpAppraisal } from "../../actions/TransActions"
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { Form, FormGroup, FormLabel, FormControl, FormText, FormCheck, Button, Row, Col } from 'react-bootstrap';
 
 
-class Employee extends React.Component {
+class OutsourceEmployee extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
 
-            showMsg: false, showMsgOfChange: false, messege: "", add: false, addConfirmed: false, edit: false, EditConfirmed: false,
-            showNamesResults: false, addEmpId: "", addEmpName: "", addContractType: "", addDoc: "", addDoj: "",
+            showMsg: false, showMsgOfChange: false ,messege: "", add: false, addConfirmed: false, edit: false, EditConfirmed: false,
+            showNamesResults: false, addEmpId: "", addEmpName: "", addDoc: "", addDepartment: "",
+            addRetirementDate: "", addDoj: "",
             addStation: "", addJS: "", addEmpNid: "",
             addPOIssuance: "", addDOIssuance: "", addinsuranceNum: "", addinsuranceOffice: "", addAddress: "", addMPhoneNum: "",
             addHPhoneNum: "", addOPhoneNum: "", addEmail: "", addMarStatus: "", addSyndicateType: "", addMemberShipNum: "",
-            addMemberShipDate: "", addMirStatus: "", addDaysCountMir: "", addMonthsCountMir: "", addYearsCountMir: "", ExmpExpireDate: "",
-            addReligous: "", addPob: "", addPic: "" ,milStatusIsTempEx: false, milStatusIsCompleted: false,
-            syndicateAdded: false, confirmAdd: "", mainUpdateQuery: [], jtUpdateQuery: [], apUpdateQuery: "", img: ""
+            addMemberShipDate: "", addMirStatus: "", addDaysCountMir: "", addMonthsCountMir: "", addYearsCountMir: "", addEmpGroup: "",
+            ExmpExpireDate: "",
+            addReligous: "", addPob: "", milStatusIsTempEx: false, milStatusIsCompleted: false,
+            syndicateAdded: false, mainUpdateQuery: []
         };
     }
+
 
     escFunction = (event) => {
         if (event.keyCode === 27) {
@@ -36,205 +39,173 @@ class Employee extends React.Component {
     componentDidMount() {
         document.addEventListener("keydown", this.escFunction, false);
     }
-
     changeHandler = (e) => {
-        if (e.target.getAttribute("colName") == "APPRAISAL") {
-            if (e.target.value.length < 1) {
+        console.log(e.target.getAttribute('colName'));
+        if (e.target.value.length < 1) {
+            console.log(this.state.mainUpdateQuery);
+            let removedArrOfApQ = [...this.state.mainUpdateQuery]
+            if (removedArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName"))) != -1) {
+                let removedIndex = removedArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName")))
+                removedArrOfApQ.splice(removedIndex, 1)
                 this.setState({
-                    apUpdateQuery: ""
+                    mainUpdateQuery: removedArrOfApQ
                 })
             }
-            else if (e.target.value.length > 0) {
-                this.setState({
-                    apUpdateQuery: `${e.target.getAttribute("colName")} = (SELECT APPRAISAL_ARABIC FROM appraisal WHERE APPRAISAL ${e.target.value})`
-                })
-            }
-        }
-        else if (e.target.getAttribute("colName") == "TRANS_DATE" || e.target.getAttribute("colName") == "MAIN_BOX_NAME" ||
-            e.target.getAttribute("colName") == "JOB_ASSIGNMENT_FORM" || e.target.getAttribute("colName") == "SUP_BOX_NAME"
-        ) {
-            if (e.target.value.length < 1) {
-                let removedArrOfJt = [...this.state.jtUpdateQuery]
-                if (removedArrOfJt.findIndex(s => s.includes(e.target.getAttribute("colName"))) != -1) {
-                    let removedIndex = removedArrOfJt.findIndex(s => s.includes(e.target.getAttribute("colName")))
-                    removedArrOfJt.splice(removedIndex, 1)
+        } else if (e.target.value.length > 0) {
+            let newArrOfApQ = [...this.state.mainUpdateQuery]
+            if (newArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName"))) != -1) {
+                if (e.target.getAttribute("colName") == "JOB_GOVERNORATE") {
+                    let updatedIndexOfNew = newArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName")))
+                    newArrOfApQ[updatedIndexOfNew] = `${e.target.getAttribute("colName")} = (SELECT GOVERNORATE FROM governorate WHERE GOVERNORATE_ARABIC = "${e.target.value}")`
                     this.setState({
-                        jtUpdateQuery: removedArrOfJt
+                        mainUpdateQuery: newArrOfApQ
                     })
                 }
-            } else if (e.target.value.length > 0) {
-                let newArrOfJt = [...this.state.jtUpdateQuery]
-                if (newArrOfJt.findIndex(s => s.includes(e.target.getAttribute("colName"))) != -1) {
-                    if (e.target.getAttribute("colName") == "TRANS_DATE") {
-                        let updatedIndexOfNew = newArrOfJt.findIndex(s => s.includes(e.target.getAttribute("colName")))
-                        newArrOfJt[updatedIndexOfNew] = `${e.target.getAttribute("colName")} = "${e.target.value}"`
-                        this.setState({
-                            jtUpdateQuery: newArrOfJt
-                        })
-                    }
-                    if (e.target.getAttribute("colName") == "MAIN_BOX_NAME") {
-                        let updatedIndexOfNew = newArrOfJt.findIndex(s => s.includes(e.target.getAttribute("colName")))
-                        newArrOfJt[updatedIndexOfNew] = `${e.target.getAttribute("colName")} = "${e.target.value}"`
-                        this.setState({
-                            jtUpdateQuery: newArrOfJt
-                        })
-                    }
-
-                } else {
-                    if (e.target.getAttribute("colName") == "TRANS_DATE") {
-                        let newArr = [...this.state.jtUpdateQuery]
-                        newArr.push(`${e.target.getAttribute("colName")} = "${e.target.value}"`)
-                        this.setState({
-                            jtUpdateQuery: newArr
-                        })
-                    }
-                }
-            }
-        } else {
-            if (e.target.value.length < 1) {
-                console.log(this.state.mainUpdateQuery);
-                let removedArrOfApQ = [...this.state.mainUpdateQuery]
-                if (removedArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName"))) != -1) {
-                    let removedIndex = removedArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName")))
-                    removedArrOfApQ.splice(removedIndex, 1)
+                else if (e.target.getAttribute("colName") == "EMP_STATUS") {
+                    let updatedIndexOfNew = newArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName")))
+                    newArrOfApQ[updatedIndexOfNew] = `${e.target.getAttribute("colName")} = (SELECT EMP_STATUS FROM emp_status WHERE EMP_STATUS_NAME = "${e.target.value}")`
                     this.setState({
-                        mainUpdateQuery: removedArrOfApQ
+                        mainUpdateQuery: newArrOfApQ
                     })
                 }
-            } else if (e.target.value.length > 0) {
-                let newArrOfApQ = [...this.state.mainUpdateQuery]
-                if (newArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName"))) != -1) {
-                    if (e.target.getAttribute("colName") == "JOB_GOVERNORATE") {
-                        let updatedIndexOfNew = newArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName")))
-                        newArrOfApQ[updatedIndexOfNew] = `${e.target.getAttribute("colName")} = (SELECT GOVERNORATE FROM governorate WHERE GOVERNORATE_ARABIC = "${e.target.value}")`
-                        this.setState({
-                            mainUpdateQuery: newArrOfApQ
-                        })
-                    }
-                    else if (e.target.getAttribute("colName") == "EMP_STATUS") {
-                        let updatedIndexOfNew = newArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName")))
-                        newArrOfApQ[updatedIndexOfNew] = `${e.target.getAttribute("colName")} = (SELECT EMP_STATUS FROM emp_status WHERE EMP_STATUS_NAME = "${e.target.value}")`
-                        this.setState({
-                            mainUpdateQuery: newArrOfApQ
-                        })
-                    }
-                    else if (e.target.getAttribute("colName") == "ADDRESS_GOVERNORATE") {
-                        let updatedIndexOfNew = newArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName")))
-                        newArrOfApQ[updatedIndexOfNew] = `${e.target.getAttribute("colName")} = (SELECT GOVERNORATE FROM governorate WHERE GOVERNORATE_ARABIC = "${e.target.value}")`
-                        this.setState({
-                            mainUpdateQuery: newArrOfApQ
-                        })
-                    }
-                    else if (e.target.getAttribute("colName") == "MARITAL_STATUS") {
-                        let updatedIndexOfNew = newArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName")))
-                        newArrOfApQ[updatedIndexOfNew] = `${e.target.getAttribute("colName")} = (SELECT MARITAL_STATUS FROM marital_status WHERE STATUS_DESC = "${e.target.value}")`
-                        this.setState({
-                            mainUpdateQuery: newArrOfApQ
-                        })
-                    }
-                    else if (e.target.getAttribute("colName") == "SYNDICATE") {
-                        let updatedIndexOfNew = newArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName")))
-                        newArrOfApQ[updatedIndexOfNew] = `${e.target.getAttribute("colName")} = (SELECT SYNDICATE FROM syndicate WHERE SYNDICATE_NAME = "${e.target.value}")`
-                        this.setState({
-                            mainUpdateQuery: newArrOfApQ
-                        })
-                    }
-                    else if (e.target.getAttribute("colName") == "GENDER") {
-                        let updatedIndexOfNew = newArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName")))
-                        newArrOfApQ[updatedIndexOfNew] = `${e.target.getAttribute("colName")} = (SELECT GENDER FROM genders WHERE GENDER_NAME = "${e.target.value}")`
-                        this.setState({
-                            mainUpdateQuery: newArrOfApQ
-                        })
-                    }
-                    else if (e.target.getAttribute("colName") == "RELIGION") {
-                        let updatedIndexOfNew = newArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName")))
-                        newArrOfApQ[updatedIndexOfNew] = `${e.target.getAttribute("colName")} = (SELECT RELIGION FROM religions WHERE RELIGION_NAME = "${e.target.value}")`
-                        this.setState({
-                            mainUpdateQuery: newArrOfApQ
-                        })
-                    }
-                    else if (e.target.getAttribute("colName") == "GOVERNORATE_OF_BIRTH") {
-                        let updatedIndexOfNew = newArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName")))
-                        newArrOfApQ[updatedIndexOfNew] = `${e.target.getAttribute("colName")} = (SELECT GOVERNORATE FROM governorate WHERE GOVERNORATE_ARABIC = "${e.target.value}")`
-                        this.setState({
-                            mainUpdateQuery: newArrOfApQ
-                        })
-                    } else {
-                        let updatedIndexOfNew = newArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName")))
-                        newArrOfApQ[updatedIndexOfNew] = `${e.target.getAttribute("colName")} = ${e.target.value}`
-                        this.setState({
-                            mainUpdateQuery: newArrOfApQ
-                        })
-                    }
+                else if (e.target.getAttribute("colName") == "JOB_LOCATION") {
+                    console.log('hit');
+                    let updatedIndexOfNew = newArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName")))
+                    newArrOfApQ[updatedIndexOfNew] = `${e.target.getAttribute("colName")} = (SELECT id from stations WHERE station_name = "${e.target.value}"), JOB_AREA = (SELECT area_id from stations WHERE station_name = "${e.target.value}"), JOB_GOVERNORATE = (SELECT GOVERNORATE_ID from stations WHERE station_name = "${e.target.value}") `
+                    this.setState({
+                        mainUpdateQuery: newArrOfApQ
+                    })
+                }
+                else if (e.target.getAttribute("colName") == "ADDRESS_GOVERNORATE") {
+                    let updatedIndexOfNew = newArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName")))
+                    newArrOfApQ[updatedIndexOfNew] = `${e.target.getAttribute("colName")} = (SELECT GOVERNORATE FROM governorate WHERE GOVERNORATE_ARABIC = "${e.target.value}")`
+                    this.setState({
+                        mainUpdateQuery: newArrOfApQ
+                    })
+                }
+                else if (e.target.getAttribute("colName") == "MARITAL_STATUS") {
+                    let updatedIndexOfNew = newArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName")))
+                    newArrOfApQ[updatedIndexOfNew] = `${e.target.getAttribute("colName")} = (SELECT MARITAL_STATUS FROM marital_status WHERE STATUS_DESC = "${e.target.value}")`
+                    this.setState({
+                        mainUpdateQuery: newArrOfApQ
+                    })
+                }
+                else if (e.target.getAttribute("colName") == "SYNDICATE") {
+                    let updatedIndexOfNew = newArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName")))
+                    newArrOfApQ[updatedIndexOfNew] = `${e.target.getAttribute("colName")} = (SELECT SYNDICATE FROM syndicate WHERE SYNDICATE_NAME = "${e.target.value}")`
+                    this.setState({
+                        mainUpdateQuery: newArrOfApQ
+                    })
+                }
+                else if (e.target.getAttribute("colName") == "GENDER") {
+                    let updatedIndexOfNew = newArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName")))
+                    newArrOfApQ[updatedIndexOfNew] = `${e.target.getAttribute("colName")} = (SELECT GENDER FROM genders WHERE GENDER_NAME = "${e.target.value}")`
+                    this.setState({
+                        mainUpdateQuery: newArrOfApQ
+                    })
+                }
+                else if (e.target.getAttribute("colName") == "RELIGION") {
+                    let updatedIndexOfNew = newArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName")))
+                    newArrOfApQ[updatedIndexOfNew] = `${e.target.getAttribute("colName")} = (SELECT RELIGION FROM religions WHERE RELIGION_NAME = "${e.target.value}")`
+                    this.setState({
+                        mainUpdateQuery: newArrOfApQ
+                    })
+                }
+                else if (e.target.getAttribute("colName") == "GOVERNORATE_OF_BIRTH") {
+                    let updatedIndexOfNew = newArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName")))
+                    newArrOfApQ[updatedIndexOfNew] = `${e.target.getAttribute("colName")} = (SELECT GOVERNORATE FROM governorate WHERE GOVERNORATE_ARABIC = "${e.target.value}")`
+                    this.setState({
+                        mainUpdateQuery: newArrOfApQ
+                    })
                 } else {
-                    if (e.target.getAttribute("colName") == "JOB_GOVERNORATE") {
-                        let newArr = [...this.state.mainUpdateQuery]
-                        newArr.push(`${e.target.getAttribute("colName")} = (SELECT GOVERNORATE FROM governorate WHERE GOVERNORATE_ARABIC = "${e.target.value}")`)
-                        this.setState({
-                            mainUpdateQuery: newArr
-                        })
-                    }
-                    else if (e.target.getAttribute("colName") == "EMP_STATUS") {
-                        let newArr = [...this.state.mainUpdateQuery]
-                        newArr.push(`${e.target.getAttribute("colName")} = (SELECT EMP_STATUS FROM emp_status WHERE EMP_STATUS_NAME = "${e.target.value}")`)
-                        this.setState({
-                            mainUpdateQuery: newArr
-                        })
-                    }
-                    else if (e.target.getAttribute("colName") == "ADDRESS_GOVERNORATE") {
-                        let newArr = [...this.state.mainUpdateQuery]
-                        newArr.push(`${e.target.getAttribute("colName")} = (SELECT GOVERNORATE FROM governorate WHERE GOVERNORATE_ARABIC = "${e.target.value}")`)
-                        this.setState({
-                            mainUpdateQuery: newArr
-                        })
-                    }
-                    else if (e.target.getAttribute("colName") == "MARITAL_STATUS") {
-                        let newArr = [...this.state.mainUpdateQuery]
-                        newArr.push(`${e.target.getAttribute("colName")} = (SELECT MARITAL_STATUS FROM marital_status WHERE STATUS_DESC = "${e.target.value}")`)
-                        this.setState({
-                            mainUpdateQuery: newArr
-                        })
-                    }
-                    else if (e.target.getAttribute("colName") == "SYNDICATE") {
-                        let newArr = [...this.state.mainUpdateQuery]
-                        newArr.push(`${e.target.getAttribute("colName")} = (SELECT SYNDICATE FROM syndicate WHERE SYNDICATE_NAME = "${e.target.value}")`)
-                        this.setState({
-                            mainUpdateQuery: newArr
-                        })
-                    }
-                    else if (e.target.getAttribute("colName") == "GENDER") {
-                        let newArr = [...this.state.mainUpdateQuery]
-                        newArr.push(`${e.target.getAttribute("colName")} = (SELECT GENDER FROM genders WHERE GENDER_NAME = "${e.target.value}")`)
-                        this.setState({
-                            mainUpdateQuery: newArr
-                        })
-                    }
-                    else if (e.target.getAttribute("colName") == "RELIGION") {
-                        let newArr = [...this.state.mainUpdateQuery]
-                        newArr.push(`${e.target.getAttribute("colName")} = (SELECT RELIGION FROM religions WHERE RELIGION_NAME = "${e.target.value}")`)
-                        this.setState({
-                            mainUpdateQuery: newArr
-                        })
-                    }
-                    else if (e.target.getAttribute("colName") == "GOVERNORATE_OF_BIRTH") {
-                        let newArr = [...this.state.mainUpdateQuery]
-                        newArr.push(`${e.target.getAttribute("colName")} = (SELECT GOVERNORATE FROM governorate WHERE GOVERNORATE_ARABIC = "${e.target.value}")`)
-                        this.setState({
-                            mainUpdateQuery: newArr
-                        })
-                    } else {
-                        let newArr = [...this.state.mainUpdateQuery]
-                        newArr.push(`${e.target.getAttribute("colName")} = ${e.target.value}`)
-                        this.setState({
-                            mainUpdateQuery: newArr
-                        })
-                    }
+                    let updatedIndexOfNew = newArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName")))
+                    newArrOfApQ[updatedIndexOfNew] = `${e.target.getAttribute("colName")} = ${e.target.value}`
+                    this.setState({
+                        mainUpdateQuery: newArrOfApQ
+                    })
+                }
+            } else {
+                if (e.target.getAttribute("colName") == "JOB_GOVERNORATE") {
+                    let newArr = [...this.state.mainUpdateQuery]
+                    newArr.push(`${e.target.getAttribute("colName")} = (SELECT GOVERNORATE FROM governorate WHERE GOVERNORATE_ARABIC = "${e.target.value}")`)
+                    this.setState({
+                        mainUpdateQuery: newArr
+                    })
+                }
+                else if (e.target.getAttribute("colName") == "EMP_STATUS") {
+                    let newArr = [...this.state.mainUpdateQuery]
+                    newArr.push(`${e.target.getAttribute("colName")} = (SELECT EMP_STATUS FROM emp_status WHERE EMP_STATUS_NAME = "${e.target.value}")`)
+                    this.setState({
+                        mainUpdateQuery: newArr
+                    })
+                }
+                else if (e.target.getAttribute("colName") == "JOB_LOCATION") {
+                    let newArr = [...this.state.mainUpdateQuery]
+                    newArr.push(`${e.target.getAttribute("colName")} = (SELECT id from stations WHERE station_name = "${e.target.value}"), JOB_AREA = (SELECT area_id from stations WHERE station_name = "${e.target.value}"), JOB_GOVERNORATE = (SELECT GOVERNORATE_ID from stations WHERE station_name = "${e.target.value}") `)
+                    this.setState({
+                        mainUpdateQuery: newArr
+                    })
+                }
+                else if (e.target.getAttribute("colName") == "ADDRESS_GOVERNORATE") {
+                    let newArr = [...this.state.mainUpdateQuery]
+                    newArr.push(`${e.target.getAttribute("colName")} = (SELECT GOVERNORATE FROM governorate WHERE GOVERNORATE_ARABIC = "${e.target.value}")`)
+                    this.setState({
+                        mainUpdateQuery: newArr
+                    })
+                }
+                else if (e.target.getAttribute("colName") == "MARITAL_STATUS") {
+                    let newArr = [...this.state.mainUpdateQuery]
+                    newArr.push(`${e.target.getAttribute("colName")} = (SELECT MARITAL_STATUS FROM marital_status WHERE STATUS_DESC = "${e.target.value}")`)
+                    this.setState({
+                        mainUpdateQuery: newArr
+                    })
+                }
+                else if (e.target.getAttribute("colName") == "SYNDICATE") {
+                    let newArr = [...this.state.mainUpdateQuery]
+                    newArr.push(`${e.target.getAttribute("colName")} = (SELECT SYNDICATE FROM syndicate WHERE SYNDICATE_NAME = "${e.target.value}")`)
+                    this.setState({
+                        mainUpdateQuery: newArr
+                    })
+                }
+                else if (e.target.getAttribute("colName") == "GENDER") {
+                    let newArr = [...this.state.mainUpdateQuery]
+                    newArr.push(`${e.target.getAttribute("colName")} = (SELECT GENDER FROM genders WHERE GENDER_NAME = "${e.target.value}")`)
+                    this.setState({
+                        mainUpdateQuery: newArr
+                    })
+                }
+                else if (e.target.getAttribute("colName") == "RELIGION") {
+                    let newArr = [...this.state.mainUpdateQuery]
+                    newArr.push(`${e.target.getAttribute("colName")} = (SELECT RELIGION FROM religions WHERE RELIGION_NAME = "${e.target.value}")`)
+                    this.setState({
+                        mainUpdateQuery: newArr
+                    })
+                }
+                else if (e.target.getAttribute("colName") == "GOVERNORATE_OF_BIRTH") {
+                    let newArr = [...this.state.mainUpdateQuery]
+                    newArr.push(`${e.target.getAttribute("colName")} = (SELECT GOVERNORATE FROM governorate WHERE GOVERNORATE_ARABIC = "${e.target.value}")`)
+                    this.setState({
+                        mainUpdateQuery: newArr
+                    })
 
                 }
+                else if (e.target.getAttribute("colName") == "JOB_GROUP") {
+                    let newArr = [...this.state.mainUpdateQuery]
+                    newArr.push(`${e.target.getAttribute("colName")} = (SELECT G_ID FROM a_job_groups WHERE G_NAME = "${e.target.value}")`)
+                    this.setState({
+                        mainUpdateQuery: newArr
+                    })
+                }
+                else {
+                    let newArr = [...this.state.mainUpdateQuery]
+                    newArr.push(`${e.target.getAttribute("colName")} = ${e.target.value}`)
+                    this.setState({
+                        mainUpdateQuery: newArr
+                    })
+                }
+
             }
-
         }
-
     }
 
     handleChange = (e) => {
@@ -244,7 +215,7 @@ class Employee extends React.Component {
     }
 
     handleSendDataToChange = (e) => {
-        this.props.editEmpDetails({ data: this.state.mainUpdateQuery, employeeid: this.props.EmpDetails[0].EMPLOYEE_ID })
+        this.props.editEmpDetails({data:this.state.mainUpdateQuery,employeeid:this.props.outsourceEmpDetails[0].EMPLOYEE_ID})
         this.setState({
             messege: this.props.msg,
             EditConfirmed: false,
@@ -265,8 +236,9 @@ class Employee extends React.Component {
         let organization = `(30`
         let empid = state.addEmpId
         let empname = `"${state.addEmpName}"`
-        let contractType = `(SELECT CONTRACT_TYPE FROM contract_type WHERE CONTRACT_TYPE_ARABIC = "${state.addContractType}")`
+        let contractType = `(SELECT CONTRACT_TYPE FROM contract_type WHERE CONTRACT_TYPE_ARABIC = "عقد عمال مياومة شركات قطاع")`
         let doc = `"${state.addDoc}"`
+        let department = `"${state.addDepartment}"`
         let addStation = `"${state.addStation}"`
         let addArea = `(SELECT area_id FROM stations WHERE station_name = "${state.addStation}")`
         let addGovern = `(SELECT GOVERNORATE_ID FROM stations WHERE station_name = "${state.addStation}")`
@@ -294,51 +266,38 @@ class Employee extends React.Component {
         let dateOfBirth = this.state.addEmpNid.slice(1, 7)
         let addDob = `${this.state.addEmpNid[0] === '2' ? '"19' : '"20'}${dateOfBirth.slice(0, 2)}-${dateOfBirth.slice(2, 4)}-${dateOfBirth.slice(4, 6)}"`
         let addPob = `"${state.addPob}"`
+        let addEmpGroup = `(SELECT G_ID FROM a_job_groups WHERE G_NAME = "${this.state.addEmpGroup}")`
         let addGob = `${this.state.addEmpNid.slice(7, 9)})`
-
-        let image = state.addPic
-        let img = new FormData()
-        img.append("avatar", image)
-
-
         let data = [
-            addedSyndicate, organization, empid, empname, contractType, doc, addStation, addArea, addGovern
+            addedSyndicate, organization, empid, empname, contractType, department, doc, addStation, addArea, addGovern
             , addJS, addEmpNid, addPOIssuance, addDOIssuance, addinsuranceNum, addinsuranceOffice, addAddress,
             addMPhoneNum, addHPhoneNum, addOPhoneNum, addEmail, addMarStatus, this.state.syndicateAdded ? addSyndicateType : '', this.state.syndicateAdded ? addMemberShipNum : '',
             this.state.syndicateAdded ? addMemberShipDate : '', addMirStatus, this.state.milStatusIsCompleted ? addDaysCountMir : '', this.state.milStatusIsCompleted ? addMonthsCountMir : '', this.state.milStatusIsCompleted ? addYearsCountMir : '', addSexType,
-            addReligous, addDob, addPob ,addGob
+            addReligous, addDob, addPob, addEmpGroup, addGob
         ]
-
         if (
-            state.addEmpId.length < 1 || state.addEmpName.length < 1 || state.addContractType.length < 1 || state.addDoc.length < 1 || state.addStation.length < 1 || state.addJS.length < 1 ||
+            state.addEmpId.length < 1 || state.addEmpName.length < 1 || state.addDoc.length < 1 || state.addDepartment.length < 1 || state.addStation.length < 1 || state.addJS.length < 1 ||
             state.addEmpNid.length < 1 || state.addPOIssuance.length < 1 || state.addDOIssuance.length < 1 || state.addinsuranceNum.length < 1 ||
             state.addinsuranceOffice.length < 1 || state.addAddress.length < 1 || state.addMPhoneNum.length < 1 || state.addHPhoneNum.length < 1 ||
             state.addOPhoneNum.length < 1 || state.addEmail.length < 1 || state.addMarStatus.length < 1 || (state.syndicateAdded && (state.addSyndicateType.length < 1 ||
                 state.addMemberShipNum.length < 1 || state.addMemberShipDate.length < 1)) || (state.milStatusIsCompleted && (state.addMirStatus.length < 1 || state.addDaysCountMir.length < 1 ||
                     state.addMonthsCountMir.length < 1 || state.addYearsCountMir.length < 1)) || (state.milStatusIsTempEx && state.ExmpExpireDate.length < 1) ||
-            state.addReligous.length < 1 || state.addPob.length < 1
+            state.addReligous.length < 1 || state.addPob.length < 1 || state.addEmpGroup.length < 1
         ) {
-
-            console.log('inputs are not completed');
-
+            console.log('not completed');
         } else if (state.addEmpNid.length !== 14) {
-            console.log('رقم البطاقة غير صحيح');
-
             this.setState({
                 messege: "رقم البطاقة غير صحيح"
             })
-
         } else {
             this.setState({
-                addConfirmed: true, finalData: data, img: img
+                addConfirmed: true, finalData: data
             })
         }
     }
 
     handleSendData = (e) => {
         this.props.newEmp(this.state.finalData)
-        console.log(this.state.img);
-       
         this.setState({
             messege: this.props.msg,
             showMsg: true,
@@ -346,23 +305,10 @@ class Employee extends React.Component {
         })
     }
 
-
-
     addButtonHandler = (e) => {
         this.setState({
             add: true
         })
-    }
-    addpicHandler = (e) => {
-        let image = e.target.files[0]
-        let img = new FormData()
-        img.append("avatar", image)
-        this.props.newEmpImg(img)
-
-        this.setState({
-            addPic: e.target.files[0]
-        })
-        
     }
 
     addEmpIdHandler = (e) => {
@@ -378,15 +324,15 @@ class Employee extends React.Component {
         })
     }
 
-    addContractTypeHandler = (e) => {
-        this.setState({
-            addContractType: e.target.value
-        })
-    }
-
     addDocHandler = (e) => {
         this.setState({
             addDoc: e.target.value
+        })
+    }
+
+    addDepartmentHandlert = (e) => {
+        this.setState({
+            addDepartment: e.target.value
         })
     }
 
@@ -517,6 +463,12 @@ class Employee extends React.Component {
         this.setState({ addPob: e.target.value })
     }
 
+    addEmpGroupHandler = (e) => {
+        this.setState({
+            addEmpGroup: e.target.value
+        })
+    }
+
     /* _____________________________________________________ */
 
 
@@ -527,7 +479,7 @@ class Employee extends React.Component {
     empidHandler = (e) => {
         if (e.key === 'Enter') {
 
-            this.props.getEmpDetails(e.target.value)
+            this.props.getOutSourceEmpDetails(e.target.value)
 
         }
     }
@@ -535,7 +487,7 @@ class Employee extends React.Component {
 
     nameInputHandler = (e) => {
         this.setState({ showNamesResults: true, showFamilyResult: false })
-        this.props.getEmpNameByName(e.target.value)
+        this.props.getOutsourceEmpNameByName(e.target.value)
         if (e.key === 'Enter') {
             this.props.getEmpAppraisal("", e.target.value)
             this.setState({ showFamilyResult: true, showMaritalstate: true })
@@ -544,58 +496,14 @@ class Employee extends React.Component {
 
     namesOptionshandler = (e) => {
         this.refs.nameinput.value = ''
-        this.props.getEmpDetails('', e.target.value)
+        this.props.getOutSourceEmpDetails('', e.target.value)
 
         this.setState({ showNamesResults: false })
     }
 
 
-    empEduButtonHandler = (e) => {
-        this.props.getEmpEdu(this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].EMPLOYEE_ID : null : null)
-    }
 
-    empTransButtonHandler = (e) => {
-        this.props.getEmpTrans(this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].EMPLOYEE_ID : null : null, this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].NAME_ARABIC : null : null)
-        this.props.getUpJd( 10, this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].SUP_BOX_NAME : null : null)
-    }
 
-    empFamilyButtonHandler = (e) => {
-        this.props.getEmpFamily(this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].EMPLOYEE_ID : null : null, this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].NAME_ARABIC : null : null)    }
-
-    empAppraisalHandler = (e) => {
-        
-        this.props.getEmpAppraisal(this.props.empdetails ? this.props.empdetails.length ?
-    
-            `employee_appraisal.NATIONAL_ID_CARD_NO = (SELECT NATIONAL_ID_CARD_NO FROM employee WHERE EMPLOYEE_ID = ${this.props.empdetails[0][0].EMPLOYEE_ID})`
-            
-            : null : null, "", "")
-
-    }
-
-    empPenaltyHandler = (e) => {
-        
-        this.props.getempspenalties(this.props.empdetails ? this.props.empdetails.length ?
-    
-            `NATIONAL_ID_CARD_NO = (SELECT NATIONAL_ID_CARD_NO FROM employee WHERE EMPLOYEE_ID = ${this.props.empdetails[0][0].EMPLOYEE_ID})`
-            
-            : null : null, "", "")
-
-    }
-
-    empTrainingHandler = (e) => {
-        
-        this.props.getEmpTraining(this.props.empdetails ? this.props.empdetails.length ?
-    
-            `NATIONAL_ID_CARD_NO = (SELECT employee_training.NATIONAL_ID_CARD_NO FROM employee WHERE EMPLOYEE_ID = ${this.props.empdetails[0][0].EMPLOYEE_ID})`
-            
-            : null : null, "", "")
-
-    }
-
-    empExpHandler = (e) => {
-        this.props.getEmpExp("", this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].NAME_ARABIC : null : null)
-
-    }
 
     ds = (e) => {
         this.setState({
@@ -609,9 +517,6 @@ class Employee extends React.Component {
         })
     }
 
-
-
-
     render() {
         console.log(this.state.mainUpdateQuery);
         let marStatus = ["اعزب",
@@ -624,70 +529,6 @@ class Employee extends React.Component {
         ]
         let militaryStatus = ["لعدم اللياقة البدنية", "اعفاء من الخدمة العامة", "غير معروف", "ادي الخدمه العسكرية", "لم يصبه الدور", "مجند", "معاف مؤقت", "اعفاء نهائى", "أدى الخدمة العامة", "تحت الطلب", "ضابط عامل", "مستثنى من الخدمة", "عسكري سابق", "مستدعى", "تخلف عن التجنيد", "أمين شرطة سابقا", "ضابط سابق في شرطة"]
         let governorate = ["القاهرة", "الاسكندرية", "بورسعيد", "السويس", "البحرالاحمر", "الـوادى الجديد", "مرسى مطروح", "جنوب سيناء", "الاسماعيلية", "البحيرة", "الدقهليـة", "الشرقية", "الغربيـة", "كفرالشيخ", "القليوبيـة", "المنوفيـة", "دميـاط", "الجـيزة", "الفيـوم", "بنى سويف", "المنيـا", "اسيـوط", "سوهاج", "قنـا", "اسوان", "شمال سيناء", "الاقصر", "حلوان", "دول خارجية", "غيرمعروفه"]
-        let station = ['الاستاد',
-            'الإسكندرية',
-            'الدخيلة',
-            'الزقازيق',
-            'الزهور',
-            'السويس',
-            'الشهداء',
-            'العاشر من رمضان',
-            'العجمى',
-            'العريش',
-            'العمرانية',
-            'الفيوم',
-            'القبارى',
-            'الكابلات',
-            'المرج',
-            'المروة',
-            'المطرية',
-            'المعادي',
-            'المعصرة',
-            'المنصورة 1',
-            'المنصورة 2',
-            'المنيا',
-            'النزهة الجديدة',
-            'النهضة',
-            'الهرم',
-            'الوراق',
-            'أبورواش',
-            'أسو القطامية',
-            'أسو سافوى',
-            'ألماظة',
-            'بنها',
-            'بني سويف',
-            'توتال - العوايد',
-            'توتال - المطار',
-            'جراج العجمي',
-            'جراج القطامية',
-            'جراج المعادى',
-            'جراج محرم بك',
-            'جميلة - العوايد',
-            'دمنهور',
-            'رشدى -وسط البلد',
-            'رشدي',
-            'سفنكس',
-            'سموحة',
-            'سوهاج',
-            'سيدي بشر',
-            'سيدي بشر 2',
-            'شبرا',
-            'شبين',
-            'شبين الكوم',
-            'شبين الكوم 1',
-            'شطا',
-            'شهداء',
-            'شيبرد',
-            'طنطا',
-            'عز الدين',
-            'عين شمس',
-            'فيصل',
-            'قبضايا',
-            'مبارك',
-            'مجلس الوزراء',
-            'مدينة نصر',
-            'مصدق',
-        ]
         let area = ["شرق", "غرب", "الصعيد", "الدلتا", "الأسكندرية", "القناة"]
         let emp_status = ['على قوة العمل',
             'أستقالة',
@@ -784,10 +625,11 @@ class Employee extends React.Component {
 
                 <div className="row">
                     <div className="col-lg-12">
+                        <h1 className="page-header"><span ref="empname">{this.props.outsourceEmpDetails.length > 0 ?  ` الإسم :  ${this.props.outsourceEmpDetails.length > 0 ?  this.props.outsourceEmpDetails[0].NAME_ARABIC : null} -  رقم الأداء :${this.props.outsourceEmpDetails[0].EMPLOYEE_ID}`  : null}</span> <span></span> </h1>
                         {this.state.showNamesResults ?
                             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}>
                                 <select onClick={this.namesOptionshandler} style={styles} multiple name="pets" id="pet-select">
-                                    {this.props.empNameByName.map((name => (
+                                    {this.props.outsourceNameByName.map((name => (
                                         <option>{name.NAME_ARABIC}</option>
                                     )))}
                                 </select>
@@ -813,19 +655,39 @@ class Employee extends React.Component {
                                                 <label className="medium-lable" >الرقم القومي</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addEmpNidHandler} className="form-control medium-medium-input" type="number" />
+                                                <input onChange={this.addEmpNidHandler} className="form-control medium-medium-input threeMediumBigInputsLableMargin" type="number" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable">جهة الإصدار</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addPOIssuanceHandler} className="form-control  medium-medium-input threeMediumBigInputsLableMargin" type="text" />
+                                                <input onChange={this.addPOIssuanceHandler} className="form-control  medium-medium-input" type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable">تاريخ الإصدار</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <input onChange={this.addDOIssuanceHandler} className="form-control  medium-medium-input" type="date" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style={{ display: "table" }}>
+                                        <div style={{ display: "table-row" }}>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="medium-lable">الديانة</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input onChange={this.addReligousHandler} className="form-control medium-input" list="brow6" />
+                                                <datalist id="brow6">
+                                                    <option value='مسلم' />
+                                                    <option value='مسيحي' />
+                                                </datalist>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="medium-lable towMediumInputsLableMargin">جهة الميلاد</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input onChange={this.addPobHandler} className="form-control  medium-input" type="text" />
                                             </div>
                                         </div>
                                     </div>
@@ -901,26 +763,6 @@ class Employee extends React.Component {
                                     <div style={{ display: "table" }}>
                                         <div style={{ display: "table-row" }}>
                                             <div style={{ display: "table-cell" }}>
-                                                <label className="medium-lable">الديانة</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addReligousHandler} className="form-control medium-input" list="brow6" />
-                                                <datalist id="brow6">
-                                                    <option value='مسلم' />
-                                                    <option value='مسيحي' />
-                                                </datalist>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label className="big-lable towMediumInputsLableMargin">جهة الميلاد</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addPobHandler} className="form-control medium-input" type="text" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div style={{ display: "table" }}>
-                                        <div style={{ display: "table-row" }}>
-                                            <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable" >الموقف من التجنيد</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
@@ -945,11 +787,9 @@ class Employee extends React.Component {
                                                 </div>
                                             </div>
                                         </div>
-
                                         :
                                         null
                                     }
-
                                     {this.state.milStatusIsCompleted ?
                                         <div style={{ display: "table" }}>
                                             <div style={{ display: "table-row" }}>
@@ -1024,85 +864,99 @@ class Employee extends React.Component {
                                     <div style={{ display: "table" }}>
                                         <div style={{ display: "table-row" }}>
                                             <div style={{ display: "table-cell" }}>
-                                                <label className="medium-lable">رقم الأداء</label>
+                                                <label className="medium-lable" >رقم الأداء</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addEmpIdHandler} ref="nameinput" className="form-control medium-input" type="number" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div style={{ display: "table" }}>
-                                        <div style={{ display: "table-row" }}>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label className="medium-lable ">نوع العقد</label>
+                                                <input onChange={this.addEmpIdHandler} className="form-control medium-medium-input threeMediumBigInputsLableMargin" type="number" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addContractTypeHandler} className="form-control  medium-input" list="brow12" />
-                                                <datalist id="brow12">
-                                                    <option value="أخرى" />
-                                                    <option value="دائم" />
-                                                    <option value="عقد محدد المده" />
-                                                    <option value="مكافأه شامله" />
-                                                    <option value="عقد عمل بنظام على مشروع" />
-                                                    <option value="معار" />
-                                                    <option value="منتدب" />
-                                                    <option value="عقد عمال مياومة شركات قطاع" />
-                                                    <option value="عقد تدريب" />
-                                                    <option value="عقد عمال مياومة من خارج القطاع" />
-                                                </datalist>
+                                                <label className="medium-lable">الوظيفة</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <label className="medium-lable towMediumInputsLableMargin" >تاريخ العقد</label>
+                                                <input onChange={this.addDOIssuanceHandler} className="form-control  medium-medium-input" type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addDocHandler} className=" form-control medium-input" type="date" />
+                                                <label className="medium-lable">تاريخ الإلتحاق</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input onChange={this.addDocHandler} className="form-control  medium-medium-input" type="date" />
                                             </div>
                                         </div>
                                     </div>
                                     <div style={{ display: "table" }}>
                                         <div style={{ display: "table-row" }}>
                                             <div style={{ display: "table-cell" }}>
-                                                <label className="medium-lable ">المحطة</label>
+                                                <label className="medium-lable" >الإدارة</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addStationHandler} className="form-control  medium-input" list="brow1" />
-                                                <datalist id="brow1">
-                                                    {station.map(stat => (
-                                                        <option value={stat} />
+                                                <select onChange={this.addDepartmentHandlert} className="form-control medium-medium-input threeMediumBigInputsLableMargin">
+                                                    {this.props.cates.map(cate => (
+                                                        <Fragment>
+                                                            <option id={cate.CAT_ID}>
+                                                                {cate.CAT_NAME}
+                                                            </option>
+                                                        </Fragment>
                                                     ))}
-                                                </datalist>
+                                                    <option selected>
+                                                        اختر ...
+                                                    </option>
+                                                </select>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <label className="medium-lable towMediumInputsLableMargin" >الحالة الوظيفية</label>
+                                                <label className="medium-lable">المحطة</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addJSHandler} className=" form-control medium-input" list="brow4" />
+                                                <select onChange={this.addStationHandler} className="form-control  medium-medium-input">
+                                                    {this.props.stations.map(station => (
+                                                        <Fragment>
+                                                            <option id={station.id}>
+                                                                {station.station_name}
+                                                            </option>
+                                                        </Fragment>
+                                                    ))}
+                                                    <option selected>
+                                                        اختر ...
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="medium-lable">الحالة الوظيفية</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input onChange={this.addJSHandler} className="form-control  medium-medium-input" list="brow4" />
                                                 <datalist id="brow4">
                                                     {emp_status.map(empstatus => (
                                                         <option value={empstatus} />
                                                     ))}
-                                                </datalist>
-                                            </div>
+                                                </datalist></div>
                                         </div>
                                     </div>
                                     <div style={{ display: "table" }}>
                                         <div style={{ display: "table-row" }}>
-                                        <div style={{ display: "table-cell" }}>
-                                                <label className="medium-lable ">صورة الموظف</label>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="medium-lable" >نوع التخصص</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                            <input onChange={this.addpicHandler} type="file" id="myFile" name="filename" className="oneInputMargin " />
-
+                                                <select onChange={this.addEmpGroupHandler} className="form-control medium-medium-input threeMediumBigInputsLableMargin">
+                                                    <option>
+                                                        فني
+                                                    </option>
+                                                    <option>
+                                                        إداري
+                                                    </option>
+                                                    <option selected>
+                                                        اختر ...
+                                                    </option>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
-
                                     <div style={{ display: "table" }}>
                                         <div style={{ display: "table-row" }}>
                                             <div style={{ display: "table-cell" }}>
                                                 <button style={{ marginRight: 100, marginTop: 20, width: 650 }} onClick={this.handleArrToSend} className="btn btn-primary btn-block">إضافة</button>
                                                 {this.state.addConfirmed ?
-                                                    <div style={{ display: "flex", justifyContent: "space-between", marginRight: 100, marginTop: 20, width: 650 }} class="alert alert-warning" role="alert">
+                                                    <div style={{ display: "flex", justifyContent:"space-between" ,marginRight: 100, marginTop: 20, width: 650 }} class="alert alert-warning" role="alert">
                                                         <i onClick={this.closeAddConfirmHandler} style={{ fontSize: 15 }} class="fas fa-times-circle"></i>
                                                         هل انت متأكد من إضافة بيانات جديد ؟ <button onClick={this.handleSendData} type="button" class="btn btn-warning">تأكيد</button>
                                                     </div>
@@ -1113,30 +967,42 @@ class Employee extends React.Component {
                                     </div>
                                 </div>
                             </div>
-                            : <div className="col-lg-8">
+                            : 
+                            this.props.outsourceEmpDetails ?
+                            <div className="col-lg-8">
                                 <div className="data-wrapper" style={{ background: "transparent", height: "100%", width: "100%" }} >
                                     <h3 style={{ marginRight: 20, marginTop: 20, textAlign: "right", fontFamily: 'Markazi Text ,serif', fontWeight: 700 }}>البيانات الشخصية</h3>
+                                    <div style={{ display: "table" }}>
+                                        <div style={{ display: "table-row" }}>
+                                            <div style={{ display: "table-cell" }}>
+                                                <label className="medium-lable" >الإسم</label>
+                                            </div>
+                                            <div style={{ display: "table-cell" }}>
+                                                <input ref="nameinput" className="form-control giant-input oneInputMargin" style={{ marginBottom: 5 }} onChange={this.changeHandler} colName={"NAME_ARABIC"} placeholder={this.props.outsourceEmpDetails.length > 0 ?  this.props.outsourceEmpDetails[0].NAME_ARABIC : null } readOnly={!this.state.edit} type="text" />
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div style={{ display: "table" }}>
                                         <div style={{ display: "table-row" }}>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable">الرقم القومي</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control medium-medium-input" onChange={this.changeHandler} colName={"NATIONAL_ID_CARD_NO"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].NATIONAL_ID_CARD_NO : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control medium-medium-input" onChange={this.changeHandler} colName={"NATIONAL_ID_CARD_NO"} placeholder={this.props.outsourceEmpDetails.length > 0 ?  this.props.outsourceEmpDetails[0].NATIONAL_ID_CARD_NO : null} readOnly={!this.state.edit} type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable">جهة الصدور</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control  medium-medium-input" onChange={this.changeHandler} colName={"NATIONAL_ID_CARD_ISSUED_BY"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].NATIONAL_ID_CARD_ISSUED_BY : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control  medium-medium-input" onChange={this.changeHandler} colName={"NATIONAL_ID_CARD_ISSUED_BY"} placeholder={this.props.outsourceEmpDetails.length > 0 ?  this.props.outsourceEmpDetails[0].NATIONAL_ID_CARD_ISSUED_BY : null } readOnly={!this.state.edit} type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable">تاريخ الصدور</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                {/* <input className="form-control  medium-medium-input" onChange={this.changeHandler} colName={"ADDRESS_GOVERNORATE"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].addressgov : null : null} readOnly={!this.state.edit} type="text" /> */}
+                                                {/* <input className="form-control  medium-medium-input" onChange={this.changeHandler} colName={"ADDRESS_GOVERNORATE"} placeholder={this.props.outsourceEmpDetails ?  this.props.outsourceEmpDetails[0].addressgov : null : null} readOnly={!this.state.edit} type="text" /> */}
 
-                                                <input className="form-control medium-medium-input" list="brow300" onChange={this.changeHandler} colName={"ADDRESS_GOVERNORATE"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].addressgov : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control medium-medium-input" list="brow300" onChange={this.changeHandler} colName={"ADDRESS_GOVERNORATE"} placeholder={this.props.outsourceEmpDetails.length > 0 ?  this.props.outsourceEmpDetails[0].addressgov : null} readOnly={!this.state.edit} type="text" />
                                                 <datalist id="brow300">
                                                     {governorate.map(gov => (
                                                         <option value={gov} />
@@ -1151,13 +1017,13 @@ class Employee extends React.Component {
                                                 <label className="medium-lable">الرقم التأميني</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control medium-input" onChange={this.changeHandler} colName={"SOCIAL_INSURANCE_NUMBER"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].SOCIAL_INSURANCE_NUMBER : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control medium-input" onChange={this.changeHandler} colName={"SOCIAL_INSURANCE_NUMBER"} placeholder={this.props.outsourceEmpDetails.length > 0 ?  this.props.outsourceEmpDetails[0].SOCIAL_INSURANCE_NUMBER : null} readOnly={!this.state.edit} type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="big-lable towMediumInputsLableMargin">مكتب التأمينات</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control medium-input" onChange={this.changeHandler} colName={"INSURANCE_OFFICE"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].INSURANCE_OFFICE : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control medium-input" onChange={this.changeHandler} colName={"INSURANCE_OFFICE"} placeholder={this.props.outsourceEmpDetails.length > 0 ?  this.props.outsourceEmpDetails[0].INSURANCE_OFFICE : null} readOnly={!this.state.edit} type="text" />
                                             </div>
                                         </div>
                                     </div>
@@ -1167,7 +1033,7 @@ class Employee extends React.Component {
                                                 <label className="medium-lable">العنوان</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control giant-input oneInputMargin" onChange={this.changeHandler} colName={"ADDRESS"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].ADDRESS : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control giant-input oneInputMargin" onChange={this.changeHandler} colName={"ADDRESS"} placeholder={this.props.outsourceEmpDetails ?  this.props.outsourceEmpDetails[0].ADDRESS : null : null} readOnly={!this.state.edit} type="text" />
                                             </div>
                                         </div>
                                     </div> */}
@@ -1177,21 +1043,19 @@ class Employee extends React.Component {
                                                 <label className="medium-lable">العنوان</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control medium-medium-input" onChange={this.changeHandler} colName={"ADDRESS"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].ADDRESS : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control medium-medium-input" onChange={this.changeHandler} colName={"ADDRESS"} placeholder={this.props.outsourceEmpDetails.length > 0 ?  this.props.outsourceEmpDetails[0].ADDRESS : null} readOnly={!this.state.edit} type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable">المنطقة</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin" onChange={this.changeHandler} colName={"NATIONAL_ID_CARD_ISSUED_BY"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].NATIONAL_ID_CARD_ISSUED_BY : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin" onChange={this.changeHandler} colName={"NATIONAL_ID_CARD_ISSUED_BY"} placeholder={this.props.outsourceEmpDetails.length > 0 ?  this.props.outsourceEmpDetails[0].NATIONAL_ID_CARD_ISSUED_BY : null} readOnly={!this.state.edit} type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable">المحافظة</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                {/* <input className="form-control  medium-medium-input" onChange={this.changeHandler} colName={"ADDRESS_GOVERNORATE"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].addressgov : null : null} readOnly={!this.state.edit} type="text" /> */}
-
-                                                <input className="form-control medium-medium-input" list="brow300" onChange={this.changeHandler} colName={"ADDRESS_GOVERNORATE"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].addressgov : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control medium-medium-input" list="brow300" onChange={this.changeHandler} colName={"ADDRESS_GOVERNORATE"} placeholder={this.props.outsourceEmpDetails.length > 0 ?  this.props.outsourceEmpDetails[0].addressgov : null} readOnly={!this.state.edit} type="text" />
                                                 <datalist id="brow300">
                                                     {governorate.map(gov => (
                                                         <option value={gov} />
@@ -1210,10 +1074,10 @@ class Employee extends React.Component {
 
                                                 {this.state.edit ?
 
-                                                    <input className="form-control medium-medium-input threeMediumBigInputsLableMargin" onChange={this.changeHandler} colName={"PHONE_2_HOME"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].PHONE_2_HOME : null : null} readOnly={!this.state.edit} type="text" />
+                                                    <input className="form-control medium-medium-input threeMediumBigInputsLableMargin" onChange={this.changeHandler} colName={"PHONE_2_HOME"} placeholder={this.props.outsourceEmpDetails.length > 0 ?  this.props.outsourceEmpDetails[0].PHONE_2_HOME : null} readOnly={!this.state.edit} type="text" />
 
                                                     :
-                                                    <input className="form-control medium-medium-input threeMediumBigInputsLableMargin" onChange={this.changeHandler} colName={"PHONE_2_HOME"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].PHONE_2_HOME : null : null} readOnly={!this.state.edit} type="text" />
+                                                    <input className="form-control medium-medium-input threeMediumBigInputsLableMargin" onChange={this.changeHandler} colName={"PHONE_2_HOME"} placeholder={this.props.outsourceEmpDetails.length > 0 ?  this.props.outsourceEmpDetails[0].PHONE_2_HOME : null} readOnly={!this.state.edit} type="text" />
 
                                                 }
                                             </div>
@@ -1222,16 +1086,16 @@ class Employee extends React.Component {
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 {this.state.edit ?
-                                                    <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin" onChange={this.changeHandler} colName={"PHONE_1_OFFICE"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].PHONE_1_OFFICE : null : null} readOnly={!this.state.edit} type="text" />
+                                                    <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin" onChange={this.changeHandler} colName={"PHONE_1_OFFICE"} placeholder={this.props.outsourceEmpDetails.length > 0 ?  this.props.outsourceEmpDetails[0].PHONE_1_OFFICE : null } readOnly={!this.state.edit} type="text" />
                                                     :
-                                                    <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin" onChange={this.changeHandler} colName={"PHONE_1_OFFICE"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].PHONE_1_OFFICE : null : null} readOnly={!this.state.edit} type="text" />
+                                                    <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin" onChange={this.changeHandler} colName={"PHONE_1_OFFICE"} placeholder={this.props.outsourceEmpDetails.length > 0 ?  this.props.outsourceEmpDetails[0].PHONE_1_OFFICE : null} readOnly={!this.state.edit} type="text" />
                                                 }
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable">الموبايل</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin" onChange={this.changeHandler} colName={"PHONE_3_MOBILE"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].PHONE_3_MOBILE : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin" onChange={this.changeHandler} colName={"PHONE_3_MOBILE"} placeholder={this.props.outsourceEmpDetails.length > 0 ?  this.props.outsourceEmpDetails[0].PHONE_1_MOBILE : null } readOnly={!this.state.edit} type="text" />
                                             </div>
                                         </div>
                                     </div>
@@ -1241,15 +1105,15 @@ class Employee extends React.Component {
                                                 <label className="medium-lable">البريد الأليكتروني</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control medium-input" onChange={this.changeHandler} colName={"EMP_EMAIL"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].EMP_EMAIL : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control medium-input" onChange={this.changeHandler} colName={"EMP_EMAIL"} placeholder={this.props.outsourceEmpDetails.length > 0 ?  this.props.outsourceEmpDetails[0].EMP_EMAIL : null } readOnly={!this.state.edit} type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="big-lable towMediumInputsLableMargin">الحالة الإجتماعية</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                {/* <input className="form-control medium-input" onChange={this.changeHandler} colName={"MARITAL_STATUS"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].maritalstatear : null : null} readOnly={!this.state.edit} type="text" /> */}
+                                                {/* <input className="form-control medium-input" onChange={this.changeHandler} colName={"MARITAL_STATUS"} placeholder={this.props.outsourceEmpDetails ?  this.props.outsourceEmpDetails[0].maritalstatear : null : null} readOnly={!this.state.edit} type="text" /> */}
 
-                                                <input className="form-control medium-input" type="text" list="brow90" onChange={this.changeHandler} colName={"MARITAL_STATUS"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].maritalstatear : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control medium-input" type="text" list="brow90" onChange={this.changeHandler} colName={"MARITAL_STATUS"} placeholder={this.props.outsourceEmpDetails.length > 0 ?  this.props.outsourceEmpDetails[0].maritalstatear : null } readOnly={!this.state.edit} type="text" />
                                                 <datalist id="brow90">
                                                     {marStatus.map(marstatus => (
                                                         <option value={marstatus} />
@@ -1258,14 +1122,15 @@ class Employee extends React.Component {
                                             </div>
                                         </div>
                                     </div>
+                                    {this.props.outsourceEmpDetails.length > 0 ?  this.props.outsourceEmpDetails[0].syndicatear : null}
                                     <div style={{ display: "table" }}>
                                         <div style={{ display: "table-row" }}>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable">نوع النقابة</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                {/* <input className="form-control medium-medium-input threeMediumBigInputsLableMargin" onChange={this.changeHandler} colName={"SYNDICATE"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].syndicatear : null : null} readOnly={!this.state.edit} type="text" /> */}
-                                                <input className="form-control medium-medium-input" list="brow50" onChange={this.changeHandler} colName={"SYNDICATE"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].syndicatear : null : null} readOnly={!this.state.edit} type="text" />
+                                                {/* <input className="form-control medium-medium-input threeMediumBigInputsLableMargin" onChange={this.changeHandler} colName={"SYNDICATE"} placeholder={this.props.outsourceEmpDetails ?  this.props.outsourceEmpDetails[0].syndicatear : null : null} readOnly={!this.state.edit} type="text" /> */}
+                                                <input className="form-control medium-medium-input" list="brow50" onChange={this.changeHandler} colName={"SYNDICATE"} placeholder={this.props.outsourceEmpDetails.length > 0 ?  this.props.outsourceEmpDetails[0].syndicatear : null } readOnly={!this.state.edit} type="text" />
                                                 <datalist id="brow50">
                                                     {syndicate.map(synd => (
                                                         <option value={synd} />
@@ -1276,13 +1141,13 @@ class Employee extends React.Component {
                                                 <label className="medium-lable">رقم العضوية</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin" onChange={this.changeHandler} colName={"SYNDICATE_REGISTERATION"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].SYNDICATE_REGISTERATION : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin" onChange={this.changeHandler} colName={"SYNDICATE_REGISTERATION"} placeholder={this.props.outsourceEmpDetails.length > 0 ?  this.props.outsourceEmpDetails[0].SYNDICATE_REGISTERATION : null } readOnly={!this.state.edit} type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable">تاريخ العضوية </label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin" onChange={this.changeHandler} colName={"SYNDICATE_REGISTERATION_DATE"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].SYNDICATE_REGISTERATION_DATE : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin" onChange={this.changeHandler} colName={"SYNDICATE_REGISTERATION_DATE"} placeholder={this.props.outsourceEmpDetails.length > 0 ?  this.props.outsourceEmpDetails[0].SYNDICATE_REGISTERATION_DATE : null } readOnly={!this.state.edit} type="text" />
                                             </div>
                                         </div>
                                     </div>
@@ -1292,7 +1157,7 @@ class Employee extends React.Component {
                                                 <label className="medium-lable">موقف التجنيد</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control small-input" placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].JOB_LOCATION : null : null} type="text" readonly="readonly" />
+                                                <input className="form-control small-input" placeholder={this.props.outsourceEmpDetails ?  this.props.outsourceEmpDetails[0].JOB_LOCATION : null : null} type="text" readonly="readonly" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <input  className="form-control  small-input" type="text" readonly="readonly" />
@@ -1317,7 +1182,7 @@ class Employee extends React.Component {
                                                 <label className="medium-lable">النوع</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control medium-input" list="brow5" onChange={this.changeHandler} colName={"GENDER"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].genderar : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control medium-input" list="brow5" onChange={this.changeHandler} colName={"GENDER"} placeholder={this.props.outsourceEmpDetails.length > 0 ?  this.props.outsourceEmpDetails[0].genderar : null } readOnly={!this.state.edit} type="text" />
                                                 <datalist id="brow5">
                                                     <option value='ذكر' />
                                                     <option value='أنثى' />
@@ -1327,7 +1192,7 @@ class Employee extends React.Component {
                                                 <label className="medium-lable towMediumInputsLableMargin">الديانة</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control medium-input" list="brow6" onChange={this.changeHandler} colName={"RELIGION"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].religinar : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control medium-input" list="brow6" onChange={this.changeHandler} colName={"RELIGION"} placeholder={this.props.outsourceEmpDetails.length > 0 ?  this.props.outsourceEmpDetails[0].religinar : null } readOnly={!this.state.edit} type="text" />
                                                 <datalist id="brow6">
                                                     <option value='مسلم' />
                                                     <option value='مسيحي' />
@@ -1341,19 +1206,19 @@ class Employee extends React.Component {
                                                 <label className="medium-lable ">تاريخ الميلاد</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control medium-medium-input threeMediumBigInputsLableMargin" onChange={this.changeHandler} colName={"BIRTH_DATE"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].BIRTH_DATE : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control medium-medium-input threeMediumBigInputsLableMargin" onChange={this.changeHandler} colName={"BIRTH_DATE"} placeholder={this.props.outsourceEmpDetails.length > 0 ?  this.props.outsourceEmpDetails[0].BIRTH_DATE : null } readOnly={!this.state.edit} type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable">جهة الميلاد</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin" onChange={this.changeHandler} colName={"PLACE_OF_BIRTH"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].PLACE_OF_BIRTH : 'لاتوجد بيانات' : 'لاتوجد بيانات'} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin" onChange={this.changeHandler} colName={"PLACE_OF_BIRTH"} placeholder={this.props.outsourceEmpDetails.length > 0 ?  this.props.outsourceEmpDetails[0].PLACE_OF_BIRTH : 'لاتوجد بيانات' } readOnly={!this.state.edit} type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable">محافظة الميلاد</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control medium-medium-input threeMediumBigInputsLableMargin" list="brow3" onChange={this.changeHandler} colName={"GOVERNORATE_OF_BIRTH"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].birthGov : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control medium-medium-input threeMediumBigInputsLableMargin" list="brow3" onChange={this.changeHandler} colName={"GOVERNORATE_OF_BIRTH"} placeholder={this.props.outsourceEmpDetails.length > 0 ?  this.props.outsourceEmpDetails[0].birthGov : null } readOnly={!this.state.edit} type="text" />
                                                 <datalist id="brow3">
                                                     {governorate.map(gov => (
                                                         <option value={gov} />
@@ -1369,66 +1234,26 @@ class Employee extends React.Component {
                                                 <label className="medium-lable">رقم الأداء</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control small-input" onChange={this.changeHandler} colName={'EMPLOYEE_ID'} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].EMPLOYEE_ID : null : null} readOnly={!this.state.edit} type="number" />
+                                                <input className="form-control small-input" onChange={this.changeHandler} colName={'EMPLOYEE_ID'} placeholder={this.props.outsourceEmpDetails.length > 0 ?  this.props.outsourceEmpDetails[0].EMPLOYEE_ID : null} readOnly={!this.state.edit} type="number" />
                                             </div>
 
-                                            <div style={{ display: "table-cell" }}>
-                                                <label className="medium-lable towMediumInputsLableMargin2" >الإسم</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input ref="nameinput" className="form-control medium-input" style={{ marginRight: 30 }} onChange={this.changeHandler} colName={"NAME_ARABIC"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].NAME_ARABIC : null : null} readOnly={!this.state.edit} type="text" />
-                                            </div>
+
                                         </div>
                                     </div>
 
                                     <div style={{ display: "table" }}>
                                         <div style={{ display: "table-row" }}>
                                             <div style={{ display: "table-cell" }}>
-                                                <label className="medium-lable" >تاريخ العقد</label>
+                                                <label className="medium-lable" >تاريخ الإلتحاق</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control medium-input" onChange={this.changeHandler} colName={"SECTOR_JOIN_DATE"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].SECTOR_JOIN_DATE : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control medium-input" onChange={this.changeHandler} colName={"SECTOR_JOIN_DATE"} placeholder={this.props.outsourceEmpDetails.length > 0 ?  this.props.outsourceEmpDetails[0].SECTOR_JOIN_DATE : null } readOnly={!this.state.edit} type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <label className="big-lable towMediumInputsLableMargin">تاريخ التعيين</label>
+                                                <label className="big-lable towMediumInputsLableMargin">الوظيفة</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control medium-input" onChange={this.changeHandler} colName={"TRANS_DATE"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[2].length > 0 ? this.props.empdetails[2][0].TRANS_DATE : null : null : null} readOnly={!this.state.edit} type="text" />
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div style={{ display: "table" }}>
-
-                                        <div style={{ display: "table-row" }}>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label className="medium-lable">الوظيفة الحالية</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input className="form-control medium-input" onChange={this.changeHandler} colName={"MAIN_BOX_NAME"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[1].length > 0 ? this.props.empdetails[1][0].J_D_NAME : null : null : null} readOnly={!this.state.edit} type="text" />
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label className="big-lable towMediumInputsLableMargin">المسمى الوظيفي</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input className="form-control medium-input" onChange={this.changeHandler} colName={"JOB_ASSIGNMENT_FORM"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].SUP_BOX_NAME : null : null} readOnly={!this.state.edit} type="text" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div style={{ display: "table" }}>
-
-                                        <div style={{ display: "table-row" }}>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label className="medium-lable">طريقة شغلها</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input className="form-control medium-input" onChange={this.changeHandler} colName={"MAIN_BOX_NAME"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[1].length > 0 ? this.props.empdetails[1][0].JOB_ASSIGNMENT_FORM_ARABIC : null : null : null} readOnly={!this.state.edit} type="text" />
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <label className="big-lable towMediumInputsLableMargin">تاريخ شغلها</label>
-                                            </div>
-                                            <div style={{ display: "table-cell" }}>
-                                                <input className="form-control medium-input" onChange={this.changeHandler} colName={"JOB_ASSIGNMENT_FORM"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[1].length > 0 ? this.props.empdetails[1][0].TRANS_DATE : null : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control medium-input" onChange={this.changeHandler} colName={"JOB"} placeholder={this.props.outsourceEmpDetails.length > 0 ?  this.props.outsourceEmpDetails[0].JOB : null } readOnly={!this.state.edit} type="text" />
                                             </div>
                                         </div>
                                     </div>
@@ -1438,7 +1263,19 @@ class Employee extends React.Component {
                                                 <label className="medium-lable">الإدارة</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control giant-input oneInputMargin" onChange={this.changeHandler} colName={"SUP_BOX_NAME"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[1].length > 0 ? this.props.empdetails[1][0].CAT_NAME : null : null : null} readOnly={!this.state.edit} type="text" />
+                                                {/* <input className="form-control giant-input oneInputMargin" onChange={this.changeHandler} colName={"DEPARTMENT_NAME"} placeholder={this.props.outsourceEmpDetails ?  this.props.outsourceEmpDetails[0].DEPARTMENT_NAME : null : null} readOnly={!this.state.edit} type="text" /> */}
+                                                <select onChange={this.addDepartmentHandlert} className="form-control giant-input oneInputMargin" onChange={this.changeHandler} colName={"DEPARTMENT_NAME"} readOnly={!this.state.edit}>
+                                                    {this.props.cates.map(cate => (
+                                                        <Fragment>
+                                                            <option id={cate.CAT_ID}>
+                                                                {cate.CAT_NAME}
+                                                            </option>
+                                                        </Fragment>
+                                                    ))}
+                                                    <option selected>
+                                                        {this.props.outsourceEmpDetails.length > 0 ?  this.props.outsourceEmpDetails[0].DEPARTMENT_NAME : null }
+                                                    </option>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
@@ -1449,29 +1286,35 @@ class Employee extends React.Component {
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 {this.state.edit ?
-                                                    <input className="form-control  small-input" colName={"JOB_LOCATION"} onChange={this.changeHandler} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].joblocation : null : null} readOnly={!this.state.edit} type="text" />
+                                                    <Fragment>
+                                                        {/* <input className="form-control  small-input" onChange={this.changeHandler} type="text" /> */}
+                                                        <select colName={"JOB_LOCATION"} onChange={this.changeHandler} readOnly={!this.state.edit} className="form-control  small-input">
+                                                            {this.props.stations.map(station => (
+                                                                <Fragment>
+                                                                    <option id={station.id}>
+                                                                        {station.station_name}
+                                                                    </option>
+                                                                </Fragment>
+                                                            ))}
+                                                            <option selected>
+                                                                {this.props.outsourceEmpDetails.length > 0 ?  this.props.outsourceEmpDetails[0].joblocation : null}                                                    </option>
+                                                        </select>
+                                                    </Fragment>
                                                     :
-                                                    <input className="form-control  small-input" colName={"JOB_LOCATION"} onChange={this.changeHandler} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].joblocation : null : null} readOnly={!this.state.edit} type="text" />
+                                                    <input className="form-control  small-input" onChange={this.changeHandler} placeholder={this.props.outsourceEmpDetails.length > 0 ?  this.props.outsourceEmpDetails[0].joblocation : null} readOnly={!this.state.edit} type="text" />
                                                 }
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable threeSmallLableMargin">المنطقة</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control  small-input" onChange={this.changeHandler} colName={"JOB_AREA"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].jobarea : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control  small-input" placeholder={this.props.outsourceEmpDetails.length > 0 ?  this.props.outsourceEmpDetails[0].areaname : null } disabled type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable threeSmallLableMargin">المحافظة</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                {/* <input className="form-control  small-input" onChange={this.changeHandler} colName={"JOB_GOVERNORATE"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].jobGov : null : null} readOnly={!this.state.edit} type="text" /> */}
-
-                                                <input className="form-control small-input" list="brow300" onChange={this.changeHandler} colName={"JOB_GOVERNORATE"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].jobGov : null : null} readOnly={!this.state.edit} type="text" />
-                                                <datalist id="brow300">
-                                                    {governorate.map(gov => (
-                                                        <option value={gov} />
-                                                    ))}
-                                                </datalist>
+                                                <input className="form-control small-input" placeholder={this.props.outsourceEmpDetails.length > 0 ?  this.props.outsourceEmpDetails[0].jobGov : null } disabled type="text" />
                                             </div>
                                         </div>
                                     </div>
@@ -1482,7 +1325,7 @@ class Employee extends React.Component {
                                             </div>
                                             <div style={{ display: "table-cell" }}>
 
-                                                <input className="form-control medium-input" onChange={this.changeHandler} colName={"G_NAME"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[1].length > 0 ? this.props.empdetails[1][0].gname : null : null : null} readOnly={!this.state.edit} type="text" list="brow450" />
+                                                <input className="form-control medium-input" onChange={this.changeHandler} colName={"JOB_GROUP"} placeholder={this.props.outsourceEmpDetails.length > 0 ?  this.props.outsourceEmpDetails[0].jobgroup : null } readOnly={!this.state.edit} type="text" list="brow450" />
                                                 <datalist id="brow450">
                                                     {emp_status.map(empstatus => (
                                                         <option value={empstatus} />
@@ -1494,9 +1337,9 @@ class Employee extends React.Component {
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 {this.state.edit ?
-                                                    <input className="form-control medium-input" onChange={this.changeHandler} colName={"EMP_STATUS"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].empstatusar : null : null} readOnly={!this.state.edit} type="text" />
+                                                    <input className="form-control medium-input" onChange={this.changeHandler} colName={"EMP_STATUS"} placeholder={this.props.outsourceEmpDetails.length > 0 ?  this.props.outsourceEmpDetails[0].empstatusar : null } readOnly={!this.state.edit} type="text" />
                                                     :
-                                                    <input className="form-control medium-input" onChange={this.changeHandler} colName={"EMP_STATUS"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].empstatusar : null : null} readOnly={!this.state.edit} type="text" />
+                                                    <input className="form-control medium-input" onChange={this.changeHandler} colName={"EMP_STATUS"} placeholder={this.props.outsourceEmpDetails.length > 0 ?  this.props.outsourceEmpDetails[0].empstatusar : null } readOnly={!this.state.edit} type="text" />
                                                 }
                                             </div>
                                         </div>
@@ -1507,39 +1350,36 @@ class Employee extends React.Component {
                                                 <div style={{ display: "table-cell" }}>
                                                     <button style={{ marginRight: 100, marginTop: 20, width: 650 }} onClick={this.handleChange} className="btn btn-primary btn-block">تعديل</button>
                                                     {this.state.EditConfirmed ?
-                                                        <div style={{ display: "flex", justifyContent: "space-between", marginRight: 100, marginTop: 20, width: 650 }} class="alert alert-warning" role="alert">
-                                                            <i onClick={this.closeAddConfirmHandler} style={{ fontSize: 15 }} class="fas fa-times-circle"></i>
-                                                            هل انت متأكد من إضافة بيانات جديد ؟ <button onClick={this.handleSendDataToChange} type="button" class="btn btn-warning">تأكيد</button>
-                                                        </div>
-                                                        : null}
-                                                    {this.state.showMsgOfChange ? this.state.messege == "تم إدخال البيانات بنجاح" ? <div id="showMsgOfChange" className="alert alert-success" role="alert"> {this.state.messege}</div> : this.state.messege == "يوجد خطاء بقاعدة البيانات" ? <div id="showMsgOfChange" className="alert alert-danger" role="alert">{this.state.messege}</div> : this.state.messege == "رقم البطاقة غير صحيح" ? <div id="showMsgOfChange" className="alert alert-danger" role="alert">{this.state.messege}</div> : this.state.messege == "البيانات غير كاملة" ? <div id="showMsgOfChange" className="alert alert-danger" role="alert">{this.state.messege}</div> : null : null}
+                                                    <div style={{ display: "flex", justifyContent:"space-between" ,marginRight: 100, marginTop: 20, width: 650 }} class="alert alert-warning" role="alert">
+                                                        <i onClick={this.closeAddConfirmHandler} style={{ fontSize: 15 }} class="fas fa-times-circle"></i>
+                                                        هل انت متأكد من إضافة بيانات جديد ؟ <button onClick={this.handleSendDataToChange} type="button" class="btn btn-warning">تأكيد</button>
+                                                    </div>
+                                                    : null}
+                                                {this.state.showMsgOfChange ? this.state.messege == "تم إدخال البيانات بنجاح" ? <div id="showMsgOfChange" className="alert alert-success" role="alert"> {this.state.messege}</div> : this.state.messege == "يوجد خطاء بقاعدة البيانات" ? <div id="showMsgOfChange" className="alert alert-danger" role="alert">{this.state.messege}</div> : this.state.messege == "رقم البطاقة غير صحيح" ? <div id="showMsgOfChange" className="alert alert-danger" role="alert">{this.state.messege}</div> : this.state.messege == "البيانات غير كاملة" ? <div id="showMsgOfChange" className="alert alert-danger" role="alert">{this.state.messege}</div> : null : null}
                                                 </div>
                                             </div>
                                         </div>
                                         :
                                         null
                                     }
-                                    <div style={{ display: "flex", justifyContent: "space-between", width: "82%" }}>
-                                    <button onClick={this.addButtonHandler} style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170, background: "#4f4f63", color: "white" ,marginRight: 100}} type="button" class="btn btn-outline btn-lg btn-primary">إضافة موظف جديد</button>
-                                        <button onClick={this.clickHandler} style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170, background: "#4f4f63", color: "white" }} type="button" class="btn btn-outline btn-lg btn-primary">تعديل البيانات</button>
-                                    </div>
+
                                 </div>
-                            </div>}
+                            </div>
+                        :
+                        null    
+                        }
                         <div style={{ display: "flex", height: "100%", minHeight: "1000px" }} className="col-lg-4">
                             <div style={{ background: "transparent", height: 750, width: "100%" }} >
                                 <img style={{ borderTop: 3 }} src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin" class="rounded-circle" width="150" />
                                 <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", marginTop: 10 }}>
                                     <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg"><Link to={`/empedudeg`}><a onClick={this.empEduButtonHandler} href="/empedudeg">المؤهل</a></Link></button>
-                                    <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg" ><Link to={`/EmpTrans`}><a onClick={this.empTransButtonHandler} href="/EmpTrans">التدرج</a></Link></button>
-                                    <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg"><Link to={`/empexperience`}><a onClick={this.empExpHandler} href="/empexperience">الخبرات</a></Link></button>
                                     <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg"><Link to={`/empfamily`}><a onClick={this.empFamilyButtonHandler} href="/empfamily">العائلية</a></Link></button>
-                                    <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg"> <Link to={`/empedudeg`}><a onClick={this.empTrainingHandler} href="/empedudeg">التدريب</a></Link></button>
-                                    <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg"><Link to={`/empexperience`}><a onClick={this.empPenaltyHandler} href="/empexperience">الجزاءات</a></Link></button>
-                                    <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg">الهيكل</button>
-                                    <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg">بطاقة الوصف</button>
+                                    <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg">التدريب</button>
+                                    <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg">الجزاءات</button>
                                     <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg"><Link to={`/empsappraisal`}><a onClick={this.empAppraisalHandler} href="/empsappraisal">التقييمات السنوية</a></Link></button>
                                     <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg">طباعة البيانات الوظيفية</button>
-
+                                    <button onClick={this.clickHandler} style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170, background: "#4f4f63", color: "white" }} type="button" class="btn btn-outline btn-lg btn-primary">تعديل البيانات</button>
+                                    <button onClick={this.addButtonHandler} style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170, background: "#4f4f63", color: "white" }} type="button" class="btn btn-outline btn-lg btn-primary">إضافة موظف جديد</button>
 
                                 </div>
                             </div>
@@ -1559,11 +1399,13 @@ class Employee extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        empdetails: state.posts.empdetails,
-        empNameByName: state.posts.empNameByName,
-
+        outsourceEmpDetails: state.posts.outsourceEmpDetails,
+        outsourceNameByName: state.posts.outsourceNameByName,
+        cates: state.posts.cates,
+        stations: state.posts.stations
     };
 };
 export default connect(mapStateToProps, {
-    getEmpDetails, getEmpTrans, getUpJd, getEmpAppraisal, getEmpTraining ,getEmpEdu, getEmpFamily, getEmpNameByName, getEmpExp, newEmp, editEmpDetails,newEmpImg,getempspenalties
-})(Employee);
+    getOutSourceEmpDetails, editOutsourceEmpDetails ,getEmpTrans, getUpJd, getEmpAppraisal, 
+    getEmpEdu, getEmpFamily, getOutsourceEmpNameByName, getEmpExp, newOutsourceEmp
+})(OutsourceEmployee);

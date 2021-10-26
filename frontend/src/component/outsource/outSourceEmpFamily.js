@@ -11,7 +11,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import moment from "react-moment"
 
-class EmpFamily extends React.Component {
+class OutsourceEmpFamily extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -22,7 +22,6 @@ class EmpFamily extends React.Component {
             maritalLength: 0, showFamilyResult: true, add: false, edit: false, empid: null, delete: false,
             empname: null, showMaritalstate: false, showNamesResultsForSearch: false, showNamesResultsForAdd: false,
             empnameForAdd: null, empidForAdd: null, showMsg: false, rowFam: null, addConfirmed: false, updated: false
-
         };
     }
 
@@ -711,4 +710,4 @@ const mapStateToProps = (state) => {
 };
 export default connect(mapStateToProps, {
     getEmpFamily, getEmpName, getEmpNameByName, submitNewFamily, deleteEmpFamily
-})(EmpFamily);
+})(OutsourceEmpFamily);

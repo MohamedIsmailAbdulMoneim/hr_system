@@ -330,7 +330,7 @@ class EmpFamily extends React.Component {
     handelEdit_1 = (e) => {
         this.setState({
             edit: true, rowFam: e.target.getAttribute("tableId"),
-            editMaritalType: e.target.getAttribute("relType") == 1 ? "الزوجة" : "الأبن", editMaritalName: e.target.getAttribute("famName"),
+            editMaritalType: e.target.getAttribute("relType"), editMaritalName: e.target.getAttribute("famName"),
             editMaritalNid: e.target.getAttribute("marNid"), editMaritalBod: e.target.getAttribute("birthDate"),
             editNid: e.target.getAttribute("natIdCard")
         })
@@ -368,7 +368,7 @@ class EmpFamily extends React.Component {
     handelEdit_2 = (e) => {
         e.preventDefault()
         let empNid = `NATIONAL_ID_CARD_NO = ${this.state.editNid}`
-        let type = `RELATION_TYPE = (SELECT RELATION_TYPE_ID FROM relation_type WHERE RELATION_NAME = "${this.state.editMaritalType}")`
+        let type = `RELATION_TYPE = ${this.state.editMaritalType}`
         let marName = `FAMILY_NAME = "${this.state.editMaritalName}"`
         let nat = `NATIONAL_ID_NUMBER = ${this.state.editMaritalNid}`
         let bod = `BIRTH_DATE = "${this.state.editMaritalBod}"`

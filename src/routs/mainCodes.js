@@ -1,26 +1,768 @@
 const express = require("express");
+const path = require('path');
 const db = require("../database/connection")
-
 let router = express.Router();
+const multer = require('multer');
+const upload = multer({dest: './uploads/'})
 
-function insertNewEmp(req,res,next){
+
+
+function getsupboxmangers(req, res, next) {
+    const mainid = req.params.mainid
+    let query = `SELECT a_sup_box.SUP_BOX_NAME AS emp_box_name, emp.SUP_BOX_NAME AS manager_box_name,emp.SUP_BOX_ID AS manager_box_id, a_sup_box.SUP_BOX_ID AS emp_box_id, a_sup_box.SUP_BOX_NAME AS emp_box_name , latest.NAME_ARABIC FROM a_sup_box JOIN( SELECT * FROM a_sup_box ) AS emp JOIN( SELECT employee.NATIONAL_ID_CARD_NO, a_job_trans.TRANS_DATE, a_job_trans.SUP_BOX_ID, employee.NAME_ARABIC FROM a_job_trans JOIN employee ON a_job_trans.NATIONAL_ID_CARD_NO = employee.NATIONAL_ID_CARD_NO WHERE a_job_trans.INDICATOR = 2 ) AS latest ON a_sup_box.SUP_BOX_ID_P = emp.SUP_BOX_ID AND latest.SUP_BOX_ID = a_sup_box.SUP_BOX_ID WHERE a_sup_box.MAIN_BOX_ID = ${mainid}`
+    db.query(query, (err, details) => {
+        if (err) {
+            next(err)
+        } else {
+            res.send(details);
+        }
+    })
+}
+
+
+function getEmpDetails(req, res, next) {
+    let empid = req.query.empid
+    let empname = req.query.empname
+    let query;
+
+    if (!empid || empid == "undefiened") {
+        query = `
+        SELECT
+        e.EMPLOYEE_ID,
+        e.NAME_ARABIC,
+        e.SECTOR_JOIN_DATE,
+        (SELECT station_name FROM stations WHERE E.JOB_LOCATION = stations.id) as joblocation,
+        (SELECT area_name FROM areas WHERE E.JOB_AREA = areas.id) as jobarea,
+        (
+        SELECT
+            GOVERNORATE_ARABIC
+        FROM
+            governorate
+        WHERE
+            e.JOB_GOVERNORATE = governorate.GOVERNORATE
+    ) AS jobGov,
+
+    (
+        SELECT
+            EMP_STATUS_NAME
+        FROM
+            emp_status
+        WHERE
+            e.EMP_STATUS = emp_status.EMP_STATUS
+    ) AS empstatusar,
+    e.NATIONAL_ID_CARD_NO,
+    e.NATIONAL_ID_CARD_ISSUED_BY,
+    (
+        SELECT
+            GOVERNORATE_ARABIC
+        FROM
+            governorate
+        WHERE
+            e.ADDRESS_GOVERNORATE = governorate.GOVERNORATE
+    ) AS addressgov,
+    e.SOCIAL_INSURANCE_NUMBER,
+    e.INSURANCE_OFFICE,
+    e.ADDRESS,
+    e.PHONE_2_HOME,
+    e.PHONE_1_OFFICE,
+    e.PHONE_3_MOBILE,
+    e.EMP_EMAIL,
+    (
+        SELECT
+            STATUS_DESC
+        FROM
+            marital_status
+        WHERE
+            e.MARITAL_STATUS = marital_status.MARITAL_STATUS
+    ) AS maritalstatear,
+    (
+        SELECT
+            SYNDICATE_NAME
+        FROM
+            syndicate
+        WHERE
+            e.SYNDICATE = syndicate.SYNDICATE
+    ) AS syndicatear,
+    e.SYNDICATE_REGISTERATION,
+    e.SYNDICATE_REGISTERATION_DATE,
+    (
+        SELECT
+            GENDER_NAME
+        FROM
+            genders
+        WHERE
+            e.GENDER = genders.GENDER
+    ) AS genderar,
+    (
+        SELECT
+            RELIGION_NAME
+        FROM
+            religions
+        WHERE
+            e.RELIGION = religions.RELIGION
+    ) AS religinar,
+    e.BIRTH_DATE,
+    e.PLACE_OF_BIRTH,
+    (
+        SELECT
+            GOVERNORATE_ARABIC
+        FROM
+            governorate
+        WHERE
+            e.GOVERNORATE_OF_BIRTH = governorate.GOVERNORATE
+    ) AS birthGov
+    FROM
+        employee e
+    WHERE
+    NAME_ARABIC = "${empname}";
+    SELECT
+        a_sup_box.sup_box_id,
+        a_sup_box.SUP_BOX_NAME,
+        a_sup_box.MAIN_BOX_ID,
+        a_job_trans.TRANS_DATE,
+        a_job_trans.NATIONAL_ID_CARD_NO,
+        a_job_trans.JOB_ASSIGNMENT_FORM,
+        a_job_trans.INDICATOR,
+        job_assignment_form.JOB_ASSIGNMENT_FORM_ARABIC,
+        a_main_box.CAT_ID,
+        a_category.CAT_NAME,
+        a_job_dgree.J_D_NAME,
+        (SELECT G_NAME FROM a_job_groups WHERE a_job_groups.G_ID = a_job_trans.G_ID ) as gname
+
+    FROM
+        a_sup_box
+    JOIN a_job_trans ON a_job_trans.SUP_BOX_ID = a_sup_box.SUP_BOX_ID
+    JOIN a_main_box ON a_sup_box.MAIN_BOX_ID = a_main_box.MAIN_BOX_ID
+    JOIN a_category ON a_main_box.CAT_ID = a_category.CAT_ID
+    JOIN job_assignment_form ON a_job_trans.JOB_ASSIGNMENT_FORM = job_assignment_form.JOB_ASSIGNMENT_FORM
+    JOIN a_job_dgree ON a_job_dgree.J_D_ID = a_main_box.J_D_ID
+    WHERE
+        INDICATOR = 2 AND NATIONAL_ID_CARD_NO =(
+        SELECT
+            NATIONAL_ID_CARD_NO
+        FROM
+            employee
+        WHERE
+            NAME_ARABIC = "${empname}"
+    );
+    SELECT
+        TRANS_DATE
+    FROM
+        a_job_trans
+    WHERE
+        JOB_ASSIGNMENT_FORM = 1 AND NATIONAL_ID_CARD_NO =(
+        SELECT
+            NATIONAL_ID_CARD_NO
+        FROM
+            employee
+        WHERE
+            NAME_ARABIC = "${empname}"
+    );
+        `
+    } else if (!empname || empname == "undefined") {
+        query = `
+        SELECT
+        e.EMPLOYEE_ID,
+        e.NAME_ARABIC,
+        e.SECTOR_JOIN_DATE,
+        (SELECT station_name FROM stations WHERE E.JOB_LOCATION = stations.id) as joblocation,
+        (SELECT area_name FROM areas WHERE E.JOB_AREA = areas.id) as jobarea,
+        (
+        SELECT
+            GOVERNORATE_ARABIC
+        FROM
+            governorate
+        WHERE
+            e.JOB_GOVERNORATE = governorate.GOVERNORATE
+    ) AS jobGov,
+
+    (
+        SELECT
+            EMP_STATUS_NAME
+        FROM
+            emp_status
+        WHERE
+            e.EMP_STATUS = emp_status.EMP_STATUS
+    ) AS empstatusar,
+    e.NATIONAL_ID_CARD_NO,
+    e.NATIONAL_ID_CARD_ISSUED_BY,
+    (
+        SELECT
+            GOVERNORATE_ARABIC
+        FROM
+            governorate
+        WHERE
+            e.ADDRESS_GOVERNORATE = governorate.GOVERNORATE
+    ) AS addressgov,
+    e.SOCIAL_INSURANCE_NUMBER,
+    e.INSURANCE_OFFICE,
+    e.ADDRESS,
+    e.PHONE_2_HOME,
+    e.PHONE_1_OFFICE,
+    e.PHONE_3_MOBILE,
+    e.EMP_EMAIL,
+    (
+        SELECT
+            STATUS_DESC
+        FROM
+            marital_status
+        WHERE
+            e.MARITAL_STATUS = marital_status.MARITAL_STATUS
+    ) AS maritalstatear,
+    (
+        SELECT
+            SYNDICATE_NAME
+        FROM
+            syndicate
+        WHERE
+            e.SYNDICATE = syndicate.SYNDICATE
+    ) AS syndicatear,
+    e.SYNDICATE_REGISTERATION,
+    e.SYNDICATE_REGISTERATION_DATE,
+    (
+        SELECT
+            GENDER_NAME
+        FROM
+            genders
+        WHERE
+            e.GENDER = genders.GENDER
+    ) AS genderar,
+    (
+        SELECT
+            RELIGION_NAME
+        FROM
+            religions
+        WHERE
+            e.RELIGION = religions.RELIGION
+    ) AS religinar,
+    e.BIRTH_DATE,
+    e.PLACE_OF_BIRTH,
+    (
+        SELECT
+            GOVERNORATE_ARABIC
+        FROM
+            governorate
+        WHERE
+            e.GOVERNORATE_OF_BIRTH = governorate.GOVERNORATE
+    ) AS birthGov
+    FROM
+        employee e
+    WHERE
+        EMPLOYEE_ID = ${empid};
+    SELECT
+        a_sup_box.sup_box_id,
+        a_sup_box.SUP_BOX_NAME,
+        a_sup_box.MAIN_BOX_ID,
+        a_job_trans.TRANS_DATE,
+        a_job_trans.NATIONAL_ID_CARD_NO,
+        a_job_trans.JOB_ASSIGNMENT_FORM,
+        a_job_trans.INDICATOR,
+        job_assignment_form.JOB_ASSIGNMENT_FORM_ARABIC,
+        a_main_box.CAT_ID,
+        a_category.CAT_NAME,
+        a_job_dgree.J_D_NAME,
+        (SELECT G_NAME FROM a_job_groups WHERE a_job_groups.G_ID = a_job_trans.G_ID ) as gname
+
+    FROM
+        a_sup_box
+    JOIN a_job_trans ON a_job_trans.SUP_BOX_ID = a_sup_box.SUP_BOX_ID
+    JOIN a_main_box ON a_sup_box.MAIN_BOX_ID = a_main_box.MAIN_BOX_ID
+    JOIN a_category ON a_main_box.CAT_ID = a_category.CAT_ID
+    JOIN job_assignment_form ON a_job_trans.JOB_ASSIGNMENT_FORM = job_assignment_form.JOB_ASSIGNMENT_FORM
+    JOIN a_job_dgree ON a_job_dgree.J_D_ID = a_main_box.J_D_ID
+    WHERE
+        INDICATOR = 2 AND NATIONAL_ID_CARD_NO =(
+        SELECT
+            NATIONAL_ID_CARD_NO
+        FROM
+            employee
+        WHERE
+            EMPLOYEE_ID = ${empid}
+    );
+    SELECT
+        TRANS_DATE
+    FROM
+        a_job_trans
+    WHERE
+        JOB_ASSIGNMENT_FORM = 1 AND NATIONAL_ID_CARD_NO =(
+        SELECT
+            NATIONAL_ID_CARD_NO
+        FROM
+            employee
+        WHERE
+            EMPLOYEE_ID = ${empid}
+    );
+        `
+    }
+    db.query(query, (err, details) => {
+        if (err) {
+            next(err);
+        } else {
+            res.send(details)
+        }
+    })
+    console.log(query);
+}
+
+
+function getOutSourceEmpDetails(req, res, next) {
+    let empid = req.query.empid
+    let empname = req.query.empname
+    let query;
+
+    if (!empid || empid == "undefiened") {
+        query = `
+        SELECT
+        e.EMPLOYEE_ID,
+        e.NAME_ARABIC,
+        e.BIRTH_DATE,
+        e.JOB,
+        e.DEPARTMENT_NAME,
+        (
+            SELECT
+                GOVERNORATE_ARABIC
+            FROM
+                governorate
+            WHERE
+                e.GOVERNORATE_OF_BIRTH = governorate.GOVERNORATE
+        ) AS birthGov,
+        (
+            SELECT
+                GENDER_NAME
+            FROM
+                genders
+            WHERE
+                e.GENDER = genders.GENDER
+        ) AS genderar,
+        e.NATIONAL_ID_CARD_NO,
+        e.NATIONAL_ID_CARD_ISSUED_BY,
+        e.ISSUE_DATE,
+        e.ADDRESS,
+        (SELECT G_NAME FROM a_job_groups WHERE a_job_groups.G_ID = e.JOB_GROUP ) AS jobgroup,
+        (
+            SELECT
+                GOVERNORATE_ARABIC
+            FROM
+                governorate
+            WHERE
+                e.ADDRESS_GOVERNORATE = governorate.GOVERNORATE
+        ) AS addressgov,
+        e.PHONE_1_MOBILE,
+        e.SECTOR_JOIN_DATE,
+        (
+            SELECT
+                RELIGION_NAME
+            FROM
+                religions
+            WHERE
+                e.RELIGION = religions.RELIGION
+        ) AS religinar,
+        e.SOCIAL_INSURANCE_NUMBER,
+        (SELECT STATUS_ARABIC FROM military_service_status WHERE military_service_status.MILITARY_SERVICE_STATUS = e.MILITARY_SERVICE_STATUS) as milistatusar,
+        (SELECT STATUS_DESC FROM marital_status WHERE e.MARITAL_STATUS = marital_status.MARITAL_STATUS) AS maritalstatear,
+        (
+            SELECT
+                EMP_STATUS_NAME
+            FROM
+                emp_status
+            WHERE
+                e.EMP_STATUS = emp_status.EMP_STATUS
+        ) AS empstatusar,
+    (
+        SELECT
+            GOVERNORATE_ARABIC
+        FROM
+            governorate
+        WHERE
+            e.JOB_GOVERNORATE = governorate.GOVERNORATE
+    ) AS jobGov,
+    (SELECT station_name FROM stations WHERE e.JOB_LOCATION = stations.id) AS joblocation,
+    (SELECT area_name FROM areas WHERE e.JOB_AREA =  areas.id) as areaname,
+    e.INSURANCE_OFFICE,
+    e.PLACE_OF_BIRTH
+    FROM
+        outsource_employee e
+        WHERE
+        NAME_ARABIC = "${empname}"
+        `
+    } else if (!empname || empname == "undefined") {
+        query = `
+        SELECT
+        e.EMPLOYEE_ID,
+        e.NAME_ARABIC,
+        e.BIRTH_DATE,
+        e.JOB,
+        e.DEPARTMENT_NAME,
+        (
+            SELECT
+                GOVERNORATE_ARABIC
+            FROM
+                governorate
+            WHERE
+                e.GOVERNORATE_OF_BIRTH = governorate.GOVERNORATE
+        ) AS birthGov,
+        (
+            SELECT
+                GENDER_NAME
+            FROM
+                genders
+            WHERE
+                e.GENDER = genders.GENDER
+        ) AS genderar,
+        e.NATIONAL_ID_CARD_NO,
+        e.NATIONAL_ID_CARD_ISSUED_BY,
+        e.ISSUE_DATE,
+        e.ADDRESS,
+        (SELECT G_NAME FROM a_job_groups WHERE a_job_groups.G_ID = e.JOB_GROUP ) AS jobgroup,
+        (
+            SELECT
+                GOVERNORATE_ARABIC
+            FROM
+                governorate
+            WHERE
+                e.ADDRESS_GOVERNORATE = governorate.GOVERNORATE
+        ) AS addressgov,
+        e.PHONE_3_MOBILE,
+        e.SECTOR_JOIN_DATE,
+        (
+            SELECT
+                RELIGION_NAME
+            FROM
+                religions
+            WHERE
+                e.RELIGION = religions.RELIGION
+        ) AS religinar,
+        e.SOCIAL_INSURANCE_NUMBER,
+        (SELECT STATUS_ARABIC FROM military_service_status WHERE military_service_status.MILITARY_SERVICE_STATUS = e.MILITARY_SERVICE_STATUS) as milistatusar,
+        (SELECT STATUS_DESC FROM marital_status WHERE e.MARITAL_STATUS = marital_status.MARITAL_STATUS) AS maritalstatear,
+        (
+            SELECT
+                EMP_STATUS_NAME
+            FROM
+                emp_status
+            WHERE
+                e.EMP_STATUS = emp_status.EMP_STATUS
+        ) AS empstatusar,
+    (
+        SELECT
+            GOVERNORATE_ARABIC
+        FROM
+            governorate
+        WHERE
+            e.JOB_GOVERNORATE = governorate.GOVERNORATE
+    ) AS jobGov,
+    (SELECT station_name FROM stations WHERE e.JOB_LOCATION = stations.id) AS joblocation,
+    (SELECT area_name FROM areas WHERE e.JOB_AREA =  areas.id) as areaname,
+    e.INSURANCE_OFFICE,
+    e.PLACE_OF_BIRTH
+    FROM
+        outsource_employee e
+        WHERE
+        EMPLOYEE_ID = ${empid}
+        `
+    }
+    db.query(query, (err, details) => {
+        if (err) {
+            next(err);
+        } else {
+            res.send(details)
+        }
+    })
+}
+
+function insertNewEmp(req, res, next) {
+
     const data = req.body
     const milStatusIsCompleted = data.filter(inf => inf == '(SELECT MILITARY_SERVICE_STATUS FROM military_service_status WHERE STATUS_ARABIC ="ادي الخدمه العسكرية")')
     let fData = data.filter(inf => inf != '')
     let query = `INSERT INTO employee (ORGANIZATION,EMPLOYEE_ID,NAME_ARABIC,CONTRACT_TYPE,SECTOR_JOIN_DATE,
         JOB_LOCATION,JOB_AREA,JOB_GOVERNORATE,EMP_STATUS,NATIONAL_ID_CARD_NO,NATIONAL_ID_CARD_ISSUED_BY,NATIONAL_CARD_ISSUE_DATE,SOCIAL_INSURANCE_NUMBER
         ,INSURANCE_OFFICE,RESEDNTIAL_ADDRESS,PHONE_3_MOBILE,PHONE_2_HOME,PHONE_1_OFFICE,EMP_EMAIL,MARITAL_STATUS${data[0] == 'added' ? `,SYNDICATE,SYNDICATE_REGISTERATION,
-        SYNDICATE_REGISTERATION_DATE` : ''},MILITARY_SERVICE_STATUS${milStatusIsCompleted.length >= 1 ? `,MIL_SERVICE_DAYS,MIL_SERVICE_MONTHS,MIL_SERVICE_YEARS` : ''},RETIRE_DATE,GENDER,RELIGION,BIRTH_DATE,
-        BIRTH_PLACE,GOVERNORATE_OF_BIRTH) VALUES ${fData}`
-        db.query(query, (err, details) => {
-            if (err) {
-                next(err);
-            } else {
-                res.send(details)
-            }
-        })
-        console.log(query);
+        SYNDICATE_REGISTERATION_DATE` : ''},MILITARY_SERVICE_STATUS${milStatusIsCompleted.length >= 1 ? `,MIL_SERVICE_DAYS,MIL_SERVICE_MONTHS,MIL_SERVICE_YEARS` : ''},GENDER,RELIGION,BIRTH_DATE,
+        PLACE_OF_BIRTH,GOVERNORATE_OF_BIRTH) VALUES ${fData};
+        
+        `
+    db.query(query, (err, details) => {
+        if (err) {
+            next(err);
+        } else {
+            res.send(details)
+        }
+    })
 
+}
+
+
+function insertNewOutSourceEmp(req, res, next) {
+    const data = req.body
+
+    const milStatusIsCompleted = data.filter(inf => inf == '(SELECT MILITARY_SERVICE_STATUS FROM military_service_status WHERE STATUS_ARABIC ="ادي الخدمه العسكرية")')
+    let fData = data.filter(inf => inf != '')
+    let query = `INSERT INTO outsource_employee (ORGANIZATION,EMPLOYEE_ID,NAME_ARABIC, CONTRACT_TYPE ,DEPARTMENT_NAME,SECTOR_JOIN_DATE,
+        JOB_LOCATION,JOB_AREA,JOB_GOVERNORATE,EMP_STATUS,NATIONAL_ID_CARD_NO,NATIONAL_ID_CARD_ISSUED_BY,ISSUE_DATE,SOCIAL_INSURANCE_NUMBER
+        ,INSURANCE_OFFICE,ADDRESS,PHONE_3_MOBILE,PHONE_2_HOME,PHONE_1_OFFICE,EMP_EMAIL,MARITAL_STATUS${data[0] == 'added' ? `,SYNDICATE,SYNDICATE_REGISTERATION,
+        SYNDICATE_REGISTERATION_DATE` : ''},MILITARY_SERVICE_STATUS${milStatusIsCompleted.length >= 1 ? `,MIL_SERVICE_DAYS,MIL_SERVICE_MONTHS,MIL_SERVICE_YEARS` : ''},GENDER,RELIGION,BIRTH_DATE,
+        PLACE_OF_BIRTH,JOB_GROUP,GOVERNORATE_OF_BIRTH) VALUES ${fData};
+        SELECT
+        e.EMPLOYEE_ID,
+        e.NAME_ARABIC,
+        e.BIRTH_DATE,
+        e.JOB,
+        e.DEPARTMENT_NAME,
+        (
+            SELECT
+                GOVERNORATE_ARABIC
+            FROM
+                governorate
+            WHERE
+                e.GOVERNORATE_OF_BIRTH = governorate.GOVERNORATE
+        ) AS birthGov,
+        (
+            SELECT
+                GENDER_NAME
+            FROM
+                genders
+            WHERE
+                e.GENDER = genders.GENDER
+        ) AS genderar,
+        e.NATIONAL_ID_CARD_NO,
+        e.NATIONAL_ID_CARD_ISSUED_BY,
+        e.ISSUE_DATE,
+        e.ADDRESS,
+        (SELECT G_NAME FROM a_job_groups WHERE a_job_groups.G_ID = e.JOB_GROUP ) AS jobgroup,
+        (
+            SELECT
+                GOVERNORATE_ARABIC
+            FROM
+                governorate
+            WHERE
+                e.ADDRESS_GOVERNORATE = governorate.GOVERNORATE
+        ) AS addressgov,
+        e.PHONE_3_MOBILE,
+        e.SECTOR_JOIN_DATE,
+        (
+            SELECT
+                RELIGION_NAME
+            FROM
+                religions
+            WHERE
+                e.RELIGION = religions.RELIGION
+        ) AS religinar,
+        e.SOCIAL_INSURANCE_NUMBER,
+        (SELECT STATUS_ARABIC FROM military_service_status WHERE military_service_status.MILITARY_SERVICE_STATUS = e.MILITARY_SERVICE_STATUS) as milistatusar,
+        (SELECT STATUS_DESC FROM marital_status WHERE e.MARITAL_STATUS = marital_status.MARITAL_STATUS) AS maritalstatear,
+        (
+            SELECT
+                EMP_STATUS_NAME
+            FROM
+                emp_status
+            WHERE
+                e.EMP_STATUS = emp_status.EMP_STATUS
+        ) AS empstatusar,
+    (
+        SELECT
+            GOVERNORATE_ARABIC
+        FROM
+            governorate
+        WHERE
+            e.JOB_GOVERNORATE = governorate.GOVERNORATE
+    ) AS jobGov,
+    (SELECT station_name FROM stations WHERE e.JOB_LOCATION = stations.id) AS joblocation,
+    (SELECT area_name FROM areas WHERE e.JOB_AREA =  areas.id) as areaname,
+    e.INSURANCE_OFFICE,
+    e.PLACE_OF_BIRTH
+    FROM
+        outsource_employee e
+        WHERE
+        EMPLOYEE_ID = ${data[2]}
+        `
+    console.log(query);
+    db.query(query, (err, details) => {
+        if (err) {
+            next(err);
+            res.json({ data: [], msg: "يوجد خطاء بقاعدة البيانات" })
+        } else {
+            res.json({ data: details, msg: "تم إدخال البيانات بنجاح" });
+        }
+    })
+    console.log(query);
+}
+
+
+function updateEmpData(req, res, next) {
+    let data = req.body.data
+    let query = `update outsource_employee SET ${data};
+        SELECT
+        e.EMPLOYEE_ID,
+        e.NAME_ARABIC,
+        e.BIRTH_DATE,
+        e.JOB,
+        e.DEPARTMENT_NAME,
+        (
+            SELECT
+                GOVERNORATE_ARABIC
+            FROM
+                governorate
+            WHERE
+                e.GOVERNORATE_OF_BIRTH = governorate.GOVERNORATE
+        ) AS birthGov,
+        (
+            SELECT
+                GENDER_NAME
+            FROM
+                genders
+            WHERE
+                e.GENDER = genders.GENDER
+        ) AS genderar,
+        e.NATIONAL_ID_CARD_NO,
+        e.NATIONAL_ID_CARD_ISSUED_BY,
+        e.ISSUE_DATE,
+        e.ADDRESS,
+        (SELECT G_NAME FROM a_job_groups WHERE a_job_groups.G_ID = e.JOB_GROUP ) AS jobgroup,
+        (
+            SELECT
+                GOVERNORATE_ARABIC
+            FROM
+                governorate
+            WHERE
+                e.ADDRESS_GOVERNORATE = governorate.GOVERNORATE
+        ) AS addressgov,
+        e.PHONE_3_MOBILE,
+        e.SECTOR_JOIN_DATE,
+        (
+            SELECT
+                RELIGION_NAME
+            FROM
+                religions
+            WHERE
+                e.RELIGION = religions.RELIGION
+        ) AS religinar,
+        e.SOCIAL_INSURANCE_NUMBER,
+        (SELECT STATUS_ARABIC FROM military_service_status WHERE military_service_status.MILITARY_SERVICE_STATUS = e.MILITARY_SERVICE_STATUS) as milistatusar,
+        (SELECT STATUS_DESC FROM marital_status WHERE e.MARITAL_STATUS = marital_status.MARITAL_STATUS) AS maritalstatear,
+        (
+            SELECT
+                EMP_STATUS_NAME
+            FROM
+                emp_status
+            WHERE
+                e.EMP_STATUS = emp_status.EMP_STATUS
+        ) AS empstatusar,
+    (
+        SELECT
+            GOVERNORATE_ARABIC
+        FROM
+            governorate
+        WHERE
+            e.JOB_GOVERNORATE = governorate.GOVERNORATE
+    ) AS jobGov,
+    (SELECT station_name FROM stations WHERE e.JOB_LOCATION = stations.id) AS joblocation,
+    (SELECT area_name FROM areas WHERE e.JOB_AREA =  areas.id) as areaname,
+    e.INSURANCE_OFFICE,
+    e.PLACE_OF_BIRTH
+    FROM
+        outsource_employee e
+        WHERE
+        EMPLOYEE_ID = ${req.body.employeeid}
+    `
+
+    console.log(query);
+    db.query(query, (err, details) => {
+        if (err) {
+            next(err);
+            res.json({ data: [], msg: "يوجد خطاء بقاعدة البيانات" })
+        } else {
+            res.json({ data: details, msg: "تم إدخال البيانات بنجاح" });
+        }
+    })
+}
+
+function updateOutsourceEmpData(req, res, next) {
+    let data = req.body.data
+    let query = `update outsource_employee SET ${data};
+        SELECT
+        e.EMPLOYEE_ID,
+        e.NAME_ARABIC,
+        e.BIRTH_DATE,
+        e.JOB,
+        e.DEPARTMENT_NAME,
+        (
+            SELECT
+                GOVERNORATE_ARABIC
+            FROM
+                governorate
+            WHERE
+                e.GOVERNORATE_OF_BIRTH = governorate.GOVERNORATE
+        ) AS birthGov,
+        (
+            SELECT
+                GENDER_NAME
+            FROM
+                genders
+            WHERE
+                e.GENDER = genders.GENDER
+        ) AS genderar,
+        e.NATIONAL_ID_CARD_NO,
+        e.NATIONAL_ID_CARD_ISSUED_BY,
+        e.ISSUE_DATE,
+        e.ADDRESS,
+        (SELECT G_NAME FROM a_job_groups WHERE a_job_groups.G_ID = e.JOB_GROUP ) AS jobgroup,
+        (
+            SELECT
+                GOVERNORATE_ARABIC
+            FROM
+                governorate
+            WHERE
+                e.ADDRESS_GOVERNORATE = governorate.GOVERNORATE
+        ) AS addressgov,
+        e.PHONE_3_MOBILE,
+        e.SECTOR_JOIN_DATE,
+        (
+            SELECT
+                RELIGION_NAME
+            FROM
+                religions
+            WHERE
+                e.RELIGION = religions.RELIGION
+        ) AS religinar,
+        e.SOCIAL_INSURANCE_NUMBER,
+        (SELECT STATUS_ARABIC FROM military_service_status WHERE military_service_status.MILITARY_SERVICE_STATUS = e.MILITARY_SERVICE_STATUS) as milistatusar,
+        (SELECT STATUS_DESC FROM marital_status WHERE e.MARITAL_STATUS = marital_status.MARITAL_STATUS) AS maritalstatear,
+        (
+            SELECT
+                EMP_STATUS_NAME
+            FROM
+                emp_status
+            WHERE
+                e.EMP_STATUS = emp_status.EMP_STATUS
+        ) AS empstatusar,
+    (
+        SELECT
+            GOVERNORATE_ARABIC
+        FROM
+            governorate
+        WHERE
+            e.JOB_GOVERNORATE = governorate.GOVERNORATE
+    ) AS jobGov,
+    (SELECT station_name FROM stations WHERE e.JOB_LOCATION = stations.id) AS joblocation,
+    (SELECT area_name FROM areas WHERE e.JOB_AREA =  areas.id) as areaname,
+    e.INSURANCE_OFFICE,
+    e.PLACE_OF_BIRTH
+    FROM
+        outsource_employee e
+        WHERE
+        EMPLOYEE_ID = ${req.body.employeeid}
+    `
+
+    console.log(query);
+    db.query(query, (err, details) => {
+        if (err) {
+            next(err);
+            res.json({ data: [], msg: "يوجد خطاء بقاعدة البيانات" })
+        } else {
+            res.json({ data: details, msg: "تم إدخال البيانات بنجاح" });
+        }
+    })
 }
 
 function getJobDgreeCodes(req, res, next) {
@@ -86,6 +828,18 @@ function getEmpNameByName(req, res, next) {
     })
 }
 
+function getOutsourceEmpNameByName(req, res, next) {
+    let empname = req.params.empname
+    let query = `SELECT NAME_ARABIC, EMPLOYEE_ID, NATIONAL_ID_CARD_NO FROM outsource_employee WHERE NAME_ARABIC  LIKE "%${empname}%"`
+    db.query(query, (err, details) => {
+        if (err) {
+            next(err);
+        } else {
+            res.send(details);
+        }
+    })
+}
+
 
 function getQulSpeciality(req, res, next) {
     let specarabic = req.query.specarabic
@@ -99,7 +853,7 @@ function getQulSpeciality(req, res, next) {
     })
 }
 
-function getSpecDetail(req, res, next){
+function getSpecDetail(req, res, next) {
 
     let specDetail = req.query.specDetail;
     let query = `SELECT SPECIALITY_DETAIL_ARABIC FROM dgree_speciality_detail WHERE SPECIALITY_DETAIL_ARABIC LIKE "%${specDetail}%";`
@@ -126,8 +880,8 @@ function getUneSchool(req, res, next) {
 }
 
 
-function getStations(req,res, next){
-    db.query('SELECT * FROM stations', (err,details) => {
+function getStations(req, res, next) {
+    db.query('SELECT * FROM stations', (err, details) => {
         if (err) {
             next(err);
         } else {
@@ -136,20 +890,176 @@ function getStations(req,res, next){
     })
 }
 
+function getMaincode(req, res, next) {
+    const jdid = req.params.jdid
+    const catid = req.params.catid
+    const query = `SELECT MAIN_BOX_ID FROM a_main_box WHERE J_D_ID = ${jdid} and CAT_ID = ${catid} `
+    db.query(query, (err, details) => {
+        if (err) {
+            next(err)
+        } else {
+            res.send(details);
+        }
+
+    })
+}
+
+function getUpJd(req, res, next) {
+    const catename = req.params.catename
+    const supboxname = req.params.supboxname
+    let query = `CALL GTT(10, (SELECT SUP_BOX_ID FROM a_sup_box WHERE SUP_BOX_NAME = "${supboxname}" AND MAIN_BOX_ID =
+    (SELECT a_main_box.MAIN_BOX_ID FROM a_main_box JOIN a_sup_box ON a_main_box.MAIN_BOX_ID =
+        a_sup_box.MAIN_BOX_ID WHERE a_sup_box.SUP_BOX_NAME = "${supboxname}" AND a_main_box.CAT_ID =
+         (SELECT CAT_ID FROM a_category WHERE CAT_NAME = "${catename}"))))`
+
+    db.query(query, (err, details) => {
+        if (err) {
+            next(err);
+        } else {
+            res.send(details.reverse());
+        }
+    })
+}
+
+function getAvailSupBox(req, res, next) {
+    const catname = req.params.catname
+    const jdname = req.params.jdname
+
+    let query = `SELECT SUP_BOX_NAME, SUP_BOX_ID from a_sup_box WHERE MAIN_BOX_ID IN(SELECT a_main_box.MAIN_BOX_ID FROM a_main_box JOIN a_job_dgree JOIN a_category ON a_main_box.J_D_ID = a_job_dgree.J_D_ID AND a_main_box.CAT_ID = a_category.CAT_ID WHERE a_category.CAT_NAME = "${catname}" AND a_job_dgree.J_D_NAME = "${jdname}")`
+    db.query(query, (err, details) => {
+        if (err) {
+            next(err);
+        } else {
+            res.send(details);
+        }
+    })
+}
+
+function getSupBoxNames(req, res, next) {
+    const jdid = req.params.jdid
+    const catid = req.params.catid
+    const query = `SELECT * FROM a_sup_box WHERE MAIN_BOX_ID IN (SELECT MAIN_BOX_ID FROM A_MAIN_BOX WHERE J_D_ID = ${jdid} AND CAT_ID = ${catid})`
+    db.query(query, (err, details) => {
+        if (err) {
+            next(err)
+        } else {
+            res.send(details);
+        }
+    })
+}
+
+function getJobDgByCatForOrgStructure(req, res, next) {
+    const catid = req.query.catid
+    const query = `SELECT * FROM a_job_dgree JOIN a_main_box ON a_job_dgree.J_D_ID = a_main_box.J_D_ID WHERE a_main_box.CAT_ID = ${catid}`
+    db.query(query, (err, details) => {
+        if (err) {
+            next(err);
+            console.log(err);
+        } else {
+            res.send(details);
+        }
+    })
+
+}
+
+function getEmpAvljd(req, res, next) {
+    const catname = req.params.catname;
+    const mainboxid = req.params.mainboxid
+    let d = `WHERE id < 5
+ORDER BY id DESC
+LIMIT 1`
+    let query1 = `SELECT SUP_BOX_NAME from a_sup_box WHERE MAIN_BOX_ID IN (SELECT a_main_box.MAIN_BOX_ID FROM a_main_box JOIN a_job_dgree JOIN a_category ON a_main_box.J_D_ID = a_job_dgree.J_D_ID AND a_main_box.CAT_ID = a_category.CAT_ID WHERE a_category.CAT_NAME = "${catname}" AND a_job_dgree.J_D_NAME = "${jdname}")`
+
+    let query = `SELECT * FROM a_job_dgree JOIN( SELECT a_main_box.CAT_ID, a_main_box.J_D_ID, a_category.CAT_NAME FROM a_main_box JOIN a_category ON a_category.CAT_ID = a_main_box.CAT_ID ) AS maincate ON a_job_dgree.J_D_ID = maincate.J_D_ID WHERE maincate.CAT_NAME = "${catname}" AND a_job_dgree.J_D_ID = ${mainboxid} ORDER BY a_job_dgree.J_D_ID LIMIT 1`
+    db.query(query, (err, details) => {
+        if (err) {
+            next(err);
+        } else {
+            res.send(details);
+        }
+    })
+}
+
+function getCurrentJD(req, res, next) {
+    let empid = req.params.empid
+    let query = `SELECT
+    *
+FROM
+    a_job_trans
+JOIN employee JOIN(
+    SELECT
+        a_main_box.J_D_ID,
+        a_job_dgree.J_D_NAME,
+        a_job_dgree.J_D_ID_P,
+        a_main_box.MAIN_BOX_ID
+    FROM
+        a_main_box
+    JOIN a_job_dgree ON a_job_dgree.J_D_ID = a_main_box.J_D_ID 
+) AS latestjobdg JOIN a_sup_box 
+ON
+    a_job_trans.NATIONAL_ID_CARD_NO = employee.NATIONAL_ID_CARD_NO AND latestjobdg.MAIN_BOX_ID = a_job_trans.MAIN_BOX_ID AND a_sup_box.SUP_BOX_ID = a_job_trans.SUP_BOX_ID 
+WHERE
+    employee.EMPLOYEE_ID = ${empid} AND a_job_trans.INDICATOR = 2 `
+    db.query(query, (err, details) => {
+        if (err) {
+            next(err);
+        } else {
+            res.send(details);
+        }
+    })
+}
+
+function getJobDgByCat(req, res, next) {
+    const catName = req.params.catname
+    const query = `SELECT * FROM a_job_dgree JOIN a_main_box ON a_job_dgree.J_D_ID = a_main_box.J_D_ID WHERE a_main_box.CAT_ID = (SELECT CAT_ID FROM a_category WHERE CAT_NAME = "${catName}");`
+    db.query(query, (err, details) => {
+        if (err) {
+            next(err);
+            console.log(err);
+        } else {
+            res.send(details);
+        }
+    })
+
+}
+
 
 
 
 
 router
+    .get('/getJobdgbycatfororgstructure', getJobDgByCatForOrgStructure)
+    .get(`/getsupboxnames/:jdid /:catid`, getSupBoxNames)
+    .get('/getavailsupbox/:catname/:jdname', getAvailSupBox)
+    .get('/getUpJd/:catename/:supboxname', getUpJd)
+    .get(`/getmaincode/:jdid/:catid`, getMaincode)
+    .get(`/getboxandmangers/:mainid`, getsupboxmangers)
     .get('/getjobdgreecodes/:jDName', getJobDgreeCodes)
     .get('/getmaincodes/:jdid', getMainCodes)
     .get('/category', getCates)
     .get('/empnamebyid/:empid', getEmpNameById)
     .get('/empnamebyName/:empname', getEmpNameByName)
+    .get('/outsourceempnamebyName/:empname', getOutsourceEmpNameByName)
     .get('/specarabic', getQulSpeciality)
     .get('/stations', getStations)
     .get('/specDetail', getSpecDetail)
     .get('/uneschool', getUneSchool)
-    .post('/insertnewemp',insertNewEmp)
+    .post('/insertnewemp', insertNewEmp)
+    .post('/insertempimg', upload.single('avatar') ,(req, res, next) => {
+
+        console.log(req.file);
+
+    })
+    .post('/insertnewoutsourceemp', insertNewOutSourceEmp)
+    .put('/updateempdata', updateEmpData)
+    .put('/updateoutsourceempdata', updateOutsourceEmpData)
+    .get('/getempdetails', getEmpDetails)
+    .get('/outsourceempdetails', getOutSourceEmpDetails)
+    .get('/currentjd/:empid', getCurrentJD)
+    .get('/getjobdgbycat/:catname', getJobDgByCat)
+    .get('/availjd/:catname/:jdname', getEmpAvljd)
+
+
+
 
 module.exports = router;

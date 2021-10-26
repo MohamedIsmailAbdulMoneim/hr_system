@@ -1,10 +1,10 @@
 import React, { Fragment } from "react";
 import {
 
-    getEmpByDeps, getEmpName, getEmpNameByName, getEmpAppraisal
+    getEmpByDeps, getEmpName, getEmpNameByName
 
 } from "../../actions/Actions";
-import { newAppraisal, updateEmpAppraisal, deleteEmpAppraisal } from "../../actions/TransActions"
+import { getEmpAppraisal, newAppraisal, updateEmpAppraisal, deleteEmpAppraisal } from "../../actions/TransActions"
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import moment from 'react-moment';
@@ -15,7 +15,7 @@ class EmpsAppraisal extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            confirmAdd: false, showMsg: false, errorAdd: false, addEmpAppraisal: "", editEmpAppraisal: "", searchEmpAppraisal: "",
+            confirmAdd: false, showMsg: false, errorAdd: false, addEmpAppraisal: "", editEmpAppraisal: "",searchEmpAppraisal: "",
             addAppraisalYear: "",  editEmpAppraisalYear: "", searchEmpAppraisalYear: "" ,rowAppraisal: false, add: false, edit: false, empid: "", empname: "",
             empnat: null, showNamesResults: false, updated: false, firstArg: 0, secondArg: 20, currentPage: 1,
             firstArgPerBtn: 0, secondArgPerBtn: 10, delete: false, selectQuery: ""
@@ -93,9 +93,20 @@ class EmpsAppraisal extends React.Component {
             appDate: this.state.addAppraisalYear, appValue: this.state.addEmpAppraisal, empid: this.state.empid, empname: this.state.empname, isShown: `"true"`
         }
 
+        let nameOrId = ''
+        if (this.state.empname.length > 0) {
+            nameOrId = `(SELECT NATIONAL_ID_CARD_NO FROM employee WHERE NAME_ARABIC = "${this.state.empname}")`
+        } else if (this.state.empid.length > 0) {
+            nameOrId = `(SELECT NATIONAL_ID_CARD_NO FROM employee WHERE EMPLOYEE_ID = ${this.state.empid})`
+        }
+
         obj.empid = this.state.empid || "null"
         obj.empname = this.state.empname || "null"
-        this.props.newAppraisal(obj)
+        if (this.state.selectQuery.length < 1) {
+            this.props.newAppraisal({ insertedData: obj, getData: `employee_appraisal.NATIONAL_ID_CARD_NO = ${nameOrId}` })
+        } else {
+            this.props.newAppraisal({ insertedData: obj, getData: this.state.selectQuery })
+        }
         this.setState({ showMsg: true })
 
         setTimeout(() => {
@@ -151,7 +162,7 @@ class EmpsAppraisal extends React.Component {
 
     handelEditYear = (e) => {
         e.preventDefault()
-        this.setState({ editAppraisalYear: e.target.value })
+        this.setState({ editEmpAppraisalYear: e.target.value })
     }
 
     handelSearchAppraisal = (e) => {
@@ -188,11 +199,12 @@ class EmpsAppraisal extends React.Component {
         (this.state.searchEmpAppraisal.length > 0 && nameOrId.length > 0) ? 'AND' : ''}
         ${nameOrId.length > 0 ? `employee_appraisal.NATIONAL_ID_CARD_NO = ${nameOrId}` : ''}
         `
+        this.setState({selectQuery: data})
         this.props.getEmpAppraisal(data)
     }
 
     handelEdit_1 = (e) => {
-        this.setState({ edit: true, rowAppraisal: e.target.getAttribute("tableId"), empAppraisal: e.target.getAttribute("empApp"), appraisalYear: e.target.getAttribute("empDate"), empnat: e.target.getAttribute("empnatid") })
+        this.setState({ edit: true, rowAppraisal: e.target.getAttribute("tableId"), editEmpAppraisal: e.target.getAttribute("empApp"), editEmpAppraisalYear: e.target.getAttribute("empDate"), empnat: e.target.getAttribute("empnatid") })
         let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
         for (let i = 0; i < tds.length; i++) {
             tds[i].style.background = "white"
@@ -219,7 +231,7 @@ class EmpsAppraisal extends React.Component {
     handelEdit_2 = (e) => {
         e.preventDefault()
         // let data = { , appraisal: this.refs.newAppraisal.value, year: document.getElementById("year").placeholder }
-        let data = { empNat: this.state.empnat, appraisal: this.state.addEmpAppraisal, year: this.state.addAppraisalYear }
+        let data = { empNat: this.state.empnat, appraisal: this.state.editEmpAppraisal, year: this.state.editEmpAppraisalYear, rowAppraisal:this.state.rowAppraisal }
         this.props.updateEmpAppraisal(data)
         let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
         for (let i = 0; i < tds.length; i++) {
@@ -337,7 +349,7 @@ class EmpsAppraisal extends React.Component {
                                     <div style={{ display: "flex", justifyContent: "space-around" }}>
                                         <div className="form-group" controlId="formBasicEmail">
                                             <label style={{ width: "100%", textAlign: "right" }}>رقم الأداء : </label>
-                                            <input ref={"empidAdd"} onChange={this.idInputAddHandler} className="form-control" style={{ width: "100%", minWidth: "250px" }} type="text" />
+                                            <input ref={"empidAdd"} onKeyUp={this.idInputAddHandler} className="form-control" style={{ width: "100%", minWidth: "250px" }} type="text" />
                                         </div>
                                         <div className="form-group" controlId="formBasicEmail">
                                             <label style={{ width: "100%", textAlign: "right" }}>الأسم : </label>
@@ -480,7 +492,7 @@ class EmpsAppraisal extends React.Component {
                                                 <th>حذف</th>
                                             </tr>
                                         </thead>
-                                        {this.props.empApp.slice(this.state.firstArg, this.state.secondArg).map(emp => (
+                                        {this.props.empApp.length > 0 ? this.props.empApp.slice(this.state.firstArg, this.state.secondArg).map(emp => (
                                             <tbody>
                                                 <tr id={emp.id}>
                                                     <td>{emp.NAME_ARABIC}</td>
@@ -490,15 +502,18 @@ class EmpsAppraisal extends React.Component {
                                                         ))}
                                                         <option selected>اختر التقدير</option>
 
-                                                    </select> : this.state.updated && this.state.rowAppraisal == emp.id ? this.state.addEmpAppraisal : emp.APPRAISAL_ARABIC}</td>
-                                                    <td style={{ width: "10%" }}>{this.state.edit && this.state.rowAppraisal == emp.id ? <input onChange={this.handelEditYear} value={this.state.addAppraisalYear} className="form-control" style={{ width: "100%" }} type="text" /> :
+                                                    </select> : this.state.updated && this.state.rowAppraisal == emp.id ? this.state.editEmpAppraisal : emp.APPRAISAL_ARABIC}</td>
+                                                    <td style={{ width: "10%" }}>{this.state.edit && this.state.rowAppraisal == emp.id ? <input onChange={this.handelEditYear} placeholder={this.state.editEmpAppraisalYear} className="form-control" style={{ width: "100%" }} type="text" /> :
                                                         this.state.updated && this.state.rowAppraisal == emp.id ? this.state.addAppraisalYear : emp.APPRAISAL_DATE}</td>
                                                     <td><i onClick={this.state.delete ? this.confirmDelete : this.state.edit ? this.handelEdit_2 : this.handelEdit_1} tableId={emp.id} style={{ fontSize: 20 }} empName={emp.NAME_ARABIC} empApp={emp.APPRAISAL_ARABIC} empDate={emp.APPRAISAL_DATE} empnatid={emp.NATIONAL_ID_CARD_NO} class="fas fa-edit"></i></td>
                                                     <td><i onClick={this.state.delete ? this.closeDeleteSectionHandler : this.state.edit ? this.closeEditSectionHandler : this.deleteHandler} tableId={emp.id} empnatid={emp.NATIONAL_ID_CARD_NO} class="fas fa-backspace"></i></td>
                                                 </tr>
                                             </tbody>
-                                        ))
-                                        }
+                                        )) :
+                                        <tbody>
+                                        <td colspan="5">لا توجد بيانات</td>
+                                        </tbody>
+                                      }
                                     </table>
                                     <Pagination minusFirstArg={this.minusFirstArg} plusSecondArg={this.plusSecondArg} firstArgPerBtn={this.state.firstArgPerBtn} secondArgPerBtn={this.state.secondArgPerBtn} changargs={this.changeArgs} pagesLength={this.props.empApp.length} currentPage={this.state.currentPage} />
                                 </div>
@@ -518,7 +533,7 @@ const mapStateToProps = (state) => {
         empdep: state.posts.empdep,
         empname: state.posts.empname,
         empNameByName: state.posts.empNameByName,
-        empApp: state.posts.empApp,
+        empApp: state.trans.empApp,
         cates: state.posts.cates,
         result: state.trans.result,
         msg: state.trans.msg,

@@ -58,34 +58,23 @@ class EmpTraining extends React.Component {
 
     submitNewTrainning = (e) => {
         e.preventDefault()
-        axios({
-            method: "POST",
-            data: this.state.finalData,
-            withCredentials: true,
-            url: "http://localhost:5000/postnewtraining",
-            headers: { "Content-Type": "application/json" },
+        this.setState({
+            // messege: res.data,
+            showMsg: true,
+            empidadd: "",
+            empnameadd: "",
+            addTrainingArabicName: "",
+            addTrainingEnglishName: "",
+            addTrainingFromDate: "",
+            addTrainingToDate: "",
+            addTrainingType: "",
+            addTrainingPlaceType: "",
+            addTrainingPlace: ""
         })
-            .then((res) => {
-                console.log(res.data);
-                this.setState({
-                    messege: res.data,
-                    showMsg: true,
-                    empidadd: "",
-                    empnameadd: "",
-                    addTrainingArabicName: "",
-                    addTrainingEnglishName: "",
-                    addTrainingFromDate: "",
-                    addTrainingToDate: "",
-                    addTrainingType: "",
-                    addTrainingPlaceType: "",
-                    addTrainingPlace: ""
-                })
-                let addInputs = document.getElementsByClassName("add")
-                for (let i = 0; i < addInputs.length; i++) {
-                    addInputs[i].value = ""
-                }
-
-            })
+        let addInputs = document.getElementsByClassName("add")
+        for (let i = 0; i < addInputs.length; i++) {
+            addInputs[i].value = ""
+        }
     }
 
     /* ------------------------------------------------------ */
