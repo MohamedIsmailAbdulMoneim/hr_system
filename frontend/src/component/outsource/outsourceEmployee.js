@@ -40,9 +40,7 @@ class OutsourceEmployee extends React.Component {
         document.addEventListener("keydown", this.escFunction, false);
     }
     changeHandler = (e) => {
-        console.log(e.target.getAttribute('colName'));
         if (e.target.value.length < 1) {
-            console.log(this.state.mainUpdateQuery);
             let removedArrOfApQ = [...this.state.mainUpdateQuery]
             if (removedArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName"))) != -1) {
                 let removedIndex = removedArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName")))
@@ -198,7 +196,7 @@ class OutsourceEmployee extends React.Component {
                 }
                 else {
                     let newArr = [...this.state.mainUpdateQuery]
-                    newArr.push(`${e.target.getAttribute("colName")} = ${e.target.value}`)
+                    newArr.push(`${e.target.getAttribute("colName")} = "${e.target.value}"`)
                     this.setState({
                         mainUpdateQuery: newArr
                     })
@@ -215,7 +213,7 @@ class OutsourceEmployee extends React.Component {
     }
 
     handleSendDataToChange = (e) => {
-        this.props.editEmpDetails({data:this.state.mainUpdateQuery,employeeid:this.props.outsourceEmpDetails[0].EMPLOYEE_ID})
+        this.props.editOutsourceEmpDetails({data:`${this.state.mainUpdateQuery} WHERE EMPLOYEE_ID = ${this.props.outsourceEmpDetails[0].EMPLOYEE_ID}`,employeeid:this.props.outsourceEmpDetails[0].EMPLOYEE_ID})
         this.setState({
             messege: this.props.msg,
             EditConfirmed: false,
@@ -611,7 +609,7 @@ class OutsourceEmployee extends React.Component {
                                 <div style={{ display: "flex", justifyContent: "space-between" }}>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>رقم الأداء : </label>
-                                        <input id="empid" ref="empid" className="form-control" onKeyDown={this.empidHandler} style={{ background: "white", width: "40%", marginBottom: 5, marginRight: 5, border: "1px solid black" }} type="text" name="first_name" />
+                                        <input id="empid" ref="empid" className="form-control create" onKeyDown={this.empidHandler} style={{ background: "white", width: "40%", marginBottom: 5, marginRight: 5, border: "1px solid black" }} type="text" name="first_name" />
                                     </div>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>الإسم : </label>
@@ -645,7 +643,7 @@ class OutsourceEmployee extends React.Component {
                                                 <label className="medium-lable"> الإسم</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addEmpNameHandler} ref="nameinput" className="form-control giant-input oneInputMargin" type="text" />
+                                                <input onChange={this.addEmpNameHandler} ref="nameinput" className="form-control giant-input oneInputMargin add" type="text" />
                                             </div>
                                         </div>
                                     </div>
@@ -655,19 +653,19 @@ class OutsourceEmployee extends React.Component {
                                                 <label className="medium-lable" >الرقم القومي</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addEmpNidHandler} className="form-control medium-medium-input threeMediumBigInputsLableMargin" type="number" />
+                                                <input onChange={this.addEmpNidHandler} className="form-control medium-medium-input threeMediumBigInputsLableMargin add" type="number" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable">جهة الإصدار</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addPOIssuanceHandler} className="form-control  medium-medium-input" type="text" />
+                                                <input onChange={this.addPOIssuanceHandler} className="form-control  medium-medium-input add" type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable">تاريخ الإصدار</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addDOIssuanceHandler} className="form-control  medium-medium-input" type="date" />
+                                                <input onChange={this.addDOIssuanceHandler} className="form-control  medium-medium-input add" type="date" />
                                             </div>
                                         </div>
                                     </div>
@@ -677,7 +675,7 @@ class OutsourceEmployee extends React.Component {
                                                 <label className="medium-lable">الديانة</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addReligousHandler} className="form-control medium-input" list="brow6" />
+                                                <input onChange={this.addReligousHandler} className="form-control medium-input add" list="brow6" />
                                                 <datalist id="brow6">
                                                     <option value='مسلم' />
                                                     <option value='مسيحي' />
@@ -687,7 +685,7 @@ class OutsourceEmployee extends React.Component {
                                                 <label className="medium-lable towMediumInputsLableMargin">جهة الميلاد</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addPobHandler} className="form-control  medium-input" type="text" />
+                                                <input onChange={this.addPobHandler} className="form-control  medium-input add" type="text" />
                                             </div>
                                         </div>
                                     </div>
@@ -697,13 +695,13 @@ class OutsourceEmployee extends React.Component {
                                                 <label className="medium-lable ">الرقم التأميني</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addinsuranceNumHandler} className="form-control medium-input" type="number" />
+                                                <input onChange={this.addinsuranceNumHandler} className="form-control medium-input add" type="number" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="big-lable towMediumInputsLableMargin">مكتب التأمينات</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addinsuranceOfficeHandler} className="form-control medium-input" type="text" />
+                                                <input onChange={this.addinsuranceOfficeHandler} className="form-control medium-input add" type="text" />
                                             </div>
                                         </div>
                                     </div>
@@ -713,7 +711,7 @@ class OutsourceEmployee extends React.Component {
                                                 <label className="medium-lable" >العنوان</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addAddressHandler} className="form-control giant-input oneInputMargin" type="text" />
+                                                <input onChange={this.addAddressHandler} className="form-control giant-input oneInputMargin add" type="text" />
                                             </div>
                                         </div>
                                     </div>
@@ -723,19 +721,19 @@ class OutsourceEmployee extends React.Component {
                                                 <label className="medium-lable" >ت. المنزل</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addHPhoneNumHandler} className="form-control medium-medium-input" type="number" />
+                                                <input onChange={this.addHPhoneNumHandler} className="form-control medium-medium-input add" type="number" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable ">ت. المكتب</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addOPhoneNumHandler} className="form-control  medium-medium-input threeMediumBigInputsLableMargin" type="number" />
+                                                <input onChange={this.addOPhoneNumHandler} className="form-control  medium-medium-input threeMediumBigInputsLableMargin add" type="number" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable">الموبايل</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addMPhoneNumHandler} className="form-control  medium-medium-input threeMediumBigInputsLableMargin" type="number" />
+                                                <input onChange={this.addMPhoneNumHandler} className="form-control  medium-medium-input threeMediumBigInputsLableMargin add" type="number" />
                                             </div>
                                         </div>
                                     </div>
@@ -745,13 +743,13 @@ class OutsourceEmployee extends React.Component {
                                                 <label className="medium-lable">البريد الأليكتروني</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addEmailNumHandler} className="form-control medium-input" type="text" />
+                                                <input onChange={this.addEmailNumHandler} className="form-control medium-input add" type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="big-lable towMediumInputsLableMargin">الحالة الإجتماعية</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addMarStatusNumHandler} className="form-control medium-input" type="text" list="brow90" />
+                                                <input onChange={this.addMarStatusNumHandler} className="form-control medium-input add" type="text" list="brow90" />
                                                 <datalist id="brow90">
                                                     {marStatus.map(marstatus => (
                                                         <option value={marstatus} />
@@ -766,7 +764,7 @@ class OutsourceEmployee extends React.Component {
                                                 <label className="medium-lable" >الموقف من التجنيد</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <select onChange={this.addMirStatusHandler} id="empapp" className="form-control medium-select oneInputMargin">
+                                                <select onChange={this.addMirStatusHandler} id="empapp" className="form-control medium-select oneInputMargin add">
                                                     {militaryStatus.map(status => (
                                                         <option>{status}</option>
                                                     ))}
@@ -783,7 +781,7 @@ class OutsourceEmployee extends React.Component {
                                                     <label className="medium-lable" >تاريخ انتهاء الإعفاء</label>
                                                 </div>
                                                 <div style={{ display: "table-cell" }}>
-                                                    <input onChange={this.addExmpExpireDate} className="form-control giant-input oneInputMargin" type="date" />
+                                                    <input onChange={this.addExmpExpireDate} className="form-control giant-input oneInputMargin add" type="date" />
                                                 </div>
                                             </div>
                                         </div>
@@ -797,13 +795,13 @@ class OutsourceEmployee extends React.Component {
                                                     <label className="medium-lable" >مدة التجنيد</label>
                                                 </div>
                                                 <div style={{ display: "table-cell" }}>
-                                                    <input onChange={this.addDaysCountMirHandler} placeholder="يوم" className="form-control  medium-medium-input" type="number" />
+                                                    <input onChange={this.addDaysCountMirHandler} placeholder="يوم" className="form-control  medium-medium-input add" type="number" />
                                                 </div>
                                                 <div style={{ display: "table-cell" }}>
-                                                    <input onChange={this.addMonthsCountMirHandler} placeholder="شهر" className="form-control  medium-medium-input" type="number" />
+                                                    <input onChange={this.addMonthsCountMirHandler} placeholder="شهر" className="form-control  medium-medium-input add" type="number" />
                                                 </div>
                                                 <div style={{ display: "table-cell" }}>
-                                                    <input onChange={this.addYearsCountMirHandler} placeholder="سنة" className="form-control  medium-medium-input" type="number" />
+                                                    <input onChange={this.addYearsCountMirHandler} placeholder="سنة" className="form-control  medium-medium-input add" type="number" />
                                                 </div>
                                             </div>
                                         </div>
@@ -818,7 +816,7 @@ class OutsourceEmployee extends React.Component {
                                                     <label className="medium-lable" style={{ marginLeft: -14 }}>نوع النقابة</label>
                                                 </div>
                                                 <div style={{ display: "table-cell" }}>
-                                                    <input onChange={this.addSyndicateTypeNumHandler} className="form-control medium-medium-input" list="brow50" />
+                                                    <input onChange={this.addSyndicateTypeNumHandler} className="form-control medium-medium-input add" list="brow50" />
                                                     <datalist id="brow50">
                                                         {syndicate.map(synd => (
                                                             <option value={synd} />
@@ -829,13 +827,13 @@ class OutsourceEmployee extends React.Component {
                                                     <label className="medium-lable">رقم العضوية</label>
                                                 </div>
                                                 <div style={{ display: "table-cell" }}>
-                                                    <input onChange={this.addMemberShipNumHandler} className="form-control medium-medium-input threeMediumBigInputsLableMargin" type="number" />
+                                                    <input onChange={this.addMemberShipNumHandler} className="form-control medium-medium-input threeMediumBigInputsLableMargin add" type="number" />
                                                 </div>
                                                 <div style={{ display: "table-cell" }}>
                                                     <label className="medium-lable">تاريخ العضوية </label>
                                                 </div>
                                                 <div style={{ display: "table-cell" }}>
-                                                    <input onChange={this.addMemberShipDateHandler} className="form-control medium-medium-input threeMediumBigInputsLableMargin" type="date" />
+                                                    <input onChange={this.addMemberShipDateHandler} className="form-control medium-medium-input threeMediumBigInputsLableMargin add" type="date" />
                                                 </div>
                                             </div>
                                         </div>
@@ -867,13 +865,13 @@ class OutsourceEmployee extends React.Component {
                                                 <label className="medium-lable" >رقم الأداء</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addEmpIdHandler} className="form-control medium-medium-input threeMediumBigInputsLableMargin" type="number" />
+                                                <input onChange={this.addEmpIdHandler} className="form-control medium-medium-input threeMediumBigInputsLableMargin add" type="number" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable">الوظيفة</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input onChange={this.addDOIssuanceHandler} className="form-control  medium-medium-input" type="text" />
+                                                <input onChange={this.addDOIssuanceHandler} className="form-control  medium-medium-input add" type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable">تاريخ الإلتحاق</label>

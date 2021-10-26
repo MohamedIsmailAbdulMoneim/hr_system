@@ -5,7 +5,7 @@ import {
   fetchEmpName, fetchEmpNameByName, fetchCurrentjd, fetchavailjd,
   fetchavailsupbox, fetchupjd, fetchEmpDetails, fetchDownJd, fetchqn, fetchemps, fetchgid,
   fetchStations, fetchOutsourceEmpDetails, fetchOutsourceEmpNameByName, addnewEmp,
-  updateEmpDetails ,addnewOutsourceEmp,
+  updateEmpDetails, addnewOutsourceEmp,
   updateOutsourceEmpDetails
 } from "../actions/ActionTypes";
 
@@ -33,7 +33,7 @@ const initialState = {
   qn: [],
   emps: [],
   gid: [],
-  empname:[],
+  empname: [],
   stations: []
 
 
@@ -45,29 +45,35 @@ export default function (state = initialState, action) {
     case addnewEmp:
       return {
         ...state,
-        empdetails : action.payload.data[1],
+        empdetails: action.payload.data[1],
         msg: action.payload.msg
       }
 
     case updateEmpDetails:
-      return{
+      return {
         ...state,
-        empdetails : action.payload.data[1],
+        empdetails: [action.payload.data[1],action.payload.data[2],action.payload.data[3]],
         msg: action.payload.msg
 
+      }
+
+    case fetchEmpDetails:
+      return {
+        ...state,
+        empdetails: action.payload.data
       }
 
     case addnewOutsourceEmp:
       return {
         ...state,
-        outsourceEmpDetails : action.payload.data[1],
+        outsourceEmpDetails: action.payload.data[1],
         msg: action.payload.msg
       }
 
     case updateOutsourceEmpDetails:
-      return{
+      return {
         ...state,
-        outsourceEmpDetails : action.payload.data[1],
+        outsourceEmpDetails: action.payload.data[1],
         msg: action.payload.msg
 
       }
@@ -169,14 +175,9 @@ export default function (state = initialState, action) {
         ...state,
         upjd: action.payload
       }
-    case fetchEmpDetails:
-      return {
-        ...state,
-        empdetails: action.payload.data
-      }
 
     case fetchOutsourceEmpDetails:
-      return{
+      return {
         ...state,
         outsourceEmpDetails: action.payload.data
 

@@ -590,80 +590,141 @@ function insertNewOutSourceEmp(req, res, next) {
 
 
 function updateEmpData(req, res, next) {
+    let empid = req.body.employeeid
     let data = req.body.data
-    let query = `update outsource_employee SET ${data};
-        SELECT
-        e.EMPLOYEE_ID,
-        e.NAME_ARABIC,
-        e.BIRTH_DATE,
-        e.JOB,
-        e.DEPARTMENT_NAME,
-        (
-            SELECT
-                GOVERNORATE_ARABIC
-            FROM
-                governorate
-            WHERE
-                e.GOVERNORATE_OF_BIRTH = governorate.GOVERNORATE
-        ) AS birthGov,
-        (
-            SELECT
-                GENDER_NAME
-            FROM
-                genders
-            WHERE
-                e.GENDER = genders.GENDER
-        ) AS genderar,
-        e.NATIONAL_ID_CARD_NO,
-        e.NATIONAL_ID_CARD_ISSUED_BY,
-        e.ISSUE_DATE,
-        e.ADDRESS,
-        (SELECT G_NAME FROM a_job_groups WHERE a_job_groups.G_ID = e.JOB_GROUP ) AS jobgroup,
-        (
-            SELECT
-                GOVERNORATE_ARABIC
-            FROM
-                governorate
-            WHERE
-                e.ADDRESS_GOVERNORATE = governorate.GOVERNORATE
-        ) AS addressgov,
-        e.PHONE_3_MOBILE,
-        e.SECTOR_JOIN_DATE,
-        (
-            SELECT
-                RELIGION_NAME
-            FROM
-                religions
-            WHERE
-                e.RELIGION = religions.RELIGION
-        ) AS religinar,
-        e.SOCIAL_INSURANCE_NUMBER,
-        (SELECT STATUS_ARABIC FROM military_service_status WHERE military_service_status.MILITARY_SERVICE_STATUS = e.MILITARY_SERVICE_STATUS) as milistatusar,
-        (SELECT STATUS_DESC FROM marital_status WHERE e.MARITAL_STATUS = marital_status.MARITAL_STATUS) AS maritalstatear,
-        (
-            SELECT
-                EMP_STATUS_NAME
-            FROM
-                emp_status
-            WHERE
-                e.EMP_STATUS = emp_status.EMP_STATUS
-        ) AS empstatusar,
+    let query = `
+    update employee SET ${data};
+    SELECT
+    e.EMPLOYEE_ID,
+    e.NAME_ARABIC,
+    e.SECTOR_JOIN_DATE,
+    (SELECT station_name FROM stations WHERE E.JOB_LOCATION = stations.id) as joblocation,
+    (SELECT area_name FROM areas WHERE E.JOB_AREA = areas.id) as jobarea,
     (
-        SELECT
-            GOVERNORATE_ARABIC
-        FROM
-            governorate
-        WHERE
-            e.JOB_GOVERNORATE = governorate.GOVERNORATE
-    ) AS jobGov,
-    (SELECT station_name FROM stations WHERE e.JOB_LOCATION = stations.id) AS joblocation,
-    (SELECT area_name FROM areas WHERE e.JOB_AREA =  areas.id) as areaname,
-    e.INSURANCE_OFFICE,
-    e.PLACE_OF_BIRTH
+    SELECT
+        GOVERNORATE_ARABIC
     FROM
-        outsource_employee e
-        WHERE
-        EMPLOYEE_ID = ${req.body.employeeid}
+        governorate
+    WHERE
+        e.JOB_GOVERNORATE = governorate.GOVERNORATE
+) AS jobGov,
+
+(
+    SELECT
+        EMP_STATUS_NAME
+    FROM
+        emp_status
+    WHERE
+        e.EMP_STATUS = emp_status.EMP_STATUS
+) AS empstatusar,
+e.NATIONAL_ID_CARD_NO,
+e.NATIONAL_ID_CARD_ISSUED_BY,
+(
+    SELECT
+        GOVERNORATE_ARABIC
+    FROM
+        governorate
+    WHERE
+        e.ADDRESS_GOVERNORATE = governorate.GOVERNORATE
+) AS addressgov,
+e.SOCIAL_INSURANCE_NUMBER,
+e.INSURANCE_OFFICE,
+e.ADDRESS,
+e.PHONE_2_HOME,
+e.PHONE_1_OFFICE,
+e.PHONE_3_MOBILE,
+e.EMP_EMAIL,
+(
+    SELECT
+        STATUS_DESC
+    FROM
+        marital_status
+    WHERE
+        e.MARITAL_STATUS = marital_status.MARITAL_STATUS
+) AS maritalstatear,
+(
+    SELECT
+        SYNDICATE_NAME
+    FROM
+        syndicate
+    WHERE
+        e.SYNDICATE = syndicate.SYNDICATE
+) AS syndicatear,
+e.SYNDICATE_REGISTERATION,
+e.SYNDICATE_REGISTERATION_DATE,
+(
+    SELECT
+        GENDER_NAME
+    FROM
+        genders
+    WHERE
+        e.GENDER = genders.GENDER
+) AS genderar,
+(
+    SELECT
+        RELIGION_NAME
+    FROM
+        religions
+    WHERE
+        e.RELIGION = religions.RELIGION
+) AS religinar,
+e.BIRTH_DATE,
+e.PLACE_OF_BIRTH,
+(
+    SELECT
+        GOVERNORATE_ARABIC
+    FROM
+        governorate
+    WHERE
+        e.GOVERNORATE_OF_BIRTH = governorate.GOVERNORATE
+) AS birthGov
+FROM
+    employee e
+WHERE
+    EMPLOYEE_ID = ${empid};
+SELECT
+    a_sup_box.sup_box_id,
+    a_sup_box.SUP_BOX_NAME,
+    a_sup_box.MAIN_BOX_ID,
+    a_job_trans.TRANS_DATE,
+    a_job_trans.NATIONAL_ID_CARD_NO,
+    a_job_trans.JOB_ASSIGNMENT_FORM,
+    a_job_trans.INDICATOR,
+    job_assignment_form.JOB_ASSIGNMENT_FORM_ARABIC,
+    a_main_box.CAT_ID,
+    a_category.CAT_NAME,
+    a_job_dgree.J_D_NAME,
+    (SELECT G_NAME FROM a_job_groups WHERE a_job_groups.G_ID = a_job_trans.G_ID ) as gname
+
+FROM
+    a_sup_box
+JOIN a_job_trans ON a_job_trans.SUP_BOX_ID = a_sup_box.SUP_BOX_ID
+JOIN a_main_box ON a_sup_box.MAIN_BOX_ID = a_main_box.MAIN_BOX_ID
+JOIN a_category ON a_main_box.CAT_ID = a_category.CAT_ID
+JOIN job_assignment_form ON a_job_trans.JOB_ASSIGNMENT_FORM = job_assignment_form.JOB_ASSIGNMENT_FORM
+JOIN a_job_dgree ON a_job_dgree.J_D_ID = a_main_box.J_D_ID
+WHERE
+    INDICATOR = 2 AND NATIONAL_ID_CARD_NO =(
+    SELECT
+        NATIONAL_ID_CARD_NO
+    FROM
+        employee
+    WHERE
+        EMPLOYEE_ID = ${empid}
+);
+SELECT
+    TRANS_DATE
+FROM
+    a_job_trans
+WHERE
+    JOB_ASSIGNMENT_FORM = 1 AND NATIONAL_ID_CARD_NO =(
+    SELECT
+        NATIONAL_ID_CARD_NO
+    FROM
+        employee
+    WHERE
+        EMPLOYEE_ID = ${empid}
+);
     `
 
     console.log(query);

@@ -75,6 +75,7 @@ export const newOutsourceEmp = (data) => (dispatch) => {
 }
 
 export const editEmpDetails = (data) => (dispatch) => {
+ 
   axios({
     method: "PUT",
     data,
@@ -82,11 +83,22 @@ export const editEmpDetails = (data) => (dispatch) => {
     url: "http://localhost:5000/updateempdata",
     headers: { "Content-Type": "application/json" },
 }).then((res) => {
+  console.log(res.data);
     dispatch({
       type: updateEmpDetails,
       payload: res.data
     })
 })
+}
+
+export const getEmpDetails = (empid, empname) => (dispatch) => {
+  axios.get(`http://localhost:5000/getempdetails/?empid=${empid}&empname=${empname}`).then((res) => {
+    dispatch({
+      type: fetchEmpDetails,
+      payload: { data: res.data },
+    });
+  });
+
 }
 
 export const editOutsourceEmpDetails = (data) => (dispatch) => {
@@ -124,15 +136,7 @@ export const gitDownJd = () => (dispatch) => {
 
 }
 
-export const getEmpDetails = (empid, empname) => (dispatch) => {
-  axios.get(`http://localhost:5000/getempdetails/?empid=${empid}&empname=${empname}`).then((res) => {
-    dispatch({
-      type: fetchEmpDetails,
-      payload: { data: res.data },
-    });
-  });
 
-}
 export const getOutSourceEmpDetails = (empid, empname) => (dispatch) => {
   axios.get(`http://localhost:5000/outsourceempdetails/?empid=${empid}&empname=${empname}`).then((res) => {
     dispatch({
