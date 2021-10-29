@@ -7,6 +7,11 @@ import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { Form, FormGroup, FormLabel, FormControl, FormText, FormCheck, Button, Row, Col } from 'react-bootstrap';
+import avatar from '../../uploads/26104092101019.jpg'
+import avatar2 from '../../uploads/26108020201219.jpg'
+console.log(avatar,avatar2);
+
+const imgname = '26104092101019.jpg'
 
 
 class Employee extends React.Component {
@@ -693,6 +698,7 @@ class Employee extends React.Component {
             'النقابة العامة للنقل الجوي',
             'نقابة العاملين بهندسة صيانة الطائرات',
         ]
+
         const styles = {
             display: "block",
             padding: "0.375rem 2.25rem 0.375rem 0.75rem",
@@ -1038,7 +1044,7 @@ class Employee extends React.Component {
                                             </div>
                                         </div>
                                     </div>
-                                    {/* <div style={{ display: "table" }}>
+                                    <div style={{ display: "table" }}>
                                         <div style={{ display: "table-row" }}>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable ">صورة الموظف</label>
@@ -1048,7 +1054,7 @@ class Employee extends React.Component {
 
                                             </div>
                                         </div>
-                                    </div> */}
+                                    </div>
 
                                     <div style={{ display: "table" }}>
                                         <div style={{ display: "table-row" }}>
@@ -1480,14 +1486,14 @@ class Employee extends React.Component {
                             </div>}
                         <div style={{ display: "flex", height: "100%", minHeight: "1000px" }} className="col-lg-4">
                             <div style={{ background: "transparent", height: 750, width: "100%" }} >
-                                <img style={{ borderTop: 3 }} src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin" class="rounded-circle" width="150" />
+                                <img style={{ borderTop: 3 }} src={`http://localhost:5000/${this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[1].length > 0 ? this.props.empdetails[0][0].emp_image : null : null : null}`}  class="rounded-circle" width="150" />
                                 <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", marginTop: 10 }}>
                                     <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg"><Link to={`/empedudeg`}><a onClick={this.empEduButtonHandler} href="/empedudeg">المؤهل</a></Link></button>
                                     <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg" ><Link to={`/EmpTrans`}><a onClick={this.empTransButtonHandler} href="/EmpTrans">التدرج</a></Link></button>
                                     <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg"><Link to={`/empexperience`}><a onClick={this.empExpHandler} href="/empexperience">الخبرات</a></Link></button>
                                     <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg"><Link to={`/empfamily`}><a onClick={this.empFamilyButtonHandler} href="/empfamily">العائلية</a></Link></button>
-                                    <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg"> <Link to={`/empedudeg`}><a onClick={this.empTrainingHandler} href="/empedudeg">التدريب</a></Link></button>
-                                    <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg"><Link to={`/empexperience`}><a onClick={this.empPenaltyHandler} href="/empexperience">الجزاءات</a></Link></button>
+                                    <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg"> <Link to={`/EmpTraining`}><a onClick={this.empTrainingHandler} href="/EmpTraining">التدريب</a></Link></button>
+                                    <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg"><Link to={`/emppenalty`}><a onClick={this.empPenaltyHandler} href="/emppenalty">الجزاءات</a></Link></button>
                                     <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg">الهيكل</button>
                                     <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg">بطاقة الوصف</button>
                                     <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg"><Link to={`/empsappraisal`}><a onClick={this.empAppraisalHandler} href="/empsappraisal">التقييمات السنوية</a></Link></button>

@@ -11,8 +11,6 @@ class Upload extends React.Component {
         const wb = new Excel.Workbook();
         const reader = new FileReader();
         let arr = [];
-
-
         try {
             reader.readAsArrayBuffer(e.target.files[0])
 

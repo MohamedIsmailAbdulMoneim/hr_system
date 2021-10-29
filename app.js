@@ -8,6 +8,7 @@ const cors = require("cors")
 const passport = require('passport');
 const ExcelJS = require('exceljs');
 var session = require('express-session');
+const path = require('path')
 
 // var MySQLStore = require('express-mysql-session')(session);
 
@@ -60,16 +61,20 @@ app.use(planandorg)
 app.use(report)
 app.use(users)
 
-// app.use(
-//   express.static("frontend/build")
-// );
+app.use(
+  express.static("frontend/src/uploads")
+);
 
-// app.get("*", (req, res) => {
-//   res.sendFile(
-//     path.resolve(__dirname, 'frontend', 'build', 'index.html')
-//   );
+app.use(
+  express.static("frontend/build")
+);
 
-// })
+app.get("*", (req, res) => {
+  res.sendFile(
+    path.resolve(__dirname, 'frontend', 'build', 'index.html')
+  );
+
+})
 
 app.use((error, req, res, next) => {
   next(error)

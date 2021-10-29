@@ -115,6 +115,7 @@ function newAppraisal(req, res, next) {
     db.query(query, (err, details) => {
         if (err) {
             next(err)
+            console.log(err);
             res.json({ data: [], msg: "يوجد خطاء بقاعدة البيانات" })
         } else {
             res.json({ data: details, msg: "تم إدخال التقييم بنجاح" });

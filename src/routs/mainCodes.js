@@ -3,7 +3,7 @@ const path = require('path');
 const db = require("../database/connection")
 let router = express.Router();
 const multer = require('multer');
-const upload = multer({dest: './uploads/'})
+const upload = multer({dest: './frontend/src/uploads/'})
 
 
 
@@ -28,6 +28,7 @@ function getEmpDetails(req, res, next) {
     if (!empid || empid == "undefiened") {
         query = `
         SELECT
+        e.emp_image,
         e.EMPLOYEE_ID,
         e.NAME_ARABIC,
         e.SECTOR_JOIN_DATE,
@@ -162,6 +163,7 @@ function getEmpDetails(req, res, next) {
     } else if (!empname || empname == "undefined") {
         query = `
         SELECT
+        e.emp_image,
         e.EMPLOYEE_ID,
         e.NAME_ARABIC,
         e.SECTOR_JOIN_DATE,
