@@ -120,8 +120,7 @@ function getEmpDetails(req, res, next) {
         a_sup_box.sup_box_id,
         a_sup_box.SUP_BOX_NAME,
         a_sup_box.MAIN_BOX_ID,
-        a_job_trans.TRANS_DATE,
-        a_job_trans.NATIONAL_ID_CARD_NO,
+        a_job_trans.TRANS_DATE curjobname,
         a_job_trans.JOB_ASSIGNMENT_FORM,
         a_job_trans.INDICATOR,
         job_assignment_form.JOB_ASSIGNMENT_FORM_ARABIC,
@@ -255,8 +254,7 @@ function getEmpDetails(req, res, next) {
         a_sup_box.sup_box_id,
         a_sup_box.SUP_BOX_NAME,
         a_sup_box.MAIN_BOX_ID,
-        a_job_trans.TRANS_DATE,
-        a_job_trans.NATIONAL_ID_CARD_NO,
+        a_job_trans.TRANS_DATE as curjobname ,
         a_job_trans.JOB_ASSIGNMENT_FORM,
         a_job_trans.INDICATOR,
         job_assignment_form.JOB_ASSIGNMENT_FORM_ARABIC,
@@ -299,7 +297,9 @@ function getEmpDetails(req, res, next) {
     db.query(query, (err, details) => {
         if (err) {
             next(err);
+            console.log(err);
         } else {
+            console.log(details);
             res.send(details)
         }
     })
@@ -482,13 +482,88 @@ function insertNewEmp(req, res, next) {
         ,INSURANCE_OFFICE,RESEDNTIAL_ADDRESS,PHONE_3_MOBILE,PHONE_2_HOME,PHONE_1_OFFICE,EMP_EMAIL,MARITAL_STATUS${data[0] == 'added' ? `,SYNDICATE,SYNDICATE_REGISTERATION,
         SYNDICATE_REGISTERATION_DATE` : ''},MILITARY_SERVICE_STATUS${milStatusIsCompleted.length >= 1 ? `,MIL_SERVICE_DAYS,MIL_SERVICE_MONTHS,MIL_SERVICE_YEARS` : ''},GENDER,RELIGION,BIRTH_DATE,
         PLACE_OF_BIRTH,GOVERNORATE_OF_BIRTH) VALUES ${fData};
-        
+        SELECT
+        e.EMPLOYEE_ID,
+        e.NAME_ARABIC,
+        e.BIRTH_DATE,
+        e.JOB,
+        e.DEPARTMENT_NAME,
+        (
+            SELECT
+                GOVERNORATE_ARABIC
+            FROM
+                governorate
+            WHERE
+                e.GOVERNORATE_OF_BIRTH = governorate.GOVERNORATE
+        ) AS birthGov,
+        (
+            SELECT
+                GENDER_NAME
+            FROM
+                genders
+            WHERE
+                e.GENDER = genders.GENDER
+        ) AS genderar,
+        e.NATIONAL_ID_CARD_NO,
+        e.NATIONAL_ID_CARD_ISSUED_BY,
+        e.ISSUE_DATE,
+        e.ADDRESS,
+        (SELECT G_NAME FROM a_job_groups WHERE a_job_groups.G_ID = e.JOB_GROUP ) AS jobgroup,
+        (
+            SELECT
+                GOVERNORATE_ARABIC
+            FROM
+                governorate
+            WHERE
+                e.ADDRESS_GOVERNORATE = governorate.GOVERNORATE
+        ) AS addressgov,
+        e.PHONE_3_MOBILE,
+        e.SECTOR_JOIN_DATE,
+        (
+            SELECT
+                RELIGION_NAME
+            FROM
+                religions
+            WHERE
+                e.RELIGION = religions.RELIGION
+        ) AS religinar,
+        e.SOCIAL_INSURANCE_NUMBER,
+        (SELECT STATUS_ARABIC FROM military_service_status WHERE military_service_status.MILITARY_SERVICE_STATUS = e.MILITARY_SERVICE_STATUS) as milistatusar,
+        (SELECT STATUS_DESC FROM marital_status WHERE e.MARITAL_STATUS = marital_status.MARITAL_STATUS) AS maritalstatear,
+        (
+            SELECT
+                EMP_STATUS_NAME
+            FROM
+                emp_status
+            WHERE
+                e.EMP_STATUS = emp_status.EMP_STATUS
+        ) AS empstatusar,
+    (
+        SELECT
+            GOVERNORATE_ARABIC
+        FROM
+            governorate
+        WHERE
+            e.JOB_GOVERNORATE = governorate.GOVERNORATE
+    ) AS jobGov,
+    (SELECT station_name FROM stations WHERE e.JOB_LOCATION = stations.id) AS joblocation,
+    (SELECT area_name FROM areas WHERE e.JOB_AREA =  areas.id) as areaname,
+    e.INSURANCE_OFFICE,
+    e.PLACE_OF_BIRTH
+    FROM
+        outsource_employee e
+        WHERE
+        EMPLOYEE_ID = ${fData[2]}
         `
     db.query(query, (err, details) => {
         if (err) {
             next(err);
+            console.log(err);
+            if(err.sqlMessage.indexOf("Duplicate entry") !== -1){
+                res.json({ data: [[],[]], msg: "تم إدخال بيانات هذا الموظف من قبل" })
+            } 
         } else {
-            res.send(details)
+            res.json({ data, msg: "تم إدخال البيانات بنجاح" });
         }
     })
 
@@ -597,6 +672,7 @@ function updateEmpData(req, res, next) {
     let query = `
     update employee SET ${data};
     SELECT
+    e.emp_image,
     e.EMPLOYEE_ID,
     e.NAME_ARABIC,
     e.SECTOR_JOIN_DATE,

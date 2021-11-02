@@ -13,12 +13,16 @@ function newEmpExp(req, res, next) {
     calculated_end_date ,EXP_TYP_CODE, is_shown ,NATIONAL_ID_CARD_NO) VALUES ${data};
     SELECT * FROM employee_experince
     JOIN exp_type ON employee_experince.EXP_TYP_CODE = exp_type.EXP_TYP_CODE WHERE ${getData}
+    
     `
+    console.log(query);
     db.query(query, function (err, data) {
+        console.log(data);
         if (err) {
             next(err);
-            console.log(err);
-            res.json({ data: [], msg: "يوجد خطاء بقاعدة البيانات" });
+            if(err.sqlMessage.indexOf("Duplicate entry") !== -1){
+                res.json({ data: [[],[]], msg: "تم إدخال هذه الخبرة من قبل" })
+            }            
         } else {
 
             res.json({ data: data, msg: "تم إدخال البيانات بنجاح" });
@@ -114,9 +118,9 @@ function newAppraisal(req, res, next) {
      console.log(query);
     db.query(query, (err, details) => {
         if (err) {
-            next(err)
-            console.log(err);
-            res.json({ data: [], msg: "يوجد خطاء بقاعدة البيانات" })
+            if(err.sqlMessage.indexOf("Duplicate entry") !== -1){
+                res.json({ data: [[],[]], msg: "تم إدخال التقييم من قبل" })
+            }
         } else {
             res.json({ data: details, msg: "تم إدخال التقييم بنجاح" });
         }
@@ -216,13 +220,19 @@ function postnewtrans(req, res, next) {
         JOB_GOVERNORATE,
         MAIN_BOX_NAME
     ) VALUES ${data};
-    select *, a_job_trans.SUP_BOX_NAME AS catename from a_job_trans JOIN employee JOIN job_assignment_form JOIN indicators JOIN a_sup_box JOIN a_category JOIN a_job_groups ON a_job_trans.G_ID = a_job_groups.G_ID AND a_category.CAT_ID = a_job_trans.CAT_ID AND a_sup_box.SUP_BOX_ID = a_job_trans.SUP_BOX_ID AND a_job_trans.NATIONAL_ID_CARD_NO = employee.NATIONAL_ID_CARD_NO AND a_job_trans.JOB_ASSIGNMENT_FORM = JOB_ASSIGNMENT_FORM.JOB_ASSIGNMENT_FORM AND a_job_trans.INDICATOR = indicators.INDICATOR WHERE employee.NATIONAL_ID_CARD_NO IN ${data[0][0].substring(1)} ORDER by a_job_trans.TRANS_DATE;
+    select *, a_job_trans.SUP_BOX_NAME AS catename from a_job_trans JOIN employee JOIN job_assignment_form JOIN indicators
+    JOIN a_sup_box JOIN a_category JOIN a_job_groups ON a_job_trans.G_ID = a_job_groups.G_ID AND a_category.CAT_ID =
+    a_job_trans.CAT_ID AND a_sup_box.SUP_BOX_ID = a_job_trans.SUP_BOX_ID AND
+    a_job_trans.NATIONAL_ID_CARD_NO = employee.NATIONAL_ID_CARD_NO AND a_job_trans.JOB_ASSIGNMENT_FORM =
+    JOB_ASSIGNMENT_FORM.JOB_ASSIGNMENT_FORM AND a_job_trans.INDICATOR = indicators.INDICATOR WHERE employee.NATIONAL_ID_CARD_NO
+    IN ${data[0][0].substring(1)} ORDER by a_job_trans.TRANS_DATE;
     `
         db.query(query, (err, details) => {
         if (err) {
             console.log(err);
-            res.json({ msg: "يوجد خطاء بقاعدة البيانات", data: [] })
-        } else {
+            if(err.sqlMessage.indexOf("Duplicate entry") !== -1){
+                res.json({ data: [[],[]], msg: "تم إدخال هذا التدرج من قبل" })
+            }           } else {
             res.json({ data: details, msg: "تم إدخال البيانات بنجاح" });
         }
         console.log(query);
@@ -380,8 +390,9 @@ function postNewEmpEdu(req, res, next) {
     `
     db.query(query, (err, data) => {
         if (err) {
-            res.json({ msg: "يوجد خطاء بقاعدة البيانات", data: [] })
-        } else {
+            if(err.sqlMessage.indexOf("Duplicate entry") !== -1){
+                res.json({ data: [[],[]], msg: "تم إدخال هذا المؤهل من قبل" })
+            }           } else {
             console.log(data);
             res.json({ msg: "تم إدخال البيانات بنجاح", data: data })
         }
@@ -516,8 +527,9 @@ function newFamily(req, res, next) {
     db.query(query, function (err, data) {
         if (err) {
             next(err)
-            res.json({ msg: "يوجد خطاء بقاعدة البيانات", data: null })
-        } else {
+            if(err.sqlMessage.indexOf("Duplicate entry") !== -1){
+                res.json({ data: [[],[]], msg: "تم إدخال هذا السجل من قبل" })
+            }           } else {
             res.json({ msg: "تم إدخال البيانات بنجاح", data: data })
         }
     })
@@ -592,8 +604,9 @@ function postNewPenalty(req, res, next) {
     db.query(query, (err, data) => {
         if (err) {
             console.log(err);
-            res.json({ msg: "يوجد خطاء بقاعدة البيانات", data: null })
-        } else {
+            if(err.sqlMessage.indexOf("Duplicate entry") !== -1){
+                res.json({ data: [[],[]], msg: "تم إدخال هذا الجزاء من قبل" })
+            }           } else {
             res.json({ msg: "تم إدخال البيانات بنجاح", data: data })
         }
         console.log(query);
@@ -670,8 +683,9 @@ function postNewTraining(req, res, next) {
     TRAINING_COMPLETION_DATE, TRAINING_TYPE ,LOCATION_TYPE, LOCATION_NAME, ORGANIZATION) VALUES ${req.body}`
     db.query(query, (err, data) => {
         if (err) {
-            res.json({ msg: "يوجد خطاء بقاعدة البيانات", data: null })
-        } else {
+            if(err.sqlMessage.indexOf("Duplicate entry") !== -1){
+                res.json({ data: [[],[]], msg: "تم إدخال هذا التدريب من قبل" })
+            }           } else {
             res.json({ msg: "تم إدخال البيانات بنجاح", data: data })
         }
     })

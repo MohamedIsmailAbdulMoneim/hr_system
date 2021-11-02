@@ -15,6 +15,7 @@ class EmpExperience extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            toe: [],
             poe: []
             , job: [],
             from: []
@@ -29,13 +30,28 @@ class EmpExperience extends React.Component {
         };
     }
 
+    toeHandler = (e) => {
+        e.preventDefault()
+        var selectedArr = e.target.getAttribute('uniqueClass')
+        let nodes = document.getElementsByClassName(selectedArr);
+        let index = Array.prototype.indexOf.call(nodes, e.target);
+        let newArr = this.state[selectedArr].slice()
+        newArr[index] = { expType: e.target.options[e.target.options.selectedIndex].getAttribute('expType'), key: index }
+        console.log(newArr);
+        this.setState({
+            [selectedArr]: newArr
+        })
+
+
+    }
+
     poeHandler = (e) => {
         e.preventDefault()
         var selectedArr = e.target.getAttribute('uniqueClass')
         let nodes = document.getElementsByClassName(selectedArr);
         let index = Array.prototype.indexOf.call(nodes, e.target);
         let newArr = this.state[selectedArr].slice()
-        newArr[index] = { value: e.target.value, key: index, expType: e.target.getAttribute('uniqueIndex') }
+        newArr[index] = { value: e.target.value, key: index }
         this.setState({
             [selectedArr]: newArr
         })
@@ -49,7 +65,7 @@ class EmpExperience extends React.Component {
         let nodes = document.getElementsByClassName(selectedArr);
         let index = Array.prototype.indexOf.call(nodes, e.target);
         let newArr = this.state[selectedArr].slice()
-        newArr[index] = { value: e.target.value, key: index, expType: e.target.getAttribute('uniqueIndex') }
+        newArr[index] = { value: e.target.value, key: index }
         this.setState({
             [selectedArr]: newArr
         })
@@ -61,7 +77,7 @@ class EmpExperience extends React.Component {
         let nodes = document.getElementsByClassName(selectedArr);
         let index = Array.prototype.indexOf.call(nodes, e.target);
         let newArr = this.state[selectedArr].slice()
-        newArr[index] = { value: e.target.value, key: index, expType: e.target.getAttribute('uniqueIndex') }
+        newArr[index] = { value: e.target.value, key: index }
         this.setState({
             [selectedArr]: newArr
         })
@@ -75,7 +91,7 @@ class EmpExperience extends React.Component {
         let nodes = document.getElementsByClassName(selectedArr);
         let index = Array.prototype.indexOf.call(nodes, e.target);
         let newArr = this.state[selectedArr].slice()
-        newArr[index] = { value: e.target.value, key: index, expType: e.target.getAttribute('uniqueIndex') }
+        newArr[index] = { value: e.target.value, key: index }
         this.setState({
             [selectedArr]: newArr
         })
@@ -87,7 +103,7 @@ class EmpExperience extends React.Component {
         let nodes = document.getElementsByClassName(selectedArr);
         let index = Array.prototype.indexOf.call(nodes, e.target);
         let newArr = this.state[selectedArr].slice()
-        newArr[index] = { value: e.target.value, key: index, expType: e.target.getAttribute('uniqueIndex') }
+        newArr[index] = { value: e.target.value, key: index }
         this.setState({
             [selectedArr]: newArr
         })
@@ -99,7 +115,7 @@ class EmpExperience extends React.Component {
         let nodes = document.getElementsByClassName(selectedArr);
         let index = Array.prototype.indexOf.call(nodes, e.target);
         let newArr = this.state[selectedArr].slice()
-        newArr[index] = { value: e.target.value, key: index, expType: e.target.getAttribute('uniqueIndex') }
+        newArr[index] = { value: e.target.value, key: index }
         this.setState({
             [selectedArr]: newArr
         })
@@ -110,6 +126,7 @@ class EmpExperience extends React.Component {
         this.setState(prevState => {
             return {
                 length: prevState.length + 1,
+                toe: [...this.state.toe, " "],
                 poe: [...this.state.poe, " "],
                 job: [...this.state.job, " "],
                 from: [...this.state.from, " "],
@@ -125,6 +142,7 @@ class EmpExperience extends React.Component {
         let selectedArr = e.target.getAttribute('uClass')
         let nodes = document.getElementsByClassName(selectedArr);
         let index = Array.prototype.indexOf.call(nodes, e.target);
+        let newArrOfToe = [...this.state.toe]
         let newArrOfPoe = [...this.state.poe]
         let newArrOfJob = [...this.state.job]
         let newArrOfFrom = [...this.state.from]
@@ -132,6 +150,7 @@ class EmpExperience extends React.Component {
         let newArrOfCalcFrom = [...this.state.calcfrom]
         let newArrOfCalcTo = [...this.state.calcto]
         if (index !== -1) {
+            newArrOfToe.splice(index, 1)
             newArrOfPoe.splice(index, 1)
             newArrOfJob.splice(index, 1)
             newArrOfFrom.splice(index, 1)
@@ -142,6 +161,7 @@ class EmpExperience extends React.Component {
         this.setState(prevState => {
             return {
                 length: prevState.length - 1,
+                toe: newArrOfToe,
                 poe: newArrOfPoe,
                 job: newArrOfJob,
                 from: newArrOfFrom,
@@ -163,14 +183,14 @@ class EmpExperience extends React.Component {
                         <div style={{ display: "flex", justifyContent: "space-around" }}>
                             <div className="form-group" controlId="formBasicEmail">
                                 <label style={{ minWidth: 315, width: "100%", textAlign: "right" }}>نوع الخبرة : </label>
-                                <select style={{ minWidth: 315, height: 34, width: "100%", borderRadius: 5 }} onChange={this.catClickHandeler}>
-                                    <option>
+                                <select style={{ minWidth: 315, height: 34, width: "100%", borderRadius: 5 }} uniqueClass={'toe'} className="toe" onChange={this.toeHandler}>
+                                    <option expType="1">
                                         خدمة عسكرية
                                     </option>
-                                    <option>
+                                    <option expType="4">
                                         خبرة داخل القطاع
                                     </option>
-                                    <option>
+                                    <option expType="3">
                                         خبرة خارج القطاع
                                     </option>
                                     <option selected>
@@ -182,33 +202,33 @@ class EmpExperience extends React.Component {
                         <div style={{ display: "flex", justifyContent: "space-around" }}>
                             <div className="form-group" controlId="formBasicEmail">
                                 <label style={{ width: "100%", textAlign: "right" }}>جهة الخبرة : </label>
-                                <input onChange={this.poeHandler} uniqueClass={'poe'} uniqueIndex={4} ref="nameinput" className="form-control poe" style={{ width: "100%", minWidth: "250px" }} type="text" required />
+                                <input onChange={this.poeHandler} uniqueClass={'poe'} ref="nameinput" className="form-control poe" style={{ width: "100%", minWidth: "250px" }} type="text" required />
                             </div>
                             <div className="form-group" controlId="formBasicEmail">
                                 <label style={{ width: "100%", textAlign: "right" }}>الوظيفة : </label>
-                                <input onChange={this.jobHandler} uniqueClass={'job'} uniqueIndex={4} ref="nameinput" className="form-control job" style={{ width: "100%", minWidth: "250px" }} type="text" />
+                                <input onChange={this.jobHandler} uniqueClass={'job'} ref="nameinput" className="form-control job" style={{ width: "100%", minWidth: "250px" }} type="text" />
                             </div>
                         </div>
                         <h4 style={{ textAlign: "right", marginRight: 10 }}>المدة الفعلية</h4>
                         <div style={{ display: "flex", justifyContent: "space-around" }}>
                             <div className="form-group" controlId="formBasicEmail">
                                 <label style={{ width: "100%", textAlign: "right" }}>من : </label>
-                                <input onChange={this.fromHandler} uniqueClass={'from'} uniqueIndex={4} ref="nameinput" className="form-control from" style={{ width: "100%", minWidth: "250px" }} type="date" />
+                                <input onChange={this.fromHandler} uniqueClass={'from'} ref="nameinput" className="form-control from" style={{ width: "100%", minWidth: "250px" }} type="date" />
                             </div>
                             <div className="form-group" controlId="formBasicEmail">
                                 <label style={{ width: "100%", textAlign: "right" }}>إلى : </label>
-                                <input onChange={this.toHandler} uniqueClass={'to'} uniqueIndex={4} ref="nameinput" className="form-control to" style={{ width: "100%", minWidth: "250px" }} type="date" />
+                                <input onChange={this.toHandler} uniqueClass={'to'} ref="nameinput" className="form-control to" style={{ width: "100%", minWidth: "250px" }} type="date" />
                             </div>
                         </div>
                         <h4 style={{ textAlign: "right", marginRight: 10 }}>المدة المحتسبة</h4>
                         <div style={{ display: "flex", justifyContent: "space-around" }}>
                             <div className="form-group" controlId="formBasicEmail">
                                 <label style={{ width: "100%", textAlign: "right" }}>من : </label>
-                                <input onChange={this.calcFromHandler} uniqueClass={'calcfrom'} uniqueIndex={4} ref="nameinput" className="form-control calcfrom" style={{ width: "100%", minWidth: "250px" }} type="date" />
+                                <input onChange={this.calcFromHandler} uniqueClass={'calcfrom'} ref="nameinput" className="form-control calcfrom" style={{ width: "100%", minWidth: "250px" }} type="date" />
                             </div>
                             <div className="form-group" controlId="formBasicEmail">
                                 <label style={{ width: "100%", textAlign: "right" }}>إلى : </label>
-                                <input onChange={this.calcToHandler} uniqueClass={'calcto'} uniqueIndex={4} ref="nameinput" className="form-control calcto" style={{ width: "100%", minWidth: "250px" }} type="date" />
+                                <input onChange={this.calcToHandler} uniqueClass={'calcto'} ref="nameinput" className="form-control calcto" style={{ width: "100%", minWidth: "250px" }} type="date" />
                             </div>
                         </div>
                     </div >)
@@ -219,7 +239,7 @@ class EmpExperience extends React.Component {
 
     handleArrToSend = (e) => {
         var state = this.state
-        var arrays = state.poe.concat(state.job, state.from, state.to, state.calcfrom, state.calcto)
+        var arrays = state.toe.concat(state.poe, state.job, state.from, state.to, state.calcfrom, state.calcto)
         var emptyInputs = arrays.find(i => i.length <= 1) || null
         let arr = []
         let nameOrId;
@@ -233,65 +253,104 @@ class EmpExperience extends React.Component {
         } else if (emptyInputs == undefined && (this.state.empNameAdd || this.state.empIdAdd)) {
             let militerExp = arrays.filter(el => el.expType == 1)
             if (militerExp.length > 0) {
-                let i = militerExp.length / 6
-                while (i > 0) {
+                let militeIndex;
+                let addTypeToIMiliterndex;
+                let newAddedMiliter = [];
+                let listOfKeys = [];
+                militerExp.forEach(exp => {
+                    listOfKeys.push(exp.key)
+                    militeIndex = exp.key
+                    addTypeToIMiliterndex = arrays.filter(el => el.key === militeIndex)
+                    newAddedMiliter = [...newAddedMiliter,...addTypeToIMiliterndex.map(el => ({expType: "1", ...el}))]
+                })
+                console.log(newAddedMiliter);
+                let i = 0
+                console.log(listOfKeys);
+                while (i < listOfKeys.length) {
+                    let keys = listOfKeys[i]
                     let smallArr = []
-                    var arrloop = militerExp.filter(el => el.key == i - 1)
-                    smallArr.push(`("${arrloop[0].value}"`)
-                    smallArr.push(`"${arrloop[1].value}"`)
-                    smallArr.push(`"${arrloop[2].value}"`)
-                    smallArr.push(`"${arrloop[3].value}"`)
-                    smallArr.push(`"${arrloop[4].value}"`)
-                    smallArr.push(`"${arrloop[5].value}"`)
-                    smallArr.push(arrloop[0].expType)
-                    smallArr.push(`"true"`)
-                    smallArr.push(nameOrId)
-                    arr.push(smallArr)
-                    i--
-                }
-            }
-            let innerExp = arrays.filter(el => el.expType == 3)
-
-            if (innerExp.length > 0) {
-                let i = innerExp.length / 6
-                while (i > 0) {
-                    let smallArr = []
-                    var arrloop = innerExp.filter(el => el.key == i - 1)
-                    smallArr.push(`("${arrloop[0].value}"`)
-                    smallArr.push(`"${arrloop[1].value}"`)
-                    smallArr.push(`"${arrloop[2].value}"`)
-                    smallArr.push(`"${arrloop[3].value}"`)
-                    smallArr.push(`"${arrloop[4].value}"`)
-                    smallArr.push(`"${arrloop[5].value}"`)
-                    smallArr.push(arrloop[0].expType)
-                    smallArr.push(`"true"`)
-                    smallArr.push(nameOrId)
-                    arr.push(smallArr)
-                    i--
-                }
-            }
-
-            let outerExp = arrays.filter(el => el.expType == 4)
-            if (outerExp.length > 0) {
-                let i = outerExp.length / 6
-                console.log(outerExp.length);
-                while (i > 0) {
-                    let smallArr = []
-                    var arrloop = outerExp.filter(el => el.key == i - 1)
+                    var arrloop = newAddedMiliter.filter(el => el.key == keys)
                     console.log(arrloop);
-                    smallArr.push(`("${arrloop[0].value}"`)
-                    smallArr.push(`"${arrloop[1].value}"`)
+                    smallArr.push(`("${arrloop[1].value}"`)
+                    smallArr.push(`"${arrloop[2].value}"`)
+                    smallArr.push(`"${arrloop[3].value}"`)
+                    smallArr.push(`"${arrloop[4].value}"`)
+                    smallArr.push(arrloop.length > 5 ? `"${arrloop[5].value}"` : "null")
+                    smallArr.push(arrloop.length > 6 ? `"${arrloop[6].value}"` : "null")
+                    smallArr.push(arrloop[0].expType)
+                    smallArr.push(`"True"`)
+                    smallArr.push(nameOrId)
+                    arr.push(smallArr)
+                    i++
+                }
+            }
+            let innerExp = arrays.filter(el => el.expType == 4)
+            if (innerExp.length > 0) {
+                let innerIndex;
+                let addTypeToInnerndex;
+                let newAddedInner = [];
+                let listOfKeys = [];
+                innerExp.forEach(exp => {
+                    listOfKeys.push(exp.key)
+                    innerIndex = exp.key
+                    addTypeToInnerndex = arrays.filter(el => el.key === innerIndex)
+                    newAddedInner = [...newAddedInner,...addTypeToInnerndex.map(el => ({expType: "4", ...el}))]
+
+                })
+                let i = 0
+                while (i < listOfKeys.length) {
+                    let keys = listOfKeys[i]
+                    let smallArr = []
+                    var arrloop = newAddedInner.filter(el => el.key == keys)
+                    smallArr.push(`("${arrloop[1].value}"`)
                     smallArr.push(`"${arrloop[2].value}"`)
                     smallArr.push(`"${arrloop[3].value}"`)
                     smallArr.push(`"${arrloop[4].value}"`)
                     smallArr.push(`"${arrloop[5].value}"`)
+                    smallArr.push(`"${arrloop[6].value}"`)
                     smallArr.push(arrloop[0].expType)
-                    smallArr.push(`"true"`)
+                    smallArr.push(`"True"`)
                     smallArr.push(nameOrId)
                     arr.push(smallArr)
-                    i--
+                    i++
+                }
+                console.log(arr);
+
+            }
+
+            let outerExp = arrays.filter(el => el.expType == 3)
+            if (outerExp.length > 0) {
+                let outerIndex;
+                let addTypeToOuterndex;
+                let newAddedOuter = [];
+                let listOfKeys = [];
+                outerExp.forEach(exp=> {
+                    listOfKeys.push(exp.key)
+                    outerIndex = exp.key
+                    addTypeToOuterndex = arrays.filter(el => el.key === outerIndex)
+                    newAddedOuter = [...newAddedOuter,...addTypeToOuterndex.map(el => ({expType: "3", ...el}))]
+
+                })
+                let i = 0
+                while (i < listOfKeys.length) {
+                    let keys = listOfKeys[i]
+                    let smallArr = []
+                    var arrloop = newAddedOuter.filter(el => el.key == keys)
+                    console.log(arrloop);
+                    smallArr.push(`("${arrloop[1].value}"`)
+                    smallArr.push(`"${arrloop[2].value}"`)
+                    smallArr.push(`"${arrloop[3].value}"`)
+                    smallArr.push(`"${arrloop[4].value}"`)
+                    smallArr.push(`"${arrloop[5].value}"`)
+                    smallArr.push(`"${arrloop[6].value}"`)
+                    smallArr.push(arrloop[0].expType)
+                    smallArr.push(`"True"`)
+                    smallArr.push(nameOrId)
+                    arr.push(smallArr)
+                    i++
                 }
             }
+            console.log(arr);
             this.setState({
                 confirmAdd: true, finalData: arr
             })
@@ -392,7 +451,7 @@ class EmpExperience extends React.Component {
 
     handleNewExp = (e) => {
         if (this.state.searchQuery.length < 1) {
-            console.log(this.state.searchQuery);
+            console.log(this.props.msg);
             this.props.newEmpExp({ insertedData: this.state.finalData, getData: `NATIONAL_ID_CARD_NO = ${this.state.nameOrId.slice(0, -1)}` })
         } else {
             this.props.newEmpExp({ insertedData: this.state.finalData, getData: this.state.searchQuery })
@@ -548,7 +607,7 @@ class EmpExperience extends React.Component {
                                         <button style={{ height: "10%", minHeight: "20px", float: "left", marginRight: 7, background: "#062f07" }} onClick={this.addExp} className="btn btn-primary"> <span style={{ marginLeft: 7 }}>إضافة خبرة جديدة</span><i class="fas fa-user-plus"></i> </button>
 
                                     </div>
-                                    {this.state.showMsg ? this.props.msg == "تم إدخال البيانات بنجاح" ? <div id="showmsg" className="alert alert-success" role="alert"> {this.props.msg}</div> : this.props.msg == "يوجد خطاء بقاعدة البيانات" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.props.msg}</div> : this.props.msg == "يجب إدخال أي من الإسم ورقم الأداء" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.props.msg}</div> : null : null}
+                                    {this.state.showMsg ? this.props.msg == "تم إدخال البيانات بنجاح" ? <div id="showmsg" className="alert alert-success" role="alert"> {this.props.msg}</div> : this.props.msg == "تم إدخال هذه الخبرة من قبل" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.props.msg}</div> : this.props.msg == "يجب إدخال أي من الإسم ورقم الأداء" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.props.msg}</div> : null : null}
 
                                     <div style={{ display: "flex", justifyContent: "space-around" }}>
 

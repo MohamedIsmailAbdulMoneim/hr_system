@@ -6,8 +6,6 @@ import {
 } from "../../actions/Actions";
 import { getEmpAppraisal, newAppraisal, updateEmpAppraisal, deleteEmpAppraisal } from "../../actions/TransActions"
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
-import moment from 'react-moment';
 import 'moment-timezone';
 import Pagination from "../Pagination";
 
@@ -90,7 +88,7 @@ class EmpsAppraisal extends React.Component {
 
     handleNewAppraisal = (e) => {
         let obj = {
-            appDate: this.state.addAppraisalYear, appValue: this.state.addEmpAppraisal, empid: this.state.empid, empname: this.state.empname, isShown: `"true"`
+            appDate: this.state.addAppraisalYear, appValue: this.state.addEmpAppraisal, empid: this.state.empid, empname: this.state.empname, isShown: `"True"`
         }
 
         let nameOrId = ''
@@ -109,9 +107,12 @@ class EmpsAppraisal extends React.Component {
         }
         this.setState({ showMsg: true })
 
-        setTimeout(() => {
-            this.setState({ showMsg: false })
-        }, 3000)
+        if(this.props.msg === "تم إدخال التقييم بنجاح"){
+            setTimeout(() => {
+                this.setState({ showMsg: false })
+            }, 3000)
+        }
+
     }
 
     idInputHandler = (e) => {
@@ -345,7 +346,7 @@ class EmpsAppraisal extends React.Component {
                                         <span>إضافة تقييم جديد</span>
                                         <div></div>
                                     </div>
-                                    {this.state.showMsg ? this.props.msg == "تم إدخال التقييم بنجاح" ? <div id="showmsg" className="alert alert-success" role="alert"> {this.props.msg}</div> : this.props.msg == "يوجد خطاء بقاعدة البيانات" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.props.msg}</div> : this.props.msg == "يجب إدخال أي من الإسم ورقم الأداء" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.props.msg}</div> : null : null}
+                                    {this.state.showMsg ? this.props.msg == "تم إدخال التقييم بنجاح" ? <div id="showmsg" className="alert alert-success" role="alert"> {this.props.msg}</div> : this.props.msg == "تم إدخال التقييم من قبل" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.props.msg}</div> : this.props.msg == "يجب إدخال أي من الإسم ورقم الأداء" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.props.msg}</div> : null : null}
                                     <div style={{ display: "flex", justifyContent: "space-around" }}>
                                         <div className="form-group" controlId="formBasicEmail">
                                             <label style={{ width: "100%", textAlign: "right" }}>رقم الأداء : </label>

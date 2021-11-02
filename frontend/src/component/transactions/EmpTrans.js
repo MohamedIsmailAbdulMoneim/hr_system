@@ -4,10 +4,7 @@ import {
 } from "../../actions/Actions";
 import { updateEmpTrans, getEmpTrans, insertNewTrans, deleteEmpTrans } from "../../actions/TransActions";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
 import axios from "axios";
-import excelJs from 'exceljs'
-import Reactmoment from "react-moment"
 import ExcelSheet from "../reports/ExcelSheet"
 import ImportExcel from "../ImportExcel"
 import structure from "../structure.png"
@@ -406,7 +403,7 @@ class EmpTrans extends React.Component {
 
 
     closeAddConfirmHandler = (e) => {
-        this.setState({ addConfirmed: false })
+        this.setState({ confirmAdd: false })
     }
 
 
@@ -1422,7 +1419,11 @@ class EmpTrans extends React.Component {
 
 
                                 </div>
-                                {this.state.confirmAdd ? <div style={{ width: "70%" }} class="alert alert-warning" role="alert"> هل انت متأكد من إضافة تدرج جديد ؟ <button onClick={this.handelInsertNewTrans} style={{ position: "absolute", left: "17%", top: "80%" }} type="button" class="btn btn-warning">تأكيد</button> <i onClick={this.closeAddConfirmHandler} style={{ fontSize: 15, position: "relative", top: "5%", left: "62%" }} class="fas fa-times-circle"></i></div> : null}
+                                {this.state.confirmAdd ? <div style={{ width: "70%",display: "flex", justifyContent: "space-between" }} class="alert alert-warning" role="alert"> 
+                                <i onClick={this.closeAddConfirmHandler} style={{ fontSize: 15 }} class="fas fa-times-circle"></i>
+                                 <p>هل انت متأكد من إضافة تدرج جديد ؟</p>
+                                 <button onClick={this.handelInsertNewTrans}  type="button" class="btn btn-warning">تأكيد</button>
+                                 </div> : null}
                             </div>
                         </div>
 

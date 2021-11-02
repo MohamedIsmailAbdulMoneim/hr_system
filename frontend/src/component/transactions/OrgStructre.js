@@ -1,11 +1,10 @@
-import React, { Fragment } from "react";
+import React from "react";
 import {
     getCates,
     getJobDgByCat,
     getSupBoxNamesandmanager
 } from "../../actions/Actions";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
 import axios from "axios";
 
 class OrgStructre extends React.Component {

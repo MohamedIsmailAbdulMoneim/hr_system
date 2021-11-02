@@ -66,15 +66,19 @@ app.use(
 );
 
 app.use(
-  express.static("frontend/build")
+  express.static("frontend/src/css/rtl")
 );
 
-app.get("*", (req, res) => {
-  res.sendFile(
-    path.resolve(__dirname, 'frontend', 'build', 'index.html')
-  );
+// app.use(
+//   express.static("frontend/build")
+// );
 
-})
+// app.get("*", (req, res) => {
+//   res.sendFile(
+//     path.resolve(__dirname, 'frontend', 'build', 'index.html')
+//   );
+
+// })
 
 app.use((error, req, res, next) => {
   next(error)

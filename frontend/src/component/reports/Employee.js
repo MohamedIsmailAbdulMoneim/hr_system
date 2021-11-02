@@ -7,9 +7,7 @@ import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { Form, FormGroup, FormLabel, FormControl, FormText, FormCheck, Button, Row, Col } from 'react-bootstrap';
-import avatar from '../../uploads/26104092101019.jpg'
-import avatar2 from '../../uploads/26108020201219.jpg'
-console.log(avatar,avatar2);
+var jp = require('jsonpath');
 
 const imgname = '26104092101019.jpg'
 
@@ -19,7 +17,7 @@ class Employee extends React.Component {
         super(props);
         this.state = {
 
-            showMsg: false, showMsgOfChange: false, messege: "", add: false, addConfirmed: false, edit: false, EditConfirmed: false,
+            showMsgBeforSend: false, showMsg: false, showMsgOfChange: false, messege: "", add: false, addConfirmed: false, edit: false, EditConfirmed: false,
             showNamesResults: false, addEmpId: "", addEmpName: "", addContractType: "", addDoc: "", addDoj: "",
             addStation: "", addJS: "", addEmpNid: "",
             addPOIssuance: "", addDOIssuance: "", addinsuranceNum: "", addinsuranceOffice: "", addAddress: "", addMPhoneNum: "",
@@ -199,7 +197,7 @@ class Employee extends React.Component {
             showMsgOfChange: true
         })
         let editInputs = document.getElementsByClassName('edit')
-        for(let i = 0; i < editInputs.length; i++){
+        for (let i = 0; i < editInputs.length; i++) {
             editInputs[i].value = ''
         }
     }
@@ -274,15 +272,25 @@ class Employee extends React.Component {
             console.log('inputs are not completed');
 
         } else if (state.addEmpNid.length !== 14) {
-            console.log('رقم البطاقة غير صحيح');
 
             this.setState({
-                messege: "رقم البطاقة غير صحيح"
+                messege: "رقم البطاقة غير صحيح",
+                showMsgBeforSend: true
             })
 
-        } else {
+        }else if(state.addMPhoneNum.length !== 11){
+
             this.setState({
-                addConfirmed: true, finalData: data, img: img
+                messege: "رقم الموبايل غير صحيح",
+                showMsgBeforSend: true
+            })
+
+        }
+        else {
+            this.setState({
+                addConfirmed: true, finalData: data, img: img,
+                showMsgBeforSend: false
+
             })
         }
     }
@@ -296,10 +304,17 @@ class Employee extends React.Component {
             showMsg: true,
             addConfirmed: false
         })
+        if (this.props.msg === "تم إدخال البيانات بنجاح") {
+            this.setState({
+                add: false
+            })
+        }
 
         let addinputs = document.getElementsByClassName('add')
-        for(let i = 0; i < addinputs.length; i++){
-            addinputs[i].value = ''
+        if (this.props.msg === "تم إدخال البيانات بنجاح") {
+            for (let i = 0; i < addinputs.length; i++) {
+                addinputs[i].value = ''
+            }
         }
     }
 
@@ -571,7 +586,7 @@ class Employee extends React.Component {
 
 
     render() {
-        console.log(this.state.mainUpdateQuery);
+        console.log(this.state.messege);
         let marStatus = ["اعزب",
             "متزوج",
             "متزوج ويعول",
@@ -1044,17 +1059,16 @@ class Employee extends React.Component {
                                             </div>
                                         </div>
                                     </div>
-                                    <div style={{ display: "table" }}>
+                                    {/* <div style={{ display: "table" }}>
                                         <div style={{ display: "table-row" }}>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable ">صورة الموظف</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <input onChange={this.addpicHandler} type="file" id="myFile" name="filename" className="oneInputMargin " />
-
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> */}
 
                                     <div style={{ display: "table" }}>
                                         <div style={{ display: "table-row" }}>
@@ -1066,13 +1080,16 @@ class Employee extends React.Component {
                                                         هل انت متأكد من إضافة بيانات جديد ؟ <button onClick={this.handleSendData} type="button" class="btn btn-warning">تأكيد</button>
                                                     </div>
                                                     : null}
-                                                {this.state.showMsg ? this.state.messege == "تم إدخال البيانات بنجاح" ? <div id="showmsg" className="alert alert-success" role="alert"> {this.state.messege}</div> : this.state.messege == "يوجد خطاء بقاعدة البيانات" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege}</div> : this.state.messege == "رقم البطاقة غير صحيح" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege}</div> : this.state.messege == "البيانات غير كاملة" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege}</div> : null : null}
+                                                {this.state.showMsg ? this.props.msg === "تم إدخال البيانات بنجاح" ? <div id="showmsg" className="alert alert-success" role="alert"> {this.props.msg}</div> : this.props.msg === "تم إدخال بيانات هذا الموظف من قبل" ?
+                                                <div id="showmsg" className="alert alert-danger" role="alert">{this.props.msg}</div> : this.state.messege == "رقم الموبايل غير صحيح" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege}</div> : this.state.messege === "رقم البطاقة غير صحيح" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege}</div> : null : null}
+                                                {this.state.showMsgBeforSend ? this.state.messege === "رقم الموبايل غير صحيح" ? <div id="showmsgbeforsend" className="alert alert-danger" role="alert">{this.state.messege}</div> : this.state.messege === "رقم البطاقة غير صحيح" ? <div id="showmsgbeforsend" className="alert alert-danger" role="alert">{this.state.messege}</div> : null : null}
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            : <div className="col-lg-8">
+                            :
+                            <div className="col-lg-8">
                                 <div className="data-wrapper" style={{ background: "transparent", height: "100%", width: "100%" }} >
                                     <h3 style={{ marginRight: 20, marginTop: 20, textAlign: "right", fontFamily: 'Markazi Text ,serif', fontWeight: 700 }}>البيانات الشخصية</h3>
                                     <div style={{ display: "table" }}>
@@ -1081,13 +1098,13 @@ class Employee extends React.Component {
                                                 <label className="medium-lable">الرقم القومي</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control medium-medium-input edit" onChange={this.changeHandler} colName={"NATIONAL_ID_CARD_NO"} placeholder={this.props.empdetails.length ? this.props.empdetails[0][0].NATIONAL_ID_CARD_NO : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control medium-medium-input edit" onChange={this.changeHandler} colName={"NATIONAL_ID_CARD_NO"} placeholder={jp.query(this.props.empdetails, '$..NATIONAL_ID_CARD_NO')} readOnly={!this.state.edit} type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable">جهة الصدور</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control  medium-medium-input edit" onChange={this.changeHandler} colName={"NATIONAL_ID_CARD_ISSUED_BY"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].NATIONAL_ID_CARD_ISSUED_BY : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control  medium-medium-input edit" onChange={this.changeHandler} colName={"NATIONAL_ID_CARD_ISSUED_BY"} placeholder={jp.query(this.props.empdetails, '$..NATIONAL_ID_CARD_ISSUED_BY')} readOnly={!this.state.edit} type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable">تاريخ الصدور</label>
@@ -1095,7 +1112,7 @@ class Employee extends React.Component {
                                             <div style={{ display: "table-cell" }}>
                                                 {/* <input className="form-control  medium-medium-input" onChange={this.changeHandler} colName={"ADDRESS_GOVERNORATE"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].addressgov : null : null} readOnly={!this.state.edit} type="text" /> */}
 
-                                                <input className="form-control medium-medium-input edit" list="brow300" onChange={this.changeHandler} colName={"ADDRESS_GOVERNORATE"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].addressgov : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control medium-medium-input edit" list="brow300" onChange={this.changeHandler} colName={"ADDRESS_GOVERNORATE"} placeholder={jp.query(this.props.empdetails, '$..addressgov')} readOnly={!this.state.edit} type="text" />
                                                 <datalist id="brow300">
                                                     {governorate.map(gov => (
                                                         <option value={gov} />
@@ -1110,13 +1127,13 @@ class Employee extends React.Component {
                                                 <label className="medium-lable">الرقم التأميني</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control medium-input edit" onChange={this.changeHandler} colName={"SOCIAL_INSURANCE_NUMBER"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].SOCIAL_INSURANCE_NUMBER : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control medium-input edit" onChange={this.changeHandler} colName={"SOCIAL_INSURANCE_NUMBER"} placeholder={jp.query(this.props.empdetails, '$..SOCIAL_INSURANCE_NUMBER')} readOnly={!this.state.edit} type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="big-lable towMediumInputsLableMargin">مكتب التأمينات</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control medium-input edit" onChange={this.changeHandler} colName={"INSURANCE_OFFICE"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].INSURANCE_OFFICE : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control medium-input edit" onChange={this.changeHandler} colName={"INSURANCE_OFFICE"} placeholder={jp.query(this.props.empdetails, '$..INSURANCE_OFFICE')} readOnly={!this.state.edit} type="text" />
                                             </div>
                                         </div>
                                     </div>
@@ -1136,13 +1153,13 @@ class Employee extends React.Component {
                                                 <label className="medium-lable">العنوان</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control medium-medium-input edit" onChange={this.changeHandler} colName={"ADDRESS"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].ADDRESS : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control medium-medium-input edit" onChange={this.changeHandler} colName={"ADDRESS"} placeholder={jp.query(this.props.empdetails, '$..ADDRESS')} readOnly={!this.state.edit} type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable">المنطقة</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin edit" onChange={this.changeHandler} colName={"NATIONAL_ID_CARD_ISSUED_BY"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].NATIONAL_ID_CARD_ISSUED_BY : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin edit" onChange={this.changeHandler} colName={"NATIONAL_ID_CARD_ISSUED_BY"} placeholder={jp.query(this.props.empdetails, '$..NATIONAL_ID_CARD_ISSUED_BY')} readOnly={!this.state.edit} type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable">المحافظة</label>
@@ -1150,7 +1167,7 @@ class Employee extends React.Component {
                                             <div style={{ display: "table-cell" }}>
                                                 {/* <input className="form-control  medium-medium-input" onChange={this.changeHandler} colName={"ADDRESS_GOVERNORATE"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].addressgov : null : null} readOnly={!this.state.edit} type="text" /> */}
 
-                                                <input className="form-control medium-medium-input edit" list="brow300" onChange={this.changeHandler} colName={"ADDRESS_GOVERNORATE"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].addressgov : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control medium-medium-input edit" list="brow300" onChange={this.changeHandler} colName={"ADDRESS_GOVERNORATE"} placeholder={jp.query(this.props.empdetails, '$..addressgov')} readOnly={!this.state.edit} type="text" />
                                                 <datalist id="brow300">
                                                     {governorate.map(gov => (
                                                         <option value={gov} />
@@ -1169,10 +1186,10 @@ class Employee extends React.Component {
 
                                                 {this.state.edit ?
 
-                                                    <input className="form-control medium-medium-input threeMediumBigInputsLableMargin edit" onChange={this.changeHandler} colName={"PHONE_2_HOME"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].PHONE_2_HOME : null : null} readOnly={!this.state.edit} type="text" />
+                                                    <input className="form-control medium-medium-input threeMediumBigInputsLableMargin edit" onChange={this.changeHandler} colName={"PHONE_2_HOME"} placeholder={jp.query(this.props.empdetails, '$..PHONE_2_HOME')} readOnly={!this.state.edit} type="text" />
 
                                                     :
-                                                    <input className="form-control medium-medium-input threeMediumBigInputsLableMargin edit" onChange={this.changeHandler} colName={"PHONE_2_HOME"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].PHONE_2_HOME : null : null} readOnly={!this.state.edit} type="text" />
+                                                    <input className="form-control medium-medium-input threeMediumBigInputsLableMargin edit" onChange={this.changeHandler} colName={"PHONE_2_HOME"} placeholder={jp.query(this.props.empdetails, '$..PHONE_2_HOME')} readOnly={!this.state.edit} type="text" />
 
                                                 }
                                             </div>
@@ -1181,16 +1198,16 @@ class Employee extends React.Component {
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 {this.state.edit ?
-                                                    <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin edit" onChange={this.changeHandler} colName={"PHONE_1_OFFICE"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].PHONE_1_OFFICE : null : null} readOnly={!this.state.edit} type="text" />
+                                                    <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin edit" onChange={this.changeHandler} colName={"PHONE_1_OFFICE"} placeholder={jp.query(this.props.empdetails, '$..PHONE_1_OFFICE')} readOnly={!this.state.edit} type="text" />
                                                     :
-                                                    <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin edit" onChange={this.changeHandler} colName={"PHONE_1_OFFICE"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].PHONE_1_OFFICE : null : null} readOnly={!this.state.edit} type="text" />
+                                                    <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin edit" onChange={this.changeHandler} colName={"PHONE_1_OFFICE"} placeholder={jp.query(this.props.empdetails, '$..PHONE_1_OFFICE')} readOnly={!this.state.edit} type="text" />
                                                 }
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable">الموبايل</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin edit" onChange={this.changeHandler} colName={"PHONE_3_MOBILE"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].PHONE_3_MOBILE : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin edit" onChange={this.changeHandler} colName={"PHONE_3_MOBILE"} placeholder={jp.query(this.props.empdetails, '$..PHONE_3_MOBILE')} readOnly={!this.state.edit} type="text" />
                                             </div>
                                         </div>
                                     </div>
@@ -1200,7 +1217,7 @@ class Employee extends React.Component {
                                                 <label className="medium-lable">البريد الأليكتروني</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control medium-input edit" onChange={this.changeHandler} colName={"EMP_EMAIL"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].EMP_EMAIL : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control medium-input edit" onChange={this.changeHandler} colName={"EMP_EMAIL"} placeholder={jp.query(this.props.empdetails, '$..EMP_EMAIL')} readOnly={!this.state.edit} type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="big-lable towMediumInputsLableMargin">الحالة الإجتماعية</label>
@@ -1208,7 +1225,7 @@ class Employee extends React.Component {
                                             <div style={{ display: "table-cell" }}>
                                                 {/* <input className="form-control medium-input" onChange={this.changeHandler} colName={"MARITAL_STATUS"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].maritalstatear : null : null} readOnly={!this.state.edit} type="text" /> */}
 
-                                                <input className="form-control medium-input edit" type="text" list="brow90" onChange={this.changeHandler} colName={"MARITAL_STATUS"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].maritalstatear : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control medium-input edit" type="text" list="brow90" onChange={this.changeHandler} colName={"MARITAL_STATUS"} placeholder={jp.query(this.props.empdetails, '$..maritalstatear')} readOnly={!this.state.edit} type="text" />
                                                 <datalist id="brow90">
                                                     {marStatus.map(marstatus => (
                                                         <option value={marstatus} />
@@ -1224,7 +1241,7 @@ class Employee extends React.Component {
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 {/* <input className="form-control medium-medium-input threeMediumBigInputsLableMargin" onChange={this.changeHandler} colName={"SYNDICATE"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].syndicatear : null : null} readOnly={!this.state.edit} type="text" /> */}
-                                                <input className="form-control medium-medium-input edit" list="brow50" onChange={this.changeHandler} colName={"SYNDICATE"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].syndicatear : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control medium-medium-input edit" list="brow50" onChange={this.changeHandler} colName={"SYNDICATE"} placeholder={jp.query(this.props.empdetails, '$..syndicatear')} readOnly={!this.state.edit} type="text" />
                                                 <datalist id="brow50">
                                                     {syndicate.map(synd => (
                                                         <option value={synd} />
@@ -1235,13 +1252,13 @@ class Employee extends React.Component {
                                                 <label className="medium-lable">رقم العضوية</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin edit" onChange={this.changeHandler} colName={"SYNDICATE_REGISTERATION"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].SYNDICATE_REGISTERATION : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin edit" onChange={this.changeHandler} colName={"SYNDICATE_REGISTERATION"} placeholder={jp.query(this.props.empdetails, '$..SYNDICATE_REGISTERATION')} readOnly={!this.state.edit} type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable">تاريخ العضوية </label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin edit" onChange={this.changeHandler} colName={"SYNDICATE_REGISTERATION_DATE"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].SYNDICATE_REGISTERATION_DATE : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin edit" onChange={this.changeHandler} colName={"SYNDICATE_REGISTERATION_DATE"} placeholder={jp.query(this.props.empdetails, '$..SYNDICATE_REGISTERATION_DATE')} readOnly={!this.state.edit} type="text" />
                                             </div>
                                         </div>
                                     </div>
@@ -1276,7 +1293,7 @@ class Employee extends React.Component {
                                                 <label className="medium-lable">النوع</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control medium-input edit" list="brow5" onChange={this.changeHandler} colName={"GENDER"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].genderar : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control medium-input edit" list="brow5" onChange={this.changeHandler} colName={"GENDER"} placeholder={jp.query(this.props.empdetails, '$..genderar')} readOnly={!this.state.edit} type="text" />
                                                 <datalist id="brow5">
                                                     <option value='ذكر' />
                                                     <option value='أنثى' />
@@ -1286,7 +1303,7 @@ class Employee extends React.Component {
                                                 <label className="medium-lable towMediumInputsLableMargin">الديانة</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control medium-input edit" list="brow6" onChange={this.changeHandler} colName={"RELIGION"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].religinar : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control medium-input edit" list="brow6" onChange={this.changeHandler} colName={"RELIGION"} placeholder={jp.query(this.props.empdetails, '$..religinar')} readOnly={!this.state.edit} type="text" />
                                                 <datalist id="brow6">
                                                     <option value='مسلم' />
                                                     <option value='مسيحي' />
@@ -1300,19 +1317,19 @@ class Employee extends React.Component {
                                                 <label className="medium-lable ">تاريخ الميلاد</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control medium-medium-input threeMediumBigInputsLableMargin edit" onChange={this.changeHandler} colName={"BIRTH_DATE"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].BIRTH_DATE : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control medium-medium-input threeMediumBigInputsLableMargin edit" onChange={this.changeHandler} colName={"BIRTH_DATE"} placeholder={jp.query(this.props.empdetails, '$..BIRTH_DATE')} readOnly={!this.state.edit} type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable">جهة الميلاد</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin edit" onChange={this.changeHandler} colName={"PLACE_OF_BIRTH"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].PLACE_OF_BIRTH : 'لاتوجد بيانات' : 'لاتوجد بيانات'} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin edit" onChange={this.changeHandler} colName={"PLACE_OF_BIRTH"} placeholder={jp.query(this.props.empdetails, '$..PLACE_OF_BIRTH')} readOnly={!this.state.edit} type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable">محافظة الميلاد</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control medium-medium-input threeMediumBigInputsLableMargin edit" list="brow3" onChange={this.changeHandler} colName={"GOVERNORATE_OF_BIRTH"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].birthGov : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control medium-medium-input threeMediumBigInputsLableMargin edit" list="brow3" onChange={this.changeHandler} colName={"GOVERNORATE_OF_BIRTH"} placeholder={jp.query(this.props.empdetails, '$..birthGov')} readOnly={!this.state.edit} type="text" />
                                                 <datalist id="brow3">
                                                     {governorate.map(gov => (
                                                         <option value={gov} />
@@ -1328,14 +1345,14 @@ class Employee extends React.Component {
                                                 <label className="medium-lable">رقم الأداء</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control small-input edit" onChange={this.changeHandler} colName={'EMPLOYEE_ID'} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].EMPLOYEE_ID : null : null} readOnly={!this.state.edit} type="number" />
+                                                <input className="form-control small-input edit" onChange={this.changeHandler} colName={'EMPLOYEE_ID'} placeholder={jp.query(this.props.empdetails, '$..EMPLOYEE_ID')} readOnly={!this.state.edit} type="number" />
                                             </div>
 
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable towMediumInputsLableMargin2" >الإسم</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input ref="nameinput" className="form-control medium-input edit" style={{ marginRight: 30 }} onChange={this.changeHandler} colName={"NAME_ARABIC"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].NAME_ARABIC : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input ref="nameinput" className="form-control medium-input edit" style={{ marginRight: 30 }} onChange={this.changeHandler} colName={"NAME_ARABIC"} placeholder={jp.query(this.props.empdetails, '$..NAME_ARABIC')} readOnly={!this.state.edit} type="text" />
                                             </div>
                                         </div>
                                     </div>
@@ -1346,13 +1363,13 @@ class Employee extends React.Component {
                                                 <label className="medium-lable" >تاريخ العقد</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control medium-input edit" onChange={this.changeHandler} colName={"SECTOR_JOIN_DATE"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].SECTOR_JOIN_DATE : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control medium-input edit" onChange={this.changeHandler} colName={"SECTOR_JOIN_DATE"} placeholder={jp.query(this.props.empdetails, '$..SECTOR_JOIN_DATE')} readOnly={!this.state.edit} type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="big-lable towMediumInputsLableMargin">تاريخ التعيين</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control medium-input edit" onChange={this.changeHandler} colName={"TRANS_DATE"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][2] ? this.props.empdetails[2][0].TRANS_DATE : null : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control medium-input edit" onChange={this.changeHandler} colName={"TRANS_DATE"} placeholder={jp.query(this.props.empdetails, '$..TRANS_DATE')} readOnly={!this.state.edit} type="text" />
                                             </div>
                                         </div>
                                     </div>
@@ -1364,13 +1381,13 @@ class Employee extends React.Component {
                                                 <label className="medium-lable">الوظيفة الحالية</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control medium-input edit" onChange={this.changeHandler} colName={"MAIN_BOX_NAME"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[1].length > 0 ? this.props.empdetails[1][0].J_D_NAME : null : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control medium-input edit" onChange={this.changeHandler} colName={"MAIN_BOX_NAME"} placeholder={jp.query(this.props.empdetails, '$..J_D_NAME')} readOnly={!this.state.edit} type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="big-lable towMediumInputsLableMargin">المسمى الوظيفي</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control medium-input edit" onChange={this.changeHandler} colName={"JOB_ASSIGNMENT_FORM"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].SUP_BOX_NAME : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control medium-input edit" onChange={this.changeHandler} colName={"JOB_ASSIGNMENT_FORM"} placeholder={jp.query(this.props.empdetails, '$..SUP_BOX_NAME')} readOnly={!this.state.edit} type="text" />
                                             </div>
                                         </div>
                                     </div>
@@ -1381,13 +1398,13 @@ class Employee extends React.Component {
                                                 <label className="medium-lable">طريقة شغلها</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control medium-input edit" onChange={this.changeHandler} colName={"MAIN_BOX_NAME"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[1].length > 0 ? this.props.empdetails[1][0].JOB_ASSIGNMENT_FORM_ARABIC : null : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control medium-input edit" onChange={this.changeHandler} colName={"MAIN_BOX_NAME"} placeholder={jp.query(this.props.empdetails, '$..JOB_ASSIGNMENT_FORM_ARABIC')} readOnly={!this.state.edit} type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="big-lable towMediumInputsLableMargin">تاريخ شغلها</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control medium-input edit" onChange={this.changeHandler} colName={"JOB_ASSIGNMENT_FORM"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[1].length > 0 ? this.props.empdetails[1][0].TRANS_DATE : null : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control medium-input edit"  placeholder={jp.query(this.props.empdetails, '$..curjobname')} readOnly={!this.state.edit} type="text" />
                                             </div>
                                         </div>
                                     </div>
@@ -1397,7 +1414,7 @@ class Employee extends React.Component {
                                                 <label className="medium-lable">الإدارة</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control giant-input oneInputMargin edit" onChange={this.changeHandler} colName={"SUP_BOX_NAME"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[1].length > 0 ? this.props.empdetails[1][0].CAT_NAME : null : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control giant-input oneInputMargin edit" onChange={this.changeHandler} colName={"SUP_BOX_NAME"} placeholder={jp.query(this.props.empdetails, '$..CAT_NAME')} readOnly={!this.state.edit} type="text" />
                                             </div>
                                         </div>
                                     </div>
@@ -1408,16 +1425,16 @@ class Employee extends React.Component {
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 {this.state.edit ?
-                                                    <input className="form-control  small-input edit" colName={"JOB_LOCATION"} onChange={this.changeHandler} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].joblocation : null : null} readOnly={!this.state.edit} type="text" />
+                                                    <input className="form-control  small-input edit" colName={"JOB_LOCATION"} onChange={this.changeHandler} placeholder={jp.query(this.props.empdetails, '$..joblocation')} readOnly={!this.state.edit} type="text" />
                                                     :
-                                                    <input className="form-control  small-input edit" colName={"JOB_LOCATION"} onChange={this.changeHandler} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].joblocation : null : null} readOnly={!this.state.edit} type="text" />
+                                                    <input className="form-control  small-input edit" colName={"JOB_LOCATION"} onChange={this.changeHandler} placeholder={jp.query(this.props.empdetails, '$..joblocation')} readOnly={!this.state.edit} type="text" />
                                                 }
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable threeSmallLableMargin">المنطقة</label>
                                             </div>
                                             <div style={{ display: "table-cell" }}>
-                                                <input className="form-control  small-input edit" onChange={this.changeHandler} colName={"JOB_AREA"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].jobarea : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control  small-input edit" onChange={this.changeHandler} colName={"JOB_AREA"} placeholder={jp.query(this.props.empdetails, '$..jobarea')} readOnly={!this.state.edit} type="text" />
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 <label className="medium-lable threeSmallLableMargin">المحافظة</label>
@@ -1425,7 +1442,7 @@ class Employee extends React.Component {
                                             <div style={{ display: "table-cell" }}>
                                                 {/* <input className="form-control  small-input" onChange={this.changeHandler} colName={"JOB_GOVERNORATE"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].jobGov : null : null} readOnly={!this.state.edit} type="text" /> */}
 
-                                                <input className="form-control small-input edit" list="brow300" onChange={this.changeHandler} colName={"JOB_GOVERNORATE"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].jobGov : null : null} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control small-input edit" list="brow300" onChange={this.changeHandler} colName={"JOB_GOVERNORATE"} placeholder={jp.query(this.props.empdetails, '$..jobGov')} readOnly={!this.state.edit} type="text" />
                                                 <datalist id="brow300">
                                                     {governorate.map(gov => (
                                                         <option value={gov} />
@@ -1441,7 +1458,7 @@ class Employee extends React.Component {
                                             </div>
                                             <div style={{ display: "table-cell" }}>
 
-                                                <input className="form-control medium-input edit" onChange={this.changeHandler} colName={"G_NAME"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[1].length > 0 ? this.props.empdetails[1][0].gname : null : null : null} readOnly={!this.state.edit} type="text" list="brow450" />
+                                                <input className="form-control medium-input edit" onChange={this.changeHandler} colName={"G_NAME"} placeholder={jp.query(this.props.empdetails, '$..gname')} readOnly={!this.state.edit} type="text" list="brow450" />
                                                 <datalist id="brow450">
                                                     {emp_status.map(empstatus => (
                                                         <option value={empstatus} />
@@ -1453,9 +1470,9 @@ class Employee extends React.Component {
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 {this.state.edit ?
-                                                    <input className="form-control medium-input edit" onChange={this.changeHandler} colName={"EMP_STATUS"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].empstatusar : null : null} readOnly={!this.state.edit} type="text" />
+                                                    <input className="form-control medium-input edit" onChange={this.changeHandler} colName={"EMP_STATUS"} placeholder={jp.query(this.props.empdetails, '$..empstatusar')} readOnly={!this.state.edit} type="text" />
                                                     :
-                                                    <input className="form-control medium-input edit" onChange={this.changeHandler} colName={"EMP_STATUS"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0][0].empstatusar : null : null} readOnly={!this.state.edit} type="text" />
+                                                    <input className="form-control medium-input edit" onChange={this.changeHandler} colName={"EMP_STATUS"} placeholder={jp.query(this.props.empdetails, '$..empstatusar')} readOnly={!this.state.edit} type="text" />
                                                 }
                                             </div>
                                         </div>
@@ -1472,6 +1489,8 @@ class Employee extends React.Component {
                                                         </div>
                                                         : null}
                                                     {this.state.showMsgOfChange ? this.state.messege == "تم إدخال البيانات بنجاح" ? <div id="showMsgOfChange" className="alert alert-success" role="alert"> {this.state.messege}</div> : this.state.messege == "يوجد خطاء بقاعدة البيانات" ? <div id="showMsgOfChange" className="alert alert-danger" role="alert">{this.state.messege}</div> : this.state.messege == "رقم البطاقة غير صحيح" ? <div id="showMsgOfChange" className="alert alert-danger" role="alert">{this.state.messege}</div> : this.state.messege == "البيانات غير كاملة" ? <div id="showMsgOfChange" className="alert alert-danger" role="alert">{this.state.messege}</div> : null : null}
+                                                    {this.state.showMsg ? this.state.messege == "تم إدخال التدريب بنجاح" ? <div id="showmsg" className="alert alert-success" role="alert"> {this.state.messege}</div> : this.state.messege == "يوجد خطاء بقاعدة البيانات" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege}</div> : this.state.messege == "يجب إدخال أي من الإسم ورقم الأداء" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege}</div> : null : null}
+
                                                 </div>
                                             </div>
                                         </div>
@@ -1483,24 +1502,27 @@ class Employee extends React.Component {
                                         <button onClick={this.clickHandler} style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170, background: "#4f4f63", color: "white" }} type="button" class="btn btn-outline btn-lg btn-primary">تعديل البيانات</button>
                                     </div>
                                 </div>
-                            </div>}
+                            </div>
+                        }
                         <div style={{ display: "flex", height: "100%", minHeight: "1000px" }} className="col-lg-4">
                             <div style={{ background: "transparent", height: 750, width: "100%" }} >
-                                <img style={{ borderTop: 3 }} src={`http://localhost:5000/${this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[1].length > 0 ? this.props.empdetails[0][0].emp_image : null : null : null}`}  class="rounded-circle" width="150" />
-                                <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", marginTop: 10 }}>
-                                    <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg"><Link to={`/empedudeg`}><a onClick={this.empEduButtonHandler} href="/empedudeg">المؤهل</a></Link></button>
-                                    <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg" ><Link to={`/EmpTrans`}><a onClick={this.empTransButtonHandler} href="/EmpTrans">التدرج</a></Link></button>
-                                    <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg"><Link to={`/empexperience`}><a onClick={this.empExpHandler} href="/empexperience">الخبرات</a></Link></button>
-                                    <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg"><Link to={`/empfamily`}><a onClick={this.empFamilyButtonHandler} href="/empfamily">العائلية</a></Link></button>
-                                    <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg"> <Link to={`/EmpTraining`}><a onClick={this.empTrainingHandler} href="/EmpTraining">التدريب</a></Link></button>
-                                    <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg"><Link to={`/emppenalty`}><a onClick={this.empPenaltyHandler} href="/emppenalty">الجزاءات</a></Link></button>
-                                    <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg">الهيكل</button>
-                                    <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg">بطاقة الوصف</button>
-                                    <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg"><Link to={`/empsappraisal`}><a onClick={this.empAppraisalHandler} href="/empsappraisal">التقييمات السنوية</a></Link></button>
-                                    <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg">طباعة البيانات الوظيفية</button>
-
-
-                                </div>
+                                {!this.state.edit && !this.state.add ?
+                                    <Fragment>
+                                        <img style={{ borderTop: 3 }} src={`http://localhost:5000/${jp.query(this.props.empdetails, '$..emp_image')}`} class="rounded-circle" width="150" />
+                                        <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", marginTop: 10 }}>
+                                            <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg"><Link to={`/empedudeg`}><a onClick={this.empEduButtonHandler} href="/empedudeg">المؤهل</a></Link></button>
+                                            <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg" ><Link to={`/EmpTrans`}><a onClick={this.empTransButtonHandler} href="/EmpTrans">التدرج</a></Link></button>
+                                            <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg"><Link to={`/empexperience`}><a onClick={this.empExpHandler} href="/empexperience">الخبرات</a></Link></button>
+                                            <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg"><Link to={`/empfamily`}><a onClick={this.empFamilyButtonHandler} href="/empfamily">العائلية</a></Link></button>
+                                            <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg"> <Link to={`/EmpTraining`}><a onClick={this.empTrainingHandler} href="/EmpTraining">التدريب</a></Link></button>
+                                            <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg"><Link to={`/emppenalty`}><a onClick={this.empPenaltyHandler} href="/emppenalty">الجزاءات</a></Link></button>
+                                            <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg">الهيكل</button>
+                                            <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg">بطاقة الوصف</button>
+                                            <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg"><Link to={`/empsappraisal`}><a onClick={this.empAppraisalHandler} href="/empsappraisal">التقييمات السنوية</a></Link></button>
+                                            <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg">طباعة البيانات الوظيفية</button>
+                                        </div>
+                                    </Fragment>
+                                    : null}
                             </div>
                         </div>
                     </div>
@@ -1520,6 +1542,7 @@ const mapStateToProps = (state) => {
     return {
         empdetails: state.posts.empdetails,
         empNameByName: state.posts.empNameByName,
+        msg: state.posts.msg
 
     };
 };

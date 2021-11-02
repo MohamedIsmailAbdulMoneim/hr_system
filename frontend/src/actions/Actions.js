@@ -40,8 +40,10 @@ export const newEmp = (data) => (dispatch) => {
     url: "http://localhost:5000/insertnewemp",
     headers: { "Content-Type": "application/json" },
 }).then((res) => {
-  console.log(res);
-})
+  dispatch({
+    type: addnewOutsourceEmp,
+    payload: res.data
+  })})
 }
 
 
@@ -51,11 +53,12 @@ export const newEmpImg = (formData) => (dispatch) => {
     data:formData,
     url: "http://localhost:5000/insertempimg",
     headers: { "Content-Type": "multipart/form-data" },
-}).then(data=> console.log(data)
-    // dispatch({
-    //   type: addnewEmp,
-    //   payload: res.data
-    // })
+}).then(data=> {
+    dispatch({
+      type: addnewEmp,
+      payload: data.data
+    })
+  }
 )
 }
 export const newOutsourceEmp = (data) => (dispatch) => {

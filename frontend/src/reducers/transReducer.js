@@ -22,7 +22,6 @@ import {
   fetchEmpAppraisal,
   updateExperience
 } from "../actions/ActionTypes";
-import { newEmp } from "../actions/TransActions";
 const initialState = {
   empTrans: [],
   msg: null,
@@ -37,7 +36,7 @@ const initialState = {
 
 };
 
-export default function (state = initialState, action) {
+export default function trans (state = initialState, action) {
   switch (action.type) {
 
     /* -------------------experience--------------------- */

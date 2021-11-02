@@ -1,4 +1,4 @@
-import { fetchCountEmpsInGoverns, fetchNatIdExpired, callFetchNatIdExpired } from "../actions/ActionTypes";
+import { fetchCountEmpsInGoverns, fetchNatIdExpired } from "../actions/ActionTypes";
 const initialState = {
     ceig: [],
     expiredIdCard: [],
@@ -6,7 +6,7 @@ const initialState = {
 
 };
 
-export default function (state = initialState, action) {
+export default function report (state = initialState, action) {
     switch (action.type) {
 
         case fetchCountEmpsInGoverns:

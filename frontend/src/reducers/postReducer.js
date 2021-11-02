@@ -10,7 +10,6 @@ import {
 } from "../actions/ActionTypes";
 
 const initialState = {
-  msg: null,
   items: [],
   mainCodes: [],
   cates: [],
@@ -25,7 +24,8 @@ const initialState = {
   empavailsup: [],
   empcurrentjd: [],
   upjd: [],
-  empdetails: [],
+  empdetails: [[],[],[]],
+  msg: null,
   outsourceEmpDetails: [],
   downJd: [],
   empNameByName: [],
@@ -39,7 +39,7 @@ const initialState = {
 
 };
 
-export default function (state = initialState, action) {
+export default function post (state = initialState, action) {
   switch (action.type) {
 
     case addnewEmp:
