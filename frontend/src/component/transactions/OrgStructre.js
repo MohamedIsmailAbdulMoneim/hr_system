@@ -54,7 +54,7 @@ class OrgStructre extends React.Component {
         console.log(this.props.supandmang);
 
         return (
-            <div id="page-wrapper" >
+            <div id="page-wrapper" className="orgstructure" >
                 <div className="row">
                     <div className="col-lg-12">
                         <h1 className="page-header">Forms</h1>

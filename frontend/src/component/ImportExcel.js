@@ -2,11 +2,6 @@ import React, { Fragment } from "react";
 import Excel from 'exceljs'
 
 class Upload extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
-
     handleImport = (e) => {
         const wb = new Excel.Workbook();
         const reader = new FileReader();

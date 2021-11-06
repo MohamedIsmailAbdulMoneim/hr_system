@@ -5,11 +5,8 @@ import {
 import { getEmpTrans, getEmpExp, getEmpFamily, getEmpEdu, getEmpAppraisal, getempspenalties, getEmpTraining } from "../../actions/TransActions"
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
-import axios from "axios";
-import { Form, FormGroup, FormLabel, FormControl, FormText, FormCheck, Button, Row, Col } from 'react-bootstrap';
 var jp = require('jsonpath');
 
-const imgname = '26104092101019.jpg'
 
 
 class Employee extends React.Component {
@@ -44,7 +41,7 @@ class Employee extends React.Component {
 
         if (e.target.value.length < 1) {
             let removedArrOfApQ = [...this.state.mainUpdateQuery]
-            if (removedArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName"))) != -1) {
+            if (removedArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName"))) !== -1) {
                 let removedIndex = removedArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName")))
                 removedArrOfApQ.splice(removedIndex, 1)
                 this.setState({
@@ -53,57 +50,57 @@ class Employee extends React.Component {
             }
         } else if (e.target.value.length > 0) {
             let newArrOfApQ = [...this.state.mainUpdateQuery]
-            if (newArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName"))) != -1) {
-                if (e.target.getAttribute("colName") == "JOB_GOVERNORATE") {
+            if (newArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName"))) !== -1) {
+                if (e.target.getAttribute("colName") === "JOB_GOVERNORATE") {
                     let updatedIndexOfNew = newArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName")))
                     newArrOfApQ[updatedIndexOfNew] = `${e.target.getAttribute("colName")} = (SELECT GOVERNORATE FROM governorate WHERE GOVERNORATE_ARABIC = "${e.target.value}")`
                     this.setState({
                         mainUpdateQuery: newArrOfApQ
                     })
                 }
-                else if (e.target.getAttribute("colName") == "EMP_STATUS") {
+                else if (e.target.getAttribute("colName") === "EMP_STATUS") {
                     let updatedIndexOfNew = newArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName")))
                     newArrOfApQ[updatedIndexOfNew] = `${e.target.getAttribute("colName")} = (SELECT EMP_STATUS FROM emp_status WHERE EMP_STATUS_NAME = "${e.target.value}")`
                     this.setState({
                         mainUpdateQuery: newArrOfApQ
                     })
                 }
-                else if (e.target.getAttribute("colName") == "ADDRESS_GOVERNORATE") {
+                else if (e.target.getAttribute("colName") === "ADDRESS_GOVERNORATE") {
                     let updatedIndexOfNew = newArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName")))
                     newArrOfApQ[updatedIndexOfNew] = `${e.target.getAttribute("colName")} = (SELECT GOVERNORATE FROM governorate WHERE GOVERNORATE_ARABIC = "${e.target.value}")`
                     this.setState({
                         mainUpdateQuery: newArrOfApQ
                     })
                 }
-                else if (e.target.getAttribute("colName") == "MARITAL_STATUS") {
+                else if (e.target.getAttribute("colName") === "MARITAL_STATUS") {
                     let updatedIndexOfNew = newArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName")))
                     newArrOfApQ[updatedIndexOfNew] = `${e.target.getAttribute("colName")} = (SELECT MARITAL_STATUS FROM marital_status WHERE STATUS_DESC = "${e.target.value}")`
                     this.setState({
                         mainUpdateQuery: newArrOfApQ
                     })
                 }
-                else if (e.target.getAttribute("colName") == "SYNDICATE") {
+                else if (e.target.getAttribute("colName") === "SYNDICATE") {
                     let updatedIndexOfNew = newArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName")))
                     newArrOfApQ[updatedIndexOfNew] = `${e.target.getAttribute("colName")} = (SELECT SYNDICATE FROM syndicate WHERE SYNDICATE_NAME = "${e.target.value}")`
                     this.setState({
                         mainUpdateQuery: newArrOfApQ
                     })
                 }
-                else if (e.target.getAttribute("colName") == "GENDER") {
+                else if (e.target.getAttribute("colName") === "GENDER") {
                     let updatedIndexOfNew = newArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName")))
                     newArrOfApQ[updatedIndexOfNew] = `${e.target.getAttribute("colName")} = (SELECT GENDER FROM genders WHERE GENDER_NAME = "${e.target.value}")`
                     this.setState({
                         mainUpdateQuery: newArrOfApQ
                     })
                 }
-                else if (e.target.getAttribute("colName") == "RELIGION") {
+                else if (e.target.getAttribute("colName") === "RELIGION") {
                     let updatedIndexOfNew = newArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName")))
                     newArrOfApQ[updatedIndexOfNew] = `${e.target.getAttribute("colName")} = (SELECT RELIGION FROM religions WHERE RELIGION_NAME = "${e.target.value}")`
                     this.setState({
                         mainUpdateQuery: newArrOfApQ
                     })
                 }
-                else if (e.target.getAttribute("colName") == "GOVERNORATE_OF_BIRTH") {
+                else if (e.target.getAttribute("colName") === "GOVERNORATE_OF_BIRTH") {
                     let updatedIndexOfNew = newArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName")))
                     newArrOfApQ[updatedIndexOfNew] = `${e.target.getAttribute("colName")} = (SELECT GOVERNORATE FROM governorate WHERE GOVERNORATE_ARABIC = "${e.target.value}")`
                     this.setState({
@@ -117,56 +114,56 @@ class Employee extends React.Component {
                     })
                 }
             } else {
-                if (e.target.getAttribute("colName") == "JOB_GOVERNORATE") {
+                if (e.target.getAttribute("colName") === "JOB_GOVERNORATE") {
                     let newArr = [...this.state.mainUpdateQuery]
                     newArr.push(`${e.target.getAttribute("colName")} = (SELECT GOVERNORATE FROM governorate WHERE GOVERNORATE_ARABIC = "${e.target.value}")`)
                     this.setState({
                         mainUpdateQuery: newArr
                     })
                 }
-                else if (e.target.getAttribute("colName") == "EMP_STATUS") {
+                else if (e.target.getAttribute("colName") === "EMP_STATUS") {
                     let newArr = [...this.state.mainUpdateQuery]
                     newArr.push(`${e.target.getAttribute("colName")} = (SELECT EMP_STATUS FROM emp_status WHERE EMP_STATUS_NAME = "${e.target.value}")`)
                     this.setState({
                         mainUpdateQuery: newArr
                     })
                 }
-                else if (e.target.getAttribute("colName") == "ADDRESS_GOVERNORATE") {
+                else if (e.target.getAttribute("colName") === "ADDRESS_GOVERNORATE") {
                     let newArr = [...this.state.mainUpdateQuery]
                     newArr.push(`${e.target.getAttribute("colName")} = (SELECT GOVERNORATE FROM governorate WHERE GOVERNORATE_ARABIC = "${e.target.value}")`)
                     this.setState({
                         mainUpdateQuery: newArr
                     })
                 }
-                else if (e.target.getAttribute("colName") == "MARITAL_STATUS") {
+                else if (e.target.getAttribute("colName") === "MARITAL_STATUS") {
                     let newArr = [...this.state.mainUpdateQuery]
                     newArr.push(`${e.target.getAttribute("colName")} = (SELECT MARITAL_STATUS FROM marital_status WHERE STATUS_DESC = "${e.target.value}")`)
                     this.setState({
                         mainUpdateQuery: newArr
                     })
                 }
-                else if (e.target.getAttribute("colName") == "SYNDICATE") {
+                else if (e.target.getAttribute("colName") === "SYNDICATE") {
                     let newArr = [...this.state.mainUpdateQuery]
                     newArr.push(`${e.target.getAttribute("colName")} = (SELECT SYNDICATE FROM syndicate WHERE SYNDICATE_NAME = "${e.target.value}")`)
                     this.setState({
                         mainUpdateQuery: newArr
                     })
                 }
-                else if (e.target.getAttribute("colName") == "GENDER") {
+                else if (e.target.getAttribute("colName") === "GENDER") {
                     let newArr = [...this.state.mainUpdateQuery]
                     newArr.push(`${e.target.getAttribute("colName")} = (SELECT GENDER FROM genders WHERE GENDER_NAME = "${e.target.value}")`)
                     this.setState({
                         mainUpdateQuery: newArr
                     })
                 }
-                else if (e.target.getAttribute("colName") == "RELIGION") {
+                else if (e.target.getAttribute("colName") === "RELIGION") {
                     let newArr = [...this.state.mainUpdateQuery]
                     newArr.push(`${e.target.getAttribute("colName")} = (SELECT RELIGION FROM religions WHERE RELIGION_NAME = "${e.target.value}")`)
                     this.setState({
                         mainUpdateQuery: newArr
                     })
                 }
-                else if (e.target.getAttribute("colName") == "GOVERNORATE_OF_BIRTH") {
+                else if (e.target.getAttribute("colName") === "GOVERNORATE_OF_BIRTH") {
                     let newArr = [...this.state.mainUpdateQuery]
                     newArr.push(`${e.target.getAttribute("colName")} = (SELECT GOVERNORATE FROM governorate WHERE GOVERNORATE_ARABIC = "${e.target.value}")`)
                     this.setState({
@@ -443,12 +440,12 @@ class Employee extends React.Component {
     }
 
     addMirStatusHandler = (e) => {
-        if (e.target.value == "ادي الخدمه العسكرية") {
+        if (e.target.value === "ادي الخدمه العسكرية") {
             this.setState({
                 milStatusIsCompleted: true,
                 milStatusIsTempEx: false
             })
-        } else if (e.target.value == "معاف مؤقت") {
+        } else if (e.target.value === "معاف مؤقت") {
             this.setState({
                 milStatusIsTempEx: true,
                 milStatusIsCompleted: false
@@ -661,7 +658,6 @@ class Employee extends React.Component {
             'مدينة نصر',
             'مصدق',
         ]
-        let area = ["شرق", "غرب", "الصعيد", "الدلتا", "الأسكندرية", "القناة"]
         let emp_status = ['على قوة العمل',
             'أستقالة',
             'موقوف',
@@ -731,7 +727,7 @@ class Employee extends React.Component {
 
         }
         return (
-            <div id="page-wrapper">
+            <div id="page-wrapper" className="employee">
 
                 <div className="row">
                     <div className="col-lg-12" style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: 10 }}>
@@ -748,7 +744,7 @@ class Employee extends React.Component {
                                     </div>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>الإسم : </label>
-                                        <input id="name" id="empname" className="form-control" onKeyDown={this.nameInputHandler} style={{ background: "white", width: "100%", minWidth: "250px", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
+                                        <input  className="form-control" onKeyDown={this.nameInputHandler} style={{ background: "white", width: "100%", minWidth: "250px", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
                                     </div>
                                 </div>
                             </div>
@@ -974,7 +970,7 @@ class Employee extends React.Component {
                                             </div>
                                         </div>
                                         : null}
-                                    {this.state.syndicateAdded == false ?
+                                    {this.state.syndicateAdded === false ?
                                         <div style={{ display: "table" }}>
                                             <div style={{ display: "table-row" }}>
                                                 <div style={{ display: "table-cell" }}>
@@ -1081,7 +1077,7 @@ class Employee extends React.Component {
                                                     </div>
                                                     : null}
                                                 {this.state.showMsg ? this.props.msg === "تم إدخال البيانات بنجاح" ? <div id="showmsg" className="alert alert-success" role="alert"> {this.props.msg}</div> : this.props.msg === "تم إدخال بيانات هذا الموظف من قبل" ?
-                                                <div id="showmsg" className="alert alert-danger" role="alert">{this.props.msg}</div> : this.state.messege == "رقم الموبايل غير صحيح" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege}</div> : this.state.messege === "رقم البطاقة غير صحيح" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege}</div> : null : null}
+                                                <div id="showmsg" className="alert alert-danger" role="alert">{this.props.msg}</div> : this.state.messege === "رقم الموبايل غير صحيح" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege}</div> : this.state.messege === "رقم البطاقة غير صحيح" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege}</div> : null : null}
                                                 {this.state.showMsgBeforSend ? this.state.messege === "رقم الموبايل غير صحيح" ? <div id="showmsgbeforsend" className="alert alert-danger" role="alert">{this.state.messege}</div> : this.state.messege === "رقم البطاقة غير صحيح" ? <div id="showmsgbeforsend" className="alert alert-danger" role="alert">{this.state.messege}</div> : null : null}
                                             </div>
                                         </div>
@@ -1225,7 +1221,7 @@ class Employee extends React.Component {
                                             <div style={{ display: "table-cell" }}>
                                                 {/* <input className="form-control medium-input" onChange={this.changeHandler} colName={"MARITAL_STATUS"} placeholder={this.props.empdetails ? this.props.empdetails.length ? this.props.empdetails[0].maritalstatear : null : null} readOnly={!this.state.edit} type="text" /> */}
 
-                                                <input className="form-control medium-input edit" type="text" list="brow90" onChange={this.changeHandler} colName={"MARITAL_STATUS"} placeholder={jp.query(this.props.empdetails, '$..maritalstatear')} readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control medium-input edit" list="brow90" onChange={this.changeHandler} colName={"MARITAL_STATUS"} placeholder={jp.query(this.props.empdetails, '$..maritalstatear')} readOnly={!this.state.edit} type="text" />
                                                 <datalist id="brow90">
                                                     {marStatus.map(marstatus => (
                                                         <option value={marstatus} />
@@ -1488,8 +1484,8 @@ class Employee extends React.Component {
                                                             هل انت متأكد من إضافة بيانات جديد ؟ <button onClick={this.handleSendDataToChange} type="button" class="btn btn-warning">تأكيد</button>
                                                         </div>
                                                         : null}
-                                                    {this.state.showMsgOfChange ? this.state.messege == "تم إدخال البيانات بنجاح" ? <div id="showMsgOfChange" className="alert alert-success" role="alert"> {this.state.messege}</div> : this.state.messege == "يوجد خطاء بقاعدة البيانات" ? <div id="showMsgOfChange" className="alert alert-danger" role="alert">{this.state.messege}</div> : this.state.messege == "رقم البطاقة غير صحيح" ? <div id="showMsgOfChange" className="alert alert-danger" role="alert">{this.state.messege}</div> : this.state.messege == "البيانات غير كاملة" ? <div id="showMsgOfChange" className="alert alert-danger" role="alert">{this.state.messege}</div> : null : null}
-                                                    {this.state.showMsg ? this.state.messege == "تم إدخال التدريب بنجاح" ? <div id="showmsg" className="alert alert-success" role="alert"> {this.state.messege}</div> : this.state.messege == "يوجد خطاء بقاعدة البيانات" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege}</div> : this.state.messege == "يجب إدخال أي من الإسم ورقم الأداء" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege}</div> : null : null}
+                                                    {this.state.showMsgOfChange ? this.state.messege === "تم إدخال البيانات بنجاح" ? <div id="showMsgOfChange" className="alert alert-success" role="alert"> {this.state.messege}</div> : this.state.messege === "يوجد خطاء بقاعدة البيانات" ? <div id="showMsgOfChange" className="alert alert-danger" role="alert">{this.state.messege}</div> : this.state.messege === "رقم البطاقة غير صحيح" ? <div id="showMsgOfChange" className="alert alert-danger" role="alert">{this.state.messege}</div> : this.state.messege === "البيانات غير كاملة" ? <div id="showMsgOfChange" className="alert alert-danger" role="alert">{this.state.messege}</div> : null : null}
+                                                    {this.state.showMsg ? this.state.messege === "تم إدخال التدريب بنجاح" ? <div id="showmsg" className="alert alert-success" role="alert"> {this.state.messege}</div> : this.state.messege === "يوجد خطاء بقاعدة البيانات" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege}</div> : this.state.messege === "يجب إدخال أي من الإسم ورقم الأداء" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege}</div> : null : null}
 
                                                 </div>
                                             </div>
@@ -1508,17 +1504,17 @@ class Employee extends React.Component {
                             <div style={{ background: "transparent", height: 750, width: "100%" }} >
                                 {!this.state.edit && !this.state.add ?
                                     <Fragment>
-                                        <img style={{ borderTop: 3 }} src={`http://localhost:5000/${jp.query(this.props.empdetails, '$..emp_image')}`} class="rounded-circle" width="150" />
-                                        <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", marginTop: 10 }}>
-                                            <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg"><Link to={`/empedudeg`}><a onClick={this.empEduButtonHandler} href="/empedudeg">المؤهل</a></Link></button>
-                                            <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg" ><Link to={`/EmpTrans`}><a onClick={this.empTransButtonHandler} href="/EmpTrans">التدرج</a></Link></button>
-                                            <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg"><Link to={`/empexperience`}><a onClick={this.empExpHandler} href="/empexperience">الخبرات</a></Link></button>
-                                            <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg"><Link to={`/empfamily`}><a onClick={this.empFamilyButtonHandler} href="/empfamily">العائلية</a></Link></button>
-                                            <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg"> <Link to={`/EmpTraining`}><a onClick={this.empTrainingHandler} href="/EmpTraining">التدريب</a></Link></button>
-                                            <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg"><Link to={`/emppenalty`}><a onClick={this.empPenaltyHandler} href="/emppenalty">الجزاءات</a></Link></button>
+                                        <img style={{ borderTop: 3 }} src={`http://localhost:5000/${jp.query(this.props.empdetails, '$..emp_image')}`} alt="img" class="rounded-circle" width="150" />
+                                        <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", marginTop: 10 }} >
+                                            <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg"><Link to={`/empedudeg`} onClick={this.empEduButtonHandler}>المؤهل</Link></button>
+                                            <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg" ><Link to={`/EmpTrans`} onClick={this.empTransButtonHandler}>التدرج</Link></button>
+                                            <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg"><Link to={`/empexperience`} onClick={this.empExpHandler}>الخبرات</Link></button>
+                                            <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg"><Link to={`/empfamily`} onClick={this.empFamilyButtonHandler}>العائلية</Link></button>
+                                            <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg"> <Link to={`/EmpTraining`} onClick={this.empTrainingHandler}>التدريب</Link></button>
+                                            <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg"><Link to={`/emppenalty`} onClick={this.empPenaltyHandler}>الجزاءات</Link></button>
                                             <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg">الهيكل</button>
                                             <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg">بطاقة الوصف</button>
-                                            <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg"><Link to={`/empsappraisal`}><a onClick={this.empAppraisalHandler} href="/empsappraisal">التقييمات السنوية</a></Link></button>
+                                            <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg"><Link to={`/empsappraisal`}onClick={this.empAppraisalHandler}>التقييمات السنوية</Link></button>
                                             <button style={{ display: "block", border: "1px solid black", marginTop: 5, minWidth: 170 }} type="button" class="btn btn-outline btn-lg">طباعة البيانات الوظيفية</button>
                                         </div>
                                     </Fragment>

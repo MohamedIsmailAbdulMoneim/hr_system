@@ -9,8 +9,6 @@ import ExcelSheet from "../reports/ExcelSheet"
 import ImportExcel from "../ImportExcel"
 import structure from "../structure.png"
 
-let length = 0
-
 const colNames = [{ label: "الإسم", value: "name" }, { label: "تاريخ الحركة", value: "date" }, { label: "الإدارة", value: "dep" }, { label: "الوظيفة", value: "job" }, { label: "المسمى الوظيفي", value: "jobdesc" }, { label: "نوع التخصص", value: "gname" }, { label: "طريقة شغل الوظيفة", value: "jas" }, { label: "حالة الوظيفة", value: "ind" }]
 class EmpTrans extends React.Component {
     constructor(props) {
@@ -50,8 +48,8 @@ class EmpTrans extends React.Component {
     idInputHandlerForAdd = (e) => {
         this.refs.nameadd.value = ''
         this.setState({ empidForAdd: e.target.value, empnameForAdd: null })
-        if (e.target.value.length == 0) {
-            this.setState({ empidForAdd: null })
+        if (e.target.value.length === 0) {
+            this.setState({ empidForAdd: null, confirmAdd: false })
         }
     }
 
@@ -67,8 +65,8 @@ class EmpTrans extends React.Component {
     nameInputHandlerForAdd = (e) => {
         this.setState({ showNamesResultsForAdd: true, empidForAdd: null, empnameForAdd: e.target.value })
         this.props.getEmpNameByName(e.target.value)
-        if (e.target.value.length == 0) {
-            this.setState({ empnameForAdd: null })
+        if (e.target.value.length === 0) {
+            this.setState({ empnameForAdd: null, confirmAdd: false })
         }
         this.refs.idadd.value = ''
     }
@@ -80,7 +78,7 @@ class EmpTrans extends React.Component {
     }
     namesOptionshandlerForAdd = (e) => {
         this.setState({
-            empnameForAdd: e.target.value, empidForAdd: null
+            empnameForAdd: e.target.value, empidForAdd: null, confirmAdd: false
         })
         if (this.refs.nameadd) this.refs.nameadd.value = e.target.value
     }
@@ -95,13 +93,13 @@ class EmpTrans extends React.Component {
         let newArr = this.state.addDate.slice()
         newArr[index] = { value: e.target.value, key: index }
         this.setState({
-            addDate: newArr
+            addDate: newArr, confirmAdd: false
         })
     }
     tabhandler = (e) => {
         let nodes = document.getElementsByClassName("ind");
         let index = Array.prototype.indexOf.call(nodes, e.target);
-        if (e.key === 'Tab' && index == nodes.length - 1 || this.state.trnasLength <= 6) {
+        if ((e.key === 'Tab' && index) === nodes.length - 1 || this.state.trnasLength <= 6) {
             if (this.state.trnasLength < 5) {
 
                 this.setState(prevState => {
@@ -140,6 +138,7 @@ class EmpTrans extends React.Component {
                     addInd: [...this.state.addInd, " "],
                     jobDgByCat: [...this.state.jobDgByCat, { data: [" "], IdNum: prevState.trnasLength + 1 }],
                     empavailsup: [...this.state.empavailsup, { data: [" "], IdNumSP: prevState.trnasLength + 1 }],
+                    confirmAdd: false
 
 
                 }
@@ -187,6 +186,7 @@ class EmpTrans extends React.Component {
                     jobDgByCat: newArrOfJobDgByCat,
                     empavailsup: newArrOfempavailsup,
                     addStation: newArrOfStation,
+                    confirmAdd: false
                 }
             })
         }
@@ -203,7 +203,7 @@ class EmpTrans extends React.Component {
         axios.get(`http://localhost:5000/getjobdgbycat/${e.target.value}`).then((res => {
             newArrOfJd[jdIndex] = { data: res.data, IdNum: e.target.getAttribute("idNum") }
             this.setState({
-                jobDgByCat: newArrOfJd
+                jobDgByCat: newArrOfJd, confirmAdd: false
             })
         }))
 
@@ -221,7 +221,7 @@ class EmpTrans extends React.Component {
 
     addJdNameClickHandeler = (e) => {
 
-        this.setState({ showStructWAdd: false, jdname: e.target.value, levels: this.props.jobdgbycat ? this.props.jobdgbycat.length ? this.props.jobdgbycat[0].levels : null : null })
+        this.setState({ confirmAdd: false, showStructWAdd: false, jdname: e.target.value, levels: this.props.jobdgbycat ? this.props.jobdgbycat.length ? this.props.jobdgbycat[0].levels : null : null })
         let nodes = document.getElementsByClassName("jd");
         let index = Array.prototype.indexOf.call(nodes, e.target);
         let newArr = this.state.jdNameAdd.slice()
@@ -232,7 +232,6 @@ class EmpTrans extends React.Component {
 
         axios.get(`http://localhost:5000/getavailsupbox/${e.target.parentNode.previousSibling.childNodes[0].value}/${e.target.value}`).then(res => {
             newArrOfSp[spIndex] = { data: res.data, IdNumSP: e.target.getAttribute("IdNumSP") }
-            console.log(res.data);
             this.setState({
                 empavailsup: newArrOfSp
             })
@@ -259,7 +258,8 @@ class EmpTrans extends React.Component {
         newArr[index] = { value: e.target.value, key: index, supboxid: e.target.options[i].getAttribute("supboxid") }
         this.setState({
             addSupbox: newArr,
-            showStructWAdd: true
+            showStructWAdd: true,
+            confirmAdd: false
         })
         // this.props.getUpJd(10, this.props.empname ? this.props.empname.length ? this.props.empname[0].SUP_BOX_ID : null : null))
 
@@ -272,6 +272,7 @@ class EmpTrans extends React.Component {
         newArr[index] = { value: e.target.value, key: index }
         this.setState({
             addGName: newArr,
+            confirmAdd: false
         })
     }
 
@@ -281,7 +282,8 @@ class EmpTrans extends React.Component {
         let newArr = this.state.addJasi.slice()
         newArr[index] = { value: e.target.value, key: index }
         this.setState({
-            addJasi: newArr
+            addJasi: newArr,
+            confirmAdd: false
         })
     }
 
@@ -291,7 +293,8 @@ class EmpTrans extends React.Component {
         let newArr = this.state.addInd.slice()
         newArr[index] = { value: e.target.value, key: index }
         this.setState({
-            addInd: newArr
+            addInd: newArr,
+            confirmAdd: false
         })
 
     }
@@ -302,7 +305,8 @@ class EmpTrans extends React.Component {
         let newArr = this.state.addStation.slice()
         newArr[index] = { value: e.target.value, key: index }
         this.setState({
-            addStation: newArr
+            addStation: newArr,
+            confirmAdd: false
         })
     }
 
@@ -312,22 +316,23 @@ class EmpTrans extends React.Component {
         var arrays = state.addDate.concat(state.catnameAdd, state.jdNameAdd, state.addSupbox, state.addGName, state.addJasi, state.addInd, state.addStation)
         var emptyInputs = arrays.find(i => i.length <= 1) || null
         let arr = []
-        console.log(arrays);
+        console.log(this.state.addInd);
 
-        if (emptyInputs != undefined) {
+        if (emptyInputs) {
             console.log('hit');
-        } else if (emptyInputs == undefined && (this.state.empnameForAdd || this.state.empidForAdd)) {
+        } else if (!emptyInputs && (this.state.empnameForAdd || this.state.empidForAdd)) {
             let i = arrays.length / 8
             while (i > 0) {
+                let k = i
                 let smallArr = []
-                var arrloop = arrays.filter(el => el.key == i - 1)
-                console.log(arrloop);
+                let arrloop = arrays.filter(el => el.key === k - 1)
                 let nameOrId;
                 if (this.state.empnameForAdd) {
                     nameOrId = `((SELECT NATIONAL_ID_CARD_NO FROM employee WHERE NAME_ARABIC = "${this.state.empnameForAdd}")`
                 } else if (this.state.empidForAdd) {
                     nameOrId = `((SELECT NATIONAL_ID_CARD_NO FROM employee WHERE EMPLOYEE_ID = ${this.state.empidForAdd})`
                 }
+                console.log(k, arrays.length, arrays);
                 smallArr.push(arrloop[6].value)
                 smallArr.push(nameOrId)
                 smallArr.push(`"true"`)
@@ -350,9 +355,19 @@ class EmpTrans extends React.Component {
             this.setState({
                 confirmAdd: true, finalData: arr,
             })
+            var addInputs = document.getElementsByClassName('add')
+            for(let i = 0; i < addInputs.length; i++){
+                console.log(addInputs[0].tagName);
+                if(addInputs[i].options){
+                    if(addInputs[i].value === ''){
+                        this.setState({
+                            confirmAdd: false, finalData: arr,
+                        })
+                    }
+                }
+            }
+
         }
-        console.log(arrays);
-        console.log(arr);
     }
     ImportExcelHandler = (data) => {
         let newArr = []
@@ -377,6 +392,22 @@ class EmpTrans extends React.Component {
         }).then((res) => {
             console.log(res);
         })
+    }
+
+    handelInsertNewTrans = (e) => {
+        e.preventDefault()
+        var addInputs = document.getElementsByClassName('add')
+        for(let i = 0; i < addInputs.length; i++){
+            console.log(addInputs[0].tagName);
+            if(addInputs[i].options){
+                addInputs[i].value = "... اختر"
+            }
+        }
+        this.props.insertNewTrans({data:this.state.finalData,ind: this.state.addInd})
+        this.setState({
+            confirmAdd: false
+        })
+
     }
 
 
@@ -445,20 +476,10 @@ class EmpTrans extends React.Component {
 
     // End Of Methods
 
-
-
-    makeClouser = (i) => {
-        let index = i
-        function typeIndex(y) {
-            return i + y
-        }
-        return typeIndex;
-    }
-
     handleDataSet = () => {
         const dataSet = [];
         this.props.empTrans.map(inf => {
-            dataSet.push({ name: inf.NAME_ARABIC, date: inf.TRANS_DATE, dep: inf.CAT_NAME, job: inf.MAIN_BOX_NAME, jobdesc: inf.SUP_BOX_NAME, gname: inf.G_NAME, jas: inf.JOB_ASSIGNMENT_FORM_ARABIC, ind: inf.INDICATOR_NAME })
+            return dataSet.push({ name: inf.NAME_ARABIC, date: inf.TRANS_DATE, dep: inf.CAT_NAME, job: inf.MAIN_BOX_NAME, jobdesc: inf.SUP_BOX_NAME, gname: inf.G_NAME, jas: inf.JOB_ASSIGNMENT_FORM_ARABIC, ind: inf.INDICATOR_NAME })
         })
         return dataSet;
     }
@@ -467,13 +488,6 @@ class EmpTrans extends React.Component {
     closeEditConfirmHandler = (e) => {
         this.setState({ editConfirmed: false })
     }
-
-    handelInsertNewTrans = (e) => {
-        e.preventDefault()
-        this.props.insertNewTrans(this.state.finalData)
-
-    }
-
 
     closeAddSectionHandler = (e) => {
         this.setState({ add: false, showStructWAdd: false })
@@ -643,7 +657,7 @@ class EmpTrans extends React.Component {
             tds[tds.length - 1].childNodes[0].classList.add("fa-times")
         }
         console.log(e.target.getAttribute("empname"));
-        this.setState({ edit: true, mainboxid: e.target.getAttribute("mainboxid"), edit: true, empname: e.target.getAttribute("empname"), transdate: e.target.getAttribute("transdate"), catname: e.target.getAttribute("catname"), catid: e.target.getAttribute("catid"), jdname: e.target.getAttribute("jdname"), supboxname: e.target.getAttribute("supboxname"), gname: e.target.getAttribute("jobgroup"), jasi: e.target.getAttribute("jasform"), indname: e.target.getAttribute("indname") })
+        this.setState({ edit: true, mainboxid: e.target.getAttribute("mainboxid"), empname: e.target.getAttribute("empname"), transdate: e.target.getAttribute("transdate"), catname: e.target.getAttribute("catname"), catid: e.target.getAttribute("catid"), jdname: e.target.getAttribute("jdname"), supboxname: e.target.getAttribute("supboxname"), gname: e.target.getAttribute("jobgroup"), jasi: e.target.getAttribute("jasform"), indname: e.target.getAttribute("indname") })
     }
 
     editDate = (e) => {
@@ -706,7 +720,7 @@ class EmpTrans extends React.Component {
 
     confirmDeleteSTrans = (e) => {
         let query;
-        if (e.target.getAttribute("indicator") == 1) {
+        if (e.target.getAttribute("indicator") === 1) {
             query = `
             is_shown = "false${e.target.getAttribute("id")}" WHERE ROW_ID = ${e.target.getAttribute("id")};
             UPDATE a_job_trans AS a2 SET INDICATOR = 1 WHERE TRANS_DATE =(SELECT
@@ -721,7 +735,7 @@ class EmpTrans extends React.Component {
             AND a_job_trans.is_shown = "true" ORDER by a_job_trans.TRANS_DATE
             `
         }
-        else if (e.target.getAttribute("indicator") == 2) {
+        else if (e.target.getAttribute("indicator") === 2) {
             query = ` 
             is_shown = "false" WHERE ROW_ID = ${e.target.getAttribute("id")};
             UPDATE a_job_trans AS a2 SET INDICATOR = 2 WHERE TRANS_DATE = (SELECT
@@ -737,7 +751,7 @@ class EmpTrans extends React.Component {
             AND a_job_trans.is_shown = "true" ORDER by a_job_trans.TRANS_DATE
             `
         }
-        else if (e.target.getAttribute("indicator") == 3) {
+        else if (e.target.getAttribute("indicator") === 3) {
             query = `
             is_shown = "false" WHERE ROW_ID = ${e.target.getAttribute("id")};
             select *, a_job_trans.SUP_BOX_NAME AS catename from a_job_trans JOIN employee JOIN job_assignment_form JOIN indicators
@@ -765,20 +779,20 @@ class EmpTrans extends React.Component {
     }
     render() {
         let jobDgByCat = this.state.jobDgByCat
-        let firstRender = jobDgByCat.filter(el => el.IdNum == "0" && el.data.length >= 1)
-        let secondRender = jobDgByCat.filter(el => el.IdNum == "1" && el.data.length >= 1)
-        let thirdRender = jobDgByCat.filter(el => el.IdNum == "2" && el.data.length >= 1)
-        let fourthRender = jobDgByCat.filter(el => el.IdNum == "3" && el.data.length >= 1)
-        let fifthRender = jobDgByCat.filter(el => el.IdNum == "4" && el.data.length >= 1)
-        let sixthRender = jobDgByCat.filter(el => el.IdNum == "5" && el.data.length >= 1)
+        let firstRender = jobDgByCat.filter(el => el.IdNum === "0" && el.data.length >= 1)
+        let secondRender = jobDgByCat.filter(el => el.IdNum === "1" && el.data.length >= 1)
+        let thirdRender = jobDgByCat.filter(el => el.IdNum === "2" && el.data.length >= 1)
+        let fourthRender = jobDgByCat.filter(el => el.IdNum === "3" && el.data.length >= 1)
+        let fifthRender = jobDgByCat.filter(el => el.IdNum === "4" && el.data.length >= 1)
+        let sixthRender = jobDgByCat.filter(el => el.IdNum === "5" && el.data.length >= 1)
 
         let empavailsup = this.state.empavailsup
-        let firstRenderSp = empavailsup.filter(el => el.IdNumSP == "0" && el.data.length >= 1)
-        let secondRenderSp = empavailsup.filter(el => el.IdNumSP == "1" && el.data.length >= 1)
-        let thirdRenderSp = empavailsup.filter(el => el.IdNumSP == "2" && el.data.length >= 1)
-        let fourthRenderp = empavailsup.filter(el => el.IdNumSP == "3" && el.data.length >= 1)
-        let fifthRenderSp = empavailsup.filter(el => el.IdNumSP == "4" && el.data.length >= 1)
-        let sixthRenderSp = empavailsup.filter(el => el.IdNumSP == "5" && el.data.length >= 1)
+        let firstRenderSp = empavailsup.filter(el => el.IdNumSP === "0" && el.data.length >= 1)
+        let secondRenderSp = empavailsup.filter(el => el.IdNumSP === "1" && el.data.length >= 1)
+        let thirdRenderSp = empavailsup.filter(el => el.IdNumSP === "2" && el.data.length >= 1)
+        let fourthRenderp = empavailsup.filter(el => el.IdNumSP === "3" && el.data.length >= 1)
+        let fifthRenderSp = empavailsup.filter(el => el.IdNumSP === "4" && el.data.length >= 1)
+        let sixthRenderSp = empavailsup.filter(el => el.IdNumSP === "5" && el.data.length >= 1)
 
         const styles = {
             display: "block",
@@ -796,14 +810,14 @@ class EmpTrans extends React.Component {
             transition: "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out"
         }
         return (
-            <div id="page-wrapper" >
+            <div id="page-wrapper"  className="emptrans">
                 {this.state.add ?
                     <div>
-                        <div class="row">
+                        <div className="row">
                             <div className="col-lg-12" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                                <div style={{ height: "100%", minWidth: 1000 }} class="panel panel-default">
-                                    <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt", display: "flex", justifyContent: "space-between" }} class="panel-heading">
-                                        {this.state.add ? <i onClick={this.closeAddSectionHandler} style={{ fontSize: 15 }} class="fas fa-times-circle"></i> : null}
+                                <div style={{ height: "100%", minWidth: 1000 }} className="panel panel-default">
+                                    <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt", display: "flex", justifyContent: "space-between" }} className="panel-heading">
+                                        {this.state.add ? <i onClick={this.closeAddSectionHandler} style={{ fontSize: 15 }} className="fas fa-times-circle"></i> : null}
                                         <span>إضافة تدرج جديد</span>
                                         <div></div>
                                     </div>
@@ -812,23 +826,23 @@ class EmpTrans extends React.Component {
                                         <div style={{ display: "flex", justifyContent: "space-between" }}>
                                             <div className="form-group" controlId="formBasicEmail">
                                                 <label style={{ width: "100%", textAlign: "right" }}>رقم الأداء : </label>
-                                                <input id="empid" ref="idadd" className="form-control" onChange={this.idInputHandlerForAdd} style={{ background: "white", width: "40%", marginBottom: 5, marginRight: 5, border: "1px solid black" }} type="text" name="first_name" />
+                                                <input id="empid" ref="idadd" className="form-control add" onChange={this.idInputHandlerForAdd} style={{ background: "white", width: "40%", marginBottom: 5, marginRight: 5, border: "1px solid black" }} type="text" name="first_name" />
                                             </div>
                                             <div className="form-group" controlId="formBasicEmail">
                                                 <label style={{ width: "100%", textAlign: "right" }}>الإسم : </label>
-                                                <input id="name" ref="nameadd" className="form-control" onChange={this.nameInputHandlerForAdd} style={{ background: "white", width: "100%", minWidth: "250px", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
+                                                <input id="name" ref="nameadd" className="form-control add" onChange={this.nameInputHandlerForAdd} style={{ background: "white", width: "100%", minWidth: "250px", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
                                             </div>
                                         </div>
                                     </div>
                                     {this.state.showNamesResultsForAdd ? <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}>
                                         <select onClick={this.namesOptionshandler} style={styles} multiple name="pets" id="pet-select">
                                             {this.props.empNameByName.map((name => (
-                                                <option>{name.NAME_ARABIC}</option>
+                                                <option key={name.EMPLOYEE_ID}>{name.NAME_ARABIC}</option>
                                             )))}
                                         </select>
                                     </div> : null}
 
-                                    <table class="table table-striped table-bordered table-hover">
+                                    <table className="table table-striped table-bordered table-hover">
                                         <thead>
                                             <tr>
                                                 <th>تاريخ الحركة</th>
@@ -844,13 +858,13 @@ class EmpTrans extends React.Component {
                                         <tbody>
                                             <tr>
                                                 <td>
-                                                    <input required className="date" onChange={this.handelAddDateClick} type="date" style={{ fontSize: "10pt", background: "white", marginTop: 5, marginRight: 5, height: 25, width: 130, border: "1px solid black" }} />
+                                                    <input required className="date add" onChange={this.handelAddDateClick} type="date" style={{ fontSize: "10pt", background: "white", marginTop: 5, marginRight: 5, height: 25, width: 130, border: "1px solid black" }} />
                                                 </td>
                                                 <td>
-                                                    <select IdNum={0} className="cate" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 170 }} onChange={this.addCatClickHandeler}>
+                                                    <select IdNum={0} className="cate add" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 170 }} onChange={this.addCatClickHandeler}>
                                                         {this.props.cates.map(cate => (
                                                             <Fragment>
-                                                                <option id={cate.CAT_ID}>
+                                                                <option key={cate.CAT_ID} id={cate.CAT_ID}>
                                                                     {cate.CAT_NAME}
                                                                 </option>
                                                             </Fragment>
@@ -861,10 +875,10 @@ class EmpTrans extends React.Component {
                                                     </select>
                                                 </td>
                                                 <td>
-                                                    <select IdNumSP={0} className="jd" required ref="selected" style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 120 }} onChange={this.addJdNameClickHandeler}>
+                                                    <select IdNumSP={0} className="jd add" required ref="selected" style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 120 }} onChange={this.addJdNameClickHandeler}>
                                                         {/* {this.props.jobdgbycat ? this.props.jobdgbycat.length ? this.props.jobdgbycat[0].data.map(job => ( */}
-                                                        {firstRender ? firstRender.length == 1 ? firstRender[0].data.map(job => (
-                                                            <option>
+                                                        {firstRender ? firstRender.length === 1 ? firstRender[0].data.map(job => (
+                                                            <option >
                                                                 {job.J_D_NAME}
                                                             </option>
                                                         )) : null : null}
@@ -873,8 +887,8 @@ class EmpTrans extends React.Component {
                                                     </select>
                                                 </td>
                                                 <td>
-                                                    <select required className="supbox" ref="sps" style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 188 }} onChange={this.addSupboxClickHandeler}>
-                                                        {firstRenderSp ? firstRenderSp.length == 1 ? firstRenderSp[0].data.map(job => (
+                                                    <select required className="supbox add" ref="sps" style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 188 }} onChange={this.addSupboxClickHandeler}>
+                                                        {firstRenderSp ? firstRenderSp.length === 1 ? firstRenderSp[0].data.map(job => (
                                                             <option supboxid={job.SUP_BOX_ID}>
                                                                 {job.SUP_BOX_NAME}
                                                             </option>
@@ -883,14 +897,14 @@ class EmpTrans extends React.Component {
                                                     </select>
                                                 </td>
                                                 <td>
-                                                    <select className="gname" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 6, height: 25, width: 50 }} onChange={this.addGNameClickeHandeler}>
+                                                    <select className="gname add" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 6, height: 25, width: 50 }} onChange={this.addGNameClickeHandeler}>
                                                         <option>فني</option>
                                                         <option>إداري</option>
                                                         <option selected>اختر ...</option>
                                                     </select>
                                                 </td>
                                                 <td>
-                                                    <select className="jas" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 6, height: 25, width: 120 }} onChange={this.addJasiClickeHandeler}>
+                                                    <select className="jas add" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 6, height: 25, width: 120 }} onChange={this.addJasiClickeHandeler}>
                                                         <option>أخرى</option>
                                                         <option>تعيين</option>
                                                         <option>نقل</option>
@@ -919,7 +933,7 @@ class EmpTrans extends React.Component {
                                                     </select>
                                                 </td>
                                                 <td>
-                                                    <select className="ind" onKeyDown={this.tabhandler} required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 50 }} onChange={this.addIndClickeHandeler}>
+                                                    <select className="ind add" onKeyDown={this.tabhandler} required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 50 }} onChange={this.addIndClickeHandeler}>
                                                         <option>أصلية</option>
                                                         <option>حالية</option>
                                                         <option>سابقة</option>
@@ -927,12 +941,15 @@ class EmpTrans extends React.Component {
                                                     </select>
                                                 </td>
                                                 <td>
-                                                    <select className="station" onChange={this.addStationClickeHandeler}>
+                                                    <select className="station add" onChange={this.addStationClickeHandeler}>
                                                         {this.props.stations.map(station => (
                                                             <option>
                                                                 {station.station_name}
                                                             </option>
                                                         ))}
+                                                        <option selected>
+                                                            اختر ...
+                                                        </option>
                                                     </select>
                                                 </td>
                                             </tr>
@@ -940,10 +957,10 @@ class EmpTrans extends React.Component {
                                                 <Fragment>
                                                     <tr>
                                                         <td>
-                                                            <input index={this.makeClouser(length)(1)} required className="date" onChange={this.handelAddDateClick} type="date" style={{ fontSize: "10pt", background: "white", marginTop: 5, marginRight: 5, height: 25, width: 130, border: "1px solid black" }} />
+                                                            <input required className="date add" onChange={this.handelAddDateClick} type="date" style={{ fontSize: "10pt", background: "white", marginTop: 5, marginRight: 5, height: 25, width: 130, border: "1px solid black" }} />
                                                         </td>
                                                         <td>
-                                                            <select IdNum={1} className="cate" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 170 }} onChange={this.addCatClickHandeler}>
+                                                            <select IdNum={1} className="cate add" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 170 }} onChange={this.addCatClickHandeler}>
                                                                 {this.props.cates.map(cate => (
                                                                     <Fragment>
                                                                         <option id={cate.CAT_ID}>
@@ -957,8 +974,8 @@ class EmpTrans extends React.Component {
                                                             </select>
                                                         </td>
                                                         <td>
-                                                            <select IdNumSP={1} className="jd transaddidjd" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 120 }} onChange={this.addJdNameClickHandeler}>
-                                                                {secondRender ? secondRender.length == 1 ? secondRender[0].data.map(job => (
+                                                            <select IdNumSP={1} className="jd transaddidjd add" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 120 }} onChange={this.addJdNameClickHandeler}>
+                                                                {secondRender ? secondRender.length === 1 ? secondRender[0].data.map(job => (
                                                                     <option>
                                                                         {job.J_D_NAME}
                                                                     </option>
@@ -968,8 +985,8 @@ class EmpTrans extends React.Component {
                                                             </select>
                                                         </td>
                                                         <td>
-                                                            <select className="supbox" required ref="sps" style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 188 }} onChange={this.addSupboxClickHandeler}>
-                                                                {secondRenderSp ? secondRenderSp.length == 1 ? secondRenderSp[0].data.map(job => (
+                                                            <select className="supbox add" required ref="sps" style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 188 }} onChange={this.addSupboxClickHandeler}>
+                                                                {secondRenderSp ? secondRenderSp.length === 1 ? secondRenderSp[0].data.map(job => (
                                                                     <option supboxid={job.SUP_BOX_ID}>
                                                                         {job.SUP_BOX_NAME}
                                                                     </option>
@@ -978,14 +995,14 @@ class EmpTrans extends React.Component {
                                                             </select>
                                                         </td>
                                                         <td>
-                                                            <select className="gname" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 6, height: 25, width: 50 }} onChange={this.addGNameClickeHandeler}>
+                                                            <select className="gname add" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 6, height: 25, width: 50 }} onChange={this.addGNameClickeHandeler}>
                                                                 <option>فني</option>
                                                                 <option>إداري</option>
                                                                 <option selected>اختر ...</option>
                                                             </select>
                                                         </td>
                                                         <td>
-                                                            <select className="jas" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 6, height: 25, width: 120 }} onChange={this.addJasiClickeHandeler}>
+                                                            <select className="jas add" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 6, height: 25, width: 120 }} onChange={this.addJasiClickeHandeler}>
                                                                 <option>أخرى</option>
                                                                 <option>تعيين</option>
                                                                 <option>نقل</option>
@@ -1014,7 +1031,7 @@ class EmpTrans extends React.Component {
                                                             </select>
                                                         </td>
                                                         <td>
-                                                            <select className="ind" onKeyDown={this.tabhandler} required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 50 }} onChange={this.addIndClickeHandeler}>
+                                                            <select className="ind add" onKeyDown={this.tabhandler} required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 50 }} onChange={this.addIndClickeHandeler}>
                                                                 <option>أصلية</option>
                                                                 <option>حالية</option>
                                                                 <option>سابقة</option>
@@ -1022,12 +1039,15 @@ class EmpTrans extends React.Component {
                                                             </select>
                                                         </td>
                                                         <td>
-                                                            <select>
+                                                            <select className="station add" onChange={this.addStationClickeHandeler}>
                                                                 {this.props.stations.map(station => (
-                                                                    <option>
+                                                                    <option selected>
                                                                         {station.station_name}
                                                                     </option>
                                                                 ))}
+                                                                <option selected>
+                                                                    اختر ...
+                                                                </option>
                                                             </select>
                                                         </td>
                                                     </tr>
@@ -1036,10 +1056,10 @@ class EmpTrans extends React.Component {
                                                 <Fragment>
                                                     <tr>
                                                         <td>
-                                                            <input required className="date" onChange={this.handelAddDateClick} type="date" style={{ fontSize: "10pt", background: "white", marginTop: 5, marginRight: 5, height: 25, width: 130, border: "1px solid black" }} />
+                                                            <input required className="date add" onChange={this.handelAddDateClick} type="date" style={{ fontSize: "10pt", background: "white", marginTop: 5, marginRight: 5, height: 25, width: 130, border: "1px solid black" }} />
                                                         </td>
                                                         <td>
-                                                            <select IdNum={2} className="cate" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 170 }} onChange={this.addCatClickHandeler}>
+                                                            <select IdNum={2} className="cate add" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 170 }} onChange={this.addCatClickHandeler}>
                                                                 {this.props.cates.map(cate => (
                                                                     <Fragment>
                                                                         <option id={cate.CAT_ID}>
@@ -1053,8 +1073,8 @@ class EmpTrans extends React.Component {
                                                             </select>
                                                         </td>
                                                         <td>
-                                                            <select IdNumSP={2} className="jd transaddidjd" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 120 }} onChange={this.addJdNameClickHandeler}>
-                                                                {thirdRender ? thirdRender.length == 1 ? thirdRender[0].data.map(job => (
+                                                            <select IdNumSP={2} className="jd transaddidjd add" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 120 }} onChange={this.addJdNameClickHandeler}>
+                                                                {thirdRender ? thirdRender.length === 1 ? thirdRender[0].data.map(job => (
                                                                     <option>{job.J_D_NAME}</option>
                                                                 )) : null : null}
                                                                 <option selected>اختر ...</option>
@@ -1062,8 +1082,8 @@ class EmpTrans extends React.Component {
                                                             </select>
                                                         </td>
                                                         <td>
-                                                            <select className="supbox" required ref="sps" style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 188 }} onChange={this.addSupboxClickHandeler}>
-                                                                {thirdRenderSp ? thirdRenderSp.length == 1 ? thirdRenderSp[0].data.map(job => (
+                                                            <select className="supbox add" required ref="sps" style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 188 }} onChange={this.addSupboxClickHandeler}>
+                                                                {thirdRenderSp ? thirdRenderSp.length === 1 ? thirdRenderSp[0].data.map(job => (
                                                                     <option supboxid={job.SUP_BOX_ID}>
                                                                         {job.SUP_BOX_NAME}
                                                                     </option>
@@ -1072,14 +1092,14 @@ class EmpTrans extends React.Component {
                                                             </select>
                                                         </td>
                                                         <td>
-                                                            <select className="gname" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 6, height: 25, width: 50 }} onChange={this.addGNameClickeHandeler}>
+                                                            <select className="gname add" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 6, height: 25, width: 50 }} onChange={this.addGNameClickeHandeler}>
                                                                 <option>فني</option>
                                                                 <option>إداري</option>
                                                                 <option selected>اختر ...</option>
                                                             </select>
                                                         </td>
                                                         <td>
-                                                            <select className="jas" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 6, height: 25, width: 120 }} onChange={this.addJasiClickeHandeler}>
+                                                            <select className="jas add" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 6, height: 25, width: 120 }} onChange={this.addJasiClickeHandeler}>
                                                                 <option>أخرى</option>
                                                                 <option>تعيين</option>
                                                                 <option>نقل</option>
@@ -1108,7 +1128,7 @@ class EmpTrans extends React.Component {
                                                             </select>
                                                         </td>
                                                         <td>
-                                                            <select className="ind" onKeyDown={this.tabhandler} required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 50 }} onChange={this.addIndClickeHandeler}>
+                                                            <select className="ind add" onKeyDown={this.tabhandler} required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 50 }} onChange={this.addIndClickeHandeler}>
                                                                 <option>أصلية</option>
                                                                 <option>حالية</option>
                                                                 <option>سابقة</option>
@@ -1116,12 +1136,15 @@ class EmpTrans extends React.Component {
                                                             </select>
                                                         </td>
                                                         <td>
-                                                            <select onChange={this.addStationClickeHandeler}>
+                                                            <select className="station add" onChange={this.addStationClickeHandeler}>
                                                                 {this.props.stations.map(station => (
                                                                     <option>
                                                                         {station.station_name}
                                                                     </option>
                                                                 ))}
+                                                                <option selected>
+                                                                    اختر ...
+                                                                </option>
                                                             </select>
                                                         </td>
                                                     </tr>
@@ -1130,10 +1153,10 @@ class EmpTrans extends React.Component {
                                                 <Fragment>
                                                     <tr>
                                                         <td>
-                                                            <input index={this.makeClouser(length)(1)} required className="date" onChange={this.handelAddDateClick} type="date" style={{ fontSize: "10pt", background: "white", marginTop: 5, marginRight: 5, height: 25, width: 130, border: "1px solid black" }} />
+                                                            <input required className="date add" onChange={this.handelAddDateClick} type="date" style={{ fontSize: "10pt", background: "white", marginTop: 5, marginRight: 5, height: 25, width: 130, border: "1px solid black" }} />
                                                         </td>
                                                         <td>
-                                                            <select IdNum={3} className="cate" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 170 }} onChange={this.addCatClickHandeler}>
+                                                            <select IdNum={3} className="cate add" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 170 }} onChange={this.addCatClickHandeler}>
                                                                 {this.props.cates.map(cate => (
                                                                     <Fragment>
                                                                         <option id={cate.CAT_ID}>
@@ -1147,8 +1170,8 @@ class EmpTrans extends React.Component {
                                                             </select>
                                                         </td>
                                                         <td>
-                                                            <select IdNumSP={3} className="jd transaddidjd" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 120 }} onChange={this.addJdNameClickHandeler}>
-                                                                {fourthRender ? fourthRender.length == 1 ? fourthRender[0].data.map(job => (
+                                                            <select IdNumSP={3} className="jd transaddidjd add" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 120 }} onChange={this.addJdNameClickHandeler}>
+                                                                {fourthRender ? fourthRender.length === 1 ? fourthRender[0].data.map(job => (
                                                                     <option>{job.J_D_NAME}</option>
                                                                 )) : null : null}
                                                                 <option selected>اختر ...</option>
@@ -1156,8 +1179,8 @@ class EmpTrans extends React.Component {
                                                             </select>
                                                         </td>
                                                         <td>
-                                                            <select className="supbox" required ref="sps" style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 188 }} onChange={this.addSupboxClickHandeler}>
-                                                                {fourthRenderp ? fourthRenderp.length == 1 ? fourthRenderp[0].data.map(job => (
+                                                            <select className="supbox add" required ref="sps" style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 188 }} onChange={this.addSupboxClickHandeler}>
+                                                                {fourthRenderp ? fourthRenderp.length === 1 ? fourthRenderp[0].data.map(job => (
                                                                     <option supboxid={job.SUP_BOX_ID}>
                                                                         {job.SUP_BOX_NAME}
                                                                     </option>
@@ -1166,14 +1189,14 @@ class EmpTrans extends React.Component {
                                                             </select>
                                                         </td>
                                                         <td>
-                                                            <select className="gname" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 6, height: 25, width: 50 }} onChange={this.addGNameClickeHandeler}>
+                                                            <select className="gname add" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 6, height: 25, width: 50 }} onChange={this.addGNameClickeHandeler}>
                                                                 <option>فني</option>
                                                                 <option>إداري</option>
                                                                 <option selected>اختر ...</option>
                                                             </select>
                                                         </td>
                                                         <td>
-                                                            <select className="jas" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 6, height: 25, width: 120 }} onChange={this.addJasiClickeHandeler}>
+                                                            <select className="jas add" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 6, height: 25, width: 120 }} onChange={this.addJasiClickeHandeler}>
                                                                 <option>أخرى</option>
                                                                 <option>تعيين</option>
                                                                 <option>نقل</option>
@@ -1202,7 +1225,7 @@ class EmpTrans extends React.Component {
                                                             </select>
                                                         </td>
                                                         <td>
-                                                            <select className="ind" onKeyDown={this.tabhandler} required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 50 }} onChange={this.addIndClickeHandeler}>
+                                                            <select className="ind add" onKeyDown={this.tabhandler} required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 50 }} onChange={this.addIndClickeHandeler}>
                                                                 <option>أصلية</option>
                                                                 <option>حالية</option>
                                                                 <option>سابقة</option>
@@ -1210,12 +1233,15 @@ class EmpTrans extends React.Component {
                                                             </select>
                                                         </td>
                                                         <td>
-                                                            <select onChange={this.addStationClickeHandeler}>
+                                                            <select className="station add" onChange={this.addStationClickeHandeler}>
                                                                 {this.props.stations.map(station => (
                                                                     <option>
                                                                         {station.station_name}
                                                                     </option>
                                                                 ))}
+                                                                <option selected>
+                                                                    اختر ...
+                                                                </option>
                                                             </select>
                                                         </td>
                                                     </tr>
@@ -1224,10 +1250,10 @@ class EmpTrans extends React.Component {
                                                 <Fragment>
                                                     <tr>
                                                         <td>
-                                                            <input index={this.makeClouser(length)(1)} required className="date" onChange={this.handelAddDateClick} type="date" style={{ fontSize: "10pt", background: "white", marginTop: 5, marginRight: 5, height: 25, width: 130, border: "1px solid black" }} />
+                                                            <input required className="date add" onChange={this.handelAddDateClick} type="date" style={{ fontSize: "10pt", background: "white", marginTop: 5, marginRight: 5, height: 25, width: 130, border: "1px solid black" }} />
                                                         </td>
                                                         <td>
-                                                            <select IdNum={4} className="cate" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 170 }} onChange={this.addCatClickHandeler}>
+                                                            <select IdNum={4} className="cate add" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 170 }} onChange={this.addCatClickHandeler}>
                                                                 {this.props.cates.map(cate => (
                                                                     <Fragment>
                                                                         <option id={cate.CAT_ID}>
@@ -1241,8 +1267,8 @@ class EmpTrans extends React.Component {
                                                             </select>
                                                         </td>
                                                         <td>
-                                                            <select IdNumSP={4} className="jd transaddidjd" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 120 }} onChange={this.addJdNameClickHandeler}>
-                                                                {fifthRender ? fifthRender.length == 1 ? fifthRender[0].data.map(job => (
+                                                            <select IdNumSP={4} className="jd transaddidjd add" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 120 }} onChange={this.addJdNameClickHandeler}>
+                                                                {fifthRender ? fifthRender.length === 1 ? fifthRender[0].data.map(job => (
                                                                     <option>{job.J_D_NAME}</option>
                                                                 )) : null : null}
                                                                 <option selected>اختر ...</option>
@@ -1250,8 +1276,8 @@ class EmpTrans extends React.Component {
                                                             </select>
                                                         </td>
                                                         <td>
-                                                            <select className="supbox" required ref="sps" style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 188 }} onChange={this.addSupboxClickHandeler}>
-                                                                {fifthRenderSp ? fifthRenderSp.length == 1 ? fifthRenderSp[0].data.map(job => (
+                                                            <select className="supbox add" required ref="sps" style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 188 }} onChange={this.addSupboxClickHandeler}>
+                                                                {fifthRenderSp ? fifthRenderSp.length === 1 ? fifthRenderSp[0].data.map(job => (
                                                                     <option supboxid={job.SUP_BOX_ID}>
                                                                         {job.SUP_BOX_NAME}
                                                                     </option>
@@ -1260,14 +1286,14 @@ class EmpTrans extends React.Component {
                                                             </select>
                                                         </td>
                                                         <td>
-                                                            <select className="gname" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 6, height: 25, width: 50 }} onChange={this.addGNameClickeHandeler}>
+                                                            <select className="gname add" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 6, height: 25, width: 50 }} onChange={this.addGNameClickeHandeler}>
                                                                 <option>فني</option>
                                                                 <option>إداري</option>
                                                                 <option selected>اختر ...</option>
                                                             </select>
                                                         </td>
                                                         <td>
-                                                            <select className="jas" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 6, height: 25, width: 120 }} onChange={this.addJasiClickeHandeler}>
+                                                            <select className="jas add" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 6, height: 25, width: 120 }} onChange={this.addJasiClickeHandeler}>
                                                                 <option>أخرى</option>
                                                                 <option>تعيين</option>
                                                                 <option>نقل</option>
@@ -1296,7 +1322,7 @@ class EmpTrans extends React.Component {
                                                             </select>
                                                         </td>
                                                         <td>
-                                                            <select className="ind" onKeyDown={this.tabhandler} required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 50 }} onChange={this.addIndClickeHandeler}>
+                                                            <select className="ind add" onKeyDown={this.tabhandler} required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 50 }} onChange={this.addIndClickeHandeler}>
                                                                 <option>أصلية</option>
                                                                 <option>حالية</option>
                                                                 <option>سابقة</option>
@@ -1304,12 +1330,15 @@ class EmpTrans extends React.Component {
                                                             </select>
                                                         </td>
                                                         <td>
-                                                            <select onChange={this.addStationClickeHandeler}>
+                                                            <select className="station add" onChange={this.addStationClickeHandeler}>
                                                                 {this.props.stations.map(station => (
                                                                     <option>
                                                                         {station.station_name}
                                                                     </option>
                                                                 ))}
+                                                                <option selected>
+                                                                    اختر ...
+                                                                </option>
                                                             </select>
                                                         </td>
                                                     </tr>
@@ -1318,10 +1347,10 @@ class EmpTrans extends React.Component {
                                                 <Fragment>
                                                     <tr>
                                                         <td>
-                                                            <input index={this.makeClouser(length)(1)} required className="date" onChange={this.handelAddDateClick} type="date" style={{ fontSize: "10pt", background: "white", marginTop: 5, marginRight: 5, height: 25, width: 130, border: "1px solid black" }} />
+                                                            <input required className="date add" onChange={this.handelAddDateClick} type="date" style={{ fontSize: "10pt", background: "white", marginTop: 5, marginRight: 5, height: 25, width: 130, border: "1px solid black" }} />
                                                         </td>
                                                         <td>
-                                                            <select IdNum={5} className="cate" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 170 }} onChange={this.addCatClickHandeler}>
+                                                            <select IdNum={5} className="cate add" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 170 }} onChange={this.addCatClickHandeler}>
                                                                 {this.props.cates.map(cate => (
                                                                     <Fragment>
                                                                         <option id={cate.CAT_ID}>
@@ -1335,8 +1364,8 @@ class EmpTrans extends React.Component {
                                                             </select>
                                                         </td>
                                                         <td>
-                                                            <select IdNumSP={5} className="jd transaddidjd" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 120 }} onChange={this.addJdNameClickHandeler}>
-                                                                {sixthRender ? sixthRender.length == 1 ? sixthRender[0].data.map(job => (
+                                                            <select IdNumSP={5} className="jd transaddidjd add" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 120 }} onChange={this.addJdNameClickHandeler}>
+                                                                {sixthRender ? sixthRender.length === 1 ? sixthRender[0].data.map(job => (
 
                                                                     <option>{job.J_D_NAME}</option>
                                                                 )) : null : null}
@@ -1345,8 +1374,8 @@ class EmpTrans extends React.Component {
                                                             </select>
                                                         </td>
                                                         <td>
-                                                            <select className="supbox" required ref="sps" style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 188 }} onChange={this.addSupboxClickHandeler}>
-                                                                {sixthRenderSp ? sixthRenderSp.length == 1 ? sixthRenderSp[0].data.map(job => (
+                                                            <select className="supbox add" required ref="sps" style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 188 }} onChange={this.addSupboxClickHandeler}>
+                                                                {sixthRenderSp ? sixthRenderSp.length === 1 ? sixthRenderSp[0].data.map(job => (
                                                                     <option supboxid={job.SUP_BOX_ID}>
                                                                         {job.SUP_BOX_NAME}
                                                                     </option>
@@ -1355,14 +1384,14 @@ class EmpTrans extends React.Component {
                                                             </select>
                                                         </td>
                                                         <td>
-                                                            <select className="gname" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 6, height: 25, width: 50 }} onChange={this.addGNameClickeHandeler}>
+                                                            <select className="gname add" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 6, height: 25, width: 50 }} onChange={this.addGNameClickeHandeler}>
                                                                 <option>فني</option>
                                                                 <option>إداري</option>
                                                                 <option selected>اختر ...</option>
                                                             </select>
                                                         </td>
                                                         <td>
-                                                            <select className="jas" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 6, height: 25, width: 120 }} onChange={this.addJasiClickeHandeler}>
+                                                            <select className="jas add" required style={{ fontSize: "10pt", marginTop: 5, marginRight: 6, height: 25, width: 120 }} onChange={this.addJasiClickeHandeler}>
                                                                 <option>أخرى</option>
                                                                 <option>تعيين</option>
                                                                 <option>نقل</option>
@@ -1391,7 +1420,7 @@ class EmpTrans extends React.Component {
                                                             </select>
                                                         </td>
                                                         <td>
-                                                            <select className="ind" onKeyDown={this.tabhandler} required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 50 }} onChange={this.addIndClickeHandeler}>
+                                                            <select className="ind add" onKeyDown={this.tabhandler} required style={{ fontSize: "10pt", marginTop: 5, marginRight: 5, height: 25, width: 50 }} onChange={this.addIndClickeHandeler}>
                                                                 <option>أصلية</option>
                                                                 <option>حالية</option>
                                                                 <option>سابقة</option>
@@ -1399,31 +1428,34 @@ class EmpTrans extends React.Component {
                                                             </select>
                                                         </td>
                                                         <td>
-                                                            <select onChange={this.addStationClickeHandeler}>
+                                                            <select className="station add" onChange={this.addStationClickeHandeler}>
                                                                 {this.props.stations.map(station => (
                                                                     <option>
                                                                         {station.station_name}
                                                                     </option>
                                                                 ))}
+                                                                <option selected>
+                                                                    اختر ...
+                                                                </option>
                                                             </select>
                                                         </td>
                                                     </tr>
                                                 </Fragment> : null}
                                         </tbody>
                                     </table>
-                                    <button onClick={this.addTrans} style={{ float: "right", minWidth: 50, marginBottom: 5, marginRight: 12, maxHeight: 25 }}><i class="fas fa-plus"></i>
+                                    <button onClick={this.addTrans} style={{ float: "right", minWidth: 50, marginBottom: 5, marginRight: 12, maxHeight: 25 }}><i className="fas fa-plus"></i>
                                     </button>
-                                    <button onClick={this.deleteTrans} style={{ float: "left", minWidth: 50, marginBottom: 5, marginLeft: 12, maxHeight: 25 }}><i class="fas fa-minus"></i>
+                                    <button onClick={this.deleteTrans} style={{ float: "left", minWidth: 50, marginBottom: 5, marginLeft: 12, maxHeight: 25 }}><i className="fas fa-minus"></i>
                                     </button>
                                     <button onClick={this.handleArrToSend} className="btn btn-block">إضافة</button>
 
 
                                 </div>
-                                {this.state.confirmAdd ? <div style={{ width: "70%",display: "flex", justifyContent: "space-between" }} class="alert alert-warning" role="alert"> 
-                                <i onClick={this.closeAddConfirmHandler} style={{ fontSize: 15 }} class="fas fa-times-circle"></i>
-                                 <p>هل انت متأكد من إضافة تدرج جديد ؟</p>
-                                 <button onClick={this.handelInsertNewTrans}  type="button" class="btn btn-warning">تأكيد</button>
-                                 </div> : null}
+                                {this.state.confirmAdd ? <div style={{ width: "70%", display: "flex", justifyContent: "space-between" }} className="alert alert-warning" role="alert">
+                                    <i onClick={this.closeAddConfirmHandler} style={{ fontSize: 15 }} className="fas fa-times-circle"></i>
+                                    <p>هل انت متأكد من إضافة تدرج جديد ؟</p>
+                                    <button onClick={this.handelInsertNewTrans} type="button" className="btn btn-warning">تأكيد</button>
+                                </div> : null}
                             </div>
                         </div>
 
@@ -1445,24 +1477,24 @@ class EmpTrans extends React.Component {
                     </div> : null}
 
 
-                <div class="row">
-                    <div class="col-lg-12">
+                <div className="row">
+                    <div className="col-lg-12">
                     </div>
                 </div>
                 <div className="row">
                     <div className="col-lg-12" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                        <div style={{ height: 150, width: 600 }} class="panel panel-default">
-                            <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }} class="panel-heading">
+                        <div style={{ height: 150, width: 600 }} className="panel panel-default">
+                            <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }} className="panel-heading">
                                 تدرج الموظفين
                             </div>
                             <div style={{ marginRight: 20, display: "flex", justifyContent: "center", alignItems: "center", marginLeft: 40 }}>
-                                <div style={{ marginTop: 20, marginLeft: 0, width: "30%" }} class="input-group">
+                                <div style={{ marginTop: 20, marginLeft: 0, width: "30%" }} className="input-group">
                                     <span>رقم الأداء : </span><input ref="empid" onKeyDown={this.idInputHandlerForSearch} style={{ background: "white", width: "40%", marginBottom: 5, marginRight: 5, border: "1px solid black" }} type="text" name="first_name" />
                                 </div>
-                                <div style={{ marginTop: 20, marginRight: 0, width: "70%" }} class="input-group">
+                                <div style={{ marginTop: 20, marginRight: 0, width: "70%" }} className="input-group">
                                     <span >الإسم : </span><input ref="name" onChange={this.nameInputHandlerForSearch} style={{ background: "white", width: "80%", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
                                 </div>
-                                <button onClick={this.addNewButtonClickHandeler} style={{ position: "relative", right: 20, top: 8 }} type="button" class="btn btn-primary">إضافة تدرج جديد</button>
+                                <button onClick={this.addNewButtonClickHandeler} style={{ position: "relative", right: 20, top: 8 }} type="button" className="btn btn-primary">إضافة تدرج جديد</button>
                             </div>
                         </div>
                         {this.state.showNamesResultsForAdd ? <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}>
@@ -1492,19 +1524,19 @@ class EmpTrans extends React.Component {
                             </div> : null : null : null
                     }
                 </div>
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="panel panel-default" style={{ width: "100%" }}>
-                            <div class="panel-heading" style={{ display: "flex", width: "100%", justifyContent: "space-between" }}>
+                <div className="row">
+                    <div className="col-lg-12">
+                        <div className="panel panel-default" style={{ width: "100%" }}>
+                            <div className="panel-heading" style={{ display: "flex", width: "100%", justifyContent: "space-between" }}>
                                 <ExcelSheet colNames={colNames} data={this.handleDataSet()} />
                                 {/* {this.props.empname && !this.state.edit && !this.state.add ? this.props.empname.length >= 1 ? <h3>  بيان بحركة السيد / {this.props.empname[0].NAME_ARABIC}</h3> : null : null || this.props.empNameByName ? this.props.empNameByName.length >= 1 ? `  ${this.props.empNameByName[0].NAME_ARABIC} ` : null : null} */}
                                 {this.props.empTrans.length > 0 ? <h4>بيان بالتدرج الوظيفي للسيد / {this.props.empTrans[0].NAME_ARABIC}</h4> : null}
-                                <img onClick={this.showStruct} src={structure} style={{ width: 50, height: 50 }} />
+                                <img onClick={this.showStruct} alt="img" src={structure} style={{ width: 50, height: 50 }} />
 
                             </div>
-                            <div class="panel-body">
-                                <div class="table-responsive">
-                                    <table class="table table-striped table-bordered table-hover" >
+                            <div className="panel-body">
+                                <div className="table-responsive">
+                                    <table className="table table-striped table-bordered table-hover" >
                                         {this.state.edit ?
                                             <Fragment>
                                                 <thead>
@@ -1522,9 +1554,9 @@ class EmpTrans extends React.Component {
                                                     </tr>
                                                 </thead>
                                                 {this.props.empTrans.map(trans => (
-                                                    <tbody>
-                                                        <tr id={trans.TRANS_DATE}>
-                                                            <td>{this.state.edit && this.state.rowTrans == trans.TRANS_DATE ? <select style={{ height: 34, width: 150, borderRadius: 5 }} onChange={this.catClickHandeler}>
+                                                    <tbody key={trans.TRANS_DATE}>
+                                                        <tr key={trans.TRANS_DATE} id={trans.TRANS_DATE}>
+                                                            <td key={trans.TRANS_DATE}>{this.state.edit && this.state.rowTrans === trans.TRANS_DATE ? <select style={{ height: 34, width: 150, borderRadius: 5 }} onChange={this.catClickHandeler}>
                                                                 {this.props.cates.map(cate => (
                                                                     <Fragment>
                                                                         <option id={cate.CAT_ID}>
@@ -1536,8 +1568,8 @@ class EmpTrans extends React.Component {
                                                                     {this.state.catname}
                                                                 </option>
                                                             </select> : trans.catename}</td>
-                                                            <td>
-                                                                {this.state.edit && this.state.rowTrans == trans.TRANS_DATE ? <select style={{ height: 34, width: 90, borderRadius: 5 }} onChange={this.jdNameClickHandeler}>
+                                                            <td key={trans.TRANS_DATE}>
+                                                                {this.state.edit && this.state.rowTrans === trans.TRANS_DATE ? <select style={{ height: 34, width: 90, borderRadius: 5 }} onChange={this.jdNameClickHandeler}>
                                                                     {this.props.jobdgbycat.map(job => (
                                                                         <option>
                                                                             {job.J_D_NAME}
@@ -1547,7 +1579,7 @@ class EmpTrans extends React.Component {
                                                                 </select>
                                                                     :
                                                                     trans.MAIN_BOX_NAME}</td>
-                                                            <td >{this.state.edit && this.state.rowTrans == trans.TRANS_DATE ? <select style={{ height: 34, width: 150, borderRadius: 5 }} required onChange={this.supboxClickHandeler}>
+                                                            <td key={trans.TRANS_DATE}>{this.state.edit && this.state.rowTrans === trans.TRANS_DATE ? <select style={{ height: 34, width: 150, borderRadius: 5 }} required onChange={this.supboxClickHandeler}>
                                                                 {this.props.empavailsup.map(job => (
                                                                     <option>
                                                                         {job.SUP_BOX_NAME}
@@ -1555,8 +1587,8 @@ class EmpTrans extends React.Component {
                                                                 ))}
                                                                 <option selected>{this.state.catnameChanged ? "اختر المسمى الوظيفي" : this.state.supboxname}</option>
                                                             </select> : trans.SUP_BOX_NAME}</td>
-                                                            <td>{this.state.edit && this.state.rowTrans == trans.TRANS_DATE ? <input type="date" onChange={this.handelDateClick} className="form-control" /> : trans.TRANS_DATE}</td>
-                                                            <td>{this.state.edit && this.state.rowTrans == trans.TRANS_DATE ? <select style={{ height: 34, width: 90, borderRadius: 5 }} required onChange={this.jasiClickeHandeler}>
+                                                            <td key={trans.TRANS_DATE}>{this.state.edit && this.state.rowTrans === trans.TRANS_DATE ? <input type="date" onChange={this.handelDateClick} className="form-control" /> : trans.TRANS_DATE}</td>
+                                                            <td key={trans.TRANS_DATE}>{this.state.edit && this.state.rowTrans === trans.TRANS_DATE ? <select style={{ height: 34, width: 90, borderRadius: 5 }} required onChange={this.jasiClickeHandeler}>
                                                                 <option>أخرى</option>
                                                                 <option>تعيين</option>
                                                                 <option>نقل</option>
@@ -1583,18 +1615,18 @@ class EmpTrans extends React.Component {
                                                                 <option>أستيعاب</option>
                                                                 <option selected>{this.state.jasi}</option>
                                                             </select> : trans.JOB_ASSIGNMENT_FORM_ARABIC}</td>
-                                                            <td>{this.state.edit && this.state.rowTrans == trans.TRANS_DATE ? <select style={{ height: 34, width: 80, borderRadius: 5 }} required onChange={this.gNameClickeHandeler}>
+                                                            <td key={trans.TRANS_DATE}>{this.state.edit && this.state.rowTrans === trans.TRANS_DATE ? <select style={{ height: 34, width: 80, borderRadius: 5 }} required onChange={this.gNameClickeHandeler}>
                                                                 <option>فني</option>
                                                                 <option>إداري</option>
                                                                 <option selected>{this.state.gname}</option>
                                                             </select> : trans.G_NAME}</td>
-                                                            <td>{this.state.edit && this.state.rowTrans == trans.TRANS_DATE ? <select style={{ height: 34, width: 80, borderRadius: 5 }} required onChange={this.indClickeHandeler}>
+                                                            <td key={trans.TRANS_DATE}>{this.state.edit && this.state.rowTrans === trans.TRANS_DATE ? <select style={{ height: 34, width: 80, borderRadius: 5 }} required onChange={this.indClickeHandeler}>
                                                                 <option>أصلية</option>
                                                                 <option>حالية</option>
                                                                 <option>سابقة</option>
                                                                 <option selected>{this.state.indname}</option>
                                                             </select> : trans.INDICATOR_NAME}</td>
-                                                            <td>
+                                                            <td key={trans.TRANS_DATE}>
                                                                 <select>
                                                                     {this.props.stations.map(station => (
                                                                         <option>
@@ -1603,8 +1635,8 @@ class EmpTrans extends React.Component {
                                                                     ))}
                                                                 </select>
                                                             </td>
-                                                            <td transdate={trans.TRANS_DATE}><i onClick={this.state.edit ? this.handelEdit_2 : this.handelEdit_1} style={{ marginTop: 7 }} empname={trans.NAME_ARABIC} transdate={trans.TRANS_DATE} catid={trans.CAT_ID} catname={trans.CAT_NAME} mainboxid={trans.MAIN_BOX_ID} jdname={trans.MAIN_BOX_NAME} supboxid={trans.SUP_BOX_ID} supboxname={trans.SUP_BOX_NAME} jobgroup={trans.G_NAME} jasform={trans.JOB_ASSIGNMENT_FORM_ARABIC} indname={trans.INDICATOR_NAME} class="fas fa-edit"></i></td>
-                                                            <td transdate={trans.TRANS_DATE}><i onClick={this.state.edit ? this.closeEditSectionHandler : null} transdate={trans.TRANS_DATE} style={{ marginTop: 7 }} class="fas fa-backspace"></i></td>
+                                                            <td key={trans.TRANS_DATE} transdate={trans.TRANS_DATE}><i onClick={this.state.edit ? this.handelEdit_2 : this.handelEdit_1} style={{ marginTop: 7 }} empname={trans.NAME_ARABIC} transdate={trans.TRANS_DATE} catid={trans.CAT_ID} catname={trans.CAT_NAME} mainboxid={trans.MAIN_BOX_ID} jdname={trans.MAIN_BOX_NAME} supboxid={trans.SUP_BOX_ID} supboxname={trans.SUP_BOX_NAME} jobgroup={trans.G_NAME} jasform={trans.JOB_ASSIGNMENT_FORM_ARABIC} indname={trans.INDICATOR_NAME} className="fas fa-edit"></i></td>
+                                                            <td key={trans.TRANS_DATE} transdate={trans.TRANS_DATE}><i onClick={this.state.edit ? this.closeEditSectionHandler : null} transdate={trans.TRANS_DATE} style={{ marginTop: 7 }} className="fas fa-backspace"></i></td>
                                                         </tr>
                                                     </tbody>
 
@@ -1639,8 +1671,8 @@ class EmpTrans extends React.Component {
                                                             <td>{trans.station}</td>
                                                             <td>{trans.AREA}</td>
                                                             <td>{trans.GOV}</td>
-                                                            <td ><i onClick={this.state.delete ? this.confirmDeleteSTrans : this.state.edit ? this.handelEdit_2 : this.handelEdit_1} style={{ marginTop: 7 }} id={trans.ROW_ID} nat={trans.NATIONAL_ID_CARD_NO} indicator={trans.INDICATOR} empname={trans.NAME_ARABIC} transdate={trans.TRANS_DATE} catid={trans.CAT_ID} catname={trans.CAT_NAME} mainboxid={trans.MAIN_BOX_ID} jdname={trans.MAIN_BOX_NAME} supboxid={trans.SUP_BOX_ID} supboxname={trans.SUP_BOX_NAME} jobgroup={trans.G_NAME} jasform={trans.JOB_ASSIGNMENT_FORM_ARABIC} indname={trans.INDICATOR_NAME} class="fas fa-edit"></i></td>
-                                                            <td><i onClick={this.state.delete ? this.closeDeleteSSectionHandler : this.state.edit ? this.closeEditSectionHandler : this.deleteSTrans} id={trans.ROW_ID} nat={trans.NATIONAL_ID_CARD_NO} indicator={trans.INDICATOR} transdate={trans.TRANS_DATE} style={{ marginTop: 7 }} class="fas fa-backspace"></i></td>
+                                                            <td ><i onClick={this.state.delete ? this.confirmDeleteSTrans : this.state.edit ? this.handelEdit_2 : this.handelEdit_1} style={{ marginTop: 7 }} id={trans.ROW_ID} nat={trans.NATIONAL_ID_CARD_NO} indicator={trans.INDICATOR} empname={trans.NAME_ARABIC} transdate={trans.TRANS_DATE} catid={trans.CAT_ID} catname={trans.CAT_NAME} mainboxid={trans.MAIN_BOX_ID} jdname={trans.MAIN_BOX_NAME} supboxid={trans.SUP_BOX_ID} supboxname={trans.SUP_BOX_NAME} jobgroup={trans.G_NAME} jasform={trans.JOB_ASSIGNMENT_FORM_ARABIC} indname={trans.INDICATOR_NAME} className="fas fa-edit"></i></td>
+                                                            <td><i onClick={this.state.delete ? this.closeDeleteSSectionHandler : this.state.edit ? this.closeEditSectionHandler : this.deleteSTrans} id={trans.ROW_ID} nat={trans.NATIONAL_ID_CARD_NO} indicator={trans.INDICATOR} transdate={trans.TRANS_DATE} style={{ marginTop: 7 }} className="fas fa-backspace"></i></td>
                                                         </tr>
 
                                                     </tbody>
@@ -1657,7 +1689,7 @@ class EmpTrans extends React.Component {
 
                         </div>
                         <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                            {this.state.editConfirmed ? <div style={{ width: "100%" }} class="alert alert-warning" role="alert"> هل انت متأكد من تعديل هذا التدرج  ؟ <button onClick={this.handelEdit_2} style={{ position: "absolute", left: "3%", top: "78%" }} type="button" class="btn btn-warning">تأكيد</button> <i onClick={this.closeEditConfirmHandler} style={{ fontSize: 15, position: "relative", top: "7%", left: "56%" }} class="fas fa-times-circle"></i></div> : null}
+                            {this.state.editConfirmed ? <div style={{ width: "100%" }} className="alert alert-warning" role="alert"> هل انت متأكد من تعديل هذا التدرج  ؟ <button onClick={this.handelEdit_2} style={{ position: "absolute", left: "3%", top: "78%" }} type="button" className="btn btn-warning">تأكيد</button> <i onClick={this.closeEditConfirmHandler} style={{ fontSize: 15, position: "relative", top: "7%", left: "56%" }} className="fas fa-times-circle"></i></div> : null}
                         </div>
 
                     </div>

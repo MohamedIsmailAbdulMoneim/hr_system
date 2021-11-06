@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import {
     getCates,
     getJobDgByCat,
@@ -8,8 +8,6 @@ import {
 
 } from "../../actions/Actions";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
-import axios from "axios";
 
 class EmpByStation extends React.Component {
     constructor(props) {
@@ -55,7 +53,7 @@ class EmpByStation extends React.Component {
         }
 
         return (
-            <div id="page-wrapper" >
+            <div id="page-wrapper" className="empbystation">
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">Tables</h1>
@@ -67,7 +65,7 @@ class EmpByStation extends React.Component {
                             <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }} class="panel-heading">
                                 المحافظات
                             </div>
-                            <label style={{ display: "block" }} for="pet-select" style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>اضغط للعرض باعتبار المحافظة</label>
+                            <label for="pet-select" style={{ display: "block", fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>اضغط للعرض باعتبار المحافظة</label>
                             <select style={styles} multiple name="pets" id="pet-select">
                                 {this.props.governsJob.map((govern) => (
                                     <option style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }} onClick={this.handelClick} governNum={govern.JOB_GOVERNORATE} >{govern.GOVERNORATE_ARABIC}</option>
@@ -80,7 +78,7 @@ class EmpByStation extends React.Component {
                             <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }} class="panel-heading">
                                 المحطات
                             </div>
-                            <label style={{ display: "block" }} for="pet-select" style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>اضغط للعرض بالمحطة</label>
+                            <label  for="pet-select" style={{ display: "block", fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>اضغط للعرض بالمحطة</label>
                             <select style={styles} multiple name="pets" id="pet-select">
                                 {this.props.jobstation.map((station) => (
                                     <option style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }} onClick={this.handelClick} governNum={station.JOB_GOVERNORATE} station={station.JOB_LOCATION} >{station.JOB_LOCATION}</option>

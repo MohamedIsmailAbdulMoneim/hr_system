@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import {
     getCates,
     getJobDgByCat,
@@ -6,8 +6,6 @@ import {
 
 } from "../actions/Actions";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
-import axios from "axios";
 import Chart from "./reports/chart"
 
 class Home extends React.Component {

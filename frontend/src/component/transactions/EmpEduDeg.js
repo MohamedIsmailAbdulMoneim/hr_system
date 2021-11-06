@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import {
     getEmpName, getEmpNameByName
 } from "../../actions/Actions";
@@ -6,9 +6,7 @@ import {
     InsertNewEdu, getEmpEdu
 } from "../../actions/TransActions"
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
 import axios from "axios";
-import Reactmoment from "react-moment"
 
 
 const styles = {
@@ -88,14 +86,14 @@ class EmpEduDeg extends React.Component {
     idInputHandlerForAdd = (e) => {
         this.refs.nameadd.value = ''
         this.setState({ empidForAdd: e.target.value, empnameForAdd: "" })
-        if (e.target.value.length == 0) {
+        if (e.target.value.length === 0) {
             this.setState({ empidForAdd: "" })
         }
     }
     nameInputHandlerForAdd = (e) => {
         this.setState({ showNamesResultsForAdd: true, empidForAdd: "", empnameForAdd: e.target.value })
         this.props.getEmpNameByName(e.target.value)
-        if (e.target.value.length == 0) {
+        if (e.target.value.length === 0) {
             this.setState({ empnameForAdd: "" })
         }
         this.refs.idadd.value = ''
@@ -358,7 +356,7 @@ class EmpEduDeg extends React.Component {
         this.setState({
             edit: false
         })
-        if (this.props.result == 200) {
+        if (this.props.result === 200) {
             this.setState({ updated: true })
         }
 
@@ -435,7 +433,7 @@ class EmpEduDeg extends React.Component {
                                         <span style={{ position: "relative", right: 50 }}>إضافة مؤهل جديد</span> {this.state.edit ? <i style={{ fontSize: 15, position: "relative", left: 530 }} class="fas fa-times-circle"></i> : null}
                                         {this.state.add ? <i onClick={this.closeAddSectionHandler} style={{ fontSize: 15, float: "right" }} class="fas fa-times-circle"></i> : null}
                                     </div>
-                                    {this.state.showMsg ? this.props.msg == "تم إدخال التقييم بنجاح" ? <div id="showmsg" className="alert alert-success" role="alert"> {this.props.msg}</div> : this.props.msg == "يوجد خطاء بقاعدة البيانات" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.props.msg}</div> : this.props.msg == "يجب إدخال أي من الإسم ورقم الأداء" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.props.msg}</div> : null : null}
+                                    {this.state.showMsg ? this.props.msg === "تم إدخال التقييم بنجاح" ? <div id="showmsg" className="alert alert-success" role="alert"> {this.props.msg}</div> : this.props.msg === "يوجد خطاء بقاعدة البيانات" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.props.msg}</div> : this.props.msg === "يجب إدخال أي من الإسم ورقم الأداء" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.props.msg}</div> : null : null}
                                     <div style={{ display: "flex", justifyContent: "space-around" }}>
                                         <div className="form-group" controlId="formBasicEmail">
                                             <label style={{ width: "100%", textAlign: "right" }}>رقم الأداء : </label>

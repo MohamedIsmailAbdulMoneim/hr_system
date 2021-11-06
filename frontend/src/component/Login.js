@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { Bar, Line, Pie } from 'react-chartjs-2';
 import { connect } from "react-redux";
 import {
      getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox, getUpJd, gitDownJd, getQn
@@ -7,7 +6,6 @@ import {
 import {
     login,
 } from "../actions/AuthActions";
-import axios from "axios"
 
 class Login extends Component {
     constructor(props) {

@@ -1,6 +1,6 @@
 function AssisstantChairman() {
     return (
-        <div id="page-wrapper">
+        <div id="page-wrapper" className="AssisstantChairman">
             <div className="row">
                 <div className="col-lg-12">
                     <h1 className="page-header">Forms</h1>
@@ -15,7 +15,7 @@ function AssisstantChairman() {
                         <div className="panel-body">
                             <div className="row">
                                 <div className="col-lg-6">
-                                    <form role="form">
+                                    <form>
                                         <div className="form-group">
                                             <label>كود المستوى الوظيفي</label>
                                             <input className="form-control" placeholder="Enter text" />
@@ -39,7 +39,7 @@ function AssisstantChairman() {
                                     </form>
                                 </div>
                                 <div className="col-lg-6">
-                                    <form role="form">
+                                    <form>
                                         <div className="panel panel-default">
                                             <div className="panel-heading">
                                                 مساعدو رئيس الشركة

@@ -6,8 +6,6 @@ import {
 } from "../../actions/Actions";
 import { newAppraisal, updateEmpAppraisal, deleteEmpAppraisal, getEmpAppraisal } from "../../actions/TransActions"
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
-import moment from 'react-moment';
 import 'moment-timezone';
 import Pagination from "../Pagination";
 
@@ -30,7 +28,7 @@ class OutsourceEmpsAppraisal extends React.Component {
     changeArgs = (i) => (e) => {
         e.preventDefault()
         this.setState({ currentPage: i })
-        if (i == 1) {
+        if (i === 1) {
             this.setState({ firstArg: (i - 1) * 20, secondArg: i * 20 })
 
         }
@@ -232,7 +230,7 @@ class OutsourceEmpsAppraisal extends React.Component {
         this.setState({
             edit: false
         })
-        if (this.props.result == 200) {
+        if (this.props.result === 200) {
             this.setState({ updated: true })
         }
     }
@@ -297,7 +295,7 @@ class OutsourceEmpsAppraisal extends React.Component {
         let start = 1996;
         let end = 2021;
 
-        while (start != end) {
+        while (start !== end) {
             dates.push(start);
             start++;
         }
@@ -305,22 +303,7 @@ class OutsourceEmpsAppraisal extends React.Component {
 
         let appraisals = ["ممتاز بجدارة", "ممتاز", "جيد جدا بجدارة", "جيد جدا", "جيد", "مقبول", "ضعيف", "جيد حكمي", "جيد جدا حكمي", "ممتاز حكمي"]
 
-        const styles = {
-            display: "block",
-            padding: "0.375rem 2.25rem 0.375rem 0.75rem",
-            width: "55%",
-            height: 250,
-            backgroundColor: "#fff",
-            color: "#212529",
-            fontSize: "2rem",
-            lineHeight: 1.5,
-            fontWeight: "bold",
-            border: "1px solid #ced4da",
-            borderRadius: "0.25rem",
-            appearance: "none",
-            transition: "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out"
-
-        }
+    
         return (
             <div id="page-wrapper" >
                 {this.state.add ?
@@ -333,7 +316,7 @@ class OutsourceEmpsAppraisal extends React.Component {
                                         <span>إضافة تقييم جديد</span>
                                         <div></div>
                                     </div>
-                                    {this.state.showMsg ? this.props.msg == "تم إدخال التقييم بنجاح" ? <div id="showmsg" className="alert alert-success" role="alert"> {this.props.msg}</div> : this.props.msg == "يوجد خطاء بقاعدة البيانات" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.props.msg}</div> : this.props.msg == "يجب إدخال أي من الإسم ورقم الأداء" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.props.msg}</div> : null : null}
+                                    {this.state.showMsg ? this.props.msg === "تم إدخال التقييم بنجاح" ? <div id="showmsg" className="alert alert-success" role="alert"> {this.props.msg}</div> : this.props.msg === "يوجد خطاء بقاعدة البيانات" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.props.msg}</div> : this.props.msg === "يجب إدخال أي من الإسم ورقم الأداء" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.props.msg}</div> : null : null}
                                     <div style={{ display: "flex", justifyContent: "space-around" }}>
                                         <div className="form-group" controlId="formBasicEmail">
                                             <label style={{ width: "100%", textAlign: "right" }}>رقم الأداء : </label>
@@ -484,15 +467,15 @@ class OutsourceEmpsAppraisal extends React.Component {
                                             <tbody>
                                                 <tr id={emp.id}>
                                                     <td>{emp.NAME_ARABIC}</td>
-                                                    <td>{this.state.edit && this.state.rowAppraisal == emp.id ? <select onChange={this.handelEditAppraisal} id="empapp" style={{ width: "50%", height: 30 }}>
+                                                    <td>{this.state.edit && this.state.rowAppraisal === emp.id ? <select onChange={this.handelEditAppraisal} id="empapp" style={{ width: "50%", height: 30 }}>
                                                         {appraisals.map(apprsl => (
                                                             <option>{apprsl}</option>
                                                         ))}
                                                         <option selected>اختر التقدير</option>
 
-                                                    </select> : this.state.updated && this.state.rowAppraisal == emp.id ? this.state.addEmpAppraisal : emp.APPRAISAL_ARABIC}</td>
-                                                    <td style={{ width: "10%" }}>{this.state.edit && this.state.rowAppraisal == emp.id ? <input onChange={this.handelEditYear} value={this.state.addAppraisalYear} className="form-control" style={{ width: "100%" }} type="text" /> :
-                                                        this.state.updated && this.state.rowAppraisal == emp.id ? this.state.addAppraisalYear : emp.APPRAISAL_DATE}</td>
+                                                    </select> : this.state.updated && this.state.rowAppraisal === emp.id ? this.state.addEmpAppraisal : emp.APPRAISAL_ARABIC}</td>
+                                                    <td style={{ width: "10%" }}>{this.state.edit && this.state.rowAppraisal === emp.id ? <input onChange={this.handelEditYear} value={this.state.addAppraisalYear} className="form-control" style={{ width: "100%" }} type="text" /> :
+                                                        this.state.updated && this.state.rowAppraisal === emp.id ? this.state.addAppraisalYear : emp.APPRAISAL_DATE}</td>
                                                     <td><i onClick={this.state.delete ? this.confirmDelete : this.state.edit ? this.handelEdit_2 : this.handelEdit_1} tableId={emp.id} style={{ fontSize: 20 }} empName={emp.NAME_ARABIC} empApp={emp.APPRAISAL_ARABIC} empDate={emp.APPRAISAL_DATE} empnatid={emp.NATIONAL_ID_CARD_NO} class="fas fa-edit"></i></td>
                                                     <td><i onClick={this.state.delete ? this.closeDeleteSectionHandler : this.state.edit ? this.closeEditSectionHandler : this.deleteHandler} tableId={emp.id} empnatid={emp.NATIONAL_ID_CARD_NO} class="fas fa-backspace"></i></td>
                                                 </tr>
@@ -523,7 +506,6 @@ const mapStateToProps = (state) => {
         result: state.trans.result,
         msg: state.trans.msg,
         updatedInf: state.trans.updatedInf,
-        result: state.trans.result
 
     };
 };

@@ -1,5 +1,6 @@
 const express = require("express");
 const db = require("../database/connection")
+const jp = require('jsonpath');
 
 let router = express.Router();
 
@@ -20,9 +21,9 @@ function newEmpExp(req, res, next) {
         console.log(data);
         if (err) {
             next(err);
-            if(err.sqlMessage.indexOf("Duplicate entry") !== -1){
-                res.json({ data: [[],[]], msg: "تم إدخال هذه الخبرة من قبل" })
-            }            
+            if (err.sqlMessage.indexOf("Duplicate entry") !== -1) {
+                res.json({ data: [[], []], msg: "تم إدخال هذه الخبرة من قبل" })
+            }
         } else {
 
             res.json({ data: data, msg: "تم إدخال البيانات بنجاح" });
@@ -106,7 +107,7 @@ function newAppraisal(req, res, next) {
     let query = `INSERT INTO employee_appraisal (APPRAISAL_DATE, APPRAISAL , NATIONAL_ID_CARD_NO , is_shown , ORGANIZATION)
     VALUES (${appDate},(select APPRAISAL FROM appraisal WHERE APPRAISAL_ARABIC = "${appValue}")
     ,(select NATIONAL_ID_CARD_NO FROM employee WHERE ${empid != "null" ? `EMPLOYEE_ID = ${empid} `
-    : empname || empname !== "undefined" ? `NAME_ARABIC = "${empname}"` : null}), ${isShown} ,30);
+            : empname || empname !== "undefined" ? `NAME_ARABIC = "${empname}"` : null}), ${isShown} ,30);
     SELECT employee.NAME_ARABIC, employee_appraisal.APPRAISAL_DATE, appraisal.APPRAISAL_ARABIC,employee_appraisal.id,
     employee.EMPLOYEE_ID, employee_appraisal.NATIONAL_ID_CARD_NO
     FROM
@@ -115,11 +116,11 @@ function newAppraisal(req, res, next) {
     JOIN APPRAISAL ON APPRAISAL.APPRAISAL = employee_appraisal.APPRAISAL
     WHERE ${req.body.getData};
      `
-     console.log(query);
+    console.log(query);
     db.query(query, (err, details) => {
         if (err) {
-            if(err.sqlMessage.indexOf("Duplicate entry") !== -1){
-                res.json({ data: [[],[]], msg: "تم إدخال التقييم من قبل" })
+            if (err.sqlMessage.indexOf("Duplicate entry") !== -1) {
+                res.json({ data: [[], []], msg: "تم إدخال التقييم من قبل" })
             }
         } else {
             res.json({ data: details, msg: "تم إدخال التقييم بنجاح" });
@@ -192,13 +193,14 @@ function deleteAppraisal(req, res, next) {
 
 function postnewtrans(req, res, next) {
     let query;
-    let data = req.body
+    let data = req.body.data
     let nameOrId = data[0][1].substring(1)
-
     let curIndicator = data[0][0].substring(0) == "أصلية" ? 1 : data[0][0].substring(0) == "حالية" ? 2 : data[0][0].substring(0) == "سابقة" ? 3 : null
-    let nextIndicator = curIndicator == 1 ? 3 : curIndicator == 2 ? 3 : curIndicator == 3 ? 3 : null
+    let nextIndicator = 3
 
     data[0].splice(0, 1)
+    console.log(data);
+    console.log(jp.query(req.body.ind, '$..value'));
 
     query =
         ` update a_job_trans set INDICATOR = ${nextIndicator} WHERE INDICATOR = ${curIndicator}
@@ -227,16 +229,17 @@ function postnewtrans(req, res, next) {
     JOB_ASSIGNMENT_FORM.JOB_ASSIGNMENT_FORM AND a_job_trans.INDICATOR = indicators.INDICATOR WHERE employee.NATIONAL_ID_CARD_NO
     IN ${data[0][0].substring(1)} ORDER by a_job_trans.TRANS_DATE;
     `
-        db.query(query, (err, details) => {
-        if (err) {
-            console.log(err);
-            if(err.sqlMessage.indexOf("Duplicate entry") !== -1){
-                res.json({ data: [[],[]], msg: "تم إدخال هذا التدرج من قبل" })
-            }           } else {
-            res.json({ data: details, msg: "تم إدخال البيانات بنجاح" });
-        }
-        console.log(query);
-    })
+    // db.query(query, (err, details) => {
+    //     if (err) {
+    //         console.log(err);
+    //         if (err.sqlMessage.indexOf("Duplicate entry") !== -1) {
+    //             res.json({ data: [[], []], msg: "تم إدخال هذا التدرج من قبل" })
+    //         }
+    //     } else {
+    //         res.json({ data: details, msg: "تم إدخال البيانات بنجاح" });
+    //     }
+    //     console.log(query);
+    // })
 }
 
 function postBulkTrans(req, res, next) {
@@ -273,13 +276,13 @@ function getEmpTrans(req, res, next) {
 }
 
 function updateEmpTrans(req, res, next) {
-    let {empname, empid} = req.body
+    let { empname, empid } = req.body
     console.log(req.body);
 
     let nameOrId;
-    if(empname.length > 0){
+    if (empname.length > 0) {
         nameOrId = `NATIONAL_ID_CARD_NO = (SELECT NATIONAL_ID_CARD_NO FROME employee where name_arabic = "${empname}")`
-    }else if (empid.length > 0){
+    } else if (empid.length > 0) {
         nameOrId = `NATIONAL_ID_CARD_NO = (SELECT NATIONAL_ID_CARD_NO FROME employee where employee_id = ${empid})`
 
     }
@@ -320,7 +323,7 @@ function updateEmpTrans(req, res, next) {
     a_job_trans.NATIONAL_ID_CARD_NO = employee.NATIONAL_ID_CARD_NO AND
     a_job_trans.JOB_ASSIGNMENT_FORM = JOB_ASSIGNMENT_FORM.JOB_ASSIGNMENT_FORM AND a_job_trans.INDICATOR = indicators.INDICATOR
     WHERE ${nameOrId} ORDER by a_job_trans.TRANS_DATE;`
-        query = `
+    query = `
         UPDATE a_job_trans SET SUP_BOX_NAME = "${req.body.catname}", MAIN_BOX_NAME = "${req.body.jdname}",
         SUP_BOX_ID = (SELECT SUP_BOX_ID FROM a_sup_box WHERE SUP_BOX_NAME = "${req.body.supboxname}" AND
         MAIN_BOX_ID = ${req.body.mainboxid}), G_ID = (SELECT G_ID FROM a_job_groups WHERE G_NAME = "${req.body.gname}"),
@@ -334,8 +337,8 @@ function updateEmpTrans(req, res, next) {
         a_job_trans.NATIONAL_ID_CARD_NO = employee.NATIONAL_ID_CARD_NO AND a_job_trans.JOB_ASSIGNMENT_FORM
         = JOB_ASSIGNMENT_FORM.JOB_ASSIGNMENT_FORM AND a_job_trans.INDICATOR = indicators.INDICATOR WHERE
         ${req.body.empid || req.body.empid !== "undefined" ?
-        `employee.EMPLOYEE_ID = ${req.body.empid}` : req.body.empname || req.body.empname !== "undefined" ?
-        `employee.NAME_ARABIC = "${req.body.empname}"` : null} ORDER by a_job_trans.TRANS_DATE;`
+            `employee.EMPLOYEE_ID = ${req.body.empid}` : req.body.empname || req.body.empname !== "undefined" ?
+                `employee.NAME_ARABIC = "${req.body.empname}"` : null} ORDER by a_job_trans.TRANS_DATE;`
     db.query(query, (err, details) => {
         if (err) {
             next(err);
@@ -390,9 +393,10 @@ function postNewEmpEdu(req, res, next) {
     `
     db.query(query, (err, data) => {
         if (err) {
-            if(err.sqlMessage.indexOf("Duplicate entry") !== -1){
-                res.json({ data: [[],[]], msg: "تم إدخال هذا المؤهل من قبل" })
-            }           } else {
+            if (err.sqlMessage.indexOf("Duplicate entry") !== -1) {
+                res.json({ data: [[], []], msg: "تم إدخال هذا المؤهل من قبل" })
+            }
+        } else {
             console.log(data);
             res.json({ msg: "تم إدخال البيانات بنجاح", data: data })
         }
@@ -405,7 +409,7 @@ function getEmpEdu(req, res, next) {
     let empname = req.query.empname
     let query = `SELECT *,(SELECT DEGREE_ARABIC FROM education_degree WHERE education_degree.DEGREE = employee_education_degree.DEGREE OR null) as DEGREE_ARABIC,(SELECT SPECIALITY_ARABIC FROM dgree_speciality WHERE dgree_speciality.SPECIALITY = employee_education_degree.SPECIALITY OR null) as SPECIALITY_ARABIC,(SELECT SPECIALITY_DETAIL_ARABIC from dgree_speciality_detail where dgree_speciality_detail.SPECIALITY_DETAIL = employee_education_degree.SPECIALITY_DETAIL or null) as SPECIALITY_DETAIL_ARABIC,(SELECT UNIVERSITY_SCHOOL_ARABIC FROM university_school WHERE university_school.UNIVERSITY_SCHOOL = employee_education_degree.UNIVERSITY_SCHOOL or null) as UNIVERSITY_SCHOOL_ARABIC,(SELECT GRADE_ARABIC FROM graduation_grade where graduation_grade.GRADUATION_GRADE = employee_education_degree.GRADUATION_GRADE or null) as GRADE_ARABIC,(SELECT name_arabic FROM employee WHERE employee.NATIONAL_ID_CARD_NO = employee_education_degree.NATIONAL_ID_CARD_NO) as NAME_ARABIC FROM employee_education_degree
     WHERE ${empid.length !== 0 ? `NATIONAL_ID_CARD_NO = (SELECT NATIONAL_ID_CARD_NO FROM employee where employee_id = ${empid}) ` :
-    empname || empname !== "undefined" ? `NATIONAL_ID_CARD_NO = (SELECT NATIONAL_ID_CARD_NO FROM employee where name_arabic = "${empname}")` : null} AND
+            empname || empname !== "undefined" ? `NATIONAL_ID_CARD_NO = (SELECT NATIONAL_ID_CARD_NO FROM employee where name_arabic = "${empname}")` : null} AND
     employee_education_degree.is_shown = "true"`
     db.query(query, (err, details) => {
         if (err) {
@@ -420,7 +424,7 @@ function getEmpEdu(req, res, next) {
 function getOutsourceEmpEdu(req, res, next) {
     let empid = req.query.empid
     let empname = req.query.empname
-    
+
     let query = `SELECT * FROM outsource_employee_education_degree JOIN education_degree JOIN
     dgree_speciality JOIN dgree_speciality_detail JOIN UNIVERSITY_SCHOOL JOIN GRADUATION_GRADE JOIN
     (SELECT outsource_employee.EMPLOYEE_ID, outsource_employee.NAME_ARABIC ,outsource_employee.NATIONAL_ID_CARD_NO
@@ -430,8 +434,8 @@ function getOutsourceEmpEdu(req, res, next) {
     outsource_employee_education_degree.UNIVERSITY_SCHOOL = university_school.UNIVERSITY_SCHOOL AND 
     outsource_employee_education_degree.GRADUATION_GRADE = graduation_grade.GRADUATION_GRADE AND 
     outsource_employee_education_degree.NATIONAL_ID_CARD_NO = detofemp.NATIONAL_ID_CARD_NO WHERE 
-    ${empid.length !== 0 ? `detofemp.EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ? 
-    `detofemp.NAME_ARABIC = "${empname}"` : null} AND outsource_employee_education_degree.is_shown = "true"`
+    ${empid.length !== 0 ? `detofemp.EMPLOYEE_ID = ${empid} ` : empname || empname !== "undefined" ?
+            `detofemp.NAME_ARABIC = "${empname}"` : null} AND outsource_employee_education_degree.is_shown = "true"`
 
     db.query(query, (err, details) => {
         if (err) {
@@ -459,7 +463,7 @@ function editEmpEdu(req, res, next) {
     })
 }
 
-function editOutsourceEmpEdu(req,res,next){
+function editOutsourceEmpEdu(req, res, next) {
     let data = req.body
     let id = data[data.length - 1]
     data.pop()
@@ -494,7 +498,7 @@ function deleteEdu(req, res, next) {
     })
 }
 
-function deleteOutsourceEdu (req,res,next){
+function deleteOutsourceEdu(req, res, next) {
     let id = req.query.id
     let query = `
     UPDATE outsource_employee_education_degree SET is_shown = "false${id}" where id = ${id};
@@ -527,9 +531,10 @@ function newFamily(req, res, next) {
     db.query(query, function (err, data) {
         if (err) {
             next(err)
-            if(err.sqlMessage.indexOf("Duplicate entry") !== -1){
-                res.json({ data: [[],[]], msg: "تم إدخال هذا السجل من قبل" })
-            }           } else {
+            if (err.sqlMessage.indexOf("Duplicate entry") !== -1) {
+                res.json({ data: [[], []], msg: "تم إدخال هذا السجل من قبل" })
+            }
+        } else {
             res.json({ msg: "تم إدخال البيانات بنجاح", data: data })
         }
     })
@@ -604,9 +609,10 @@ function postNewPenalty(req, res, next) {
     db.query(query, (err, data) => {
         if (err) {
             console.log(err);
-            if(err.sqlMessage.indexOf("Duplicate entry") !== -1){
-                res.json({ data: [[],[]], msg: "تم إدخال هذا الجزاء من قبل" })
-            }           } else {
+            if (err.sqlMessage.indexOf("Duplicate entry") !== -1) {
+                res.json({ data: [[], []], msg: "تم إدخال هذا الجزاء من قبل" })
+            }
+        } else {
             res.json({ msg: "تم إدخال البيانات بنجاح", data: data })
         }
         console.log(query);
@@ -683,9 +689,10 @@ function postNewTraining(req, res, next) {
     TRAINING_COMPLETION_DATE, TRAINING_TYPE ,LOCATION_TYPE, LOCATION_NAME, ORGANIZATION) VALUES ${req.body}`
     db.query(query, (err, data) => {
         if (err) {
-            if(err.sqlMessage.indexOf("Duplicate entry") !== -1){
-                res.json({ data: [[],[]], msg: "تم إدخال هذا التدريب من قبل" })
-            }           } else {
+            if (err.sqlMessage.indexOf("Duplicate entry") !== -1) {
+                res.json({ data: [[], []], msg: "تم إدخال هذا التدريب من قبل" })
+            }
+        } else {
             res.json({ msg: "تم إدخال البيانات بنجاح", data: data })
         }
     })

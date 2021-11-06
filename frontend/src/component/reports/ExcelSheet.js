@@ -1,6 +1,6 @@
 import React from "react";
 // import ReactExport from "react-export-excel";
-import ExcelLogo from "./excel.png"
+// import ExcelLogo from "./excel.png"
 
 // const ExcelFile = ReactExport.ExcelFile;
 // const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -8,10 +8,7 @@ import ExcelLogo from "./excel.png"
 
 
 class Download extends React.Component {
-    constructor(props) {
-        super(props);
 
-    }
     render() {
         return (
             <div></div>

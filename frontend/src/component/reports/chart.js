@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from "react";
-import { Bar, Line, Pie } from 'react-chartjs-2';
+import { Bar, Pie } from 'react-chartjs-2';
 import { connect } from "react-redux";
 var jp = require('jsonpath');
 

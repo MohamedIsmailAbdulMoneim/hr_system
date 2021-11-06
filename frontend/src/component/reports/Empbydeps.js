@@ -1,12 +1,11 @@
-import React, { Fragment } from "react";
+import React from "react";
 import {
 
     getEmpByDeps
 
 } from "../../actions/Actions";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
-import axios from "axios";
+
 
 class EmpByDeps extends React.Component {
     constructor(props) {
@@ -42,7 +41,7 @@ class EmpByDeps extends React.Component {
         }
 
         return (
-            <div id="page-wrapper" >
+            <div id="page-wrapper" className="empbydeps">
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">Tables</h1>
@@ -54,7 +53,7 @@ class EmpByDeps extends React.Component {
                             <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }} class="panel-heading">
                                 الإدارات
                             </div>
-                            <label style={{ display: "block" }} for="pet-select" style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>اضغط للعرض باعتبار الإدارات</label>
+                            <label for="pet-select" style={{display: "block", fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>اضغط للعرض باعتبار الإدارات</label>
                             <select style={styles} multiple name="pets" id="pet-select">
                                 {this.props.deps.map((dep) => (
                                     <option depart={dep.SUP_BOX_NAME} style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }} onClick={this.handel}>{dep.SUP_BOX_NAME}</option>

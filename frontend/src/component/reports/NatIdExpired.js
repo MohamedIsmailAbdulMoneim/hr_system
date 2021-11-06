@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import {
     getEmpByDeps
 } from "../../actions/Actions";
@@ -6,8 +6,6 @@ import {
     getNatIdExpired
 } from "../../actions/ReportActions"
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
-import axios from "axios";
 
 class NatIdExpired extends React.Component {
     constructor(props) {
@@ -29,25 +27,10 @@ class NatIdExpired extends React.Component {
     render() {
 
         console.log(this.props.empdep);
-        const styles = {
-            display: "block",
-            padding: "0.375rem 2.25rem 0.375rem 0.75rem",
-            width: "100%",
-            height: 250,
-            backgroundColor: "#fff",
-            color: "#212529",
-            fontSize: "2rem",
-            lineHeight: 1.5,
-            fontWeight: "bold",
-            border: "1px solid #ced4da",
-            borderRadius: "0.25rem",
-            appearance: "none",
-            transition: "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out"
-
-        }
+        
 
         return (
-            <div id="page-wrapper" >
+            <div id="page-wrapper" className="natidexpire">
                 <div class="row">
 
                 </div>

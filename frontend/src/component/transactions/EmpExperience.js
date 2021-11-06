@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import {
 
     getEmpName, getEmpNameByName
@@ -6,8 +6,6 @@ import {
 } from "../../actions/Actions";
 import { newAppraisal, getEmpExp, newEmpExp, deleteEmpExperience, editeEmpExperience } from "../../actions/TransActions"
 import { connect } from "react-redux";
-import axios from "axios";
-import Moment from 'react-moment';
 import moment from 'moment';
 import 'moment-timezone';
 
@@ -249,9 +247,9 @@ class EmpExperience extends React.Component {
             nameOrId = `(SELECT NATIONAL_ID_CARD_NO FROM employee WHERE EMPLOYEE_ID = ${this.state.empIdAdd}))`
         }
         this.setState({ nameOrId })
-        if (emptyInputs != undefined) {
-        } else if (emptyInputs == undefined && (this.state.empNameAdd || this.state.empIdAdd)) {
-            let militerExp = arrays.filter(el => el.expType == 1)
+        if (emptyInputs !== undefined) {
+        } else if (emptyInputs === undefined && (this.state.empNameAdd || this.state.empIdAdd)) {
+            let militerExp = arrays.filter(el => el.expType === 1)
             if (militerExp.length > 0) {
                 let militeIndex;
                 let addTypeToIMiliterndex;
@@ -269,7 +267,7 @@ class EmpExperience extends React.Component {
                 while (i < listOfKeys.length) {
                     let keys = listOfKeys[i]
                     let smallArr = []
-                    var arrloop = newAddedMiliter.filter(el => el.key == keys)
+                    var arrloop = newAddedMiliter.filter(el => el.key === keys)
                     console.log(arrloop);
                     smallArr.push(`("${arrloop[1].value}"`)
                     smallArr.push(`"${arrloop[2].value}"`)
@@ -284,7 +282,7 @@ class EmpExperience extends React.Component {
                     i++
                 }
             }
-            let innerExp = arrays.filter(el => el.expType == 4)
+            let innerExp = arrays.filter(el => el.expType === 4)
             if (innerExp.length > 0) {
                 let innerIndex;
                 let addTypeToInnerndex;
@@ -301,14 +299,14 @@ class EmpExperience extends React.Component {
                 while (i < listOfKeys.length) {
                     let keys = listOfKeys[i]
                     let smallArr = []
-                    var arrloop = newAddedInner.filter(el => el.key == keys)
-                    smallArr.push(`("${arrloop[1].value}"`)
-                    smallArr.push(`"${arrloop[2].value}"`)
-                    smallArr.push(`"${arrloop[3].value}"`)
-                    smallArr.push(`"${arrloop[4].value}"`)
-                    smallArr.push(`"${arrloop[5].value}"`)
-                    smallArr.push(`"${arrloop[6].value}"`)
-                    smallArr.push(arrloop[0].expType)
+                    var arrloop_3 = newAddedInner.filter(el => el.key === keys)
+                    smallArr.push(`("${arrloop_3[1].value}"`)
+                    smallArr.push(`"${arrloop_3[2].value}"`)
+                    smallArr.push(`"${arrloop_3[3].value}"`)
+                    smallArr.push(`"${arrloop_3[4].value}"`)
+                    smallArr.push(`"${arrloop_3[5].value}"`)
+                    smallArr.push(`"${arrloop_3[6].value}"`)
+                    smallArr.push(arrloop_3[0].expType)
                     smallArr.push(`"True"`)
                     smallArr.push(nameOrId)
                     arr.push(smallArr)
@@ -318,7 +316,7 @@ class EmpExperience extends React.Component {
 
             }
 
-            let outerExp = arrays.filter(el => el.expType == 3)
+            let outerExp = arrays.filter(el => el.expType === 3)
             if (outerExp.length > 0) {
                 let outerIndex;
                 let addTypeToOuterndex;
@@ -335,15 +333,15 @@ class EmpExperience extends React.Component {
                 while (i < listOfKeys.length) {
                     let keys = listOfKeys[i]
                     let smallArr = []
-                    var arrloop = newAddedOuter.filter(el => el.key == keys)
+                    var arrloop_2 = newAddedOuter.filter(el => el.key === keys)
                     console.log(arrloop);
-                    smallArr.push(`("${arrloop[1].value}"`)
-                    smallArr.push(`"${arrloop[2].value}"`)
-                    smallArr.push(`"${arrloop[3].value}"`)
-                    smallArr.push(`"${arrloop[4].value}"`)
-                    smallArr.push(`"${arrloop[5].value}"`)
-                    smallArr.push(`"${arrloop[6].value}"`)
-                    smallArr.push(arrloop[0].expType)
+                    smallArr.push(`("${arrloop_2[1].value}"`)
+                    smallArr.push(`"${arrloop_2[2].value}"`)
+                    smallArr.push(`"${arrloop_2[3].value}"`)
+                    smallArr.push(`"${arrloop_2[4].value}"`)
+                    smallArr.push(`"${arrloop_2[5].value}"`)
+                    smallArr.push(`"${arrloop_2[6].value}"`)
+                    smallArr.push(arrloop_2[0].expType)
                     smallArr.push(`"True"`)
                     smallArr.push(nameOrId)
                     arr.push(smallArr)
@@ -607,7 +605,7 @@ class EmpExperience extends React.Component {
                                         <button style={{ height: "10%", minHeight: "20px", float: "left", marginRight: 7, background: "#062f07" }} onClick={this.addExp} className="btn btn-primary"> <span style={{ marginLeft: 7 }}>إضافة خبرة جديدة</span><i class="fas fa-user-plus"></i> </button>
 
                                     </div>
-                                    {this.state.showMsg ? this.props.msg == "تم إدخال البيانات بنجاح" ? <div id="showmsg" className="alert alert-success" role="alert"> {this.props.msg}</div> : this.props.msg == "تم إدخال هذه الخبرة من قبل" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.props.msg}</div> : this.props.msg == "يجب إدخال أي من الإسم ورقم الأداء" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.props.msg}</div> : null : null}
+                                    {this.state.showMsg ? this.props.msg === "تم إدخال البيانات بنجاح" ? <div id="showmsg" className="alert alert-success" role="alert"> {this.props.msg}</div> : this.props.msg === "تم إدخال هذه الخبرة من قبل" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.props.msg}</div> : this.props.msg === "يجب إدخال أي من الإسم ورقم الأداء" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.props.msg}</div> : null : null}
 
                                     <div style={{ display: "flex", justifyContent: "space-around" }}>
 
@@ -734,11 +732,11 @@ class EmpExperience extends React.Component {
                                         {this.props.empexp.length >= 1 ? this.props.empexp.map(emp => (
                                             <tbody>
                                                 <tr id={emp.id}>
-                                                    <td>{this.state.edit && this.state.rowExp == emp.id ? <input onChange={this.editPlaceOfExpHandler} className="form-control job" style={{ width: "100%", minWidth: "90px" }} type="text" placeholder={emp.EXP_TYP_NAME} /> : emp.EXP_TYP_NAME}</td>
-                                                    <td>{this.state.edit && this.state.rowExp == emp.id ? <input onChange={this.editPlaceOfExpHandler} className="form-control job" style={{ width: "100%", minWidth: "90px" }} type="text" placeholder={emp.PLACE_NAME} /> : emp.PLACE_NAME}</td>
-                                                    <td>{this.state.edit && this.state.rowExp == emp.id ? <input onChange={this.editJobOfExpHandler} className="form-control job" style={{ width: "100%", minWidth: "90px" }} type="text" placeholder={emp.JOB_NAME} /> : emp.JOB_NAME}</td>
-                                                    <td>{this.state.edit && this.state.rowExp == emp.id ? <input onChange={this.editFromOfExpHandler} className="form-control job" style={{ width: "100%", minWidth: "90px" }} type="date" placeholder={emp.START_DATE} /> : emp.START_DATE}</td>
-                                                    <td>{this.state.edit && this.state.rowExp == emp.id ? <input onChange={this.editToOfExpHandler} className="form-control job" style={{ width: "100%", minWidth: "90px" }} type="date" placeholder={emp.END_DATE} /> : emp.END_DATE}</td>
+                                                    <td>{this.state.edit && this.state.rowExp === emp.id ? <input onChange={this.editPlaceOfExpHandler} className="form-control job" style={{ width: "100%", minWidth: "90px" }} type="text" placeholder={emp.EXP_TYP_NAME} /> : emp.EXP_TYP_NAME}</td>
+                                                    <td>{this.state.edit && this.state.rowExp === emp.id ? <input onChange={this.editPlaceOfExpHandler} className="form-control job" style={{ width: "100%", minWidth: "90px" }} type="text" placeholder={emp.PLACE_NAME} /> : emp.PLACE_NAME}</td>
+                                                    <td>{this.state.edit && this.state.rowExp === emp.id ? <input onChange={this.editJobOfExpHandler} className="form-control job" style={{ width: "100%", minWidth: "90px" }} type="text" placeholder={emp.JOB_NAME} /> : emp.JOB_NAME}</td>
+                                                    <td>{this.state.edit && this.state.rowExp === emp.id ? <input onChange={this.editFromOfExpHandler} className="form-control job" style={{ width: "100%", minWidth: "90px" }} type="date" placeholder={emp.START_DATE} /> : emp.START_DATE}</td>
+                                                    <td>{this.state.edit && this.state.rowExp === emp.id ? <input onChange={this.editToOfExpHandler} className="form-control job" style={{ width: "100%", minWidth: "90px" }} type="date" placeholder={emp.END_DATE} /> : emp.END_DATE}</td>
                                                     <td>{this.handleExpTime(emp.START_DATE, emp.END_DATE).days()}</td>
                                                     <td>{this.handleExpTime(emp.START_DATE, emp.END_DATE).months()}</td>
                                                     <td>{this.handleExpTime(emp.START_DATE, emp.END_DATE).years()}</td>

@@ -29,9 +29,6 @@ import {
   updateOutsourceEmpDetails
 } from "../actions/ActionTypes";
 import axios from "axios";
-const CancelToken = axios.CancelToken;
-const source = CancelToken.source();
-
 export const newEmp = (data) => (dispatch) => {
   axios({
     method: "POST",
@@ -125,7 +122,7 @@ export const gitDownJd = () => (dispatch) => {
     var obj = []
     for (var i = 0; i < res.data.length; i++) {
       for (var b = 0; b < res.data.length; b++) {
-        if (res.data[i].SUP_BOX_ID = res.data[i].SUP_BOX_ID_P)
+        if (res.data[i].SUP_BOX_ID === res.data[i].SUP_BOX_ID_P)
           obj.push(res.data[i].SUP_BOX_NAME)
 
       }

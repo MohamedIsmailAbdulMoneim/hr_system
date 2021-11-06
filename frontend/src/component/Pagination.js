@@ -1,4 +1,4 @@
-import React, {Fragment, useState, useEffect} from "react";
+import React, {Fragment} from "react";
 import { connect } from "react-redux";
 
 const Pagination = (props) => {
@@ -8,7 +8,7 @@ const Pagination = (props) => {
   for (let i = 1; i < itemsPerPage; i++) {
     let active = props.currentPage === i ? 'active' : '';
     pageLinks.push(
-      <a onClick={props.changargs(i)} className="page-link" className={`${active}`} href="#">
+      <a onClick={props.changargs(i)} className={`${active} page-link`} href="/#">
         {i}
       </a>
     );
@@ -17,13 +17,13 @@ const Pagination = (props) => {
 
   return (
     <div className="pagination">
-      <a onClick={props.minusFirstArg} href="#">&raquo;</a>
+      <a onClick={props.minusFirstArg} href="/#">&raquo;</a>
       {pageLinks.slice(props.firstArgPerBtn,props.secondArgPerBtn).map(link => (
         <Fragment>
         {link}
         </Fragment>
       ))}
-      <a onClick={props.plusSecondArg} href="#">&laquo;</a>
+      <a onClick={props.plusSecondArg} href="/#">&laquo;</a>
     </div>
 
   );

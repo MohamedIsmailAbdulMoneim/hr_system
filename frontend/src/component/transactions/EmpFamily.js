@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import {
     getEmpName, getEmpNameByName
 } from "../../actions/Actions";
@@ -7,9 +7,7 @@ import {
     submitNewFamily, getEmpFamily, deleteEmpFamily
 } from "../../actions/TransActions"
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
 import axios from "axios";
-import moment from "react-moment"
 
 class EmpFamily extends React.Component {
     constructor(props) {
@@ -39,7 +37,7 @@ class EmpFamily extends React.Component {
     idInputHandlerForAdd = (e) => {
         this.refs.nameadd.value = ''
         this.setState({ empidForAdd: e.target.value, empnameForAdd: null })
-        if (e.target.value.length == 0) {
+        if (e.target.value.length === 0) {
             this.setState({ empidForAdd: null })
         }
     }
@@ -57,7 +55,7 @@ class EmpFamily extends React.Component {
     nameInputHandlerForAdd = (e) => {
         this.setState({ showNamesResultsForAdd: true, empidForAdd: null, empnameForAdd: e.target.value })
         this.props.getEmpNameByName(e.target.value)
-        if (e.target.value.length == 0) {
+        if (e.target.value.length === 0) {
             this.setState({ empnameForAdd: null })
         }
         this.refs.idadd.value = ''
@@ -81,9 +79,9 @@ class EmpFamily extends React.Component {
         let index = Array.prototype.indexOf.call(nodes, e.target);
         let newArr = this.state.addMaritalType.slice()
         let type;
-        if (e.target.value == "الزوجة") {
+        if (e.target.value === "الزوجة") {
             type = 1
-        } else if (e.target.value == "الأبن") {
+        } else if (e.target.value === "الأبن") {
             type = 2
         }
         newArr[index] = { value: e.target.value, type, key: index }
@@ -128,7 +126,7 @@ class EmpFamily extends React.Component {
     addMaritalWorkStatus = (e) => {
         let nodes = document.getElementsByClassName("maritalws");
         let index = Array.prototype.indexOf.call(nodes, e.target);
-        let insertedVal = e.target.value == "اختر ..." ? " " : e.target.value
+        // let insertedVal = e.target.value === "اختر ..." ? " " : e.target.value
         let newArr = this.state.addMaritalWorkStatus.slice()
         newArr[index] = { value: e.target.value, key: index }
         this.setState({
@@ -140,11 +138,11 @@ class EmpFamily extends React.Component {
     tabhandler = (e) => {
         let nodes = document.getElementsByClassName("maritalws");
         let index = Array.prototype.indexOf.call(nodes, e.target);
-        if (e.key === 'Tab' && index == nodes.length - 1) {
+        if (e.key === 'Tab' && index === nodes.length - 1) {
             this.setState(prevState => {
                 return {
                     maritalLength: prevState.maritalLength + 1,
-                    addMaritalName: [...this.state.addMaritalType, { value: " ", type: null, key: null }],
+                    addMaritalTyp: [...this.state.addMaritalType, { value: " ", type: null, key: null }],
                     addMaritalName: [...this.state.addMaritalName, { value: " ", key: null }],
                     addMaritalNId: [...this.state.addMaritalNId, { value: " ", key: null }],
                     addMaritalBod: [...this.state.addMaritalBod, { value: " ", key: null }],
@@ -195,6 +193,7 @@ class EmpFamily extends React.Component {
     }
 
     handleArrToSend = (e) => {
+        console.log('hit');
         e.preventDefault()
         var state = this.state
         this.setState({
@@ -203,21 +202,25 @@ class EmpFamily extends React.Component {
         var arrays = state.addMaritalType.concat(state.addMaritalName, state.addMaritalNId, state.addMaritalBod, state.addMaritalWorkStatus)
         var emptyInputs = arrays.find(i => i.value.length <= 1) || null
         let arr = []
-        if (emptyInputs != undefined || state.addMaritalNId[0].value.length !== 14) {
-            if (emptyInputs != undefined) {
+        if (emptyInputs || state.addMaritalNId[0].value.length !== 14) {
+            console.log("البيانات غير كاملة");
+            if (emptyInputs) {
                 this.setState({
                     messege: { msg: "البيانات غير كاملة" }
                 })
             } else if (state.addMaritalNId[0].value.length !== 14) {
+                console.log("رقم البطاقة غير صحيح");
                 this.setState({
                     messege: { msg: "رقم البطاقة غير صحيح" }
                 })
             }
-        } else if (emptyInputs == undefined && (this.state.empnameForAdd || this.state.empidForAdd)) {
-            let i = arrays.length / 5
+        } else if (!emptyInputs && (this.state.empnameForAdd || this.state.empidForAdd)) {
+            let i;
+            i = arrays.length / 5
             while (i > 0) {
+                let k = i
                 let smallArr = []
-                var arrloop = arrays.filter(el => el.key == i - 1)
+                var arrloop = arrays.filter(el => el.key === k - 1)
                 let nameOrId;
                 if (this.state.empnameForAdd) {
                     nameOrId = `((SELECT NATIONAL_ID_CARD_NO FROM employee WHERE NAME_ARABIC = "${this.state.empnameForAdd}")`
@@ -236,11 +239,11 @@ class EmpFamily extends React.Component {
                 arr.push(smallArr)
                 i--
             }
+
             this.setState({
                 finalData: arr,
                 addConfirmed: true
             })
-            console.log(arr);
 
 
         }
@@ -383,7 +386,7 @@ class EmpFamily extends React.Component {
             headers: { "Content-Type": "application/json" },
         }).then(data => {
             console.log(data.data.msg);
-            if (data.data.msg == "تم إدخال البيانات بنجاح") {
+            if (data.data.msg === "تم إدخال البيانات بنجاح") {
                 this.setState({
                     updated: true
                 })
@@ -456,23 +459,7 @@ class EmpFamily extends React.Component {
     }
 
     render() {
-        console.log(this.state.messege);
-        const styles = {
-            display: "block",
-            padding: "0.375rem 2.25rem 0.375rem 0.75rem",
-            width: "55%",
-            height: 250,
-            backgroundColor: "#fff",
-            color: "#212529",
-            fontSize: "2rem",
-            lineHeight: 1.5,
-            fontWeight: "bold",
-            border: "1px solid #ced4da",
-            borderRadius: "0.25rem",
-            appearance: "none",
-            transition: "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out"
-
-        }
+    
 
         return (
             <div id="page-wrapper" >
@@ -484,9 +471,9 @@ class EmpFamily extends React.Component {
                                     <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt", display: "flex", justifyContent: "space-between" }} class="panel-heading">
                                         {this.state.add ? <i onClick={this.closeAddSectionHandler} style={{ fontSize: 15, float: "right" }} class="fas fa-times-circle"></i> : null}
                                         <span>إضافة بيانات جديد</span>
-                                        <h3></h3>
+                                        <h3> </h3>
                                     </div>
-                                    {this.state.showMsg ? this.state.messege == "تم إدخال البيانات بنجاح" ? <div id="showmsg" className="alert alert-success" role="alert"> {this.state.messege}</div> : this.state.messege == "يوجد خطاء بقاعدة البيانات" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege}</div> : this.state.messege == "رقم البطاقة غير صحيح" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege}</div> : this.state.messege == "البيانات غير كاملة" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege}</div> : null : null}
+                                    {this.state.showMsg ? this.state.messege === "تم إدخال البيانات بنجاح" ? <div id="showmsg" className="alert alert-success" role="alert"> {this.state.messege}</div> : this.state.messege === "يوجد خطاء بقاعدة البيانات" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege}</div> : this.state.messege === "رقم البطاقة غير صحيح" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege}</div> : this.state.messege === "البيانات غير كاملة" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege}</div> : null : null}
 
                                     {/* <ImportExcel data={this.ImportExcelHandler} /> */}
                                     <div style={{ marginRight: 20, display: "flex", justifyContent: "center", alignItems: "center", marginLeft: 40 }}>
@@ -497,7 +484,7 @@ class EmpFamily extends React.Component {
                                             </div>
                                             <div className="form-group" controlId="formBasicEmail">
                                                 <label style={{ width: "100%", textAlign: "right" }}>الإسم : </label>
-                                                <input ref="nameadd" id="name" id="empname" className="form-control add" onChange={this.nameInputHandlerForAdd} style={{ background: "white", width: "100%", minWidth: "250px", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
+                                                <input ref="nameadd" id="empname" className="form-control add" onChange={this.nameInputHandlerForAdd} style={{ background: "white", width: "100%", minWidth: "250px", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
                                             </div>
                                         </div>
                                     </div>
@@ -636,9 +623,9 @@ class EmpFamily extends React.Component {
                                             fam.RELATION_TYPE === 1 ?
                                                 <tbody>
                                                     <tr id={fam.id}>
-                                                        <td>{this.state.edit && this.state.rowFam == fam.id ? <input onChange={this.handleMarName} value={this.state.editMaritalName} className="form-control" style={{ width: "100%" }} type="text" /> : this.state.updated && this.state.rowFam == fam.id ? this.state.editMaritalName : fam.FAMILY_NAME}</td>
-                                                        <td>{this.state.edit && this.state.rowFam == fam.id ? <input onChange={this.handleBod} value={this.state.editMaritalBod} className="form-control" style={{ width: "100%" }} type="date" /> : this.state.updated && this.state.rowFam == fam.id ? this.state.editMaritalBod : fam.BIRTH_DATE}</td>
-                                                        <td>{this.state.edit && this.state.rowFam == fam.id ? <input onChange={this.handleNid} value={this.state.editMaritalNid} className="form-control" style={{ width: "100%" }} type="text" /> : this.state.updated && this.state.rowFam == fam.id ? this.state.editMaritalNid : fam.NATIONAL_ID_NUMBER}</td>
+                                                        <td>{this.state.edit && this.state.rowFam === fam.id ? <input onChange={this.handleMarName} value={this.state.editMaritalName} className="form-control" style={{ width: "100%" }} type="text" /> : this.state.updated && this.state.rowFam === fam.id ? this.state.editMaritalName : fam.FAMILY_NAME}</td>
+                                                        <td>{this.state.edit && this.state.rowFam === fam.id ? <input onChange={this.handleBod} value={this.state.editMaritalBod} className="form-control" style={{ width: "100%" }} type="date" /> : this.state.updated && this.state.rowFam === fam.id ? this.state.editMaritalBod : fam.BIRTH_DATE}</td>
+                                                        <td>{this.state.edit && this.state.rowFam === fam.id ? <input onChange={this.handleNid} value={this.state.editMaritalNid} className="form-control" style={{ width: "100%" }} type="text" /> : this.state.updated && this.state.rowFam === fam.id ? this.state.editMaritalNid : fam.NATIONAL_ID_NUMBER}</td>
                                                         <td></td>
                                                         <td></td>
                                                         <td></td>
@@ -670,9 +657,9 @@ class EmpFamily extends React.Component {
                                             fam.RELATION_TYPE === 2 ?
                                                 <tbody>
                                                     <tr id={fam.id}>
-                                                        <td>{this.state.edit && this.state.rowFam == fam.id ? <input onChange={this.handleMarName} value={this.state.editMaritalName} className="form-control" style={{ width: "100%" }} type="text" /> : this.state.updated && this.state.rowFam == fam.id ? this.state.editMaritalName : fam.FAMILY_NAME}</td>
-                                                        <td>{this.state.edit && this.state.rowFam == fam.id ? <input onChange={this.handleBod} value={this.state.editMaritalBod} className="form-control" style={{ width: "100%" }} type="date" /> : this.state.updated && this.state.rowFam == fam.id ? this.state.editMaritalBod : fam.RELATION_TYPE === 2 ? fam.BIRTH_DATE : null}</td>
-                                                        <td>{this.state.edit && this.state.rowFam == fam.id ? <input onChange={this.handleNid} value={this.state.editMaritalNid} className="form-control" style={{ width: "100%" }} type="text" /> : this.state.updated && this.state.rowFam == fam.id ? this.state.editMaritalNid : fam.RELATION_TYPE === 2 ? fam.NATIONAL_ID_NUMBER : null}</td>
+                                                        <td>{this.state.edit && this.state.rowFam === fam.id ? <input onChange={this.handleMarName} value={this.state.editMaritalName} className="form-control" style={{ width: "100%" }} type="text" /> : this.state.updated && this.state.rowFam === fam.id ? this.state.editMaritalName : fam.FAMILY_NAME}</td>
+                                                        <td>{this.state.edit && this.state.rowFam === fam.id ? <input onChange={this.handleBod} value={this.state.editMaritalBod} className="form-control" style={{ width: "100%" }} type="date" /> : this.state.updated && this.state.rowFam === fam.id ? this.state.editMaritalBod : fam.RELATION_TYPE === 2 ? fam.BIRTH_DATE : null}</td>
+                                                        <td>{this.state.edit && this.state.rowFam === fam.id ? <input onChange={this.handleNid} value={this.state.editMaritalNid} className="form-control" style={{ width: "100%" }} type="text" /> : this.state.updated && this.state.rowFam === fam.id ? this.state.editMaritalNid : fam.RELATION_TYPE === 2 ? fam.NATIONAL_ID_NUMBER : null}</td>
                                                         <td></td>
                                                         <td><i onClick={this.state.delete ? this.confirmDelete : this.state.edit ? this.handelEdit_2 : this.handelEdit_1} tableId={fam.id} relType={fam.RELATION_TYPE} famName={fam.FAMILY_NAME} birthDate={fam.BIRTH_DATE} marNid={fam.NATIONAL_ID_NUMBER} natIdCard={fam.NATIONAL_ID_CARD_NO} class="fas fa-edit"></i></td>
                                                         <td><i onClick={this.state.delete ? this.closeDeleteSectionHandler : this.state.edit ? this.closeEditSectionHandler : this.deleteHandler} tableId={fam.id} natIdCard={fam.NATIONAL_ID_CARD_NO} class="fas fa-backspace"></i></td>
@@ -689,7 +676,7 @@ class EmpFamily extends React.Component {
 
 
 
-                                    {this.state.showMaritalstate ? <div><h3 style={{ textAlign: "left", fontFamily: 'Markazi Text ,serif' }}>الحالة الإجتماعية : <span style={{ color: "#7d7272" }}> {this.props.empfamily ? this.props.empfamily.length == 1 ? "متزوج" : this.props.empfamily.length > 1 ? `متزوج ويعول ${this.props.empfamily.length - 1}` : "أعزب" : null} </span> </h3></div> : null}
+                                    {this.state.showMaritalstate ? <div><h3 style={{ textAlign: "left", fontFamily: 'Markazi Text ,serif' }}>الحالة الإجتماعية : <span style={{ color: "#7d7272" }}> {this.props.empfamily ? this.props.empfamily.length === 1 ? "متزوج" : this.props.empfamily.length > 1 ? `متزوج ويعول ${this.props.empfamily.length - 1}` : "أعزب" : null} </span> </h3></div> : null}
                                 </div>
                             </div>
                         </div>

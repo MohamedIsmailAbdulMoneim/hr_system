@@ -1,15 +1,17 @@
-import React, { Fragment } from "react";
+import React from "react";
 import {
-    getJobDgreeCodes, getMainCodes, getJobGovern, getDeps, getEmpName, getCates,getStations
+    getJobDgreeCodes, getMainCodes, getJobGovern, getDeps, getEmpName, getCates, getStations
 } from "../actions/Actions";
 import { connect } from "react-redux";
-import { NavLink } from "react-router-dom";
-import axios from "axios";
+import { NavLink, Link } from "react-router-dom";
+import * as FaIcons from 'react-icons/fa';
+import * as AiIcons from 'react-icons/ai';
+import { IconContext } from 'react-icons';
 
 class Sidebar extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { mainName: null }
+        this.state = { mainName: null, sidebar: false }
     }
     componentDidMount() {
         this.props.getCates()
@@ -22,20 +24,31 @@ class Sidebar extends React.Component {
         this.props.getJobDgreeCodes(e.target.innerHTML)
     }
 
-    render() {
-        this.props.getMainCodes(this.props.posts)
+    showSidebar = (e) => {
+        this.setState({
+            sidebar: !this.state.sidebar
+        })
+    }
 
+    render() {
+        // this.props.getMainCodes(this.props.posts)
+        console.log(this.state.sidebar);
         const styles = {
             margin: 10,
             width: "100%",
         }
 
         return (
-            <div className="navbar-default sidebar" role="navigation">
+            <div className="navbar-default sidebar" role="navigation" style={{marginTop: 1050}}>
                 <div className="sidebar-nav navbar-collapse">
-                    <ul className="nav" id="side-menu">
-                        <li>
-                            <a onClick={this.handle} className="active" href="/"><i className="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                    <ul onClick={this.showSidebar}>
+                        <Link to="/#" className="menu-bars">
+                            <FaIcons.FaBars onClick={this.showSidebar} />
+                        </Link>
+                        <li className='navbar-toggle'>
+                            <Link to='#' className='menu-bars'>
+                                <AiIcons.AiOutlineClose />
+                            </Link>
                         </li>
                         <li>
                             <NavLink to={`/Employee`}>
@@ -199,40 +212,40 @@ class Sidebar extends React.Component {
                             </ul>
                         </li>
                         <li>
-                                    <a href="#"><i className="fa fa-sitemap fa-fw"></i> العمالة المؤقتة<span className="fa arrow"></span></a>
-                                    <ul className="nav nav-first-level">
-                                    <NavLink style={styles} to={`/outSourceEmployee`}>
-                                            <li>
-                                                <a  href="/outSourceEmployee">بيانات العامل</a>
-                                            </li>
-                                        </NavLink >
-                                        <NavLink style={styles} to={`/outSourceEmpEduDeg`}>
-                                            <li>
-                                                <a href="/outSourceEmpEduDeg">المؤهلات</a>
-                                            </li>
-                                        </NavLink >
-                                        <NavLink style={styles} to={`/outSourceEmpsAppraisal`}>
-                                            <li>
-                                                <a href="/outSourceEmpsAppraisal">التقييمات</a>
-                                            </li>
-                                        </NavLink >
-                                        <NavLink style={styles} to={`/outSourceEmpPenalty`}>
-                                            <li>
-                                                <a href="/outSourceEmpPenalty">جزاءات</a>
-                                            </li>
-                                        </NavLink >
-                                        <NavLink style={styles} to={`/outSourceEmpFamily`}>
-                                            <li>
-                                                <a href="/outSourceEmpFamily">بيانات عائلية</a>
-                                            </li>
-                                        </NavLink >
-                                        <NavLink style={styles} to={`/outSourceEmpTraining`}>
-                                            <li>
-                                                <a href="/outSourceEmpTraining">تدريب</a>
-                                            </li>
-                                        </NavLink >
-                                    </ul>
-                                </li>
+                            <a href="#"><i className="fa fa-sitemap fa-fw"></i> العمالة المؤقتة<span className="fa arrow"></span></a>
+                            <ul className="nav nav-first-level">
+                                <NavLink style={styles} to={`/outSourceEmployee`}>
+                                    <li>
+                                        <a href="/outSourceEmployee">بيانات العامل</a>
+                                    </li>
+                                </NavLink >
+                                <NavLink style={styles} to={`/outSourceEmpEduDeg`}>
+                                    <li>
+                                        <a href="/outSourceEmpEduDeg">المؤهلات</a>
+                                    </li>
+                                </NavLink >
+                                <NavLink style={styles} to={`/outSourceEmpsAppraisal`}>
+                                    <li>
+                                        <a href="/outSourceEmpsAppraisal">التقييمات</a>
+                                    </li>
+                                </NavLink >
+                                <NavLink style={styles} to={`/outSourceEmpPenalty`}>
+                                    <li>
+                                        <a href="/outSourceEmpPenalty">جزاءات</a>
+                                    </li>
+                                </NavLink >
+                                <NavLink style={styles} to={`/outSourceEmpFamily`}>
+                                    <li>
+                                        <a href="/outSourceEmpFamily">بيانات عائلية</a>
+                                    </li>
+                                </NavLink >
+                                <NavLink style={styles} to={`/outSourceEmpTraining`}>
+                                    <li>
+                                        <a href="/outSourceEmpTraining">تدريب</a>
+                                    </li>
+                                </NavLink >
+                            </ul>
+                        </li>
                         <li>
                             <a href="#"><i className="fa fa-bar-chart-o fa-fw"></i> تقارير<span className="fa arrow"></span></a>
                             <ul className="nav nav-first-level">

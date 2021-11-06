@@ -15,7 +15,7 @@ function Form() {
                         <div className="panel-body">
                             <div className="row">
                                 <div className="col-lg-6">
-                                    <form role="form">
+                                    <form>
                                         <div className="form-group">
                                             <label>Text Input</label>
                                             <input className="form-control" />
@@ -123,7 +123,7 @@ function Form() {
                                 </div>
                                 <div className="col-lg-6">
                                     <h1>Disabled Form States</h1>
-                                    <form role="form">
+                                    <form>
                                         <fieldset disabled>
                                             <div className="form-group">
                                                 <label for="disabledSelect">Disabled input</label>
@@ -144,7 +144,7 @@ function Form() {
                                         </fieldset>
                                     </form>
                                     <h1>Form Validation States</h1>
-                                    <form role="form">
+                                    <form>
                                         <div className="form-group has-success">
                                             <label className="control-label" for="inputSuccess">Input with success</label>
                                             <input type="text" className="form-control" id="inputSuccess" />
@@ -159,7 +159,7 @@ function Form() {
                                         </div>
                                     </form>
                                     <h1>Input Groups</h1>
-                                    <form role="form">
+                                    <form>
                                         <div className="form-group input-group">
                                             <span className="input-group-addon">@</span>
                                             <input type="text" className="form-control" placeholder="Username" />

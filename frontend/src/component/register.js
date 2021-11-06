@@ -1,11 +1,9 @@
 import React, { Component } from "react";
-import { Bar, Line, Pie } from 'react-chartjs-2';
 import { connect } from "react-redux";
 import {
     register,
 } from "../actions/AuthActions";
 import { clearErrors } from "../actions/ErrorActions"
-import axios from "axios";
 import PropTypes from 'prop-types';
 
 

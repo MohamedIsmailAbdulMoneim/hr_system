@@ -1,10 +1,8 @@
-import React, { Fragment } from "react";
+import React from "react";
 import {
     getMainCodes, getJobDgreeCodes
 } from "../../actions/Actions";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
-import axios from "axios";
 
 class GeneralManager extends React.Component {
     constructor(props) {
@@ -27,7 +25,7 @@ class GeneralManager extends React.Component {
 
     deleteHandler = (e) => {
         console.log(e.target.getAttribute('name'));
-        const nameVal = e.target.getAttribute("name") // getting the J_D_ID from name attr
+        // const nameVal = e.target.getAttribute("name") // getting the J_D_ID from name attr
 
     }
 
@@ -48,7 +46,7 @@ class GeneralManager extends React.Component {
 
         console.log(this.props.posts);
         return (
-            <div id="page-wrapper">
+            <div id="page-wrapper" className="generalmanager">
                 <div className="row">
                     <div className="col-lg-12">
                         <h1 className="page-header">Forms</h1>
@@ -57,11 +55,11 @@ class GeneralManager extends React.Component {
                 <div className="row">
                     <div className="row">
                         <div className="col-lg-12" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                            <div style={{ height: "100%", width: 1000 }} class="panel panel-default">
-                                <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }} class="panel-heading">
+                            <div style={{ height: "100%", width: 1000 }} className="panel panel-default">
+                                <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }} className="panel-heading">
                                     إضافة مسمى وظيفي جديد
                                 </div>
-                                <form role="form">
+                                <form>
                                     <div className="form-group">
                                         <label>كود المستوى الوظيفي</label>
                                         <input className="form-control" placeholder="Enter text" disabled={(this.state.new ? false : true)} />
@@ -98,7 +96,7 @@ class GeneralManager extends React.Component {
                                         <div className="panel panel-default">
                                             <div className="panel-heading">
                                                 أكواد مستوى مدير عام
-                                                {this.state.edit ? <i onClick={this.editFalseHandeler} style={{fontSize: 15 ,position: "relative", left:530}} class="fas fa-times-circle"></i> : null } 
+                                                {this.state.edit ? <i onClick={this.editFalseHandeler} style={{fontSize: 15 ,position: "relative", left:530}} className="fas fa-times-circle"></i> : null } 
 
                                             </div>
                                             <div className="panel-body">
@@ -123,8 +121,8 @@ class GeneralManager extends React.Component {
                                                                         <td>{gm.SUP_BOX_ID}</td>
                                                                         <td>{gm.J_D_NAME}</td>
                                                                         <td>{gm.SUP_BOX_NAME}</td>
-                                                                        <td><i jDId={gm.J_D_ID} mainBoxName={gm.J_D_NAME} supBoxId={gm.SUP_BOX_ID} supBoxName={gm.SUP_BOX_NAME} onClick={this.editHandler} class="fas fa-edit"></i></td>
-                                                                        <td><i class="fas fa-backspace"></i></td>
+                                                                        <td><i jDId={gm.J_D_ID} mainBoxName={gm.J_D_NAME} supBoxId={gm.SUP_BOX_ID} supBoxName={gm.SUP_BOX_NAME} onClick={this.editHandler} className="fas fa-edit"></i></td>
+                                                                        <td><i className="fas fa-backspace"></i></td>
                                                                     </tr>
                                                                 ))
                                                                 }
@@ -147,7 +145,7 @@ class GeneralManager extends React.Component {
                                                                     <td><input style={{ width: 50 }} type="text" placeholder={this.state.supBoxId} /></td>
                                                                     <td><input type="text" placeholder={this.state.mainBoxName} /></td>
                                                                     <td><input type="text" placeholder={this.state.supBoxName} /></td>
-                                                                    <td><button type="button" class="btn btn-primary">تعديل</button></td>
+                                                                    <td><button type="button" className="btn btn-primary">تعديل</button></td>
                                                                 </tr>
                                                             </tbody>
 

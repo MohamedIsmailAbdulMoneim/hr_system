@@ -3,11 +3,7 @@ import { getEmpName, getEmpNameByName } from "../../actions/Actions"
 import { getEmpTraining, deleteEmpTraining } from "../../actions/TransActions"
 import { } from "../../actions/TransActions"
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
-import axios from "axios";
-import moment from 'react-moment';
 import 'moment-timezone';
-import Pagination from "../Pagination";
 
 class EmpTraining extends React.Component {
     constructor(props) {
@@ -82,7 +78,7 @@ class EmpTraining extends React.Component {
     idInputHandlerForAdd = (e) => {
         this.refs.nameadd.value = ''
         this.setState({ empidadd: e.target.value, empnameadd: "" })
-        if (e.target.value.length == 0) {
+        if (e.target.value.length === 0) {
             this.setState({ empidadd: "" })
         }
     }
@@ -90,7 +86,7 @@ class EmpTraining extends React.Component {
     nameInputHandlerForAdd = (e) => {
         this.setState({ showNamesResultsForAdd: true, empidadd: "", empnameadd: e.target.value })
         this.props.getEmpNameByName(e.target.value)
-        if (e.target.value.length == 0) {
+        if (e.target.value.length === 0) {
             this.setState({ empnameadd: "" })
         }
         this.refs.idadd.value = ''
@@ -200,7 +196,7 @@ class EmpTraining extends React.Component {
     changeArgs = (i) => (e) => {
         e.preventDefault()
         this.setState({ currentPage: i })
-        if (i == 1) {
+        if (i === 1) {
             this.setState({ firstArg: (i - 1) * 20, secondArg: i * 20 })
 
         }
@@ -327,7 +323,7 @@ class EmpTraining extends React.Component {
         this.setState({
             edit: false
         })
-        if (this.props.result == 200) {
+        if (this.props.result === 200) {
             this.setState({ updated: true })
         }
     }
@@ -379,27 +375,12 @@ class EmpTraining extends React.Component {
         let start = 1996;
         let end = 2021;
 
-        while (start != end) {
+        while (start !== end) {
             dates.push(start);
             start++;
         }
 
-        const styles = {
-            display: "block",
-            padding: "0.375rem 2.25rem 0.375rem 0.75rem",
-            width: "55%",
-            height: 250,
-            backgroundColor: "#fff",
-            color: "#212529",
-            fontSize: "2rem",
-            lineHeight: 1.5,
-            fontWeight: "bold",
-            border: "1px solid #ced4da",
-            borderRadius: "0.25rem",
-            appearance: "none",
-            transition: "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out"
-
-        }
+    
         return (
             <div id="page-wrapper" >
                 {this.state.add ?
@@ -412,7 +393,7 @@ class EmpTraining extends React.Component {
                                         <span>إضافة تدريب جديد</span>
                                         <div></div>
                                     </div>
-                                    {this.state.showMsg ? this.state.messege == "تم إدخال التدريب بنجاح" ? <div id="showmsg" className="alert alert-success" role="alert"> {this.state.messege}</div> : this.state.messege == "يوجد خطاء بقاعدة البيانات" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege}</div> : this.state.messege == "يجب إدخال أي من الإسم ورقم الأداء" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege}</div> : null : null}
+                                    {this.state.showMsg ? this.state.messege === "تم إدخال التدريب بنجاح" ? <div id="showmsg" className="alert alert-success" role="alert"> {this.state.messege}</div> : this.state.messege === "يوجد خطاء بقاعدة البيانات" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege}</div> : this.state.messege === "يجب إدخال أي من الإسم ورقم الأداء" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege}</div> : null : null}
                                     <div style={{ display: "flex", justifyContent: "space-around" }}>
                                         <div className="form-group" controlId="formBasicEmail">
                                             <label style={{ width: "100%", textAlign: "right" }}>رقم الأداء : </label>
@@ -513,7 +494,7 @@ class EmpTraining extends React.Component {
                                 </div>
                                 <div className="form-group" controlId="formBasicEmail">
                                     <label style={{ width: "100%", textAlign: "right" }}>الإسم : </label>
-                                    <input ref="name" id="name" id="empname" className="form-control" onKeyUp={this.nameInputHandlerForSearch} style={{ background: "white", width: "100%", minWidth: "250px", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
+                                    <input ref="name" id="empname" className="form-control" onKeyUp={this.nameInputHandlerForSearch} style={{ background: "white", width: "100%", minWidth: "250px", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
                                 </div>
                             </div>
                             {

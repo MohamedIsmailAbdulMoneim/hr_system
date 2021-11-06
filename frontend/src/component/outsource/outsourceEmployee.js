@@ -4,10 +4,6 @@ import {
 } from "../../actions/Actions";
 import { getEmpTrans, getEmpExp, getEmpFamily, getEmpEdu, getEmpAppraisal } from "../../actions/TransActions"
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
-import axios from "axios";
-import { Form, FormGroup, FormLabel, FormControl, FormText, FormCheck, Button, Row, Col } from 'react-bootstrap';
-
 
 class OutsourceEmployee extends React.Component {
     constructor(props) {
@@ -42,7 +38,7 @@ class OutsourceEmployee extends React.Component {
     changeHandler = (e) => {
         if (e.target.value.length < 1) {
             let removedArrOfApQ = [...this.state.mainUpdateQuery]
-            if (removedArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName"))) != -1) {
+            if (removedArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName"))) !== -1) {
                 let removedIndex = removedArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName")))
                 removedArrOfApQ.splice(removedIndex, 1)
                 this.setState({
@@ -51,22 +47,22 @@ class OutsourceEmployee extends React.Component {
             }
         } else if (e.target.value.length > 0) {
             let newArrOfApQ = [...this.state.mainUpdateQuery]
-            if (newArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName"))) != -1) {
-                if (e.target.getAttribute("colName") == "JOB_GOVERNORATE") {
+            if (newArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName"))) !== -1) {
+                if (e.target.getAttribute("colName") === "JOB_GOVERNORATE") {
                     let updatedIndexOfNew = newArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName")))
                     newArrOfApQ[updatedIndexOfNew] = `${e.target.getAttribute("colName")} = (SELECT GOVERNORATE FROM governorate WHERE GOVERNORATE_ARABIC = "${e.target.value}")`
                     this.setState({
                         mainUpdateQuery: newArrOfApQ
                     })
                 }
-                else if (e.target.getAttribute("colName") == "EMP_STATUS") {
+                else if (e.target.getAttribute("colName") === "EMP_STATUS") {
                     let updatedIndexOfNew = newArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName")))
                     newArrOfApQ[updatedIndexOfNew] = `${e.target.getAttribute("colName")} = (SELECT EMP_STATUS FROM emp_status WHERE EMP_STATUS_NAME = "${e.target.value}")`
                     this.setState({
                         mainUpdateQuery: newArrOfApQ
                     })
                 }
-                else if (e.target.getAttribute("colName") == "JOB_LOCATION") {
+                else if (e.target.getAttribute("colName") === "JOB_LOCATION") {
                     console.log('hit');
                     let updatedIndexOfNew = newArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName")))
                     newArrOfApQ[updatedIndexOfNew] = `${e.target.getAttribute("colName")} = (SELECT id from stations WHERE station_name = "${e.target.value}"), JOB_AREA = (SELECT area_id from stations WHERE station_name = "${e.target.value}"), JOB_GOVERNORATE = (SELECT GOVERNORATE_ID from stations WHERE station_name = "${e.target.value}") `
@@ -74,42 +70,42 @@ class OutsourceEmployee extends React.Component {
                         mainUpdateQuery: newArrOfApQ
                     })
                 }
-                else if (e.target.getAttribute("colName") == "ADDRESS_GOVERNORATE") {
+                else if (e.target.getAttribute("colName") === "ADDRESS_GOVERNORATE") {
                     let updatedIndexOfNew = newArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName")))
                     newArrOfApQ[updatedIndexOfNew] = `${e.target.getAttribute("colName")} = (SELECT GOVERNORATE FROM governorate WHERE GOVERNORATE_ARABIC = "${e.target.value}")`
                     this.setState({
                         mainUpdateQuery: newArrOfApQ
                     })
                 }
-                else if (e.target.getAttribute("colName") == "MARITAL_STATUS") {
+                else if (e.target.getAttribute("colName") === "MARITAL_STATUS") {
                     let updatedIndexOfNew = newArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName")))
                     newArrOfApQ[updatedIndexOfNew] = `${e.target.getAttribute("colName")} = (SELECT MARITAL_STATUS FROM marital_status WHERE STATUS_DESC = "${e.target.value}")`
                     this.setState({
                         mainUpdateQuery: newArrOfApQ
                     })
                 }
-                else if (e.target.getAttribute("colName") == "SYNDICATE") {
+                else if (e.target.getAttribute("colName") === "SYNDICATE") {
                     let updatedIndexOfNew = newArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName")))
                     newArrOfApQ[updatedIndexOfNew] = `${e.target.getAttribute("colName")} = (SELECT SYNDICATE FROM syndicate WHERE SYNDICATE_NAME = "${e.target.value}")`
                     this.setState({
                         mainUpdateQuery: newArrOfApQ
                     })
                 }
-                else if (e.target.getAttribute("colName") == "GENDER") {
+                else if (e.target.getAttribute("colName") === "GENDER") {
                     let updatedIndexOfNew = newArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName")))
                     newArrOfApQ[updatedIndexOfNew] = `${e.target.getAttribute("colName")} = (SELECT GENDER FROM genders WHERE GENDER_NAME = "${e.target.value}")`
                     this.setState({
                         mainUpdateQuery: newArrOfApQ
                     })
                 }
-                else if (e.target.getAttribute("colName") == "RELIGION") {
+                else if (e.target.getAttribute("colName") === "RELIGION") {
                     let updatedIndexOfNew = newArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName")))
                     newArrOfApQ[updatedIndexOfNew] = `${e.target.getAttribute("colName")} = (SELECT RELIGION FROM religions WHERE RELIGION_NAME = "${e.target.value}")`
                     this.setState({
                         mainUpdateQuery: newArrOfApQ
                     })
                 }
-                else if (e.target.getAttribute("colName") == "GOVERNORATE_OF_BIRTH") {
+                else if (e.target.getAttribute("colName") === "GOVERNORATE_OF_BIRTH") {
                     let updatedIndexOfNew = newArrOfApQ.findIndex(s => s.includes(e.target.getAttribute("colName")))
                     newArrOfApQ[updatedIndexOfNew] = `${e.target.getAttribute("colName")} = (SELECT GOVERNORATE FROM governorate WHERE GOVERNORATE_ARABIC = "${e.target.value}")`
                     this.setState({
@@ -123,63 +119,63 @@ class OutsourceEmployee extends React.Component {
                     })
                 }
             } else {
-                if (e.target.getAttribute("colName") == "JOB_GOVERNORATE") {
+                if (e.target.getAttribute("colName") === "JOB_GOVERNORATE") {
                     let newArr = [...this.state.mainUpdateQuery]
                     newArr.push(`${e.target.getAttribute("colName")} = (SELECT GOVERNORATE FROM governorate WHERE GOVERNORATE_ARABIC = "${e.target.value}")`)
                     this.setState({
                         mainUpdateQuery: newArr
                     })
                 }
-                else if (e.target.getAttribute("colName") == "EMP_STATUS") {
+                else if (e.target.getAttribute("colName") === "EMP_STATUS") {
                     let newArr = [...this.state.mainUpdateQuery]
                     newArr.push(`${e.target.getAttribute("colName")} = (SELECT EMP_STATUS FROM emp_status WHERE EMP_STATUS_NAME = "${e.target.value}")`)
                     this.setState({
                         mainUpdateQuery: newArr
                     })
                 }
-                else if (e.target.getAttribute("colName") == "JOB_LOCATION") {
+                else if (e.target.getAttribute("colName") === "JOB_LOCATION") {
                     let newArr = [...this.state.mainUpdateQuery]
                     newArr.push(`${e.target.getAttribute("colName")} = (SELECT id from stations WHERE station_name = "${e.target.value}"), JOB_AREA = (SELECT area_id from stations WHERE station_name = "${e.target.value}"), JOB_GOVERNORATE = (SELECT GOVERNORATE_ID from stations WHERE station_name = "${e.target.value}") `)
                     this.setState({
                         mainUpdateQuery: newArr
                     })
                 }
-                else if (e.target.getAttribute("colName") == "ADDRESS_GOVERNORATE") {
+                else if (e.target.getAttribute("colName") === "ADDRESS_GOVERNORATE") {
                     let newArr = [...this.state.mainUpdateQuery]
                     newArr.push(`${e.target.getAttribute("colName")} = (SELECT GOVERNORATE FROM governorate WHERE GOVERNORATE_ARABIC = "${e.target.value}")`)
                     this.setState({
                         mainUpdateQuery: newArr
                     })
                 }
-                else if (e.target.getAttribute("colName") == "MARITAL_STATUS") {
+                else if (e.target.getAttribute("colName") === "MARITAL_STATUS") {
                     let newArr = [...this.state.mainUpdateQuery]
                     newArr.push(`${e.target.getAttribute("colName")} = (SELECT MARITAL_STATUS FROM marital_status WHERE STATUS_DESC = "${e.target.value}")`)
                     this.setState({
                         mainUpdateQuery: newArr
                     })
                 }
-                else if (e.target.getAttribute("colName") == "SYNDICATE") {
+                else if (e.target.getAttribute("colName") === "SYNDICATE") {
                     let newArr = [...this.state.mainUpdateQuery]
                     newArr.push(`${e.target.getAttribute("colName")} = (SELECT SYNDICATE FROM syndicate WHERE SYNDICATE_NAME = "${e.target.value}")`)
                     this.setState({
                         mainUpdateQuery: newArr
                     })
                 }
-                else if (e.target.getAttribute("colName") == "GENDER") {
+                else if (e.target.getAttribute("colName") === "GENDER") {
                     let newArr = [...this.state.mainUpdateQuery]
                     newArr.push(`${e.target.getAttribute("colName")} = (SELECT GENDER FROM genders WHERE GENDER_NAME = "${e.target.value}")`)
                     this.setState({
                         mainUpdateQuery: newArr
                     })
                 }
-                else if (e.target.getAttribute("colName") == "RELIGION") {
+                else if (e.target.getAttribute("colName") === "RELIGION") {
                     let newArr = [...this.state.mainUpdateQuery]
                     newArr.push(`${e.target.getAttribute("colName")} = (SELECT RELIGION FROM religions WHERE RELIGION_NAME = "${e.target.value}")`)
                     this.setState({
                         mainUpdateQuery: newArr
                     })
                 }
-                else if (e.target.getAttribute("colName") == "GOVERNORATE_OF_BIRTH") {
+                else if (e.target.getAttribute("colName") === "GOVERNORATE_OF_BIRTH") {
                     let newArr = [...this.state.mainUpdateQuery]
                     newArr.push(`${e.target.getAttribute("colName")} = (SELECT GOVERNORATE FROM governorate WHERE GOVERNORATE_ARABIC = "${e.target.value}")`)
                     this.setState({
@@ -187,7 +183,7 @@ class OutsourceEmployee extends React.Component {
                     })
 
                 }
-                else if (e.target.getAttribute("colName") == "JOB_GROUP") {
+                else if (e.target.getAttribute("colName") === "JOB_GROUP") {
                     let newArr = [...this.state.mainUpdateQuery]
                     newArr.push(`${e.target.getAttribute("colName")} = (SELECT G_ID FROM a_job_groups WHERE G_NAME = "${e.target.value}")`)
                     this.setState({
@@ -415,12 +411,12 @@ class OutsourceEmployee extends React.Component {
     }
 
     addMirStatusHandler = (e) => {
-        if (e.target.value == "ادي الخدمه العسكرية") {
+        if (e.target.value === "ادي الخدمه العسكرية") {
             this.setState({
                 milStatusIsCompleted: true,
                 milStatusIsTempEx: false
             })
-        } else if (e.target.value == "معاف مؤقت") {
+        } else if (e.target.value === "معاف مؤقت") {
             this.setState({
                 milStatusIsTempEx: true,
                 milStatusIsCompleted: false
@@ -527,7 +523,6 @@ class OutsourceEmployee extends React.Component {
         ]
         let militaryStatus = ["لعدم اللياقة البدنية", "اعفاء من الخدمة العامة", "غير معروف", "ادي الخدمه العسكرية", "لم يصبه الدور", "مجند", "معاف مؤقت", "اعفاء نهائى", "أدى الخدمة العامة", "تحت الطلب", "ضابط عامل", "مستثنى من الخدمة", "عسكري سابق", "مستدعى", "تخلف عن التجنيد", "أمين شرطة سابقا", "ضابط سابق في شرطة"]
         let governorate = ["القاهرة", "الاسكندرية", "بورسعيد", "السويس", "البحرالاحمر", "الـوادى الجديد", "مرسى مطروح", "جنوب سيناء", "الاسماعيلية", "البحيرة", "الدقهليـة", "الشرقية", "الغربيـة", "كفرالشيخ", "القليوبيـة", "المنوفيـة", "دميـاط", "الجـيزة", "الفيـوم", "بنى سويف", "المنيـا", "اسيـوط", "سوهاج", "قنـا", "اسوان", "شمال سيناء", "الاقصر", "حلوان", "دول خارجية", "غيرمعروفه"]
-        let area = ["شرق", "غرب", "الصعيد", "الدلتا", "الأسكندرية", "القناة"]
         let emp_status = ['على قوة العمل',
             'أستقالة',
             'موقوف',
@@ -613,7 +608,7 @@ class OutsourceEmployee extends React.Component {
                                     </div>
                                     <div className="form-group" controlId="formBasicEmail">
                                         <label style={{ width: "100%", textAlign: "right" }}>الإسم : </label>
-                                        <input id="name" id="empname" className="form-control" onKeyDown={this.nameInputHandler} style={{ background: "white", width: "100%", minWidth: "250px", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
+                                        <input className="form-control" onKeyDown={this.nameInputHandler} style={{ background: "white", width: "100%", minWidth: "250px", marginBottom: 5, marginRight: 0, marginLeft: "5%", border: "1px solid black" }} type="text" name="first_name" />
                                     </div>
                                 </div>
                             </div>
@@ -838,7 +833,7 @@ class OutsourceEmployee extends React.Component {
                                             </div>
                                         </div>
                                         : null}
-                                    {this.state.syndicateAdded == false ?
+                                    {this.state.syndicateAdded === false ?
                                         <div style={{ display: "table" }}>
                                             <div style={{ display: "table-row" }}>
                                                 <div style={{ display: "table-cell" }}>
@@ -959,7 +954,7 @@ class OutsourceEmployee extends React.Component {
                                                         هل انت متأكد من إضافة بيانات جديد ؟ <button onClick={this.handleSendData} type="button" class="btn btn-warning">تأكيد</button>
                                                     </div>
                                                     : null}
-                                                {this.state.showMsg ? this.state.messege == "تم إدخال البيانات بنجاح" ? <div id="showmsg" className="alert alert-success" role="alert"> {this.state.messege}</div> : this.state.messege == "يوجد خطاء بقاعدة البيانات" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege}</div> : this.state.messege == "رقم البطاقة غير صحيح" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege}</div> : this.state.messege == "البيانات غير كاملة" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege}</div> : null : null}
+                                                {this.state.showMsg ? this.state.messege === "تم إدخال البيانات بنجاح" ? <div id="showmsg" className="alert alert-success" role="alert"> {this.state.messege}</div> : this.state.messege === "يوجد خطاء بقاعدة البيانات" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege}</div> : this.state.messege === "رقم البطاقة غير صحيح" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege}</div> : this.state.messege === "البيانات غير كاملة" ? <div id="showmsg" className="alert alert-danger" role="alert">{this.state.messege}</div> : null : null}
                                             </div>
                                         </div>
                                     </div>
@@ -1111,7 +1106,7 @@ class OutsourceEmployee extends React.Component {
                                             <div style={{ display: "table-cell" }}>
                                                 {/* <input className="form-control medium-input" onChange={this.changeHandler} colName={"MARITAL_STATUS"} placeholder={this.props.outsourceEmpDetails ?  this.props.outsourceEmpDetails[0].maritalstatear : null : null} readOnly={!this.state.edit} type="text" /> */}
 
-                                                <input className="form-control medium-input" type="text" list="brow90" onChange={this.changeHandler} colName={"MARITAL_STATUS"} placeholder={this.props.outsourceEmpDetails.length > 0 ?  this.props.outsourceEmpDetails[0].maritalstatear : null } readOnly={!this.state.edit} type="text" />
+                                                <input className="form-control medium-input" list="brow90" onChange={this.changeHandler} colName={"MARITAL_STATUS"} placeholder={this.props.outsourceEmpDetails.length > 0 ?  this.props.outsourceEmpDetails[0].maritalstatear : null } readOnly={!this.state.edit} type="text" />
                                                 <datalist id="brow90">
                                                     {marStatus.map(marstatus => (
                                                         <option value={marstatus} />
@@ -1262,7 +1257,7 @@ class OutsourceEmployee extends React.Component {
                                             </div>
                                             <div style={{ display: "table-cell" }}>
                                                 {/* <input className="form-control giant-input oneInputMargin" onChange={this.changeHandler} colName={"DEPARTMENT_NAME"} placeholder={this.props.outsourceEmpDetails ?  this.props.outsourceEmpDetails[0].DEPARTMENT_NAME : null : null} readOnly={!this.state.edit} type="text" /> */}
-                                                <select onChange={this.addDepartmentHandlert} className="form-control giant-input oneInputMargin" onChange={this.changeHandler} colName={"DEPARTMENT_NAME"} readOnly={!this.state.edit}>
+                                                <select className="form-control giant-input oneInputMargin" onChange={this.changeHandler} colName={"DEPARTMENT_NAME"} readOnly={!this.state.edit}>
                                                     {this.props.cates.map(cate => (
                                                         <Fragment>
                                                             <option id={cate.CAT_ID}>
@@ -1353,7 +1348,7 @@ class OutsourceEmployee extends React.Component {
                                                         هل انت متأكد من إضافة بيانات جديد ؟ <button onClick={this.handleSendDataToChange} type="button" class="btn btn-warning">تأكيد</button>
                                                     </div>
                                                     : null}
-                                                {this.state.showMsgOfChange ? this.state.messege == "تم إدخال البيانات بنجاح" ? <div id="showMsgOfChange" className="alert alert-success" role="alert"> {this.state.messege}</div> : this.state.messege == "يوجد خطاء بقاعدة البيانات" ? <div id="showMsgOfChange" className="alert alert-danger" role="alert">{this.state.messege}</div> : this.state.messege == "رقم البطاقة غير صحيح" ? <div id="showMsgOfChange" className="alert alert-danger" role="alert">{this.state.messege}</div> : this.state.messege == "البيانات غير كاملة" ? <div id="showMsgOfChange" className="alert alert-danger" role="alert">{this.state.messege}</div> : null : null}
+                                                {this.state.showMsgOfChange ? this.state.messege === "تم إدخال البيانات بنجاح" ? <div id="showMsgOfChange" className="alert alert-success" role="alert"> {this.state.messege}</div> : this.state.messege === "يوجد خطاء بقاعدة البيانات" ? <div id="showMsgOfChange" className="alert alert-danger" role="alert">{this.state.messege}</div> : this.state.messege === "رقم البطاقة غير صحيح" ? <div id="showMsgOfChange" className="alert alert-danger" role="alert">{this.state.messege}</div> : this.state.messege === "البيانات غير كاملة" ? <div id="showMsgOfChange" className="alert alert-danger" role="alert">{this.state.messege}</div> : null : null}
                                                 </div>
                                             </div>
                                         </div>
