@@ -43,6 +43,7 @@ class Register extends Component {
             pw: password
         }
         this.props.register(newUser)
+        // window.location.reload()
 
     }
 

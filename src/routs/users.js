@@ -17,7 +17,7 @@ function handleLogin(req, res, next) {
             console.log(err);
         }
         if (!rows.length) {
-            return res.status(401).json({ success: false, msg: "couldun't find user" })
+            return res.status(401).json({ success: false, msg: "اسم المستخدم غير صحيح" })
         }
 
         const isValid = utils.validPassword(pw, rows[0].hash, rows[0].salt);
@@ -26,7 +26,7 @@ function handleLogin(req, res, next) {
             const tokenObject = utils.issueJWT(rows[0]);
             res.json({ success: true, msg: "you have loged in successfuly", data: { id: rows[0].id, token: tokenObject } })
         } else {
-            res.status(401).json({ success: false, msg: "you entered the wrong password" });
+            res.status(401).json({ success: false, msg: "كلمة المرور غير صحيحة" });
         }
     });
 

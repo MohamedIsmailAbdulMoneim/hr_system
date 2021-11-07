@@ -19,7 +19,6 @@ class Sidebar extends React.Component {
     }
 
     handleSidebarClick = (e) => {
-        console.log();
         this.setState({ mainName: e.target.innerHTML })
         this.props.getJobDgreeCodes(e.target.innerHTML)
     }
@@ -39,7 +38,7 @@ class Sidebar extends React.Component {
         }
 
         return (
-            <div className="navbar-default sidebar" role="navigation" style={{marginTop: 1050}}>
+            <div className="navbar-default sidebar" role="navigation">
                 <div className="sidebar-nav navbar-collapse">
                     <ul onClick={this.showSidebar}>
                         <Link to="/#" className="menu-bars">
@@ -50,111 +49,7 @@ class Sidebar extends React.Component {
                                 <AiIcons.AiOutlineClose />
                             </Link>
                         </li>
-                        <li>
-                            <NavLink to={`/Employee`}>
-                                <li>
-                                    <a href="/Employee">الشاشة الرئيسية</a>
-                                </li>
-                            </NavLink>
-                        </li>
-                        <li>
-                            <a href="#"><i className="fa fa-sitemap fa-fw"></i>  أكواد الوزارة<span className="fa arrow"></span></a>
-                            <ul className="nav nav-second-level">
-                                <li>
-                                    <a href="#">الإدارة العليا<span className="fa arrow"></span></a>
-                                    <ul className="nav nav-third-level">
-                                        {/* <li>
-                                            <a href="#">رئيس مجلس الإدارة والعضو المنتدب</a>
-                                        </li>
-                                        <li>
-                                            <a href="/assisstantchairman">مساعد رئيس الشركة</a>
-                                        </li> */}
-                                        <NavLink style={styles} to={`/generalmanager`}>
-                                            <li>
-                                                <a onClick={this.handleSidebarClick} href="/generalmanager">مدير عام</a>
-                                            </li>
-                                        </NavLink >
-                                        <NavLink style={styles} to={`/assisstantgeneralmanager`}>
-                                            <li>
-                                                <a onClick={this.handleSidebarClick} href="assisstantgeneralmanager">مدير عام مساعد</a>
-                                            </li>
-                                        </NavLink >
-                                    </ul>
-                                </li>
-                                {/* <li>
-                                    <a href="#">المستوى الأول<span className="fa arrow"></span></a>
-                                    <ul className="nav nav-third-level">
-                                        <li>
-                                            <a href="#">مدير إدارة</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">رئيس قسم</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">أخصائي</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"> أخصائي أول</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"> أخصائي ممتاز</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">محاسب</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"> محاسب ممتاز</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">محام</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">محام ممتاز</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">مهندس</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">مهندس ممتاز</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a href="#">المستوى الثاني<span className="fa arrow"></span></a>
-                                    <ul className="nav nav-third-level">
-                                        <li>
-                                            <a href="#"></a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Third Level Item</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Third Level Item</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Third Level Item</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a href="#">المستوى الثالث<span className="fa arrow"></span></a>
-                                    <ul className="nav nav-third-level">
-                                        <li>
-                                            <a href="#">Third Level Item</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Third Level Item</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Third Level Item</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Third Level Item</a>
-                                        </li>
-                                    </ul>
-                                </li> */}
-                            </ul>
-                        </li>
+
                         <li>
                             <a href="#"><i className="fa fa-bar-chart-o fa-fw"></i>  الحركات<span className="fa arrow"></span></a>
                             <ul className="nav nav-first-level">
@@ -211,61 +106,7 @@ class Sidebar extends React.Component {
                                 </NavLink>
                             </ul>
                         </li>
-                        <li>
-                            <a href="#"><i className="fa fa-sitemap fa-fw"></i> العمالة المؤقتة<span className="fa arrow"></span></a>
-                            <ul className="nav nav-first-level">
-                                <NavLink style={styles} to={`/outSourceEmployee`}>
-                                    <li>
-                                        <a href="/outSourceEmployee">بيانات العامل</a>
-                                    </li>
-                                </NavLink >
-                                <NavLink style={styles} to={`/outSourceEmpEduDeg`}>
-                                    <li>
-                                        <a href="/outSourceEmpEduDeg">المؤهلات</a>
-                                    </li>
-                                </NavLink >
-                                <NavLink style={styles} to={`/outSourceEmpsAppraisal`}>
-                                    <li>
-                                        <a href="/outSourceEmpsAppraisal">التقييمات</a>
-                                    </li>
-                                </NavLink >
-                                <NavLink style={styles} to={`/outSourceEmpPenalty`}>
-                                    <li>
-                                        <a href="/outSourceEmpPenalty">جزاءات</a>
-                                    </li>
-                                </NavLink >
-                                <NavLink style={styles} to={`/outSourceEmpFamily`}>
-                                    <li>
-                                        <a href="/outSourceEmpFamily">بيانات عائلية</a>
-                                    </li>
-                                </NavLink >
-                                <NavLink style={styles} to={`/outSourceEmpTraining`}>
-                                    <li>
-                                        <a href="/outSourceEmpTraining">تدريب</a>
-                                    </li>
-                                </NavLink >
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="#"><i className="fa fa-bar-chart-o fa-fw"></i> تقارير<span className="fa arrow"></span></a>
-                            <ul className="nav nav-first-level">
-                                <NavLink style={styles} to={`/empbystation`}>
-                                    <li>
-                                        <a onClick={this.props.getJobGovern} href="/empbystation">الموظفون بالمحطات</a>
-                                    </li>
-                                </NavLink >
-                                <NavLink style={styles} to={`/empbydeps`}>
-                                    <li>
-                                        <a onClick={this.props.getDeps} href="/empbydeps">الموظفون بالإدارات</a>
-                                    </li>
-                                </NavLink >
-                                <NavLink style={styles} to={`/natidexpire`}>
-                                    <li>
-                                        <a onClick={this.props.getDeps} href="/natidexpire">بطاقات رقم قومي منتهية</a>
-                                    </li>
-                                </NavLink >
-                            </ul>
-                        </li>
+
                     </ul>
                 </div>
             </div>

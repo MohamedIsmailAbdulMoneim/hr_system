@@ -4,7 +4,7 @@ import {
   deletePenalty,deleteTrans,deleteAppraisal,deleteExperience,deleteEdu, fetchEmpAppraisal, addEmpTraining, updateExperience
 
 } from "../actions/ActionTypes";
-import axios from "axios";
+import axios from "../shared/axiosInterceptor";
 
 
 /* --------------------------------Experience------------------- */

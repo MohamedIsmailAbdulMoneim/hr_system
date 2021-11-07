@@ -10,23 +10,29 @@ import {
 } from "./ActionTypes"
 import { returnErrors } from "./ErrorActions";
 
-
 import axios from 'axios'
 
 export const loadUser = () => (dispatch, getState) => {
     dispatch({
         type: USER_LOADING
     });
+    // if (localStorage.getItem('token')) {
+        axios.get('http://localhost:5000/protected', tokenConfig(getState)).then(res => dispatch({
+            type: USER_LOADED,
+            payload: res.data
+        })).catch(err => {
+            dispatch(returnErrors({ msg: "an error happen", status: 400 }))
+            dispatch({
+                type: AUTH_ERROR,
+            });
+            
+        });
+    // } else {
+    //     dispatch({
+    //         type: AUTH_ERROR
+    //     })
+    // }
 
-    axios.get('http://localhost:5000/protected', tokenConfig(getState)).then(res => dispatch({
-        type: USER_LOADED,
-        payload: res.data
-    })).catch(err => {
-        dispatch(returnErrors({msg: "an error happen", status: 400}))
-        dispatch({
-            type: AUTH_ERROR
-        })
-    });
 }
 
 export const register = ({ uname, pw }) => (dispatch) => {
@@ -64,7 +70,7 @@ export const login = (fd) => (dispatch) => {
         headers: { "Content-Type": "application/json" },
     }).then((res) => {
         dispatch({
-            type:LOGIN_SUCCESS,
+            type: LOGIN_SUCCESS,
             payload: {
                 id: res.data.data.id,
                 token: res.data.data.token

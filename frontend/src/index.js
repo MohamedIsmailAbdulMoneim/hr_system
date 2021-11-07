@@ -14,11 +14,15 @@ import './css/plugins/metisMenu/metisMenu.min.css';
 import './css/font-awesome/font-awesome.min.css'
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import './fonts/NotoKufiArabic.ttf'
+import { BrowserRouter } from 'react-router-dom';
 
 
 ReactDOM.render(
   <React.StrictMode>
+    <BrowserRouter>
     <App />
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
 );

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, compose } from "react";
 import { connect } from "react-redux";
 import {
      getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox, getUpJd, gitDownJd, getQn
@@ -6,6 +6,12 @@ import {
 import {
     login,
 } from "../actions/AuthActions";
+import { withRouter } from 'react-router';
+import store from "../store";
+import axios from "../shared/axiosInterceptor";
+
+
+
 
 class Login extends Component {
     constructor(props) {
@@ -19,6 +25,8 @@ class Login extends Component {
         this.setState({
             username: e.target.value
         })
+
+    
     }
 
     passwordHandler = (e) => {
@@ -34,7 +42,24 @@ class Login extends Component {
             uname: this.state.username,
             pw: this.state.password,
         };
-        this.props.login(fd)
+
+        axios({
+            method: "POST",
+            data: fd,
+            withCredentials: true,
+            url: "http://localhost:5000/login",
+            headers: { "Content-Type": "application/json" },
+        }).then((res) => {
+            store.dispatch(login(res.data.data))
+            setTimeout(this.props.history.push('/'),5000);
+                        
+        }).catch(err => {
+            if(err){
+                console.log(err.response.data);
+            }
+        })
+
+
 
     }
 
@@ -79,6 +104,15 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, {
-     getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox, getUpJd, gitDownJd, getQn,login
-})(Login);
+// export default connect(mapStateToProps, {
+//      getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox, getUpJd, gitDownJd, getQn,login
+// })(Login);
+
+// export default compose(
+//     withRouter,
+//     connect(mapStateToProps,{
+//         getJobDgByCat, getEmpName, getEmpNameByName, getCurrentJd, getavailJd, getAvailSupBox, getUpJd, gitDownJd, getQn,login
+//     })(Login)
+// );
+
+export default withRouter(Login);

@@ -30,10 +30,15 @@ import outsourceEmpsAppraisal from './component/outsource/outsourceEmpsAppraisal
 import Login from './component/Login';
 import Register from './component/register';
 import EmpPenalty from './component/transactions/EmpPenalty';
-import { loadUser } from './actions/AuthActions';
+import { loadUser, tokenConfig } from './actions/AuthActions';
 import { getemps, getGid } from './actions/Actions'
 import { countEmpsInGoverns,getNatIdExpired } from './actions/ReportActions'
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { useHistory } from "react-router-dom";
+import { withRouter } from 'react-router';
+import { connect } from "react-redux";
+import axios from "./shared/axiosInterceptor";
+
 
 
 class App extends React.Component {
@@ -43,10 +48,10 @@ class App extends React.Component {
 
   }
   componentDidMount() {
-    store.dispatch(loadUser())
     store.dispatch(getemps())
     store.dispatch(getGid())
     store.dispatch(countEmpsInGoverns())
+
         var d = new Date();
         var n = d.getDate();
         if(!localStorage.getItem('day')){
@@ -58,60 +63,72 @@ class App extends React.Component {
             localStorage.setItem('day', n)
 
         }else{
-            console.log('false');
         }
-  }
+        // if(!store.getState().auth.token){
+        //   this.props.history.push('login');
+        // }
 
+        axios.get('http://localhost:5000/protected', store.dispatch(tokenConfig(store.getState()))).then(res =>
+      {
+
+        store.dispatch(loadUser(res.data))
+
+      }
+      ).catch(err => {
+
+          {
+            store.dispatch(loadUser(false))
+            this.props.history.push('login');
+          }
+      });
+
+          
+  }
   render() {
     return (
       <Provider store={store} >
-        <Router>
           <div className="App" id="wrapper">
             <nav className="navbar navbar-default navbar-static-top" role="navigation" style={{ marginBottom: 0 }}>
               <Header />
               <Sidebar />
             </nav>
 
+            
             <Switch>
-              <Route path="/" exact component={Home} />
-              <Route path="/table" exact component={Table} />
-              <Route path="/form" exact component={Form} />
-              <Route path="/assisstantchairman" exact component={AssisstantChairman} />
-              <Route path="/generalmanager" exact component={GeneralManager} />
-              <Route path="/assisstantgeneralmanager" exact component={AssisstantGeneralManager} />
-              <Route path="/orgstructure" exact component={OrgStructre} />
-              <Route path="/emptrans" exact component={EmpTrans} />
-              <Route path="/employee" exact component={Employee} />
-              <Route path="/empbystation" exact component={Empbystation} />
-              <Route path="/empbydeps" exact component={EmpByDeps} />
-              <Route path="/natidexpire" excact component={NatIdExpired} />
-              <Route path="/empsappraisal" exact component={EmpsAppraisal} />
-              <Route path="/empedudeg" exact component={EmpEdu} />
-              <Route path="/EmpTraining" exact component={EmpTraining} />
-              <Route path="/empfamily" exact component={EmpFamily} />
-              <Route path="/login" exact component={Login} />
-              <Route path="/register" exact component={Register} />
-              <Route path="/empexperience" exact component={EmpExperience} />
-              <Route path="/emppenalty" exact component={EmpPenalty} />
-              <Route path="/outsourceEmployee" exact component={outsourceEmployee} />
-              <Route path="/outsourceEmpEduDeg" exact component={outsourceEmpEduDeg} />
-              <Route path="/outsourceEmpFamily" exact component={outsourceEmpFamily} />
-              <Route path="/outsourceEmpPenalty" exact component={outsourceEmpPenalty} />
-              <Route path="/outsourceEmpTraining" exact component={outsourceEmpTraining} />
-              <Route path="/outsourceEmpsAppraisal" exact component={outsourceEmpsAppraisal} />
+            <Route path="/" exact component={Home} />
+            <Route path="/table" exact component={Table} />
+            <Route path="/form" exact component={Form} />
+            <Route path="/assisstantchairman" exact component={AssisstantChairman} />
+            <Route path="/generalmanager" exact component={GeneralManager} />
+            <Route path="/assisstantgeneralmanager" exact component={AssisstantGeneralManager} />
+            <Route path="/orgstructure" exact component={OrgStructre} />
+            <Route path="/emptrans" exact component={EmpTrans} />
+            <Route path="/employee" exact component={Employee} />
+            <Route path="/empbystation" exact component={Empbystation} />
+            <Route path="/empbydeps" exact component={EmpByDeps} />
+            <Route path="/natidexpire" excact component={NatIdExpired} />
+            <Route path="/empsappraisal" exact component={EmpsAppraisal} />
+            <Route path="/empedudeg" exact component={EmpEdu} />
+            <Route path="/EmpTraining" exact component={EmpTraining} />
+            <Route path="/empfamily" exact component={EmpFamily} />
+            <Route path="/login" exact component={Login} />
+            <Route path="/register" exact component={Register} />
+            <Route path="/empexperience" exact component={EmpExperience} />
+            <Route path="/emppenalty" exact component={EmpPenalty} />
+            <Route path="/outsourceEmployee" exact component={outsourceEmployee} />
+            <Route path="/outsourceEmpEduDeg" exact component={outsourceEmpEduDeg} />
+            <Route path="/outsourceEmpFamily" exact component={outsourceEmpFamily} />
+            <Route path="/outsourceEmpPenalty" exact component={outsourceEmpPenalty} />
+            <Route path="/outsourceEmpTraining" exact component={outsourceEmpTraining} />
+            <Route path="/outsourceEmpsAppraisal" exact component={outsourceEmpsAppraisal} />
 
-
-
-            </Switch>
-
-
-
+          </Switch>
           </div>
-        </Router>
       </Provider>
     );
   }
 
 }
 
-export default App;
+export default withRouter(App);
+
