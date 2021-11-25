@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/static/css/main.8fa9bea3.chunk.css",
+    "main.js": "/static/js/main.a56cfa18.chunk.js",
+    "main.js.map": "/static/js/main.a56cfa18.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.15819093.js",
+    "runtime-main.js.map": "/static/js/runtime-main.15819093.js.map",
+    "static/js/2.bd71c363.chunk.js": "/static/js/2.bd71c363.chunk.js",
+    "static/js/2.bd71c363.chunk.js.map": "/static/js/2.bd71c363.chunk.js.map",
+    "static/js/3.58b4e554.chunk.js": "/static/js/3.58b4e554.chunk.js",
+    "static/js/3.58b4e554.chunk.js.map": "/static/js/3.58b4e554.chunk.js.map",
+    "index.html": "/index.html",
+    "static/css/main.8fa9bea3.chunk.css.map": "/static/css/main.8fa9bea3.chunk.css.map",
+    "static/js/2.bd71c363.chunk.js.LICENSE.txt": "/static/js/2.bd71c363.chunk.js.LICENSE.txt",
+    "static/media/NotoKufiArabic.3d0e3460.ttf": "/static/media/NotoKufiArabic.3d0e3460.ttf",
+    "static/media/sb-admin-2.css": "/static/media/background1.6dec213c.jpg",
+    "static/media/excel.f0b86031.png": "/static/media/excel.f0b86031.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.15819093.js",
+    "static/js/2.bd71c363.chunk.js",
+    "static/css/main.8fa9bea3.chunk.css",
+    "static/js/main.a56cfa18.chunk.js"
+  ]
+}
