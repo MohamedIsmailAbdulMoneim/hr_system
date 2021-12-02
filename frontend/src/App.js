@@ -40,6 +40,7 @@ import Employees from './component/reports/Employees';
 import Department from './component/mainCodes/Department';
 import AssisstantDepartment from './component/mainCodes/AssisstantDepartment';
 import Supbox from './component/mainCodes/Supbox';
+import ChairmanAssisstant from './component/mainCodes/ChairmanAssisstant';
 
 
 class App extends React.Component {
@@ -113,6 +114,7 @@ class App extends React.Component {
                 <Route path="/emppenalty" exact component={EmpPenalty} />
                 <Route path="/empsappraisal" exact component={EmpsAppraisal} />
                 <Route path="/register" exact component={Register} />
+                <Route path="/chairmanassisstant" exact component={ChairmanAssisstant} />
               </Switch>
             </Fragment>
             :

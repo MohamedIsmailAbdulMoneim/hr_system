@@ -75,6 +75,8 @@ export const deletemainbox = "DELETE-FROM-MAINBOX"
 export const fetchAssisstantDepartment = "FETCH-ASSISSTANT-DEPARTMENT"
 export const insertAssisstantDepartment = "INSERT-ASSISSTANT-DEPARTMENT"
 export const fetchSupBox = "FETCH-SUP-BOX"
+export const insertChairmanAssisstant = "INSERT-CHAIRMAN-ASSISSTANT"
+export const fetchChairmanAssisstant = "FETCH-CHAIRMAN-ASSISSTANT"
 
 
 

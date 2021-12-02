@@ -82,52 +82,51 @@ class Supbox extends Component {
                                     <th>فني / إداري</th>
                                 </tr>
                             </thead>
-                            {!this.state.add ?
-                                <tbody style={{ border: "1px dotted black" }}>
-                                    {this.props.supbox.slice(this.state.firstArg, this.state.secondArg).map((sup, i) => (
-                                        <tr>
-                                            <td>{((this.state.currentPage - 1) * 20) + i + 1}</td>
-                                            <td>{sup.hasAssisstant === "true" ? "يوجد" : "لا يوجد"}</td>
-                                            <td>{sup.catename}</td>
-                                            <td></td>
-                                            <td>{sup.jdname}</td>
-                                            <td>{sup.emp_box_name}</td>
-                                            <td><span style={{
-                                                border: "1px solid black",
-                                                borderRadius: "24px",
-                                                width: "25px",
-                                                marginRight: "5px",
-                                                display: "inline-block",
-                                                height: "26px",
-                                                background: "#c4c4c4"
-                                            }}>{sup.emp_box_id}</span></td>
-                                            <td>{sup.manager_box_name}</td>
-                                            <td>{sup.ACTIV_NOT === 0 ? "مفعل" : sup.ACTIV_NOT === 1 ? "غير مفعل" : "غير معروف"}</td>
-                                            <td>{sup.VAC_NOT === 0 ? "مشغول" : sup.VAC_NOT === 1 ? "شاغر" : "غير معروف"}</td>
-                                            <td>{sup.G_ID === 1 ? "فني" : sup.G_ID === 2 ? "إداري" : "غير معروف"}</td>
-                                        </tr>
-                                    ))}
-                                    <button onClick={this.addHandler} style={{ minWidth: 50, maxHeight: 25 }}><i className="fas fa-plus"></i></button>
-                                </tbody>
-                                :
-                                <tbody>
+                            <tbody style={{ border: "1px dotted black" }}>
+                                {this.props.supbox.slice(this.state.firstArg, this.state.secondArg).map((sup, i) => (
+                                    <tr>
+                                        <td>{((this.state.currentPage - 1) * 20) + i + 1}</td>
+                                        <td>{sup.hasAssisstant === "true" ? "يوجد" : "لا يوجد"}</td>
+                                        <td>{sup.catename}</td>
+                                        <td></td>
+                                        <td>{sup.jdname}</td>
+                                        <td>{sup.emp_box_name}</td>
+                                        <td><span style={{
+                                            border: "1px solid black",
+                                            borderRadius: "24px",
+                                            width: "25px",
+                                            marginRight: "5px",
+                                            display: "inline-block",
+                                            height: "26px",
+                                            background: "#c4c4c4"
+                                        }}>{sup.emp_box_id}</span></td>
+                                        <td>{sup.manager_box_name}</td>
+                                        <td>{sup.ACTIV_NOT === 0 ? "مفعل" : sup.ACTIV_NOT === 1 ? "غير مفعل" : "غير معروف"}</td>
+                                        <td>{sup.VAC_NOT === 0 ? "مشغول" : sup.VAC_NOT === 1 ? "شاغر" : "غير معروف"}</td>
+                                        <td>{sup.G_ID === 1 ? "فني" : sup.G_ID === 2 ? "إداري" : "غير معروف"}</td>
+                                    </tr>
+                                ))}
+                                {this.state.add ?
                                     <tr>
                                         <td></td>
                                         <td></td>
+                                        <td><input style={{ width: 150, fontSize: "11pt" }} /></td>
+                                        <td><input style={{ width: 150, fontSize: "11pt" }} /></td>
                                         <td><input style={{ width: 100, fontSize: "11pt" }} /></td>
+                                        <td><input style={{ width: 250, fontSize: "11pt" }} /></td>
+                                        <td></td>
                                         <td><input style={{ width: 200, fontSize: "11pt" }} /></td>
-                                        <td><input style={{ width: 100, fontSize: "11pt" }} /></td>
-                                        <td><input style={{ width: 200, fontSize: "11pt" }} /></td>
-                                        <td><input style={{ width: 200, fontSize: "11pt" }} /></td>
-                                        <td><input style={{ width: 50, fontSize: "11pt" }} /></td>
                                         <td><input style={{ width: 40, fontSize: "11pt" }} /></td>
-                                        <td><input style={{ width: 40, fontSize: "11pt" }} /></td>
+                                        <td><input style={{ width: 80, fontSize: "11pt" }} /></td>
+                                        <td><input style={{ width: 80, fontSize: "11pt" }} /></td>
+
                                     </tr>
+                                    :
+                                    null
 
-                                </tbody>
-
-                            }
-
+                                }
+                                <button onClick={this.addHandler} style={{ minWidth: 50, maxHeight: 25 }}><i className="fas fa-plus"></i></button>
+                            </tbody>
                         </table>
 
                         <Pagination minusFirstArg={this.minusFirstArg} plusSecondArg={this.plusSecondArg}

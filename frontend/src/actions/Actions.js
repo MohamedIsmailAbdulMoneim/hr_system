@@ -38,7 +38,9 @@ import {
   deletemainbox,
   fetchAssisstantDepartment,
   insertAssisstantDepartment,
-  fetchSupBox
+  fetchSupBox,
+  insertChairmanAssisstant,
+  fetchChairmanAssisstant
 } from "../actions/ActionTypes";
 import axios from "axios";
 
@@ -521,6 +523,31 @@ export const getSupbox = () => (dispatch) => {
   axios.get(`http://${process.env.REACT_APP_URL}/getsupbox`).then(res => {
     dispatch({
       type: fetchSupBox,
+      payload: res.data
+    })
+  })
+}
+
+export const addChairmanAssisstant = (data) => (dispatch) => {
+  axios({
+    method: 'POST',
+    data,
+    withCredentials: true,
+    url: `http://${process.env.REACT_APP_URL}/addchairmanassisstant`,
+    headers: { "Content-Type": "application/json" },
+  }).then(res => {
+    console.log(res.data);
+    dispatch({
+      type: insertChairmanAssisstant,
+      payload: res.data
+    })
+  })
+}
+
+export const getChairmanAssisstant = () => (dispatch) => {
+  axios.get(`http://${process.env.REACT_APP_URL}/getchairmanassisstant`).then(res => {
+    dispatch({
+      type: fetchChairmanAssisstant,
       payload: res.data
     })
   })

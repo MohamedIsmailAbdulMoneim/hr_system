@@ -650,7 +650,7 @@ a {
 }
 
 .table>:not(caption)>*>* {
-  padding:0.2rem .3rem;
+  padding:4px 0;
 
 }
 
@@ -658,5 +658,20 @@ a {
 padding-top: 0;
 padding-bottom: 41px41px
 
+}
+
+td{
+  margin: 0;
+  white-space: nowrap;
+}
+
+
+
+td > input{
+  margin:0 ;
+}
+
+.modal-header .btn-close {
+  margin: 0
 }
 

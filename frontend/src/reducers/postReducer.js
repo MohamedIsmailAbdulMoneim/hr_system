@@ -8,7 +8,7 @@ import {
   updateEmpDetails, addnewOutsourceEmp,
   updateOutsourceEmpDetails,setNameOrId,fetchEmpsDetails,changeSideBarVar,insertCates,fetchjobdgree,
   insertIntoMainbox, fetchMainBox, deletemainbox,fetchAssisstantDepartment, insertAssisstantDepartment,
-  fetchSupBox
+  fetchSupBox,insertChairmanAssisstant, fetchChairmanAssisstant
 } from "../actions/ActionTypes";
 
 const initialState = {
@@ -43,7 +43,8 @@ const initialState = {
   sidebarVar: null,
   mainbox: [],
   assisstantDepartment: [],
-  supbox: []
+  supbox: [],
+  chairmanAssisstant: []
   
 };
 
@@ -285,6 +286,16 @@ export default function post (state = initialState, action) {
         return {
           ...state,
           supbox: action.payload
+        }
+      case insertChairmanAssisstant:
+        return {
+          ...state,
+          chairmanAssisstant: action.payload[1]
+        }
+      case fetchChairmanAssisstant:
+        return {
+          ...state,
+          chairmanAssisstant: action.payload
         }
       
 

@@ -21,18 +21,20 @@ class MainBox extends React.Component {
     componentDidMount() {
         this.props.getCates()
         this.props.getJobDgree()
+        console.log('hit');
     }
 
     clickHandler = (e) => {
-        this.props.getMainbox(e.target.getAttribute("catid"))
+        console.log('hit');
+        this.props.getMainbox(e.target.options[e.target.options.selectedIndex].getAttribute("catid"))
         console.log(e.target.getAttribute("catid"));
         this.setState({ catid: e.target.getAttribute("catid") })
         console.log(e.target.value);
     }
 
-    clickHandler_2 = (e => {
+    clickHandler_2 = (e) => {
         this.props.getSupBoxNamesandmanager(e.target.getAttribute("jdid"), this.state.catid)
-    })
+    }
 
     choseToAddHandler = (e) => {
         this.setState({
@@ -106,9 +108,9 @@ class MainBox extends React.Component {
                         <div className="panel panel-default">
                             <div className="card-body">
                                 <select onChange={this.clickHandler} >
-                                    {this.props.cates.map((cat => (
-                                        <option catname={cat.CAT_NAME} catid={cat.CAT_ID} >{cat.CAT_NAME}</option>
-                                    )))}
+                                    {this.props.cates.map((cat) => (
+                                        <option  catname={cat.CAT_NAME} catid={cat.CAT_ID} >{cat.CAT_NAME}</option>
+                                    ))}
                                 </select>
                                 <div style={{ display: "flex", justifyContent: "space-between" }}>
                                     <div style={{ width: "48%" }}>

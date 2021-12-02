@@ -8,9 +8,6 @@ import {
 import { connect } from "react-redux";
 import { NavLink, Link } from "react-router-dom";
 import { setNameOrId } from "../actions/ActionTypes";
-// import * as FaIcons from 'react-icons/fa';
-// import * as AiIcons from 'react-icons/ai';
-// import { IconContext } from 'react-icons';
 
 class Sidebar extends React.Component {
     constructor(props) {
@@ -59,6 +56,9 @@ class Sidebar extends React.Component {
                             {this.props.user === "Admin" ?
                                 this.props.sidebarVar === "mainCodes" ?
                                     <ul className="nav nav-first-level">
+                                        <NavLink style={styles} to={`/chairmanassisstant`}>
+                                            مساعد
+                                        </NavLink>
                                         <NavLink style={styles} to={`/department`}>
                                             الإدارات
                                         </NavLink>
