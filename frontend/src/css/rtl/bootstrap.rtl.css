@@ -1533,4 +1533,9 @@ th {
 .has-error .form-control-feedback {
   color: #a94442;
 }
+
+i.fa-bell {
+  transform: translate(500px,500px);
+  background-color: red;
+}
 /*# sourceMappingURL=bootstrap-rtl.css.map */

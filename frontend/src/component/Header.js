@@ -99,9 +99,40 @@ class Header extends React.Component {
                                 </div>
                                 :
 
-                                null
+                                <div class="topnav">
+                                    <a href="#about">العمالة المؤقتة</a>
+                                    <Link to="#" onClick={() => this.props.changeSideBar('transactions')}>
+                                        الحركات
+                                    </Link>
+                                    <Link to="#" onClick={() => this.props.changeSideBar('mainCodes')}>
+                                        الأكواد الرئيسية
+                                    </Link>
+                                    {this.props.nameOrId.length > 0 ?
+                                        <Link onClick={() => Number.isInteger(parseInt(this.props.nameOrId)) ? this.props.getEmpDetails(this.props.nameOrId) : this.props.getEmpDetails("", this.props.nameOrId)} to="/employee" className="menu-bars">
+                                            الشاشة الرئيسية
+                                        </Link>
+                                        :
+                                        <Link to="/employee" className="menu-bars">
+                                            الشاشة الرئيسية
+                                        </Link>
+                                    }
+                                </div>
 
                         }
+
+                        <div class="topnav">
+                        <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                                <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+                                    <div className="form-group" controlId="formBasicEmail" style={{width: 80}}>
+                                        <input id="empid" ref="empid" className="form-control" onKeyDown={this.empidHandler} style={{ background: "white",  border: "1px solid black" }} type="number" name="first_name" />
+                                    </div>
+                                    <div className="form-group" controlId="formBasicEmail">
+                                        <input className="form-control" onKeyUp={this.nameInputHandler} style={{ background: "white", width: "100%", minWidth: "250px", border: "1px solid black" }} type="text" name="first_name" />
+                                    </div>
+                                    <i class="fas fa-search"></i>
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="topnav">
                             {this.props.isAuthenticated ?
@@ -109,6 +140,7 @@ class Header extends React.Component {
                                     <Fragment>
                                         <a onClick={this.handleLogout} href="/#">تسجيل خروج</a>
                                         <a href="/register">تسجيل مستخدم</a>
+                                        <i class="fas fa-bell"></i>
                                         {/* <span>مرحباً : {this.props.user}</span> */}
 
                                     </Fragment>
@@ -123,7 +155,15 @@ class Header extends React.Component {
                                         <a href="/login">تسجيل دخول</a>
 
                                 :
-                                null
+                                <Fragment>
+                                    <a onClick={this.handleLogout} href="/#">تسجيل خروج</a>
+                                    <a href="/register">تسجيل مستخدم</a>
+                                    <div class="button">
+                                        <i className="fas fa-bell"></i>
+                                        <span class="button__badge">2</span>
+                                    </div>
+                                    {/* <span>مرحباً : {this.props.user}</span> */}
+                                </Fragment>
                             }
 
                         </div>

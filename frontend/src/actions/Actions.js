@@ -32,6 +32,7 @@ import {
   fetchEmpsDetails,
   changeSideBarVar,
   editCate,
+  deleteCate,
   fetchjobdgree,
   fetchMainBox,
   insertIntoMainbox,
@@ -40,7 +41,12 @@ import {
   insertAssisstantDepartment,
   fetchSupBox,
   insertChairmanAssisstant,
-  fetchChairmanAssisstant
+  fetchChairmanAssisstant,
+  insertDepartmentIntoChairman,
+  fetchChairmanDeps,
+  deleteDepFromA,
+  updateChairmanAssistant,
+  deleteChairmanAssistant
 } from "../actions/ActionTypes";
 import axios from "axios";
 
@@ -256,6 +262,22 @@ export const updateCate = (data) => (dispatch) => {
     console.log(res.data);
     dispatch({
       type: editCate,
+      payload: {data: res.data.data[4], msg: res.data.msg}
+    })
+  })
+}
+
+export const removeCate = (data) => (dispatch) => {
+  axios({
+    method: "PUT",
+    data,
+    withCredentials: true,
+    url: `http://${process.env.REACT_APP_URL}/deletecategory`,
+    headers: { "Content-Type": "application/json" },
+  }).then((res) => {
+    console.log(res.data);
+    dispatch({
+      type: deleteCate,
       payload: {data: res.data.data[1], msg: res.data.msg}
     })
   })
@@ -528,6 +550,8 @@ export const getSupbox = () => (dispatch) => {
   })
 }
 
+/*--------------------------chairmanassistant-----------------------------*/
+
 export const addChairmanAssisstant = (data) => (dispatch) => {
   axios({
     method: 'POST',
@@ -553,3 +577,78 @@ export const getChairmanAssisstant = () => (dispatch) => {
   })
 }
 
+export const editeChairmanAssistant = (data) => (dispatch) => {
+  axios({
+    method: 'PUT',
+    data,
+    url: `http://${process.env.REACT_APP_URL}/editechairmanassistant`,
+    headers: { "Content-Type": "application/json" },
+  }).then(res => {
+    console.log(res.data);
+    dispatch({
+      type: updateChairmanAssistant,
+      payload: res.data[1]
+    })
+  })
+}
+
+export const removeChairmanAssistant = (data) => (dispatch) => {
+  axios({
+    method: 'PUT',
+    data,
+    withCredentials: true,
+    url: `http://${process.env.REACT_APP_URL}/removeChairmanAssistant`,
+    headers: { "Content-Type": "application/json" },
+  }).then(res => {
+    console.log(res.data);
+    dispatch({
+      type: deleteChairmanAssistant,
+      payload: res.data[1]
+    })
+  })
+}
+
+
+
+export const addDepToAssistant = (data) => (dispatch) => {
+  axios({
+    method: 'POST',
+    data,
+    withCredentials: true,
+    url: `http://${process.env.REACT_APP_URL}/adddeptoassistant`,
+    headers: { "Content-Type": "application/json" },
+  }).then(res => {
+    dispatch({
+      type: insertDepartmentIntoChairman,
+      payload: res.data[1]
+    })
+  })
+}
+
+export const getChairmanDeps = (caid) => (dispatch) => {
+  axios.get(`http://${process.env.REACT_APP_URL}/getchairmandeps/?caid=${caid}`).then(res => {
+  console.log(res.data);
+  dispatch({
+    type: fetchChairmanDeps,
+    payload: res.data
+  })
+
+  })
+}
+
+export const delDepFA = (data) => (dispatch) => {
+  axios({
+    method: 'PUT',
+    data,
+    withCredentials: true,
+    url: `http://${process.env.REACT_APP_URL}/deldepfa`,
+    headers: { "Content-Type": "application/json" },
+  }).then(res => {
+    dispatch({
+      type: deleteDepFromA,
+      payload: res.data[1]
+    })
+  })
+}
+
+/*--------------------------chairmanassistant-----------------------------*/

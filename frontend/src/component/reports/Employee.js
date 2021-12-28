@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import {
-    getEmpDetails, getStations ,getUpJd, getEmpNameByName, newEmp, editEmpDetails, newEmpImg, globalNameOrId
+    getEmpDetails, getStations, getUpJd, getEmpNameByName, newEmp, editEmpDetails, newEmpImg, globalNameOrId
 } from "../../actions/Actions";
 import { getEmpTrans, getEmpExp, getEmpFamily, getEmpEdu, getEmpAppraisal, getempspenalties, getEmpTraining } from "../../actions/TransActions"
 import { connect } from "react-redux";
@@ -655,7 +655,6 @@ class Employee extends React.Component {
         }
         return (
             <div id="page-wrapper" className="employee">
-
                 <div className="row">
                     <div className="col-lg-12" style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: 10 }}>
                         <div style={{ height: "100%", width: 600 }} class="panel panel-default">
@@ -1020,7 +1019,7 @@ class Employee extends React.Component {
                             </div>
                             :
 
-                            <div className="col-lg-8" style={{ background: "transparent", height: "100%", width: "100%", display:"flex", flexDirection: "column", alignItems: "center" }}>
+                            <div className="col-lg-8" style={{ background: "transparent", height: "100%", width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
                                 <div className="data-wrapper"  >
                                     {!this.state.edit ?
                                         <Fragment>
@@ -1294,7 +1293,7 @@ class Employee extends React.Component {
                                                         <label className="medium-lable"></label>
                                                     </div>
                                                     <div style={{ display: "table-cell" }}>
-                                                        <input className="form-control medium-medium-input threeMediumBigInputsLableMargin" list="brow3"  value={this.handleAge(jp.query(this.props.empdetails, '$..BIRTH_DATE')).years()} placeholder="سنة" type="text" />
+                                                        <input className="form-control medium-medium-input threeMediumBigInputsLableMargin" list="brow3" value={this.handleAge(jp.query(this.props.empdetails, '$..BIRTH_DATE')).years()} placeholder="سنة" type="text" />
                                                         <datalist id="brow3">
                                                             {governorate.map(gov => (
                                                                 <option value={gov} />
@@ -1332,7 +1331,7 @@ class Employee extends React.Component {
                                                         <label className="medium-lable">تاريخ التقاعد</label>
                                                     </div>
                                                     <div style={{ display: "table-cell" }}>
-                                                        <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin"  colName={"RETIRE_DATE"} value={jp.query(this.props.empdetails, '$..SYNDICATE_REGISTERATION')} type="text" />
+                                                        <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin" colName={"RETIRE_DATE"} value={jp.query(this.props.empdetails, '$..SYNDICATE_REGISTERATION')} type="text" />
                                                     </div>
                                                     <div style={{ display: "table-cell" }}>
                                                         <label className="medium-lable">الوظيفة الحالية </label>
@@ -1453,7 +1452,7 @@ class Employee extends React.Component {
                                                         <label className="medium-lable" >الإسم</label>
                                                     </div>
                                                     <div style={{ display: "table-cell" }}>
-                                                        <input ref="nameinput" className="giant-input oneInputMargin edit" onChange={this.changeHandler} colName={"NAME_ARABIC"} placeholder={jp.query(this.props.empdetails, '$..NAME_ARABIC')} readOnly={!this.state.edit} type="text" style={{marginBottom: 10}} />
+                                                        <input ref="nameinput" className="giant-input oneInputMargin edit" onChange={this.changeHandler} colName={"NAME_ARABIC"} placeholder={jp.query(this.props.empdetails, '$..NAME_ARABIC')} readOnly={!this.state.edit} type="text" style={{ marginBottom: 10 }} />
                                                     </div>
                                                 </div>
                                             </div>
@@ -1705,7 +1704,7 @@ class Employee extends React.Component {
                                             <h3 style={{ marginRight: 20, marginTop: 3, textAlign: "right", fontFamily: 'Markazi Text ,serif', fontWeight: 700 }}>البيانات الوظيفية</h3>
                                             <div style={{ display: "table" }}>
                                                 <div style={{ display: "table-row" }}>
-                                                <div style={{ display: "table-cell" }}>
+                                                    <div style={{ display: "table-cell" }}>
                                                         <label className="medium-lable">رقم الأداء</label>
                                                     </div>
                                                     <div style={{ display: "table-cell" }}>
@@ -1731,7 +1730,7 @@ class Employee extends React.Component {
                                                         <label className="medium-lable">تاريخ التقاعد</label>
                                                     </div>
                                                     <div style={{ display: "table-cell" }}>
-                                                        <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin"  colName={"RETIRE_DATE"} placeholder={jp.query(this.props.empdetails, '$..SYNDICATE_REGISTERATION')} type="date" />
+                                                        <input className="form-control  medium-medium-input threeMediumBigInputsLableMargin" colName={"RETIRE_DATE"} placeholder={jp.query(this.props.empdetails, '$..SYNDICATE_REGISTERATION')} type="date" />
                                                     </div>
                                                     <div style={{ display: "table-cell" }}>
                                                         <label className="medium-lable">الوظيفة الحالية </label>
@@ -1899,5 +1898,5 @@ const mapStateToProps = (state) => {
     };
 };
 export default connect(mapStateToProps, {
-    getEmpDetails, globalNameOrId, getStations ,getEmpTrans, getUpJd, getEmpAppraisal, getEmpTraining, getEmpEdu, getEmpFamily, getEmpNameByName, getEmpExp, newEmp, editEmpDetails, newEmpImg, getempspenalties
+    getEmpDetails, globalNameOrId, getStations, getEmpTrans, getUpJd, getEmpAppraisal, getEmpTraining, getEmpEdu, getEmpFamily, getEmpNameByName, getEmpExp, newEmp, editEmpDetails, newEmpImg, getempspenalties
 })(Employee);

@@ -57,13 +57,13 @@ class Sidebar extends React.Component {
                                 this.props.sidebarVar === "mainCodes" ?
                                     <ul className="nav nav-first-level">
                                         <NavLink style={styles} to={`/chairmanassisstant`}>
-                                            مساعد
+                                            مساعد <i class="fas fa-star"></i>
                                         </NavLink>
                                         <NavLink style={styles} to={`/department`}>
-                                            الإدارات
+                                            الإدارات <i class="fas fa-building"></i>
                                         </NavLink>
                                         <NavLink style={styles} to={`/assisstantdepartment`}>
-                                            الإدارات العامة المساعدة
+                                            الإدارات العامة المساعدة <i class="fas fa-hands-helping"></i>
                                         </NavLink>
                                         <NavLink style={styles} to={`/mainbox`}>
                                             الوظائف بالإدارات
@@ -85,72 +85,72 @@ class Sidebar extends React.Component {
                                     <ul className="nav nav-first-level">
                                         {this.props.nameOrId.length > 0 ?
                                             <NavLink onClick={() => Number.isInteger(parseInt(this.props.nameOrId)) ? this.props.getEmpTrans(this.props.nameOrId, "") : this.props.getEmpTrans("", this.props.nameOrId)} style={styles} to={`/EmpTrans`}>
-                                                تدرج
+                                                تدرج <i class="fas fa-walking"></i>
                                             </NavLink>
                                             :
                                             <NavLink style={styles} to={`/EmpTrans`}>
-                                                تدرج
+                                                تدرج <i class="fas fa-walking"></i>
                                             </NavLink>
                                         }
                                         {this.props.nameOrId.length > 0 ?
                                             <NavLink onClick={() => Number.isInteger(parseInt(this.props.nameOrId)) ? this.props.getEmpEdu(this.props.nameOrId, "") : this.props.getEmpEdu("", this.props.nameOrId)} style={styles} to={`/empedudeg`}>
-                                                مؤهلات الموظفين
+                                                مؤهلات الموظفين <i class="fas fa-university"></i>
                                             </NavLink >
                                             :
                                             <NavLink style={styles} to={`/empedudeg`}>
-                                                مؤهلات الموظفين
+                                                مؤهلات الموظفين <i class="fas fa-university"></i>
                                             </NavLink >
                                         }
                                         {this.props.nameOrId.length > 0 ?
                                             <NavLink onClick={() => this.props.getEmpExp(this.setTableName("employee_experince"))} style={styles} to={`/empexperience`}>
-                                                خبرات سابقة
+                                                خبرات سابقة <i class="fas fa-dumbbell"></i>
                                             </NavLink>
                                             :
                                             <NavLink style={styles} to={`/empexperience`}>
-                                                خبرات سابقة
+                                                خبرات سابقة <i class="fas fa-dumbbell"></i>
                                             </NavLink>
                                         }
                                         {this.props.nameOrId.length > 0 ?
                                             <NavLink onClick={() => this.props.getEmpAppraisal(this.setTableName("employee_appraisal"))} style={styles} to={`/empsappraisal`}>
-                                                تقييمات سنوية
+                                                تقييمات سنوية <i class="fas fa-percentage"></i>
                                             </NavLink>
                                             :
                                             <NavLink style={styles} to={`/empsappraisal`}>
-                                                تقييمات سنوية
+                                                تقييمات سنوية <i class="fas fa-percentage"></i>
                                             </NavLink>
                                         }
                                         {this.props.nameOrId.length > 0 ?
                                             <NavLink onClick={() => this.props.getempspenalties(this.props.nameOrId)} style={styles} to={`/emppenalty`}>
-                                                جزاءات
+                                                جزاءات <i class="far fa-calendar-times"></i>
                                             </NavLink>
                                             :
                                             <NavLink style={styles} to={`/emppenalty`}>
-                                                جزاءات
+                                                جزاءات <i class="far fa-calendar-times"></i>
                                             </NavLink>
                                         }
                                         {this.props.nameOrId.length > 0 ?
                                             <NavLink onClick={() => Number.isInteger(parseInt(this.props.nameOrId)) ? this.props.getEmpFamily(this.props.nameOrId, "") : this.props.getEmpFamily("", this.props.nameOrId)} style={styles} to={`/empfamily`}>
-                                                البيانات العائلية
+                                                البيانات العائلية <i class="fas fa-home"></i>
                                             </NavLink>
                                             :
                                             <NavLink style={styles} to={`/empfamily`}>
-                                                البيانات العائلية
+                                                البيانات العائلية <i class="fas fa-home"></i>
                                             </NavLink>
                                         }
                                         {this.props.nameOrId.length > 0 ?
                                             <NavLink onClick={() => this.props.getEmpTraining(this.setTableName("employee_training"))} style={styles} to={`/EmpTraining`}>
-                                                تدريب العاملين
+                                                تدريب العاملين <i class="fas fa-certificate"></i>
                                             </NavLink>
                                             :
                                             <NavLink style={styles} to={`/EmpTraining`}>
-                                                تدريب العاملين
+                                                تدريب العاملين <i class="fas fa-certificate"></i>
                                             </NavLink>
                                         }
                                         <NavLink style={styles} to={`/orgstructure`}>
-                                            الهيكل
+                                            الهيكل <i class="fas fa-sitemap"></i>
                                         </NavLink>
                                         <NavLink style={styles} to={`/employees`}>
-                                            بيان بالموظفين
+                                            بيان بالموظفين <i class="fas fa-user-friends"></i>
                                         </NavLink>
                                     </ul>
 
@@ -181,7 +181,105 @@ class Sidebar extends React.Component {
                                     </ul>
                                     :
 
-                                    null
+                                    this.props.sidebarVar === "mainCodes" ?
+                                    <ul className="nav nav-first-level">
+                                        <NavLink style={styles} to={`/chairmanassisstant`}>
+                                            مساعد <i class="fas fa-star"></i>
+                                        </NavLink>
+                                        <NavLink style={styles} to={`/department`}>
+                                            الإدارات <i class="fas fa-building"></i>
+                                        </NavLink>
+                                        <NavLink style={styles} to={`/assisstantdepartment`}>
+                                            الإدارات العامة المساعدة <i class="fas fa-hands-helping"></i>
+                                        </NavLink>
+                                        <NavLink style={styles} to={`/mainbox`}>
+                                            الوظائف بالإدارات
+                                        </NavLink>
+                                        <NavLink style={styles} to={`/supbox`}>
+                                            المسمى الوظيفي
+                                        </NavLink>
+                                        <NavLink style={styles} to={`/#`}>
+                                            المحطات
+                                        </NavLink>
+                                        <NavLink style={styles} to={`/#`}>
+                                            المناطق
+                                        </NavLink>
+                                        <NavLink style={styles} to={`/#`}>
+                                            مكاتب التأمينات
+                                        </NavLink>
+                                    </ul>
+                                    :
+                                    <ul className="nav nav-first-level">
+                                        {this.props.nameOrId.length > 0 ?
+                                            <NavLink onClick={() => Number.isInteger(parseInt(this.props.nameOrId)) ? this.props.getEmpTrans(this.props.nameOrId, "") : this.props.getEmpTrans("", this.props.nameOrId)} style={styles} to={`/EmpTrans`}>
+                                                تدرج <i class="fas fa-walking"></i>
+                                            </NavLink>
+                                            :
+                                            <NavLink style={styles} to={`/EmpTrans`}>
+                                                تدرج <i class="fas fa-walking"></i>
+                                            </NavLink>
+                                        }
+                                        {this.props.nameOrId.length > 0 ?
+                                            <NavLink onClick={() => Number.isInteger(parseInt(this.props.nameOrId)) ? this.props.getEmpEdu(this.props.nameOrId, "") : this.props.getEmpEdu("", this.props.nameOrId)} style={styles} to={`/empedudeg`}>
+                                                مؤهلات الموظفين <i class="fas fa-university"></i>
+                                            </NavLink >
+                                            :
+                                            <NavLink style={styles} to={`/empedudeg`}>
+                                                مؤهلات الموظفين <i class="fas fa-university"></i>
+                                            </NavLink >
+                                        }
+                                        {this.props.nameOrId.length > 0 ?
+                                            <NavLink onClick={() => this.props.getEmpExp(this.setTableName("employee_experince"))} style={styles} to={`/empexperience`}>
+                                                خبرات سابقة <i class="fas fa-dumbbell"></i>
+                                            </NavLink>
+                                            :
+                                            <NavLink style={styles} to={`/empexperience`}>
+                                                خبرات سابقة <i class="fas fa-dumbbell"></i>
+                                            </NavLink>
+                                        }
+                                        {this.props.nameOrId.length > 0 ?
+                                            <NavLink onClick={() => this.props.getEmpAppraisal(this.setTableName("employee_appraisal"))} style={styles} to={`/empsappraisal`}>
+                                                تقييمات سنوية <i class="fas fa-percentage"></i>
+                                            </NavLink>
+                                            :
+                                            <NavLink style={styles} to={`/empsappraisal`}>
+                                                تقييمات سنوية <i class="fas fa-percentage"></i>
+                                            </NavLink>
+                                        }
+                                        {this.props.nameOrId.length > 0 ?
+                                            <NavLink onClick={() => this.props.getempspenalties(this.props.nameOrId)} style={styles} to={`/emppenalty`}>
+                                                جزاءات <i class="far fa-calendar-times"></i>
+                                            </NavLink>
+                                            :
+                                            <NavLink style={styles} to={`/emppenalty`}>
+                                                جزاءات <i class="far fa-calendar-times"></i>
+                                            </NavLink>
+                                        }
+                                        {this.props.nameOrId.length > 0 ?
+                                            <NavLink onClick={() => Number.isInteger(parseInt(this.props.nameOrId)) ? this.props.getEmpFamily(this.props.nameOrId, "") : this.props.getEmpFamily("", this.props.nameOrId)} style={styles} to={`/empfamily`}>
+                                                البيانات العائلية <i class="fas fa-home"></i>
+                                            </NavLink>
+                                            :
+                                            <NavLink style={styles} to={`/empfamily`}>
+                                                البيانات العائلية <i class="fas fa-home"></i>
+                                            </NavLink>
+                                        }
+                                        {this.props.nameOrId.length > 0 ?
+                                            <NavLink onClick={() => this.props.getEmpTraining(this.setTableName("employee_training"))} style={styles} to={`/EmpTraining`}>
+                                                تدريب العاملين <i class="fas fa-certificate"></i>
+                                            </NavLink>
+                                            :
+                                            <NavLink style={styles} to={`/EmpTraining`}>
+                                                تدريب العاملين <i class="fas fa-certificate"></i>
+                                            </NavLink>
+                                        }
+                                        <NavLink style={styles} to={`/orgstructure`}>
+                                            الهيكل <i class="fas fa-sitemap"></i>
+                                        </NavLink>
+                                        <NavLink style={styles} to={`/employees`}>
+                                            بيان بالموظفين <i class="fas fa-user-friends"></i>
+                                        </NavLink>
+                                    </ul>
 
                             }
 

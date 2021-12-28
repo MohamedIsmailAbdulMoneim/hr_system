@@ -75,13 +75,11 @@ class App extends React.Component {
           <nav className="navbar" role="navigation" style={{ marginBottom: 0, marginTop: 0 }}>
             <Header />
           </nav>
-          {!this.props.isAuthenticated ?
+          {/* {!this.props.isAuthenticated ?
             <Login />
             :
-
             null
-
-          }
+          } */}
 
           {this.props.isAuthenticated && this.props.user === "Admin" ?
             <Fragment>
@@ -133,7 +131,39 @@ class App extends React.Component {
               </Fragment>
 
 
-              : null
+              :             <Fragment>
+              <Sidebar />
+              <Switch>
+                <Route path="/" exact component={Home} />
+                <Route path="/table" exact component={Table} />
+                <Route path="/form" exact component={Form} />
+                <Route path="/mainbox" exact component={MainBox} />
+                <Route path="/department" exact component={Department} />
+                <Route path="/assisstantdepartment" exact component={AssisstantDepartment} />
+                <Route path="/supbox" exact component={Supbox} />
+                <Route path="/orgstructure" exact component={OrgStructre} />
+                <Route path="/emptrans" exact component={EmpTrans} />
+                <Route path="/employee" exact component={Employee} />
+                <Route path="/empbystation" exact component={Empbystation} />
+                <Route path="/empbydeps" exact component={EmpByDeps} />
+                <Route path="/natidexpire" excact component={NatIdExpired} />
+                <Route path="/empedudeg" exact component={EmpEdu} />
+                <Route path="/EmpTraining" exact component={EmpTraining} />
+                <Route path="/empfamily" exact component={EmpFamily} />
+                <Route path="/empexperience" exact component={EmpExperience} />
+                <Route path="/outsourceEmployee" exact component={outsourceEmployee} />
+                <Route path="/outsourceEmpEduDeg" exact component={outsourceEmpEduDeg} />
+                <Route path="/outsourceEmpFamily" exact component={outsourceEmpFamily} />
+                <Route path="/outsourceEmpPenalty" exact component={outsourceEmpPenalty} />
+                <Route path="/outsourceEmpTraining" exact component={outsourceEmpTraining} />
+                <Route path="/outsourceEmpsAppraisal" exact component={outsourceEmpsAppraisal} />
+                <Route path="/employees" exact component={Employees} />
+                <Route path="/emppenalty" exact component={EmpPenalty} />
+                <Route path="/empsappraisal" exact component={EmpsAppraisal} />
+                <Route path="/register" exact component={Register} />
+                <Route path="/chairmanassisstant" exact component={ChairmanAssisstant} />
+              </Switch>
+            </Fragment>
 
           }
         </div>

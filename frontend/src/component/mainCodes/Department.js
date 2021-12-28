@@ -1,6 +1,6 @@
 import React from "react";
 import {
-    getCates, addCates, updateCate
+    getCates, addCates, updateCate, removeCate
 } from "../../actions/Actions";
 import { connect } from "react-redux";
 import Pagination from "../Pagination";
@@ -11,7 +11,7 @@ class Department extends React.Component {
         super(props);
         this.state = {
             add: false, edit: false, delete: false, firstArg: 0, secondArg: 20, currentPage: 1, rowId: null,
-            firstArgPerBtn: 0, secondArgPerBtn: 10, catename: "", showMsg: false, oldCateId: null ,editCatId: "", editCatName: ""
+            firstArgPerBtn: 0, secondArgPerBtn: 10, catename: "", catid: "" ,showMsg: false, oldCateId: null ,editCatId: "", editCatName: ""
         };
 
     }
@@ -39,11 +39,17 @@ class Department extends React.Component {
         console.log(e.target.value);
     }
 
+    addCateIdHandler = (e) => {
+        this.setState({
+            catid: e.target.value
+        })
+    }
+
     submitNewCate = (e) => {
         this.setState({
             showMsg: true
         })
-        if (this.refs.add.value.length > 1 || this.state.catename.length > 1) this.props.addCates({ catename: this.state.catename })
+        if ((this.refs.add.value.length > 1 || this.state.catename.length > 1) && (this.refs.addid.value.length > 1 || this.state.catid.length > 1)) this.props.addCates({ catename: this.state.catename, catid: this.state.catid })
     }
 
     changeArgs = (i) => (e) => {
@@ -118,6 +124,18 @@ class Department extends React.Component {
         this.setState({ edit: false })
     }
 
+    closeDeleteSectionHandler = (e) => {
+        let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
+        for (let i = 0; i < tds.length; i++) {
+            tds[i].style.background = "transparent"
+            tds[tds.length - 2].childNodes[0].classList.remove("fa-check")
+            tds[tds.length - 2].childNodes[0].classList.add("fa-edit")
+            tds[tds.length - 1].childNodes[0].classList.remove("fa-times")
+            tds[tds.length - 1].childNodes[0].classList.add("fa-backspace")
+        }
+        this.setState({ delete: false })
+    }
+
     handelEdit_2 = (e) => {
         e.preventDefault()
         console.log('hit');
@@ -134,6 +152,31 @@ class Department extends React.Component {
         this.setState({
             edit: false
         })
+    }
+
+    deleteHandler = (e) => {
+        this.setState({ delete: true })
+        let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
+        for (let i = 0; i < tds.length; i++) {
+            tds[i].style.background = "white"
+            tds[tds.length - 2].childNodes[0].classList.remove("fa-edit")
+            tds[tds.length - 2].childNodes[0].classList.add("fa-check")
+            tds[tds.length - 1].childNodes[0].classList.remove("fa-backspace")
+            tds[tds.length - 1].childNodes[0].classList.add("fa-times")
+        }
+    }
+
+    confirmDelete = (e) => {
+        this.props.removeCate({cateid: e.target.getAttribute("tableId")})
+        this.setState({ delete: false })
+        let tds = document.getElementById(e.target.getAttribute("tableId")).childNodes
+        for (let i = 0; i < tds.length; i++) {
+            tds[i].style.background = "transparent"
+            tds[tds.length - 2].childNodes[0].classList.remove("fa-check")
+            tds[tds.length - 2].childNodes[0].classList.add("fa-edit")
+            tds[tds.length - 1].childNodes[0].classList.remove("fa-times")
+            tds[tds.length - 1].childNodes[0].classList.add("fa-backspace")
+        }
     }
 
 
@@ -169,8 +212,9 @@ class Department extends React.Component {
                                     {this.state.add ?
                                         <tr>
                                             <td></td>
-                                            <td></td>
                                             <td>
+                                                <input ref="addid" onKeyUp={this.addCateIdHandler} type="text" className="form-control" style={{ height: 30, width: "15%", display: "none" }}  />
+                                            </td>                                            <td>
                                                 <input ref="add" onKeyUp={this.addCateNameHandler} type="text" className="form-control" style={{ height: 30, width: "40%" }} />
                                             </td>
                                             <td onClick={this.submitNewCate}><i className="fas fa-check"></i></td>
@@ -204,5 +248,5 @@ const mapStateToProps = (state) => {
     };
 };
 export default connect(mapStateToProps, {
-    getCates, addCates, updateCate
+    getCates, addCates, updateCate, removeCate
 })(Department);

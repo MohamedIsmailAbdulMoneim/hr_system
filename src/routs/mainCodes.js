@@ -3,6 +3,7 @@ const path = require('path');
 const db = require("../database/connection")
 let router = express.Router();
 const multer = require('multer');
+const { post } = require("jquery");
 const upload = multer({ dest: './frontend/src/uploads/' })
 
 
@@ -1114,6 +1115,7 @@ function getMainCodes(req, res, next) {
 
 function getCates(req, res, next) {
     const query = `SELECT CAT_NAME, a_category.CAT_ID FROM a_category JOIN a_category_org ON a_category.CAT_ID = a_category_org.CAT_ID WHERE ORGANIZATION = 30 and is_shown = "true";`
+    
     db.query(query, (err, details) => {
         if (err) {
             next(err);
@@ -1124,23 +1126,20 @@ function getCates(req, res, next) {
 }
 
 function insertCat(req, res, next) {
-    
+
     const { catename } = req.body
     const query = `INSERT INTO a_category (CAT_NAME) VALUES ("${catename}");`
     db.query(query, (err, data) => {
         if (err) {
             next(err);
         } else {
-            console.log(data);
             res.json({ data: data, msg: "تم إدخال البيانات بنجاح" })
         }
     })
 }
 
-function updateCat(req,res,next){
-
+function updateCat(req, res, next) {
     const { cateid, catename, oldCateId } = req.body
-    console.log(req.body);
     const query = `
         UPDATE a_category SET CAT_ID = ${cateid}, CAT_NAME = "${catename}" WHERE CAT_ID = ${oldCateId};
         UPDATE a_category_org SET CAT_ID = ${cateid} WHERE CAT_ID = ${oldCateId};
@@ -1148,20 +1147,33 @@ function updateCat(req,res,next){
         UPDATE a_main_box SET CAT_ID = ${cateid} WHERE CAT_ID = ${oldCateId};
         SELECT CAT_NAME, a_category.CAT_ID FROM a_category JOIN a_category_org ON a_category.CAT_ID = a_category_org.CAT_ID WHERE ORGANIZATION = 30 and is_shown = "true";
     `
-
     console.log(query);
     db.query(query, (err, data) => {
         if (err) {
             next(err);
         } else {
-            console.log(data);
             res.json({ data: data, msg: "تم إدخال البيانات بنجاح" })
         }
-    })    
+    })
+}
+
+function deleteCat(req,res,next){
+    const { cateid } = req.body
+    const query = `UPDATE a_category_org SET is_shown = "false_${cateid}" WHERE CAT_ID = ${cateid};
+    SELECT CAT_NAME, a_category.CAT_ID FROM a_category JOIN a_category_org ON a_category.CAT_ID = a_category_org.CAT_ID WHERE ORGANIZATION = 30 and is_shown = "true";
+    `
+    db.query(query, (err, data) => {
+        if (err) {
+            next(err);
+        } else {
+            res.json({ data: data, msg: "تم حذف البيانات بنجاح" })
+        }
+    })
+    
 }
 
 function addCatOrg(req, res, next) {
-    const {catid} = req.body
+    const { catid } = req.body
     const query = `INSERT INTO a_category_org (CAT_ID, ORGANIZATION) VALUES (${catid}, 30);
     SELECT CAT_NAME, a_category.CAT_ID FROM a_category JOIN a_category_org ON a_category.CAT_ID = a_category_org.CAT_ID WHERE ORGANIZATION = 30;
     `
@@ -1388,17 +1400,15 @@ function getJobDgByCat(req, res, next) {
     const query = `SELECT *, (select CAT_NAME FROM a_category WHERE a_main_box.CAT_ID = a_category.CAT_ID) AS catename FROM a_job_dgree JOIN a_main_box ON a_job_dgree.J_D_ID = a_main_box.J_D_ID WHERE a_main_box.CAT_ID = (SELECT CAT_ID FROM a_category WHERE CAT_NAME = "${catName}");`
     db.query(query, (err, details) => {
         if (err) {
-            console.log(err);
             next(err);
         } else {
-            console.log(details);
             res.send(details);
         }
     })
 
 }
 
-function getJobDgree(req,res,next) {
+function getJobDgree(req, res, next) {
     const query = `SELECT * FROM a_job_dgree;`
     db.query(query, (err, details) => {
         if (err) {
@@ -1409,15 +1419,13 @@ function getJobDgree(req,res,next) {
     })
 }
 
-function addToMainBox(req,res,next){
-    const {catid, jdid, jdidp, joblevel} = req.body
+function addToMainBox(req, res, next) {
+    const { catid, jdid, jdidp, joblevel } = req.body
 
-    const conditionalQuery = jdid == 190 ? `UPDATE a_category_org SET hasAssisstant = "true" where CAT_ID = ${catid}` : ''
 
     const query = `
     INSERT INTO a_main_box (CAT_ID, J_D_ID, J_D_ID_P, JOB_LEVEL ,ORGANIZATION) VALUES (${catid}, ${jdid}, ${jdidp}, ${joblevel} ,30);
     SELECT *, (SELECT CAT_NAME FROM a_category WHERE a_category.CAT_ID = a_main_box.CAT_ID) AS catename FROM a_job_dgree JOIN a_main_box ON a_job_dgree.J_D_ID = a_main_box.J_D_ID WHERE a_main_box.CAT_ID = ${catid} AND is_shown = "true";
-    ${conditionalQuery}
     `
     db.query(query, (err, details) => {
         if (err) {
@@ -1428,13 +1436,11 @@ function addToMainBox(req,res,next){
     })
 }
 
-function deleteFromMainBox (req,res,next){
+function deleteFromMainBox(req, res, next) {
     const { mainboxid, catid, jdid } = req.body
-    const conditionalQuery = jdid == 190 ? `UPDATE a_category_org SET hasAssisstant = "false" where CAT_ID = ${catid}` : ''
     const query = `
     UPDATE a_main_box SET is_shown = "${mainboxid}false" where MAIN_BOX_ID = ${mainboxid};
     SELECT *, (SELECT CAT_NAME FROM a_category WHERE a_category.CAT_ID = a_main_box.CAT_ID) AS catename FROM a_job_dgree JOIN a_main_box ON a_job_dgree.J_D_ID = a_main_box.J_D_ID WHERE a_main_box.CAT_ID = ${catid} AND is_shown = "true";
-    ${conditionalQuery}
     `
     db.query(query, (err, details) => {
         if (err) {
@@ -1445,7 +1451,7 @@ function deleteFromMainBox (req,res,next){
     })
 }
 
-function getAssisstantDepartment(req,res,next) {
+function getAssisstantDepartment(req, res, next) {
     const query = `SELECT *, (select CAT_NAME FROM a_category where a_category.CAT_ID = a_sup_category.Public_Administration) as CAT_NAME FROM a_sup_category`
     db.query(query, (err, details) => {
         if (err) {
@@ -1456,8 +1462,8 @@ function getAssisstantDepartment(req,res,next) {
     })
 }
 
-function addAssisstantDepartment(req,res,next){
-    const {catename, assisstantcatename} = req.body
+function addAssisstantDepartment(req, res, next) {
+    const { catename, assisstantcatename } = req.body
     const query = `INSERT INTO a_sup_category (General_Administration_Assistant, Public_Administration) VALUES ("${assisstantcatename}", (select CAT_ID FROM a_category WHERE CAT_NAME = "${catename}"));
     SELECT *, (select CAT_NAME FROM a_category where a_category.CAT_ID = a_sup_category.Public_Administration) as CAT_NAME FROM a_sup_category
     `
@@ -1471,7 +1477,7 @@ function addAssisstantDepartment(req,res,next){
 
 }
 
-function getSupbox(req,res,next){
+function getSupbox(req, res, next) {
     const query = `SELECT 
     a_sup_box.SUP_BOX_NAME AS emp_box_name,
     (SELECT 
@@ -1480,7 +1486,6 @@ function getSupbox(req,res,next){
             a_category
         WHERE
 	a_main_box.CAT_ID = a_category.CAT_ID) AS catename,
-    (select hasAssisstant from a_category_org where a_main_box.CAT_ID = a_category_org.CAT_ID) AS hasAssisstant,
     (SELECT J_D_NAME FROM a_job_dgree where a_main_box.J_D_ID = a_job_dgree.J_D_ID) AS jdname,
     manager.SUP_BOX_NAME AS manager_box_name,
     a_sup_box.ACTIV_NOT,
@@ -1497,14 +1502,113 @@ FROM
         JOIN
     a_main_box ON a_sup_box.SUP_BOX_ID_P = manager.SUP_BOX_ID
         AND a_sup_box.MAIN_BOX_ID = a_main_box.MAIN_BOX_ID`
-        db.query(query, (err, details) => {
-            if (err) {
-                next(err);
-            } else {
-                res.send(details);
-            }
-        })
+    db.query(query, (err, details) => {
+        if (err) {
+            next(err);
+        } else {
+            res.send(details);
+        }
+    })
 }
+
+function addChairmanAssisstant(req, res, next) {
+    const { chairmanAssisstant } = req.body
+    const query = `insert into chairman_assisstant (ca_name) values ("${chairmanAssisstant}");
+    select * from chairman_assisstant where is_shown = "true";
+    `
+    db.query(query, (err, details) => {
+        if (err) {
+            next(err);
+        } else {
+            res.send(details);
+        }
+    })
+}
+
+function getChairmanAssisstant(req, res, next) {
+    const query = `select * from chairman_assisstant where is_shown = "true";`
+    db.query(query, (err, details) => {
+        if (err) {
+            next(err);
+        } else {
+            res.send(details);
+        }
+    })
+}
+
+function editeChairmanAssistant(req,res,next) {
+    
+    const {caname, id} = req.body
+    const query = `UPDATE chairman_assisstant SET ca_name = "${caname}" where id = ${id};
+    select * from chairman_assisstant where is_shown = "true";
+    `
+    db.query(query, (err,details) => {
+        console.log(details);
+        if(err) {
+            next(err);
+        }else{
+            res.json(details)
+        }
+    })
+}
+
+function removeChairmanAssistant(req,res,next) {
+    const {id} = req.body
+    const query = `UPDATE chairman_assisstant SET is_shown = "${id}_false" where id = ${id};
+    select * from chairman_assisstant where is_shown = "true";
+    `
+    db.query(query, (err,details) => {
+        if(err) {
+            next(err);
+        }else{
+            console.log(details);
+
+            res.json(details)
+        }
+    })}
+
+function addDepToAssistant(req,res,next) {
+    const {caid, catid} = req.body
+    const query = `UPDATE a_category_org SET ca_id = ${caid} WHERE CAT_ID = ${catid};
+    SELECT *, (SELECT CAT_NAME FROM a_category where a_category.CAT_ID = a_category_org.CAT_ID) AS catname FROM a_category_org WHERE ca_id = ${caid};
+    `
+    db.query(query, (err,details) => {
+        if(err) {
+            next(err);
+        }else{
+            res.send(details)
+        }
+    })
+}
+
+function getChairmanDeps(req,res,next){
+    const { caid } = req.query
+
+    const query = `SELECT *, (SELECT CAT_NAME FROM a_category where a_category.CAT_ID = a_category_org.CAT_ID) AS catname FROM a_category_org WHERE ca_id = ${caid};`
+    db.query(query, (err,details) => {
+        if(err) {
+            next(err);
+        }else{
+            res.send(details)
+        }
+    })
+}
+
+function delDepFA(req,res,next) {
+    const {caid, catid} = req.body
+    const query = `UPDATE a_category_org SET ca_id = NULL WHERE CAT_ID = ${catid};
+    SELECT *, (SELECT CAT_NAME FROM a_category where a_category.CAT_ID = a_category_org.CAT_ID) AS catname FROM a_category_org WHERE ca_id = ${caid};
+    `
+    db.query(query, (err,details) => {
+        if(err) {
+            next(err);
+        }else{
+            res.send(details);
+        }
+    })
+}
+
+
 
 router
     .get('/getJobdgbycatfororgstructure', getJobDgByCatForOrgStructure)
@@ -1518,6 +1622,7 @@ router
     .get('/category', getCates)
     .post('/category', insertCat)
     .put('/category', updateCat)
+    .put('/deletecategory', deleteCat)
     .post('/cateorg', addCatOrg)
     .get('/empnamebyid/:empid', getEmpNameById)
     .get('/empnamebyName/:empname', getEmpNameByName)
@@ -1529,7 +1634,6 @@ router
     .post('/insertnewemp', insertNewEmp)
     .post('/insertempimg', upload.single('avatar'), (req, res, next) => {
 
-        console.log(req.file);
 
     })
     .post('/insertnewoutsourceemp', insertNewOutSourceEmp)
@@ -1546,8 +1650,14 @@ router
     .put('/mainbox', deleteFromMainBox)
     .get('/getassisstantdepartment', getAssisstantDepartment)
     .post('/addassisstantdepartment', addAssisstantDepartment)
-    .get('/getsupbox',getSupbox)
-
+    .get('/getsupbox', getSupbox)
+    .post('/addchairmanassisstant', addChairmanAssisstant)
+    .get('/getchairmanassisstant', getChairmanAssisstant)
+    .put('/editechairmanassistant',editeChairmanAssistant)
+    .put('/removechairmanassistant', removeChairmanAssistant)
+    .get('/getchairmandeps', getChairmanDeps)
+    .post('/adddeptoassistant', addDepToAssistant)
+    .put('/deldepfa', delDepFA)
 
 
 

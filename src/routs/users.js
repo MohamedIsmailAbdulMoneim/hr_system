@@ -14,7 +14,6 @@ function handleLogin(req, res, next) {
     db.query(`SELECT * FROM users WHERE username = "${uname}"`, function (err, rows) {
         if (err) {
             next(err);
-            console.log(err);
         }
         if (!rows.length) {
             return res.status(401).json({ success: false, msg: "اسم المستخدم غير صحيح" })

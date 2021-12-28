@@ -39,7 +39,6 @@ function getEmpExprerience(req, res, next) {
         if (err) {
             next(err)
         } else {
-            console.log(query);
             res.send(details);
         }
 
@@ -162,8 +161,6 @@ function updateAppraisal(req, res, next) {
             res.json({ data: details, status: 200 });
         }
     })
-
-    console.log(query);
 }
 
 function deleteAppraisal(req, res, next) {
@@ -178,8 +175,6 @@ function deleteAppraisal(req, res, next) {
     JOIN APPRAISAL ON APPRAISAL.APPRAISAL = employee_appraisal.APPRAISAL
     WHERE ${req.body.getData}
     `
-    console.log(query);
-
     db.query(query, (err, data) => {
         if (err) {
             next(err)
@@ -280,7 +275,6 @@ function getEmpTrans(req, res, next) {
 
 function updateEmpTrans(req, res, next) {
     let { empname, empid, id, station } = req.body
-    console.log(id);
 
     let nameOrId;
     if (empname.length > 0) {
@@ -310,13 +304,10 @@ function updateEmpTrans(req, res, next) {
         if (err) {
             next(err);
         } else {
+            console.log(details);
             res.json(details);
         }
-        console.log(query);
-
     })
-
-    console.log(req.body);
 }
 
 function deleteTrans(req, res, next) {
@@ -528,14 +519,12 @@ function editFamily(req, res, next) {
     db.query(query, (err, data) => {
         if (err) {
             next(err)
-            console.log(err);
             res.json({ msg: "يوجد خطاء بقاعدة البيانات", data: null })
 
         } else {
             res.json({ msg: "تم إدخال البيانات بنجاح", data: data })
         }
     })
-    console.log(query);
 }
 
 

@@ -8,7 +8,8 @@ import {
   updateEmpDetails, addnewOutsourceEmp,
   updateOutsourceEmpDetails,setNameOrId,fetchEmpsDetails,changeSideBarVar,insertCates,fetchjobdgree,
   insertIntoMainbox, fetchMainBox, deletemainbox,fetchAssisstantDepartment, insertAssisstantDepartment,
-  fetchSupBox,insertChairmanAssisstant, fetchChairmanAssisstant
+  fetchSupBox,insertChairmanAssisstant, fetchChairmanAssisstant, insertDepartmentIntoChairman,fetchChairmanDeps,
+  deleteDepFromA, updateChairmanAssistant, deleteChairmanAssistant, editCate, deleteCate
 } from "../actions/ActionTypes";
 
 const initialState = {
@@ -44,7 +45,8 @@ const initialState = {
   mainbox: [],
   assisstantDepartment: [],
   supbox: [],
-  chairmanAssisstant: []
+  chairmanAssisstant: [],
+  chairmanDepartments: []
   
 };
 
@@ -97,12 +99,6 @@ export default function post (state = initialState, action) {
       return {
         ...state,
         mainCodes: action.payload.data
-      }
-
-    case fetchCates:
-      return {
-        ...state,
-        cates: action.payload.data
       }
     case fetchJobByCat:
       return {
@@ -252,6 +248,25 @@ export default function post (state = initialState, action) {
         msg: action.payload.msg
       }
 
+      case fetchCates:
+        return {
+          ...state,
+          cates: action.payload.data
+        }
+
+        
+      case editCate:
+        return {
+          ...state,
+          cates: action.payload.data
+        }
+
+      case deleteCate:
+        return {
+          ...state,
+          cates: action.payload.data
+        }
+
       case fetchMainBox:
         return{
           ...state,
@@ -296,6 +311,36 @@ export default function post (state = initialState, action) {
         return {
           ...state,
           chairmanAssisstant: action.payload
+        }
+      
+      case updateChairmanAssistant:
+        return {
+          ...state,
+          chairmanAssisstant: action.payload
+        }
+
+      case deleteChairmanAssistant:
+        return {
+          ...state,
+          chairmanAssisstant: action.payload
+        }
+
+      case insertDepartmentIntoChairman:
+        return {
+          ...state,
+          chairmanDepartments: action.payload
+        }
+
+      case fetchChairmanDeps:
+        return {
+          ...state,
+          chairmanDepartments: action.payload
+        }
+
+      case deleteDepFromA:
+        return {
+          ...state,
+          chairmanDepartments: action.payload
         }
       
 

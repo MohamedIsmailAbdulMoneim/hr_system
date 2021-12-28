@@ -1,6 +1,6 @@
 import React from "react";
 import {
-    addChairmanAssisstant, getChairmanAssisstant, getCates
+    addChairmanAssisstant, getChairmanAssisstant, getCates, addDepToAssistant, editeChairmanAssistant, removeChairmanAssistant ,getChairmanDeps, delDepFA
 } from "../../actions/Actions";
 import { connect } from "react-redux";
 import axios from "axios";
@@ -8,7 +8,7 @@ import axios from "axios";
 class ChairmanAssisstant extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { add: false, delete: false, addA: false, editA: false, deleteA: false ,addAssisstant: "", updateAssisstant: "" }
+        this.state = { add: false, delete: false, addA: false, editA: false, deleteA: false, addAssisstant: "", catchDepartmentToAssisstant: "", updateAssisstant: "", addDepToAssistant: "", adddeptoAClicked: false, deleteDep: "", DetuctedAssistant: "" ,sharedChairmanId: "", sharedChairmanName: "" }
     }
 
     componentDidMount() {
@@ -29,23 +29,25 @@ class ChairmanAssisstant extends React.Component {
 
     editAssisstanthandler = (e) => {
         this.refs.change.value = e.target.value
+        this.setState({sharedChairmanId: e.target.options[e.target.options.selectedIndex].getAttribute("caid"), sharedChairmanName: e.target.options[e.target.options.selectedIndex].getAttribute("cname")})
     }
 
     deleteAssisstanthandler = (e) => {
         this.refs.delete.value = e.target.value
+        this.setState({sharedChairmanId: e.target.options[e.target.options.selectedIndex].getAttribute("caid")})
     }
 
     changeAssisstanthandler = (e) => {
-        
+
     }
 
-    clickHandler = (e) => {
-        console.log('hit');
-        this.props.getMainbox(e.target.options[e.target.options.selectedIndex].getAttribute("catid"))
-        console.log(e.target.getAttribute("catid"));
-        this.setState({ catid: e.target.getAttribute("catid") })
-        console.log(e.target.value);
-    }
+    // clickHandler = (e) => {
+    //     console.log('hit');
+    //     this.props.getMainbox(e.target.options[e.target.options.selectedIndex].getAttribute("catid"))
+    //     console.log(e.target.getAttribute("catid"));
+    //     this.setState({ catid: e.target.getAttribute("catid") })
+    //     console.log(e.target.value);
+    // }
 
     clickHandler_2 = (e) => {
         this.props.getSupBoxNamesandmanager(e.target.getAttribute("jdid"), this.state.catid)
@@ -61,18 +63,17 @@ class ChairmanAssisstant extends React.Component {
 
     choseToDeleteHandler = (e) => {
         this.setState({
-            deletedMain: e.target.getAttribute('mainbox'),
-            deletedJd: e.target.getAttribute('jdid')
+            deleteDep: e.target.options[e.target.options.selectedIndex].getAttribute("catid"),
+            DetuctedAssistant: e.target.options[e.target.options.selectedIndex].getAttribute("caid")
         })
-        console.log(e.target.getAttribute('mainbox'));
     }
 
     addHandler = (e) => {
-        if (this.state.chosenJd.length > 0) this.setState({ add: true, delete: false })
+        if (this.state.addDepToAssistant.length > 0 && this.state.catchDepartmentToAssisstant) this.setState({ add: true, delete: false })
     }
 
     deleteHandler = (e) => {
-        if (this.state.deletedMain.length > 0) this.setState({ delete: true, add: false })
+        if (this.state.deleteDep.length > 0) this.setState({ delete: true, add: false })
     }
 
     confirmAdd = (e) => {
@@ -80,6 +81,12 @@ class ChairmanAssisstant extends React.Component {
         this.props.addToMainBox(data)
         this.setState({
             add: false
+        })
+    }
+
+    addDepToAssistantHandler = (e) => {
+        this.setState({
+            addDepToAssistant: e.target.value
         })
     }
 
@@ -100,6 +107,7 @@ class ChairmanAssisstant extends React.Component {
     }
 
     render() {
+
         const styles = {
             display: "block",
             padding: "0.375rem 2.25rem 0.375rem 0.75rem",
@@ -116,7 +124,6 @@ class ChairmanAssisstant extends React.Component {
             transition: "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out"
 
         }
-        console.log(this.state.updateAssisstant);
         return (
             <div id="page-wrapper" className="orgstructure" >
                 <div className="row">
@@ -140,7 +147,7 @@ class ChairmanAssisstant extends React.Component {
                                         <div onClick={(e) => this.setState({ editA: !this.state.editA, addA: false, deleteA: false })} style={{ width: 70, height: 35, background: "#fff", display: "flex", alignItems: "center", cursor: "pointer", }}> <h6 style={{ margin: 0, transform: "translateX(-2px)" }}>تعديـــل</h6> <i class="fas fa-marker" style={{ transform: "translateX(-5px)" }}></i></div>
                                         {this.state.editA ?
                                             <div style={{ display: "flex", justifyContent: "flex-start" }}>
-                                                <input ref="change"  onKeyUp={this.typeAssisstantHandler} className="form-control" style={{ margin: "5px 0", width: 200, height: 38 }} />
+                                                <input ref="change" onKeyUp={(e) => this.setState({sharedChairmanName: e.target.value})} className="form-control" style={{ margin: "5px 0", width: 200, height: 38 }} />
                                                 <button type="button" class="btn btn-dark btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal_2" style={{ minWidth: 100, height: 35, transform: "translateY(7px)" }}>عدل</button>
                                             </div>
                                             :
@@ -148,11 +155,11 @@ class ChairmanAssisstant extends React.Component {
                                         }
                                     </div>
                                     <div>
-                                        <div onClick={(e) => this.setState({ deleteA: !this.state.deleteA, editA: false, addA:false })} style={{ width: 70, height: 35, background: "#fff", display: "flex", alignItems: "center", cursor: "pointer", }}> <h6 style={{ margin: 0, transform: "translateX(-2px)" }}>حــذف</h6> <i class="far fa-minus-square" style={{ transform: "translateX(-15px)" }}></i></div>
+                                        <div onClick={(e) => this.setState({ deleteA: !this.state.deleteA, editA: false, addA: false })} style={{ width: 70, height: 35, background: "#fff", display: "flex", alignItems: "center", cursor: "pointer", }}> <h6 style={{ margin: 0, transform: "translateX(-2px)" }}>حــذف</h6> <i class="far fa-minus-square" style={{ transform: "translateX(-15px)" }}></i></div>
                                         {this.state.deleteA ?
                                             <div style={{ display: "flex", justifyContent: "flex-start" }}>
-                                                <input ref="delete"  onKeyUp={this.typeAssisstantHandler} className="form-control" style={{ margin: "5px 0", width: 200, height: 38 }} />
-                                                <button type="button" class="btn btn-dark btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal_2" style={{ minWidth: 100, height: 35, transform: "translateY(7px)" }}>عدل</button>
+                                                <input ref="delete" onKeyUp={this.typeAssisstantHandler} className="form-control" style={{ margin: "5px 0", width: 200, height: 38 }} />
+                                                <button type="button" class="btn btn-dark btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal_3" style={{ minWidth: 100, height: 35, transform: "translateY(7px)" }}>حذف</button>
                                             </div>
                                             :
                                             null
@@ -160,6 +167,13 @@ class ChairmanAssisstant extends React.Component {
                                     </div>
                                 </div>
 
+                                <div style={{ display: "flex", justifyContent: "space-between", marginTop: 5 }}>
+                                    <div>
+                                        <div onClick={(e) => {
+                                            this.setState({ adddeptoAClicked: !this.state.adddeptoAClicked })
+                                        }} style={{ width: 150, height: 35, background: "#fff", display: "flex", alignItems: "center", cursor: "pointer" }}> <h6 style={{ margin: 0, transform: "translateX(-2px)" }}>إضافة إدارة إلى مساعد</h6> <i class="far fa-plus-square" style={{ transform: "translateX(-25px)" }}></i></div>
+                                    </div>
+                                </div>
 
                                 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                     <div class="modal-dialog">
@@ -192,36 +206,77 @@ class ChairmanAssisstant extends React.Component {
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-                                                <button  type="button" class="btn btn-primary" data-bs-dismiss="modal">تأكيد</button>
+                                                <button onClick={() => this.props.editeChairmanAssistant({caname: this.state.sharedChairmanName, id: this.state.sharedChairmanId})} type="button" class="btn btn-primary" data-bs-dismiss="modal">تأكيد</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal fade" id="exampleModal_3" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div className="modal-header">
+                                                <div></div>
+                                                <h5 className="modal-title" id="exampleModalLabel">حذف مساعد</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" ariaLabel="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                هل أنت متأكد من حذف البيانات
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                                                <button onClick={() => this.props.removeChairmanAssistant({id :this.state.sharedChairmanId})} type="button" class="btn btn-primary" data-bs-dismiss="modal">تأكيد</button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
+                                {this.state.adddeptoAClicked ?
+                                    <>
+                                        <select onChange={(e) => this.setState({
+                                            catchDepartmentToAssisstant: e.target.options[e.target.options.selectedIndex].getAttribute("caid")
+                                        })} >
+                                            {this.props.chairmanAssisstant.map(data => (
+                                                <>
+                                                    <option caid={data.id}>{data.ca_name}</option>
+                                                </>
+                                            ))}
+                                            <option selected>اختر</option>
+                                        </select>
+                                    </>
+                                    :
+                                    null
+                                }
 
-                                <div style={{ width: "100%" }}>
-                                    <label style={{ display: "block" }} for="pet-select">المساعدون</label>
-                                    <select onChange={this.state.editA ? this.editAssisstanthandler : this.state.deleteA ? this.deleteAssisstanthandler : null} style={styles} multiple name="pets" id="pet-select">
-                                        {this.props.chairmanAssisstant.map(data => (
-                                            <>
-                                                <option>{data.ca_name}</option>
-                                            </>
-                                        ))}
-                                    </select>
-                                </div>
+                                {!this.state.adddeptoAClicked ?
+                                    <div style={{ width: "100%" }}>
+                                        <label style={{ display: "block" }} for="pet-select">المساعدون</label>
+                                        <select onChange={this.state.editA ? this.editAssisstanthandler : this.state.deleteA ? this.deleteAssisstanthandler : (e) => {this.props.getChairmanDeps(e.target.options[e.target.options.selectedIndex].getAttribute("caid"))
+                                    }} style={styles} multiple name="pets" id="pet-select">
+                                            {this.props.chairmanAssisstant.map(data => (
+                                                <>
+                                                    <option cname={data.ca_name} caid={data.id}>{data.ca_name}</option>
+                                                </>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    :
+                                    null
+                                }
                                 <div style={{ display: "flex", justifyContent: "space-between" }}>
                                     <div style={{ width: "48%" }}>
                                         <label style={{ display: "block" }} for="pet-select">الإدارات</label>
-                                        <select onChange={this.choseToAddHandler} style={styles} multiple name="pets" id="pet-select">
-                                        {this.props.cates.map(cate => (
-                                            <option>{cate.CAT_NAME}</option>
-                                        ))}
+                                        <select onChange={(e) => this.setState({ addDepToAssistant: e.target.options[e.target.options.selectedIndex].getAttribute("catid") })} style={styles} multiple name="pets" id="pet-select">
+                                            {this.props.cates.map(cate => (
+                                                <option catid={cate.CAT_ID}>{cate.CAT_NAME}</option>
+                                            ))}
                                         </select>
                                         <button onClick={this.addHandler} style={{ width: "100%" }}>اضف</button>
                                     </div>
                                     {this.state.add || this.state.delete ?
                                         <div style={{ margin: "auto 0" }}>
-                                            <i style={{ display: "block", marginBottom: 15, color: "#376237" }} onClick={this.state.add ? this.confirmAdd : this.state.delete ? this.confirmDelete : null} className="fas fa-check"></i>
+                                            <i style={{ display: "block", marginBottom: 15, color: "#376237" }} onClick={this.state.add ? (e) => {this.props.addDepToAssistant({ caid: this.state.catchDepartmentToAssisstant, catid: this.state.addDepToAssistant })
+                                             this.setState({add: false})} : this.state.delete ? (e) => {this.props.delDepFA({caid: this.state.DetuctedAssistant , catid: this.state.deleteDep })
+                                             this.setState({add:false, delete: false})} : null} className="fas fa-check"></i>
                                             <i style={{ display: "block", color: "#970f0f" }} onClick={this.closeConfirm} className="fas fa-times"></i>
                                         </div>
                                         :
@@ -230,7 +285,9 @@ class ChairmanAssisstant extends React.Component {
                                     <div style={{ width: "48%" }}>
                                         <label style={{ display: "block" }} for="pet-select">إدارات المساعد</label>
                                         <select onChange={this.choseToDeleteHandler} style={styles} multiple name="pets" id="pet-select">
-
+                                            {this.props.chairmanDepartments.map(dep => (
+                                                <option caid={dep.ca_id} catid={dep.CAT_ID}>{dep.catname}</option>
+                                            ))}
                                         </select>
                                         <button onClick={this.deleteHandler} style={{ width: "100%" }}>حذف</button>
                                     </div>
@@ -249,9 +306,10 @@ class ChairmanAssisstant extends React.Component {
 const mapStateToProps = (state) => {
     return {
         chairmanAssisstant: state.posts.chairmanAssisstant,
-        cates: state.posts.cates
+        cates: state.posts.cates,
+        chairmanDepartments: state.posts.chairmanDepartments
     };
 };
 export default connect(mapStateToProps, {
-    addChairmanAssisstant, getChairmanAssisstant, getCates
+    addChairmanAssisstant, getChairmanAssisstant, getCates, addDepToAssistant, getChairmanDeps, editeChairmanAssistant, removeChairmanAssistant ,delDepFA
 })(ChairmanAssisstant);
