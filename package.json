@@ -26,6 +26,7 @@
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
     "react-icons": "^4.3.1",
+    "react-table-filter": "^2.0.2",
     "resize-observer": "^1.0.3",
     "sequelize": "^6.6.2"
   },

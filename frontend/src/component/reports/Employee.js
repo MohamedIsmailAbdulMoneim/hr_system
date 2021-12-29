@@ -659,7 +659,6 @@ class Employee extends React.Component {
                     <div className="col-lg-12" style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: 10 }}>
                         <div style={{ height: "100%", width: 600 }} class="panel panel-default">
                             <div style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }} class="panel-heading">
-                                <span>بيانات العاملين</span>
                                 <button onClick={this.addButtonHandler} style={{ float: "left" }} type="button" class="btn btn-primary">إضافة بيانات جديدة</button>
                             </div>
                             <div style={{ marginRight: 20, display: "flex", justifyContent: "center", alignItems: "center" }}>
@@ -675,8 +674,14 @@ class Employee extends React.Component {
                                 </div>
                             </div>
                         </div>
+                        <div style={{display: "flex"}}>
+                            <input type="text" class="input-search" placeholder="رقم الأداء" style={{width: 70, marginLeft: 5}} />
+                            <input type="text" class="input-search" placeholder="الإسم" />
+                        </div>
                     </div>
                 </div>
+
+
 
                 <div className="row">
                     <div className="col-lg-12" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>

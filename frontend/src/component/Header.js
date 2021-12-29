@@ -98,15 +98,7 @@ class Header extends React.Component {
                                     }
                                 </div>
                                 :
-
-                                <div class="topnav">
-                                    <a href="#about">العمالة المؤقتة</a>
-                                    <Link to="#" onClick={() => this.props.changeSideBar('transactions')}>
-                                        الحركات
-                                    </Link>
-                                    <Link to="#" onClick={() => this.props.changeSideBar('mainCodes')}>
-                                        الأكواد الرئيسية
-                                    </Link>
+                                <div class="topnav" style={{ display: "flex" }}>
                                     {this.props.nameOrId.length > 0 ?
                                         <Link onClick={() => Number.isInteger(parseInt(this.props.nameOrId)) ? this.props.getEmpDetails(this.props.nameOrId) : this.props.getEmpDetails("", this.props.nameOrId)} to="/employee" className="menu-bars">
                                             الشاشة الرئيسية
@@ -116,23 +108,19 @@ class Header extends React.Component {
                                             الشاشة الرئيسية
                                         </Link>
                                     }
-                                </div>
+                                    <Link to="#" onClick={() => this.props.changeSideBar('transactions')}>
+                                        الحركات
+                                    </Link>
+                                    <Link to="#" onClick={() => this.props.changeSideBar('mainCodes')}>
+                                        الأكواد الرئيسية
+                                    </Link>
+                                    <a href="#about">العمالة المؤقتة</a>
 
+
+                                </div>
                         }
 
-                        <div class="topnav">
-                        <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-                                <div style={{ display: "flex", justifyContent: "space-evenly" }}>
-                                    <div className="form-group" controlId="formBasicEmail" style={{width: 80}}>
-                                        <input id="empid" ref="empid" className="form-control" onKeyDown={this.empidHandler} style={{ background: "white",  border: "1px solid black" }} type="number" name="first_name" />
-                                    </div>
-                                    <div className="form-group" controlId="formBasicEmail">
-                                        <input className="form-control" onKeyUp={this.nameInputHandler} style={{ background: "white", width: "100%", minWidth: "250px", border: "1px solid black" }} type="text" name="first_name" />
-                                    </div>
-                                    <i class="fas fa-search"></i>
-                                </div>
-                            </div>
-                        </div>
+
 
                         <div class="topnav">
                             {this.props.isAuthenticated ?
@@ -169,7 +157,6 @@ class Header extends React.Component {
                         </div>
                     </div>
                 </div>
-
             </Fragment >
 
         )
