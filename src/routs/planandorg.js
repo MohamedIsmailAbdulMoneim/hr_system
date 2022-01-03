@@ -130,6 +130,7 @@ function getEmpApprails(req, res, next) {
     JOIN employee ON employee.NATIONAL_ID_CARD_NO = employee_appraisal.NATIONAL_ID_CARD_NO
     JOIN APPRAISAL ON APPRAISAL.APPRAISAL = employee_appraisal.APPRAISAL
     WHERE ${data}`
+    
     db.query(query, (err, details) => {
         if (err) {
             next(err)

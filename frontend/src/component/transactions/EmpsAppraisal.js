@@ -8,28 +8,25 @@ import { getEmpAppraisal, newAppraisal, updateEmpAppraisal, deleteEmpAppraisal }
 import { connect } from "react-redux";
 import 'moment-timezone';
 import Pagination from "../Pagination";
+var jp = require('jsonpath');
 
 class EmpsAppraisal extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            confirmAdd: false, showMsg: false, errorAdd: false, addEmpAppraisal: "", editEmpAppraisal: "", searchEmpAppraisal: "",
+            initData: [],
+            confirmAdd: false, showMsg: false, errorAdd: false, addEmpAppraisal: "", editEmpAppraisal: "", searchEmpAppraisal: [],
             addAppraisalYear: "", editEmpAppraisalYear: "", searchEmpAppraisalYear: "", rowAppraisal: null, add: false, edit: false, empid: "", empname: "",
             empnat: null, showNamesResults: false, updated: false, firstArg: 0, secondArg: 20, currentPage: 1,
             firstArgPerBtn: 0, secondArgPerBtn: 10, delete: false, selectQuery: ""
         };
     }
 
-    selectQueryHandler = (e) => {
-
-
+    componentDidMount() {
     }
 
     isEqual = (objects) => {
-
         return objects.every(obj => JSON.stringify(obj.NAME_ARABIC) === JSON.stringify(objects[0].NAME_ARABIC))
-
-
     };
 
     changeArgs = (i) => (e) => {
@@ -135,7 +132,6 @@ class EmpsAppraisal extends React.Component {
         this.setState({ showNamesResultsForSearch: true })
         if (e.target.value.length > 0) this.props.getEmpNameByName(e.target.value, this)
         this.refs.empid.value = ''
-        console.log(e.target.value);
 
     }
 
@@ -151,7 +147,6 @@ class EmpsAppraisal extends React.Component {
         this.props.getEmpAppraisal(`employee_appraisal.NATIONAL_ID_CARD_NO = (SELECT NATIONAL_ID_CARD_NO FROM employee WHERE NAME_ARABIC = "${e.target.value}")`)
         this.props.globalNameOrId(e.target.value)
         this.setState({ empname: e.target.value })
-        console.log(e.target.value);
 
     }
 
@@ -177,11 +172,21 @@ class EmpsAppraisal extends React.Component {
     }
 
     handelSearchAppraisal = (e) => {
-        e.preventDefault()
-        this.setState({ searchEmpAppraisal: e.target.value })
-        if (e.target.value === "اختر التقدير") {
-            this.setState({ searchEmpAppraisal: "" })
+        // this.setState({ searchEmpAppraisal: e.target.value })
+        // if (e.target.value === "اختر التقدير") {
+        //     this.setState({ searchEmpAppraisal: "" })
+        // }
+        if (e.target.checked) {
+            let state = this.state
+            state.searchEmpAppraisal.push(e.target.value)
+        } else {
+            let state = this.state
+           let deletedIndex =  state.searchEmpAppraisal.indexOf(e.target.value);
+           if (deletedIndex > -1) {
+            state.searchEmpAppraisal.splice(deletedIndex, 1);
+          }
         }
+
     }
 
     handelSearchYear = (e) => {
@@ -314,29 +319,19 @@ class EmpsAppraisal extends React.Component {
         }
     }
 
-    // catClickHandeler = (e) => {
-
-    //     this.setState({ catname: e.target.value })
-    //     if (this.refs.selected) {
-    //         if (this.refs.selected.options) {
-    //             this.refs.selected.options.selectedIndex = 2
-    //         }
-    //     }
-
-    // }
-
 
     render() {
         var dates = [];
         let start = 1996;
         let end = 2021;
-
         while (start !== end) {
             dates.push(start);
             start++;
         }
+console.log("render");
+        var apprYear = [... new Set(jp.query(this.props.empApp, '$..APPRAISAL_DATE'))];
+        var appValue = [... new Set(jp.query(this.props.empApp, '$..APPRAISAL_ARABIC'))];
 
-        console.log(this.state.edit, this.state.rowAppraisal)
         let appraisals = ["ممتاز بجدارة", "ممتاز", "جيد جدا بجدارة", "جيد جدا", "جيد", "مقبول", "ضعيف", "جيد حكمي", "جيد جدا حكمي", "ممتاز حكمي"]
 
         return (
@@ -445,7 +440,7 @@ class EmpsAppraisal extends React.Component {
                                 </div>
                                 <div className="form-group" controlId="formBasicEmail">
                                     <label style={{ width: "80%", textAlign: "right" }}>التقدير : </label>
-                                    <select colName={"APPRAISAL"} id="empapp" style={{ width: "80%", height: 30 }} onChange={this.handelSearchAppraisal}>
+                                    <select colName={"APPRAISAL"} id="empapp" style={{ width: "80%", height: 30 }} >
                                         {appraisals.map(apprsl => (
                                             <option>{apprsl}</option>
                                         ))}
@@ -481,50 +476,71 @@ class EmpsAppraisal extends React.Component {
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-lg-12">
-                        <div className="panel panel-default">
-                            <div className="panel-heading" style={{ minHeight: 40 }}>
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-striped table-bordered table-hover" id="dataTables-example">
-                                        <thead>
-                                            <tr>
-                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>الإسم</th>
-                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>التقدير</th>
-                                                <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>السنة</th>
-                                                <th>تعديل</th>
-                                                <th>حذف</th>
-                                            </tr>
-                                        </thead>
-                                        {this.props.empApp.length > 0 ? this.props.empApp.slice(this.state.firstArg, this.state.secondArg).map(emp => (
-                                            <tbody>
-                                                <tr id={emp.id}>
-                                                    <td>{emp.NAME_ARABIC}</td>
-                                                    <td>{this.state.edit && JSON.parse(this.state.rowAppraisal) === JSON.parse(emp.id) ? <select onChange={this.handelEditAppraisal} id="empapp" style={{ width: "50%", height: 30 }}>
-                                                        {appraisals.map(apprsl => (
-                                                            <option>{apprsl}</option>
-                                                        ))}
-                                                        <option selected>اختر التقدير</option>
+                    <div class="col-lg-12" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                        <table class="table table-striped table-bordered table-hover" id="dataTables-example" style={{ borderColor: "black", width: "80%" }}>
+                            <thead>
+                                <tr>
+                                    <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>الإسم</th>
+                                    <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>
+                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                                            التقدير
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                            {appValue.map((value, i) => (
+                                                <>
+                                                    <input onChange={this.handelSearchAppraisal} class="dropdown-item" type="checkbox" id={`year${i}`} name={`year${i}`} value={value} />
+                                                    <label class="dropdown-item" for={`year${i}`}>{value}</label>
+                                                </>
+                                            ))}
 
-                                                    </select> : emp.APPRAISAL_ARABIC}</td>
-                                                    <td style={{ width: "10%" }}>{this.state.edit && JSON.parse(this.state.rowAppraisal) === JSON.parse(emp.id) ? <input onChange={this.handelEditYear} placeholder={this.state.editEmpAppraisalYear} className="form-control" style={{ width: "100%" }} type="text" /> : emp.APPRAISAL_DATE}</td>
-                                                    <td><i onClick={this.state.delete ? this.confirmDelete : this.state.edit ? this.handelEdit_2 : this.handelEdit_1} tableId={emp.id} style={{ fontSize: 20 }} empName={emp.NAME_ARABIC} empApp={emp.APPRAISAL_ARABIC} empDate={emp.APPRAISAL_DATE} empnatid={emp.NATIONAL_ID_CARD_NO} class="fas fa-edit"></i></td>
-                                                    <td><i onClick={this.state.delete ? this.closeDeleteSectionHandler : this.state.edit ? this.closeEditSectionHandler : this.deleteHandler} tableId={emp.id} empnatid={emp.NATIONAL_ID_CARD_NO} class="fas fa-backspace"></i></td>
-                                                </tr>
-                                            </tbody>
-                                        )) :
-                                            <tbody>
-                                                <td colspan="5">لا توجد بيانات</td>
-                                            </tbody>
-                                        }
-                                    </table>
-                                    <Pagination minusFirstArg={this.minusFirstArg} plusSecondArg={this.plusSecondArg}
-                                        firstArgPerBtn={this.state.firstArgPerBtn} secondArgPerBtn={this.state.secondArgPerBtn}
-                                        changargs={this.changeArgs} pagesLength={this.props.empApp.length} currentPage={this.state.currentPage} />
-                                </div>
-                            </div>
-                        </div>
+                                        </ul>
+                                    </th>
+
+                                    <th style={{ fontFamily: 'Markazi Text ,serif', fontWeight: 700, fontSize: "15pt" }}>
+                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                                            السنة
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                            {apprYear.map((year, i) => (
+                                                <>
+                                                    <input class="dropdown-item" type="checkbox" id={`year${i}`} name={`year${i}`} value={year} />
+                                                    <label class="dropdown-item" for={`year${i}`}>{year}</label>
+                                                </>
+                                            ))}
+
+                                        </ul>
+                                    </th>
+                                    <th>تعديل</th>
+                                    <th>حذف</th>
+                                </tr>
+                            </thead>
+                            {this.props.empApp.length > 0 ? this.props.empApp.slice(this.state.firstArg, this.state.secondArg).map(emp => (
+                                <tbody>
+                                    <tr id={emp.id}>
+                                        <td>{emp.NAME_ARABIC}</td>
+                                        <td>{this.state.edit && JSON.parse(this.state.rowAppraisal) === JSON.parse(emp.id) ? <select onChange={this.handelEditAppraisal} id="empapp" style={{ width: "50%", height: 30 }}>
+                                            {appraisals.map(apprsl => (
+                                                <option>{apprsl}</option>
+                                            ))}
+                                            <option selected>اختر التقدير</option>
+
+                                        </select> : emp.APPRAISAL_ARABIC}</td>
+                                        <td style={{ width: "10%" }}>{this.state.edit && JSON.parse(this.state.rowAppraisal) === JSON.parse(emp.id) ? <input onChange={this.handelEditYear} placeholder={this.state.editEmpAppraisalYear} className="form-control" style={{ width: "100%" }} type="text" /> : emp.APPRAISAL_DATE}</td>
+                                        <td><i onClick={this.state.delete ? this.confirmDelete : this.state.edit ? this.handelEdit_2 : this.handelEdit_1} tableId={emp.id} style={{ fontSize: 20 }} empName={emp.NAME_ARABIC} empApp={emp.APPRAISAL_ARABIC} empDate={emp.APPRAISAL_DATE} empnatid={emp.NATIONAL_ID_CARD_NO} class="fas fa-edit"></i></td>
+                                        <td><i onClick={this.state.delete ? this.closeDeleteSectionHandler : this.state.edit ? this.closeEditSectionHandler : this.deleteHandler} tableId={emp.id} empnatid={emp.NATIONAL_ID_CARD_NO} class="fas fa-backspace"></i></td>
+                                    </tr>
+                                </tbody>
+                            )) :
+                                <tbody>
+                                    <tr>
+                                        <td colspan="5">لا توجد بيانات</td>
+                                    </tr>
+                                </tbody>
+                            }
+                        </table>
+                        <Pagination minusFirstArg={this.minusFirstArg} plusSecondArg={this.plusSecondArg}
+                            firstArgPerBtn={this.state.firstArgPerBtn} secondArgPerBtn={this.state.secondArgPerBtn}
+                            changargs={this.changeArgs} pagesLength={this.props.empApp.length} currentPage={this.state.currentPage} />
                     </div>
                 </div>
             </div >)

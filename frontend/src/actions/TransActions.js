@@ -77,15 +77,18 @@ export const deleteEmpExperience = (data) => (dispatch) => {
 
 
 export const getEmpAppraisal = (data) => (dispatch) => {
+  console.log('called');
   axios.get(`http://${process.env.REACT_APP_URL}/empappraisal/?data=${data}`).then(res => {
     dispatch({
       type: fetchEmpAppraisal,
       payload: res.data
     })
   })
+
 }
 
 export const newAppraisal = (obj) => (dispatch) => {
+
   axios({
     method: "POST",
     data: obj,
@@ -167,6 +170,7 @@ export const getEmpTrans = (empid, empname) => (dispatch) => {
       payload: res.data
     })
   })
+  dispatch(getEmpAppraisal(1))
 }
 
 export const updateEmpTrans = (obj) => (dispatch) => {

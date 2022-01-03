@@ -106,7 +106,7 @@ class Sidebar extends React.Component {
                                                 خبرات سابقة <i class="fas fa-dumbbell"></i>
                                             </NavLink>
                                             :
-                                            <NavLink style={styles} to={`/empexperience`}>
+                                            <NavLink onClick={() => this.props.getEmpExp(1)} style={styles} to={`/empexperience`}>
                                                 خبرات سابقة <i class="fas fa-dumbbell"></i>
                                             </NavLink>
                                         }
@@ -115,7 +115,7 @@ class Sidebar extends React.Component {
                                                 تقييمات سنوية <i class="fas fa-percentage"></i>
                                             </NavLink>
                                             :
-                                            <NavLink style={styles} to={`/empsappraisal`}>
+                                            <NavLink onClick={() => this.props.getEmpAppraisal(1)} style={styles} to={`/empsappraisal`}>
                                                 تقييمات سنوية <i class="fas fa-percentage"></i>
                                             </NavLink>
                                         }
@@ -171,7 +171,7 @@ class Sidebar extends React.Component {
                                                 تقييمات سنوية
                                             </NavLink>
                                             :
-                                            <NavLink style={styles} to={`/empsappraisal`}>
+                                            <NavLink onClick={() => this.props.getEmpAppraisal(1)} style={styles} to={`/empsappraisal`}>
                                                 تقييمات سنوية
                                             </NavLink>
                                         }
@@ -242,7 +242,7 @@ class Sidebar extends React.Component {
                                                 تقييمات سنوية <i class="fas fa-percentage"></i>
                                             </NavLink>
                                             :
-                                            <NavLink style={styles} to={`/empsappraisal`}>
+                                            <NavLink  style={styles} to={`/empsappraisal`}>
                                                 تقييمات سنوية <i class="fas fa-percentage"></i>
                                             </NavLink>
                                         }

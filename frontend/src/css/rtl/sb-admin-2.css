@@ -650,7 +650,7 @@ a {
 }
 
 .table>:not(caption)>*>* {
-  padding:4px 0;
+  padding:0px 0;
 
 }
 
@@ -699,4 +699,27 @@ td > input{
   position: absolute; /* Position the badge within the relatively positioned button */
   top: 0;
   right: 0;
+}
+
+ul .dropdown-item {
+  display: inline-block;
+}
+
+
+element {
+
+}
+ul .dropdown-item {
+
+    display: inline-block;
+
+}
+.dropdown-item {
+  width: 40%;
+}
+
+.dropdown-menu {
+  width: 200px;
+  height: 200px;
+  overflow: scroll;
 }

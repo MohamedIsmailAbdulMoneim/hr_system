@@ -6,4 +6,3 @@ config
 migrations
 data to upload
 uploads
-.env
