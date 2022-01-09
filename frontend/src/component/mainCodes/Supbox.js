@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { getSupbox } from "../../actions/Actions";
 import { connect } from "react-redux";
 import Pagination from "../Pagination";
+import BasicTable from '../general/BasicTable'
 
 
 
@@ -63,6 +64,31 @@ class Supbox extends Component {
     render() {
         return (
             <div id="page-wrapper" className="emptrans">
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">مسمى وظيفي جديد</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <label>مساعد رئيس الشركة</label>
+                                <select>
+                                    <option>
+                                        1
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary">Save changes</button>
+                                <BasicTable />
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+               
 
                 <div className="row">
                     <div className="col-lg-12" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
@@ -125,7 +151,7 @@ class Supbox extends Component {
                                     null
 
                                 }
-                                <button onClick={this.addHandler} style={{ minWidth: 50, maxHeight: 25 }}><i className="fas fa-plus"></i></button>
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={this.addHandler} style={{ minWidth: 50, maxHeight: 25 }}><i className="fas fa-plus"></i></button>
                             </tbody>
                         </table>
 

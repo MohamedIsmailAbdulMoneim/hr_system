@@ -7,6 +7,9 @@
     "build": "npm run build --prefix frontend"
   },
   "dependencies": {
+    "@emotion/react": "^11.7.1",
+    "@emotion/styled": "^11.6.0",
+    "@mui/material": "^5.2.7",
     "base64url": "^3.0.1",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",

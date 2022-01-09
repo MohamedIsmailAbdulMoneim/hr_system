@@ -1,5 +1,6 @@
 import React, {Fragment} from "react";
 import { connect } from "react-redux";
+import BasicTable from './general/BasicTable'
 
 const Pagination = (props) => {
   const pageLinks = [];
@@ -25,6 +26,7 @@ const Pagination = (props) => {
       ))}
       <a onClick={props.plusSecondArg} href="/#">&laquo;</a>
     </div>
+    
 
   );
 };

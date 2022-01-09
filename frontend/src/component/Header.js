@@ -1,7 +1,6 @@
 import React, { Fragment } from 'react'
 import logo from './logo.png'
 import dashboard from './dashboard.png'
-import { Button } from '@material-ui/core';
 import { logOut } from '../actions/AuthActions'
 import { connect } from "react-redux";
 import { getNatIdExpired } from "../actions/ReportActions"
